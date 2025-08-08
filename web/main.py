@@ -75,6 +75,11 @@ def home(request: Request):
     )
 
 
+@app.get("/test-buttons", response_class=HTMLResponse)
+def test_buttons(request: Request):
+    return templates.TemplateResponse("test_buttons.html", {"request": request})
+
+
 @app.get("/patterns", response_class=HTMLResponse)
 def patterns(request: Request, category: Optional[str] = None, q: Optional[str] = None):
     all_patterns = assets.get_grammar_patterns()

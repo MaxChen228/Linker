@@ -14,8 +14,8 @@
       <option value="{{ lv }}" {% if level == lv %}selected{% endif %}>{{ lv }}</option>
       {% endfor %}
     </select>
-    <button class="btn" type="submit">載入</button>
-    <a class="btn outline" href="/practice?length={{ length }}&level={{ level }}&shuffle=1">去練習</a>
+    <button class="btn" data-variant="primary" type="submit">載入</button>
+    <a class="btn" data-variant="secondary" href="/practice?length={{ length }}&level={{ level }}&shuffle=1">去練習</a>
   </form>
 
   <ul class="list">

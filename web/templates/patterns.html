@@ -24,16 +24,20 @@
     
     <!-- 分類標籤 -->
     <div class="category-tabs">
-      <button class="category-tab {% if not category %}active{% endif %}" 
-              data-category="">
+      <button class="btn category-tab {% if not category %}active{% endif %}" 
+              data-variant="tab"
+              data-category=""
+              {% if not category %}data-active="true"{% endif %}>
         全部
-        <span class="count" id="count-all">{{ patterns|length }}</span>
+        <span class="btn-count" id="count-all">{{ patterns|length }}</span>
       </button>
       {% for c in categories %}
-        <button class="category-tab {% if c == category %}active{% endif %}" 
-                data-category="{{ c }}">
+        <button class="btn category-tab {% if c == category %}active{% endif %}" 
+                data-variant="tab"
+                data-category="{{ c }}"
+                {% if c == category %}data-active="true"{% endif %}>
           {{ c }}
-          <span class="count" id="count-{{ c }}">0</span>
+          <span class="btn-count" id="count-{{ c }}">0</span>
         </button>
       {% endfor %}
     </div>
@@ -62,13 +66,13 @@
       <div class="pattern-header">
         <h3 class="pattern-title">{{ p.pattern }}</h3>
         <div class="pattern-actions">
-          <button class="btn-icon btn-copy" title="複製句型" data-copy="{{ p.pattern }}">
+          <button class="btn btn-icon btn-copy" data-variant="icon" data-size="sm" title="複製句型" data-copy="{{ p.pattern }}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
             </svg>
           </button>
-          <button class="btn-icon btn-favorite" title="收藏">
+          <button class="btn btn-icon btn-favorite" data-variant="icon" data-size="sm" title="收藏">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
             </svg>
@@ -95,7 +99,7 @@
       <div class="pattern-examples">
         <div class="examples-header">
           <span class="examples-label">例句</span>
-          <button class="btn-icon btn-expand" title="展開/收合">
+          <button class="btn btn-icon btn-expand" data-variant="icon" data-size="sm" title="展開/收合">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
@@ -105,7 +109,7 @@
           {% if p.example_zh %}
           <div class="example-item">
             <span class="example-zh">{{ p.example_zh }}</span>
-            <button class="btn-copy-example" data-copy="{{ p.example_zh }}">
+            <button class="btn btn-copy-example" data-variant="ghost" data-size="sm" data-copy="{{ p.example_zh }}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -116,7 +120,7 @@
           {% if p.example_en %}
           <div class="example-item">
             <span class="example-en">{{ p.example_en }}</span>
-            <button class="btn-copy-example" data-copy="{{ p.example_en }}">
+            <button class="btn btn-copy-example" data-variant="ghost" data-size="sm" data-copy="{{ p.example_en }}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -140,7 +144,7 @@
     </svg>
     <h3>找不到符合的句型</h3>
     <p>試試其他關鍵字或清除篩選條件</p>
-    <button class="btn outline" onclick="clearSearch()">清除搜尋</button>
+    <button class="btn" data-variant="secondary" onclick="clearSearch()">清除搜尋</button>
   </div>
   
   <!-- 複製成功提示 -->

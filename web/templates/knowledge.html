@@ -53,7 +53,7 @@
           </svg>
           複習佇列
         </h3>
-        <a href="/practice?mode=review&shuffle=1" class="btn-start-review">
+        <a href="/practice?mode=review&shuffle=1" class="btn" data-variant="primary" data-size="sm">
           開始複習練習
         </a>
       </div>
@@ -92,14 +92,14 @@
     <div class="filter-section">
       <h3 class="filter-title">錯誤類別</h3>
       <div class="filter-tabs">
-        <button class="filter-tab active" data-filter-type="category" data-filter-value="">
+        <button class="btn filter-tab active" data-variant="tab" data-filter-type="category" data-filter-value="">
           全部
-          <span class="count">{{ points|length }}</span>
+          <span class="btn-count">{{ points|length }}</span>
         </button>
         {% for cat in categories %}
-          <button class="filter-tab" data-filter-type="category" data-filter-value="{{ cat }}">
+          <button class="btn filter-tab" data-variant="tab" data-filter-type="category" data-filter-value="{{ cat }}">
             {{ cat }}
-            <span class="count">{{ category_counts.get(cat, 0) }}</span>
+            <span class="btn-count">{{ category_counts.get(cat, 0) }}</span>
           </button>
         {% endfor %}
       </div>
@@ -109,18 +109,18 @@
     <div class="filter-section">
       <h3 class="filter-title">掌握程度</h3>
       <div class="filter-tabs">
-        <button class="filter-tab active" data-filter-type="mastery" data-filter-value="">
+        <button class="btn filter-tab active" data-variant="tab" data-filter-type="mastery" data-filter-value="">
           全部
         </button>
-        <button class="filter-tab" data-filter-type="mastery" data-filter-value="low">
+        <button class="btn filter-tab" data-variant="tab" data-filter-type="mastery" data-filter-value="low">
           <span class="mastery-dot low"></span>
           需加強 (&lt;30%)
         </button>
-        <button class="filter-tab" data-filter-type="mastery" data-filter-value="medium">
+        <button class="btn filter-tab" data-variant="tab" data-filter-type="mastery" data-filter-value="medium">
           <span class="mastery-dot medium"></span>
           進步中 (30-70%)
         </button>
-        <button class="filter-tab" data-filter-type="mastery" data-filter-value="high">
+        <button class="btn filter-tab" data-variant="tab" data-filter-type="mastery" data-filter-value="high">
           <span class="mastery-dot high"></span>
           已掌握 (&gt;70%)
         </button>
@@ -172,7 +172,7 @@
                 <span class="progress-text">{{ "%.0f"|format(group.avg_mastery * 100) }}%</span>
               </div>
             </div>
-            <button class="group-toggle">
+            <button class="btn group-toggle" data-variant="icon" data-size="sm">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
@@ -388,7 +388,7 @@
     </svg>
     <h3>沒有找到知識點</h3>
     <p>試試調整篩選條件或開始練習累積新的知識點</p>
-    <a href="/practice" class="btn">開始練習</a>
+    <a href="/practice" class="btn" data-variant="primary">開始練習</a>
   </div>
   
   <script>
