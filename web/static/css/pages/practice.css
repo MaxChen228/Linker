@@ -30,43 +30,8 @@
   justify-content: center;
 }
 
-.mode-btn {
-  flex: 1;
-  max-width: 200px;
-  padding: 20px;
-  background: white;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
-}
-
-.mode-btn:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.mode-btn.active {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.08) 100%);
-  border-color: var(--primary);
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
-}
-
-.mode-title {
-  display: block;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-
-.mode-desc {
-  display: block;
-  font-size: 14px;
-  color: var(--text-muted);
-}
+/* mode-btn 樣式已遷移至 design-system/03-components/buttons.css */
+/* 使用 .btn[data-variant="card"] 替代 */
 
 /* Parameters Row */
 .params-row {

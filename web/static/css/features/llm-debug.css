@@ -42,25 +42,8 @@
   font-weight: 600;
 }
 
-.close-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: rotate(90deg);
-}
+/* close-btn 樣式已遷移至 design-system/03-components/buttons.css */
+/* 使用 .btn[data-variant="icon"] 替代 */
 
 .debug-modal-body {
   padding: 30px;
@@ -162,22 +145,8 @@
   font-weight: 500;
 }
 
-.copy-btn {
-  padding: 6px 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 20px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
-}
-
-.copy-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-}
+/* copy-btn 樣式已遷移至 design-system/03-components/buttons.css */
+/* 使用 .btn[data-variant="gradient"][data-size="sm"] 替代 */
 
 /* JSON 語法高亮 */
 .debug-json .json-key {

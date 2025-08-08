@@ -86,26 +86,7 @@
   border-top: 1px solid #e5e7eb;
 }
 
-.toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.toggle-btn:hover {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-}
+/* toggle-btn 樣式已遷移至 design-system/03-components/buttons.css */
 
 .toggle-icon {
   transition: transform 0.3s ease;
@@ -301,47 +282,8 @@
   flex-wrap: wrap;
 }
 
-.filter-tab {
-  padding: 10px 20px;
-  border-radius: var(--radius-full);
-  border: 2px solid var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
-  font-weight: 500;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filter-tab:hover {
-  border-color: var(--accent);
-  color: var(--text);
-  transform: translateY(-1px);
-}
-
-.filter-tab.active {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-  border-color: transparent;
-  color: white;
-  box-shadow: 0 4px 12px 0 rgba(79, 70, 229, 0.3);
-}
-
-.filter-tab .count {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  min-width: 24px;
-  text-align: center;
-}
-
-.filter-tab.active .count {
-  background: rgba(255, 255, 255, 0.3);
-}
+/* filter-tab 樣式已遷移至 design-system/03-components/buttons.css */
+/* 使用 .btn[data-variant="tab"] 替代 */
 
 .mastery-dot {
   width: 12px;
@@ -582,26 +524,8 @@
   margin-top: 16px;
 }
 
-.btn-action {
-  flex: 1;
-  padding: 10px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.btn-action:hover {
-  transform: translateY(-1px);
-}
+/* btn-action 樣式已遷移至 design-system/03-components/buttons.css */
+/* 使用 .btn[data-variant="ghost"][data-size="sm"] 替代 */
 
   .knowledge-grid {
     grid-template-columns: 1fr;

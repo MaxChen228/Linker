@@ -178,25 +178,8 @@
   flex-shrink: 0;
 }
 
-.btn-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
-  border: none;
-  background: var(--bg);
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition);
-}
-
-.btn-icon:hover {
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
-  color: var(--accent);
-  transform: scale(1.1);
-}
+/* btn-icon 樣式已遷移至 design-system/03-components/buttons.css */
+/* 使用 .btn[data-variant="icon"] 替代 */
 
 .btn-favorite.active {
   color: #f59e0b;

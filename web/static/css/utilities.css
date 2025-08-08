@@ -51,36 +51,7 @@ footer small {
   gap: 8px;
 }
 
-.btn-restore,
-.btn-discard {
-  padding: 8px 20px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  border: none;
-}
-
-.btn-restore {
-  background: var(--accent);
-  color: white;
-}
-
-.btn-restore:hover {
-  background: var(--accent-light);
-}
-
-.btn-discard {
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-}
-
-.btn-discard:hover {
-  background: var(--surface);
-  border-color: var(--text-muted);
-}
+/* 草稿按鈕樣式已遷移至 design-system/03-components/buttons.css */
 
 /* Save Indicator */
 .save-indicator {
