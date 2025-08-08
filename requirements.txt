@@ -1,0 +1,15 @@
+# Linker CLI - 精簡依賴
+
+# 核心 AI 功能
+google-generativeai>=0.4.0
+
+# 可選：豐富的終端顯示
+rich>=13.0.0  # 美化終端輸出
+colorama>=0.4.6  # 跨平台顏色支援
+
+# Web 服務
+fastapi>=0.111.0
+uvicorn[standard]>=0.23.0
+jinja2>=3.1.2
+python-multipart>=0.0.9
+prometheus-fastapi-instrumentator>=7.0.0

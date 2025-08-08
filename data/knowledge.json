@@ -1,0 +1,650 @@
+[
+  {
+    "id": 1,
+    "key_point": "主詞為第三人稱單數時，動詞需要加上 -s",
+    "category": "systematic",
+    "subtype": "verb_conjugation",
+    "explanation": "在現在簡單式中，當主詞是第三人稱單數（he, she, it）時，動詞需要加上 -s。",
+    "original_phrase": "He run",
+    "correction": "He runs",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:12:34.972533",
+    "last_seen": "2025-08-07T17:12:34.972538",
+    "next_review": "2025-08-08T17:12:34.972541",
+    "examples": [
+      {
+        "chinese": "他每天清晨跑步。",
+        "user_answer": "He run every morning.",
+        "correct": "He runs every morning."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "key_point": "句型結構不自然，應使用更簡潔的表達方式。",
+    "category": "systematic",
+    "subtype": "naturalness",
+    "explanation": "使用 'To my surprise' 或 'What surprised me was...' 結構更自然。另外，'should object' 在此處不自然，直接用過去式 'objected' 即可。",
+    "original_phrase": "What made me surprised is he should object",
+    "correction": "To my surprise, he objected",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:16:12.731786",
+    "last_seen": "2025-08-07T17:16:12.731793",
+    "next_review": "2025-08-08T17:16:12.731797",
+    "examples": [
+      {
+        "chinese": "讓我很驚訝的是，他竟然在會議中公開反對老闆的提案。",
+        "user_answer": "What made me surprised is he should object the propose by the boss in the session in public.",
+        "correct": "令我驚訝的是，他竟然在會議中公開反對老闆的提案。"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "key_point": "單字使用不精確， 'propose' 是動詞，這裡需要名詞 'proposal'。",
+    "category": "isolated",
+    "subtype": "vocabulary",
+    "explanation": "'propose' 是動詞，意為「提議」，而這裡需要名詞 'proposal'，意為「提案」。",
+    "original_phrase": "the propose",
+    "correction": "the proposal",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:16:12.732123",
+    "last_seen": "2025-08-07T17:16:12.732127",
+    "next_review": "2025-08-08T17:16:12.732130",
+    "examples": [
+      {
+        "chinese": "讓我很驚訝的是，他竟然在會議中公開反對老闆的提案。",
+        "user_answer": "What made me surprised is he should object the propose by the boss in the session in public.",
+        "correct": "令我驚訝的是，他竟然在會議中公開反對老闆的提案。"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "key_point": "介系詞使用不當， 'by the boss' 應該是 'of the boss'。",
+    "category": "isolated",
+    "subtype": "preposition",
+    "explanation": "表示「老闆的提案」使用 'of the boss' 比較自然。",
+    "original_phrase": "by the boss",
+    "correction": "of the boss",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:16:12.732458",
+    "last_seen": "2025-08-07T17:16:12.732462",
+    "next_review": "2025-08-08T17:16:12.732465",
+    "examples": [
+      {
+        "chinese": "讓我很驚訝的是，他竟然在會議中公開反對老闆的提案。",
+        "user_answer": "What made me surprised is he should object the propose by the boss in the session in public.",
+        "correct": "令我驚訝的是，他竟然在會議中公開反對老闆的提案。"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "key_point": "用字遣詞略顯生硬，'in the session in public' 可以簡化。",
+    "category": "isolated",
+    "subtype": "naturalness",
+    "explanation": "將 'in public' 改為副詞 'publicly'，並將 'session' 改為更常用的 'meeting'，表達更自然。也可以用'in the meeting publicly'，語意一樣。",
+    "original_phrase": "in the session in public",
+    "correction": "publicly in the meeting",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:16:12.732820",
+    "last_seen": "2025-08-07T17:16:12.732824",
+    "next_review": "2025-08-08T17:16:12.732827",
+    "examples": [
+      {
+        "chinese": "讓我很驚訝的是，他竟然在會議中公開反對老闆的提案。",
+        "user_answer": "What made me surprised is he should object the propose by the boss in the session in public.",
+        "correct": "令我驚訝的是，他竟然在會議中公開反對老闆的提案。"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "key_point": "動詞誤用，應使用'seen'而非'seem'，冠詞使用錯誤。",
+    "category": "isolated",
+    "subtype": "unclassified",
+    "explanation": "'Seem' 是「看起來」的意思，此處應使用 'see' 的過去分詞 'seen'，表示「被視為」。 另外冠詞 the 可以省略。",
+    "original_phrase": "seem as the best",
+    "correction": "seen as the best",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:35:09.876014",
+    "last_seen": "2025-08-07T17:35:09.876021",
+    "next_review": "2025-08-08T17:35:09.876025",
+    "examples": [
+      {
+        "chinese": "他被視為最佳候選。",
+        "user_answer": "He was seem as the best candidate.",
+        "correct": "他被視為最佳候選人。"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "key_point": "主詞動詞一致性錯誤",
+    "category": "systematic",
+    "subtype": "verb_conjugation",
+    "explanation": "當主詞是第三人稱單數（She, He, It）時，現在簡單式的動詞需要加上 -s。學生忘了加上 -s，屬於主詞動詞一致性的系統性文法錯誤。",
+    "original_phrase": "run",
+    "correction": "runs",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:53:40.164752",
+    "last_seen": "2025-08-07T17:53:40.164757",
+    "next_review": "2025-08-08T17:53:40.164771",
+    "examples": [
+      {
+        "chinese": "她每天早上跑步。",
+        "user_answer": "She run every morning.",
+        "correct": "She runs every morning."
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "key_point": "形容詞用法錯誤：interesting vs. interested",
+    "category": "isolated",
+    "subtype": "preposition",
+    "explanation": "形容詞 interesting 用於描述事物本身的特性，而 interested 用於描述人對某事物的感受。因為這裡要表達的是「我」對計畫感興趣，所以應該使用 interested。正確的搭配是 be interested in。",
+    "original_phrase": "interesting in",
+    "correction": "interested in",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:53:42.006699",
+    "last_seen": "2025-08-07T17:53:42.006704",
+    "next_review": "2025-08-08T17:53:42.006717",
+    "examples": [
+      {
+        "chinese": "我對這個計畫很感興趣。",
+        "user_answer": "I am interesting in this plan.",
+        "correct": "I am interested in this plan."
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "key_point": "動詞時態和主謂一致錯誤",
+    "category": "systematic",
+    "subtype": "tense",
+    "explanation": "這裡需要使用動名詞 'facing' 作為 'despite' 的賓語。 'Challenge' 需要是複數形式，因為有很多挑戰。 'Numerous' 使句子更正式。",
+    "original_phrase": "face many challenge",
+    "correction": "facing numerous challenges",
+    "mastery_level": 0.0,
+    "mistake_count": 2,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:40.758473",
+    "last_seen": "2025-08-07T17:58:40.759188",
+    "next_review": "2025-08-08T17:58:40.759196",
+    "examples": [
+      {
+        "chinese": "儘管面臨諸多挑戰，他仍然堅持追求自己的夢想。",
+        "user_answer": "Although face many challenge, he still persist pursue his dream.",
+        "correct": "Despite facing numerous challenges, he persevered in pursuing his dream."
+      },
+      {
+        "chinese": "儘管面臨諸多挑戰，他仍然堅持追求自己的夢想。",
+        "user_answer": "Although face many challenge, he still persist pursue his dream.",
+        "correct": "Despite facing numerous challenges, he persevered in pursuing his dream."
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "key_point": "更自然的連接詞",
+    "category": "enhancement",
+    "subtype": "naturalness",
+    "explanation": "雖然 'Although' 在語法上沒有錯，但使用 'Despite' 更簡潔，也更適合這裡的語境。 'Despite' 後面直接接名詞或動名詞。",
+    "original_phrase": "Although face many challenge",
+    "correction": "Despite facing numerous challenges",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:40.759861",
+    "last_seen": "2025-08-07T17:58:40.759865",
+    "next_review": "2025-08-08T17:58:40.759872",
+    "examples": [
+      {
+        "chinese": "儘管面臨諸多挑戰，他仍然堅持追求自己的夢想。",
+        "user_answer": "Although face many challenge, he still persist pursue his dream.",
+        "correct": "Despite facing numerous challenges, he persevered in pursuing his dream."
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "key_point": "情態動詞後不應再接助動詞 will。",
+    "category": "other",
+    "subtype": "unclassified",
+    "explanation": "情態動詞（modal verbs）如 might, can, should, must 等，後面直接接原形動詞，不能再接助動詞 will。在這裡，might 已經表達了可能性，will 是多餘的。",
+    "original_phrase": "might will",
+    "correction": "might",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:47.465777",
+    "last_seen": "2025-08-07T17:58:47.465782",
+    "next_review": "2025-08-08T17:58:47.465795",
+    "examples": [
+      {
+        "chinese": "這項研究的結果可能會對醫學領域產生深遠的影響。",
+        "user_answer": "This research result might will have profound effect on medical field.",
+        "correct": "The results of this research may have a profound impact on the medical field."
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "key_point": "effect 的正確搭配介系詞。",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "Effect 和 impact 後面搭配介係詞 on 是正確的用法。 表示『對...的影響』。因此，使用 effect on 或 impact on 都是正確的。",
+    "original_phrase": "effect on",
+    "correction": "effect on/impact on",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:47.466575",
+    "last_seen": "2025-08-07T17:58:47.466579",
+    "next_review": "2025-08-08T17:58:47.466587",
+    "examples": [
+      {
+        "chinese": "這項研究的結果可能會對醫學領域產生深遠的影響。",
+        "user_answer": "This research result might will have profound effect on medical field.",
+        "correct": "The results of this research may have a profound impact on the medical field."
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "key_point": "可數名詞 field 的單複數使用。",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "這裡的 medical field 指的是整個醫學領域，是一個泛指的概念，需要使用定冠詞 the。或者可以使用 medical fields，表示醫學的各個領域",
+    "original_phrase": "medical field",
+    "correction": "the medical field",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:47.467365",
+    "last_seen": "2025-08-07T17:58:47.467369",
+    "next_review": "2025-08-08T17:58:47.467376",
+    "examples": [
+      {
+        "chinese": "這項研究的結果可能會對醫學領域產生深遠的影響。",
+        "user_answer": "This research result might will have profound effect on medical field.",
+        "correct": "The results of this research may have a profound impact on the medical field."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "key_point": "result的表達更自然的方式。",
+    "category": "enhancement",
+    "subtype": "naturalness",
+    "explanation": "雖然 'This research result' 在語法上沒有問題，但 'The results of this research' 是更常見且自然的表達方式。使用 results 可以更強調研究的結果。",
+    "original_phrase": "This research result",
+    "correction": "The results of this research",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:47.468447",
+    "last_seen": "2025-08-07T17:58:47.468453",
+    "next_review": "2025-08-08T17:58:47.468462",
+    "examples": [
+      {
+        "chinese": "這項研究的結果可能會對醫學領域產生深遠的影響。",
+        "user_answer": "This research result might will have profound effect on medical field.",
+        "correct": "The results of this research may have a profound impact on the medical field."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "key_point": "時態錯誤",
+    "category": "systematic",
+    "subtype": "tense",
+    "explanation": "原句意為「直到深夜他才意識到」，需要使用過去完成時態表示在深夜之前已經犯下錯誤。此外，'until'引導時間狀語從句時，主句通常使用否定形式，並使用倒裝結構。這裡使用'It wasn't until...that...'結構更為自然。",
+    "original_phrase": "Until late night he realize",
+    "correction": "It wasn't until late at night that he realized",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:53.609244",
+    "last_seen": "2025-08-07T17:58:53.609249",
+    "next_review": "2025-08-08T17:58:53.609262",
+    "examples": [
+      {
+        "chinese": "直到深夜他才意識到自己犯了一個嚴重的錯誤。",
+        "user_answer": "Until late night he realize he make a serious mistake.",
+        "correct": "It wasn't until late at night that he realized he had made a serious mistake."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "key_point": "動詞時態",
+    "category": "systematic",
+    "subtype": "tense",
+    "explanation": "由於整個句子描述的是過去發生的事情，所以 'realize' 應該用過去式 'realized'。 並且因為犯錯是先於意識到的行為，所以用過去完成時 'had made' 更能表達時間順序。",
+    "original_phrase": "he realize he make",
+    "correction": "he realized he had made",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:53.610236",
+    "last_seen": "2025-08-07T17:58:53.610240",
+    "next_review": "2025-08-08T17:58:53.610247",
+    "examples": [
+      {
+        "chinese": "直到深夜他才意識到自己犯了一個嚴重的錯誤。",
+        "user_answer": "Until late night he realize he make a serious mistake.",
+        "correct": "It wasn't until late at night that he realized he had made a serious mistake."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "key_point": "冠詞缺失",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "名詞 'mistake' 是可數名詞，單數形式需要冠詞 'a'。",
+    "original_phrase": "he make a serious mistake",
+    "correction": "he had made a serious mistake",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:58:53.611223",
+    "last_seen": "2025-08-07T17:58:53.611228",
+    "next_review": "2025-08-08T17:58:53.611235",
+    "examples": [
+      {
+        "chinese": "直到深夜他才意識到自己犯了一個嚴重的錯誤。",
+        "user_answer": "Until late night he realize he make a serious mistake.",
+        "correct": "It wasn't until late at night that he realized he had made a serious mistake."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "key_point": "條件句時態錯誤",
+    "category": "systematic",
+    "subtype": "tense",
+    "explanation": "這是一個與過去事實相反的假設語氣，需要使用過去完成式 (had + 過去分詞) 在條件子句中。而且句子的結構需要主詞。",
+    "original_phrase": "If listen your advice before",
+    "correction": "If I had taken your advice",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:59:00.578864",
+    "last_seen": "2025-08-07T17:59:00.578869",
+    "next_review": "2025-08-08T17:59:00.578882",
+    "examples": [
+      {
+        "chinese": "如果當初聽從你的建議，現在就不會陷入這樣的困境。",
+        "user_answer": "If listen your advice before, now won't be in such difficult.",
+        "correct": "If I had taken your advice, I wouldn't be in such a difficult situation now."
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "key_point": "否定縮寫和助動詞使用錯誤",
+    "category": "other",
+    "subtype": "unclassified",
+    "explanation": "在假設語氣的結果子句中，需要使用 would/could/might + have + 過去分詞。由於現在是強調現在的狀態，所以使用wouldn't be. 此處也需要添加主詞。",
+    "original_phrase": "now won't be",
+    "correction": "I wouldn't be",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:59:00.580390",
+    "last_seen": "2025-08-07T17:59:00.580397",
+    "next_review": "2025-08-08T17:59:00.580406",
+    "examples": [
+      {
+        "chinese": "如果當初聽從你的建議，現在就不會陷入這樣的困境。",
+        "user_answer": "If listen your advice before, now won't be in such difficult.",
+        "correct": "If I had taken your advice, I wouldn't be in such a difficult situation now."
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "key_point": "介系詞使用錯誤",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "這裡需要使用 'situation' 這個名詞，且 difficult 作為形容詞修飾 situation。 因此需要冠詞 'a'。",
+    "original_phrase": "in such difficult",
+    "correction": "in such a difficult situation",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:59:00.581575",
+    "last_seen": "2025-08-07T17:59:00.581579",
+    "next_review": "2025-08-08T17:59:00.581587",
+    "examples": [
+      {
+        "chinese": "如果當初聽從你的建議，現在就不會陷入這樣的困境。",
+        "user_answer": "If listen your advice before, now won't be in such difficult.",
+        "correct": "If I had taken your advice, I wouldn't be in such a difficult situation now."
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "key_point": "表達方式更自然",
+    "category": "enhancement",
+    "subtype": "naturalness",
+    "explanation": "雖然 'in such a difficult situation' 文法正確，但更常見也更自然的表達方式是 'in this predicament' 或 'in this mess'，但在這個評估中，學生使用的方式是正確的。",
+    "original_phrase": "in such a difficult situation",
+    "correction": "in such a difficult situation",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:59:00.582716",
+    "last_seen": "2025-08-07T17:59:00.582720",
+    "next_review": "2025-08-08T17:59:00.582728",
+    "examples": [
+      {
+        "chinese": "如果當初聽從你的建議，現在就不會陷入這樣的困境。",
+        "user_answer": "If listen your advice before, now won't be in such difficult.",
+        "correct": "If I had taken your advice, I wouldn't be in such a difficult situation now."
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "key_point": "被動語態與介係詞的錯誤使用。",
+    "category": "systematic",
+    "subtype": "voice",
+    "explanation": "此處需要使用過去分詞 'considered' 作為形容詞，而非被動語態的 'be considered as'。 'Considered' 本身就帶有「被認為是」的意思。 Also, the phrase 'be considered as' is often considered redundant. ",
+    "original_phrase": "Be considered as",
+    "correction": "Considered",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:59:06.103147",
+    "last_seen": "2025-08-07T17:59:06.103152",
+    "next_review": "2025-08-08T17:59:06.103166",
+    "examples": [
+      {
+        "chinese": "被認為是本世紀最偉大的科學發現之一。",
+        "user_answer": "Be considered as one of the greatest scientific discover in this century.",
+        "correct": "Considered one of the greatest scientific discoveries of this century."
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "key_point": "名詞單複數錯誤",
+    "category": "systematic",
+    "subtype": "agreement",
+    "explanation": "因為是「其中之一」，所以必須使用複數名詞 'discoveries'。 否則會變成「一個最偉大的發現中的一個」，邏輯不通。",
+    "original_phrase": "discover",
+    "correction": "discoveries",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:59:06.104544",
+    "last_seen": "2025-08-07T17:59:06.104549",
+    "next_review": "2025-08-08T17:59:06.104557",
+    "examples": [
+      {
+        "chinese": "被認為是本世紀最偉大的科學發現之一。",
+        "user_answer": "Be considered as one of the greatest scientific discover in this century.",
+        "correct": "Considered one of the greatest scientific discoveries of this century."
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "key_point": "介係詞使用錯誤。",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "要表達「本世紀的」，應該使用介係詞 'of'，例如： the greatest discoveries of this century。",
+    "original_phrase": "in this century",
+    "correction": "of this century",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-07T17:59:06.105833",
+    "last_seen": "2025-08-07T17:59:06.105837",
+    "next_review": "2025-08-08T17:59:06.105845",
+    "examples": [
+      {
+        "chinese": "被認為是本世紀最偉大的科學發現之一。",
+        "user_answer": "Be considered as one of the greatest scientific discover in this century.",
+        "correct": "Considered one of the greatest scientific discoveries of this century."
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "key_point": "主詞動詞不一致",
+    "category": "systematic",
+    "subtype": "verb_conjugation",
+    "explanation": "英文中，第三人稱單數（he, she, it）在現在簡單時的動詞需要加上 -s 或 -es。",
+    "original_phrase": "he work",
+    "correction": "he works",
+    "mastery_level": 0.0,
+    "mistake_count": 2,
+    "correct_count": 0,
+    "created_at": "2025-08-08T10:27:45.094933",
+    "last_seen": "2025-08-08T12:52:43.568634",
+    "next_review": "2025-08-09T12:52:43.568648",
+    "examples": [
+      {
+        "chinese": "儘管他工作非常努力，卻總是事倍功半，這讓他感到非常沮喪。",
+        "user_answer": "Although he work very hard, he always do more but earn less, this  makes him fell terribly depressed.",
+        "correct": "Although he works very hard, he always achieves less than expected, which makes him feel terribly frustrated."
+      },
+      {
+        "chinese": "他每天清晨跑步。",
+        "user_answer": "He go jogging every morning.",
+        "correct": "He goes jogging every morning."
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "key_point": "動詞時態錯誤",
+    "category": "enhancement",
+    "subtype": "naturalness",
+    "explanation": "這裡需要使用現在簡單時，且表達“事倍功半”用 “achieves less than expected” 更自然。直接翻譯成“do more but earn less”雖然能理解，但較不道地。",
+    "original_phrase": "he always do more but earn less",
+    "correction": "he always achieves less than expected",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T10:27:45.096368",
+    "last_seen": "2025-08-08T10:27:45.096373",
+    "next_review": "2025-08-09T10:27:45.096379",
+    "examples": [
+      {
+        "chinese": "儘管他工作非常努力，卻總是事倍功半，這讓他感到非常沮喪。",
+        "user_answer": "Although he work very hard, he always do more but earn less, this  makes him fell terribly depressed.",
+        "correct": "Although he works very hard, he always achieves less than expected, which makes him feel terribly frustrated."
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "key_point": "主詞動詞不一致，以及錯誤的動詞形式",
+    "category": "systematic",
+    "subtype": "verb_conjugation",
+    "explanation": "1. 'this' 指代前面整句話，所以要用 which 引導非限定子句。2. make + sb. + do sth.，這裡 fell 應該使用原型 feel。3. depressed 指心情低落，frustrated 更符合“沮喪”的語境，表示因為無法達到目標而感到灰心。",
+    "original_phrase": "this makes him fell terribly depressed",
+    "correction": "which makes him feel terribly frustrated",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T10:27:45.097053",
+    "last_seen": "2025-08-08T10:27:45.097055",
+    "next_review": "2025-08-09T10:27:45.097059",
+    "examples": [
+      {
+        "chinese": "儘管他工作非常努力，卻總是事倍功半，這讓他感到非常沮喪。",
+        "user_answer": "Although he work very hard, he always do more but earn less, this  makes him fell terribly depressed.",
+        "correct": "Although he works very hard, he always achieves less than expected, which makes him feel terribly frustrated."
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "key_point": "用詞遣字可以更精準",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "雖然 'depressed' 沒有文法錯誤，但在表達因努力卻徒勞無功而產生的挫敗感時，使用 'frustrated' 更為準確。",
+    "original_phrase": "terribly depressed",
+    "correction": "terribly frustrated",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T10:27:45.097773",
+    "last_seen": "2025-08-08T10:27:45.097776",
+    "next_review": "2025-08-09T10:27:45.097781",
+    "examples": [
+      {
+        "chinese": "儘管他工作非常努力，卻總是事倍功半，這讓他感到非常沮喪。",
+        "user_answer": "Although he work very hard, he always do more but earn less, this  makes him fell terribly depressed.",
+        "correct": "Although he works very hard, he always achieves less than expected, which makes him feel terribly frustrated."
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "key_point": "動詞時態：現在簡單式主詞為第三人稱單數時，動詞需要加上 -s",
+    "category": "systematic",
+    "subtype": "verb_conjugation",
+    "explanation": "在現在簡單式中，如果主詞是第三人稱單數（he, she, it），動詞需要加上 -s。因為主詞是 'He'，所以動詞 'run' 應該改為 'runs'。",
+    "original_phrase": "run",
+    "correction": "runs",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T12:27:00.679353",
+    "last_seen": "2025-08-08T12:27:00.679359",
+    "next_review": "2025-08-09T12:27:00.679370",
+    "examples": [
+      {
+        "chinese": "他每天清晨跑步。",
+        "user_answer": "He run every morning.",
+        "correct": "He runs every morning."
+      }
+    ]
+  }
+]

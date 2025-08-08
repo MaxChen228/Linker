@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}分級例句 - Linker{% endblock %}
+{% block content %}
+  <form class="row" method="get">
+    <label>長度</label>
+    <select name="length">
+      <option value="short" {% if length == 'short' %}selected{% endif %}>短</option>
+      <option value="medium" {% if length == 'medium' %}selected{% endif %}>中</option>
+      <option value="long" {% if length == 'long' %}selected{% endif %}>長</option>
+    </select>
+    <label>難度</label>
+    <select name="level">
+      {% for lv in [1,2,3,4,5] %}
+      <option value="{{ lv }}" {% if level == lv %}selected{% endif %}>{{ lv }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn" type="submit">載入</button>
+    <a class="btn outline" href="/practice?length={{ length }}&level={{ level }}&shuffle=1">去練習</a>
+  </form>
+
+  <ul class="list">
+    {% for s in items %}
+    <li class="item">
+      {{ s }}
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+

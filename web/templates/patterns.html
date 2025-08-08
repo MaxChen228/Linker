@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}文法句型 - Linker{% endblock %}
+{% block content %}
+  <form class="row" method="get">
+    <select name="category">
+      <option value="" {% if not category %}selected{% endif %}>全部分類</option>
+      {% for c in categories %}
+        <option value="{{ c }}" {% if c == category %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
+    </select>
+    <input type="text" name="q" placeholder="關鍵字搜尋 (pattern / 說明 / 範例)" value="{{ q }}" />
+    <button class="btn" type="submit">搜尋</button>
+  </form>
+
+  <ul class="list">
+    {% for p in patterns %}
+    <li class="item">
+      <div class="title">{{ p.pattern }}</div>
+      {% if p.category %}<div class="tag">{{ p.category }}</div>{% endif %}
+      {% if p.explanation %}<p class="muted">{{ p.explanation }}</p>{% endif %}
+      {% if p.example_zh or p.example_en %}
+        <div class="examples">
+          {% if p.example_zh %}<div class="zh">{{ p.example_zh }}</div>{% endif %}
+          {% if p.example_en %}<div class="en">{{ p.example_en }}</div>{% endif %}
+        </div>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+

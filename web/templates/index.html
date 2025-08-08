@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Linker{% endblock %}
+{% block content %}
+  <section class="cards">
+    <div class="card">
+      <h2>總練習次數</h2>
+      <p class="num">{{ stats.total_practices }}</p>
+    </div>
+    <div class="card">
+      <h2>正確數</h2>
+      <p class="num">{{ stats.correct_count }}</p>
+    </div>
+    <div class="card">
+      <h2>知識點</h2>
+      <p class="num">{{ stats.knowledge_points }}</p>
+    </div>
+    <div class="card">
+      <h2>待複習</h2>
+      <p class="num">{{ stats.due_reviews }}</p>
+    </div>
+  </section>
+
+  <section class="stack" style="margin-top: 24px;">
+    <div class="row">
+      <a class="btn" href="/practice">開始練習</a>
+      <a class="btn outline" href="/patterns">瀏覽文法</a>
+    </div>
+    <p class="muted">建議流程：先在「分級例句」選擇長度/難度 → 到「翻譯練習」進行作答 → 於「複習」查看待複習重點。</p>
+  </section>
+{% endblock %}
+
+

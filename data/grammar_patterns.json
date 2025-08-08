@@ -1,0 +1,890 @@
+[
+  {
+    "id": "GP001",
+    "category": "強調用法",
+    "pattern": "It is ~ that ~",
+    "explanation": "分裂句，用於強調句子中的某個特定部分（主詞、受詞、時間、地點等）。",
+    "example_zh": "就是昨天，我在公園裡遇見了瑪莉。",
+    "example_en": "It was yesterday that I met Mary in the park."
+  },
+  {
+    "id": "GP002",
+    "category": "強調用法",
+    "pattern": "What + N + S + V",
+    "explanation": "感歎句，用來表達對某事物（名詞）的強烈驚訝或讚歎。",
+    "example_zh": "這真是美好的一天啊！",
+    "example_en": "What a beautiful day it is!"
+  },
+  {
+    "id": "GP003",
+    "category": "強調用法",
+    "pattern": "How + adj. / adv. + S + V",
+    "explanation": "感歎句，用來表達對某種特質或狀態（形容詞/副詞）的強烈情感。",
+    "example_zh": "她唱得多麼優美啊！",
+    "example_en": "How beautifully she sings!"
+  },
+  {
+    "id": "GP004",
+    "category": "強調用法",
+    "pattern": "so/such...that...",
+    "explanation": "表示「如此...以至於...」，用來強調原因和結果的關係。",
+    "example_zh": "這本書太有趣了，我無法放下它。",
+    "example_en": "This book is so interesting that I can't put it down."
+  },
+  {
+    "id": "GP005",
+    "category": "強調用法",
+    "pattern": "so as to + V",
+    "explanation": "用於表達「為了要...」的目的，是 in order to 的較正式用法。",
+    "example_zh": "他提早出發，為的是避免交通擁擠。",
+    "example_en": "He left early so as to avoid traffic congestion."
+  },
+  {
+    "id": "GP006",
+    "category": "強調用法",
+    "pattern": "too...to... / enough...to...",
+    "explanation": "too...to... 表示「太...以至於不能...」；enough...to... 表示「足夠...可以去...」。",
+    "example_zh": "他還不夠大，不能自己一個人旅行。",
+    "example_en": "He is not old enough to travel alone."
+  },
+  {
+    "id": "GP007",
+    "category": "強調用法",
+    "pattern": "cannot...too...",
+    "explanation": "表示「無論怎麼...也不為過」，用來強調某事的重要性。",
+    "example_zh": "我們再怎麼強調教育的重要性也不為過。",
+    "example_en": "We cannot emphasize the importance of education too much."
+  },
+  {
+    "id": "GP008",
+    "category": "強調用法",
+    "pattern": "suggest that + S + (should) + VR",
+    "explanation": "在表「建議、要求、命令、堅持」的動詞後，that子句中的動詞需使用原形或 should + 原形。",
+    "example_zh": "老師建議我們每天都應該複習功課。",
+    "example_en": "The teacher suggested that we (should) review our lessons every day."
+  },
+  {
+    "id": "GP009",
+    "category": "強調用法",
+    "pattern": "It is important that + S + (should) + VR",
+    "explanation": "表示「...是重要的/必要的」，後接的that子句中，動詞需使用原形或 should + 原形。",
+    "example_zh": "你必須準時完成這個專案，這點很重要。",
+    "example_en": "It is important that you (should) finish this project on time."
+  },
+  {
+    "id": "GP010",
+    "category": "強調用法",
+    "pattern": "It is surprising that + S + should + VR",
+    "explanation": "表示對某事感到「驚訝、奇怪」，that子句中的動詞常使用 should 來表達這種意外的情緒。",
+    "example_zh": "他竟然會失敗，真是令人驚訝。",
+    "example_en": "It is surprising that he should fail."
+  },
+  {
+    "id": "GP011",
+    "category": "強調用法",
+    "pattern": "lest + S + (should) + VR",
+    "explanation": "表示「以免；唯恐」，引導一個帶有預防目的的子句。",
+    "example_zh": "他用功讀書，以免考試不及格。",
+    "example_en": "He studied hard lest he (should) fail the exam."
+  },
+  {
+    "id": "GP012",
+    "category": "倒裝句",
+    "pattern": "地方副詞(片語) + V/be動詞 + S",
+    "explanation": "當地方副詞（片語）置於句首以示強調時，動詞與主詞（名詞）需倒裝。",
+    "example_zh": "樹下躺著一個老人。",
+    "example_en": "Under the tree lay an old man."
+  },
+  {
+    "id": "GP013",
+    "category": "倒裝句",
+    "pattern": "否定副詞 + 助動詞/be動詞 + S + V",
+    "explanation": "當否定副詞（如 never, seldom）移至句首以示強調時，句子需部分倒裝。",
+    "example_zh": "我從未見過如此美麗的日落。",
+    "example_en": "Never have I seen such a beautiful sunset."
+  },
+  {
+    "id": "GP014",
+    "category": "倒裝句",
+    "pattern": "By no means + 助動詞/be動詞 + S",
+    "explanation": "表示「絕不」，為強烈的否定。當置於句首時，句子需部分倒裝。",
+    "example_zh": "我們絕不會放棄我們的目標。",
+    "example_en": "By no means will we give up our goal."
+  },
+  {
+    "id": "GP015",
+    "category": "倒裝句",
+    "pattern": "So + adj. + 助動詞/be動詞 + S + that...",
+    "explanation": "為了強調「如此...」的程度，將 So + 形容詞移至句首所形成的倒裝句。",
+    "example_zh": "天氣是如此的寒冷，以致於河水都結冰了。",
+    "example_en": "So cold was the weather that the river froze."
+  },
+  {
+    "id": "GP016",
+    "category": "倒裝句",
+    "pattern": "Well goes a saying that...",
+    "explanation": "一種引用諺語的倒裝句型，較為正式或具有文學色彩。",
+    "example_zh": "俗話說得好：「時間就是金錢。」",
+    "example_en": "Well goes the saying that time is money."
+  },
+  {
+    "id": "GP017",
+    "category": "倒裝句",
+    "pattern": "No sooner + had + S + p.p. ... than + S + V-ed",
+    "explanation": "表示「一...就...」，強調兩個動作接連發生。No sooner 置於句首時需倒裝。",
+    "example_zh": "他一回到家，電話就響了。",
+    "example_en": "No sooner had he gotten home than the phone rang."
+  },
+  {
+    "id": "GP018",
+    "category": "倒裝句",
+    "pattern": "Not until... + 助動詞/be動詞 + S + V",
+    "explanation": "表示「直到...才...」。當 Not until 引導的部分置於句首時，主要子句需倒裝。",
+    "example_zh": "直到午夜，他才完成他的作業。",
+    "example_en": "Not until midnight did he finish his homework."
+  },
+  {
+    "id": "GP019",
+    "category": "倒裝句",
+    "pattern": "Only + adv. ... + 助動詞/be動詞 + S + V",
+    "explanation": "當 Only 修飾副詞、介詞片語或子句並置於句首時，主要子句需倒裝。",
+    "example_zh": "只有透過努力工作，你才能實現夢想。",
+    "example_en": "Only by working hard can you achieve your dream."
+  },
+  {
+    "id": "GP020",
+    "category": "倒裝句",
+    "pattern": "..., and so/neither + 助動詞/be動詞 + S",
+    "explanation": "用於附和前述的肯定句（so）或否定句（neither），表示「...也是/也不是」。",
+    "example_zh": "她不喜歡看恐怖片，我也不喜歡。",
+    "example_en": "She doesn't like horror movies, and neither do I."
+  },
+  {
+    "id": "GP021",
+    "category": "倒裝句",
+    "pattern": "Not only + 助動詞/be動詞 + S + V ..., but also...",
+    "explanation": "表示「不僅...而且...」。當 Not only 置於句首時，其引導的子句需倒裝。",
+    "example_zh": "他不僅是個好老師，也是個好朋友。",
+    "example_en": "Not only is he a good teacher, but he is also a good friend."
+  },
+  {
+    "id": "GP022",
+    "category": "假設語氣",
+    "pattern": "If + S + were/V-ed..., S + would/could/should/might + V...",
+    "explanation": "用於與現在事實相反的假設。",
+    "example_zh": "如果我是你，我就會接受那份工作。",
+    "example_en": "If I were you, I would take that job."
+  },
+  {
+    "id": "GP023",
+    "category": "假設語氣",
+    "pattern": "If + S + had p.p. ..., S + would/could/should/might + have p.p. ...",
+    "explanation": "用於與過去事實相反的假設。",
+    "example_zh": "如果你當時聽了我的建議，你就不會惹上麻煩了。",
+    "example_en": "If you had taken my advice, you wouldn't have gotten into trouble."
+  },
+  {
+    "id": "GP024",
+    "category": "假設語氣",
+    "pattern": "If + S + were to + V..., S + would/could/should/might + V...",
+    "explanation": "用於對未來不大可能發生的情況進行假設，語氣較弱。",
+    "example_zh": "如果明天下雪，孩子們會非常興奮。",
+    "example_en": "If it were to snow tomorrow, the children would be very excited."
+  },
+  {
+    "id": "GP025",
+    "category": "假設語氣",
+    "pattern": "Were/Had/Should + S ...",
+    "explanation": "省略if的假設語氣倒裝句。將 Were, Had, Should 移至主詞前，常用於正式文體。",
+    "example_zh": "要是我知道真相，我就會告訴你了。",
+    "example_en": "Had I known the truth, I would have told you."
+  },
+  {
+    "id": "GP026",
+    "category": "假設語氣",
+    "pattern": "Without/But for + N, S + would... + V...",
+    "explanation": "表示「若非...」，用於與現在事實相反的假設。",
+    "example_zh": "若沒有你的支持，我無法完成這件事。",
+    "example_en": "Without your support, I couldn't do this."
+  },
+  {
+    "id": "GP027",
+    "category": "假設語氣",
+    "pattern": "Without/But for + N, S + would... + have p.p. ...",
+    "explanation": "表示「若非...」，用於與過去事實相反的假設。",
+    "example_zh": "要不是那場大雨，我們昨天就去野餐了。",
+    "example_en": "But for the heavy rain, we would have gone for a picnic yesterday."
+  },
+  {
+    "id": "GP028",
+    "category": "假設語氣",
+    "pattern": "If it were not for + N...",
+    "explanation": "「若非...」的子句形式，用於與現在事實相反的假設。",
+    "example_zh": "若非有網路，我們的生活將會截然不同。",
+    "example_en": "If it were not for the Internet, our lives would be completely different."
+  },
+  {
+    "id": "GP029",
+    "category": "假設語氣",
+    "pattern": "It is time that + S + V-ed",
+    "explanation": "表示「早該做某事了」，後面的子句動詞使用過去式，屬於假設語氣的一種。",
+    "example_zh": "已經很晚了，你該上床睡覺了。",
+    "example_en": "It is late. It is high time that you went to bed."
+  },
+  {
+    "id": "GP030",
+    "category": "假設語氣",
+    "pattern": "I wish (that) + S + V-ed/had p.p.",
+    "explanation": "表示與現在或過去事實不符的願望。與現在事實相反用過去式；與過去事實相反用過去完成式。",
+    "example_zh": "但願我當時更努力學習。",
+    "example_en": "I wish I had studied harder."
+  },
+  {
+    "id": "GP031",
+    "category": "假設語氣",
+    "pattern": "as if/as though + S + V-ed/had p.p.",
+    "explanation": "表示「彷彿；好像」，用於描述不真實或與事實相反的情況。",
+    "example_zh": "他花錢的方式好像他很有錢似的。",
+    "example_en": "He spends money as if he were rich."
+  },
+  {
+    "id": "GP032",
+    "category": "分詞",
+    "pattern": "V-ing/p.p. + N",
+    "explanation": "分詞作為形容詞，置於名詞前修飾該名詞。V-ing 表主動/進行；p.p. 表被動/完成。",
+    "example_zh": "那間燃燒的房子很危險。",
+    "example_en": "The burning house is dangerous."
+  },
+  {
+    "id": "GP033",
+    "category": "分詞",
+    "pattern": "N + V-ing/p.p.",
+    "explanation": "分詞（片語）置於名詞後修飾該名詞，相當於一個簡化的關係子句。",
+    "example_zh": "那輛在台灣製造的汽車很受歡迎。",
+    "example_en": "The car made in Taiwan is very popular."
+  },
+  {
+    "id": "GP034",
+    "category": "分詞",
+    "pattern": "adv./adj./N-V-ing/p.p.",
+    "explanation": "由「副詞/形容詞/名詞」與「分詞」組成的複合形容詞，用來修飾名詞。",
+    "example_zh": "他是一位知名的作家。",
+    "example_en": "He is a well-known writer."
+  },
+  {
+    "id": "GP035",
+    "category": "分詞",
+    "pattern": "S + V + V-ing/p.p.",
+    "explanation": "分詞作為主詞補語，補充說明主詞正在進行的動作或所處的狀態。",
+    "example_zh": "她坐在窗邊，讀著一本書。",
+    "example_en": "She sat by the window, reading a book."
+  },
+  {
+    "id": "GP036",
+    "category": "分詞",
+    "pattern": "V + O + V-ing/p.p.",
+    "explanation": "分詞作為受詞補語，補充說明受詞的動作或狀態。",
+    "example_zh": "我聽到有人在叫我的名字。",
+    "example_en": "I heard someone calling my name."
+  },
+  {
+    "id": "GP037",
+    "category": "分詞",
+    "pattern": "with + O + V-ing/p.p.",
+    "explanation": "附帶狀況的用法，用來描述伴隨發生的動作或狀態。",
+    "example_zh": "他閉著眼睛聽音樂。",
+    "example_en": "He listened to the music with his eyes closed."
+  },
+  {
+    "id": "GP038",
+    "category": "分詞",
+    "pattern": "V-ing/p.p. ..., S + V ...",
+    "explanation": "分詞構句，由副詞子句簡化而來，用來表示時間、原因、條件、讓步或附帶狀況。",
+    "example_zh": "因為不知道該說什麼，我保持沉默。",
+    "example_en": "Not knowing what to say, I kept silent."
+  },
+  {
+    "id": "GP039",
+    "category": "分詞",
+    "pattern": "S₁ + V-ing/p.p. ..., S₂ + V ...",
+    "explanation": "獨立分詞構句，當分詞的邏輯主詞與主要子句的主詞不同時，必須將其保留。",
+    "example_zh": "如果天氣允許，我們明天將去健行。",
+    "example_en": "Weather permitting, we will go hiking tomorrow."
+  },
+  {
+    "id": "GP040",
+    "category": "分詞",
+    "pattern": "Generally speaking, ... / Judging from ...",
+    "explanation": "由分詞演變而來的慣用語，其邏輯主詞並非主要子句的主詞，功能相當於連接副詞。",
+    "example_zh": "從他的表情來看，他對結果並不滿意。",
+    "example_en": "Judging from his expression, he is not satisfied with the result."
+  },
+  {
+    "id": "GP041",
+    "category": "動名詞",
+    "pattern": "V + V-ing",
+    "explanation": "某些動詞（如 enjoy, finish, mind, practice, avoid）的受詞必須是動名詞（V-ing）形式。",
+    "example_zh": "我喜歡在週末閱讀。",
+    "example_en": "I enjoy reading on weekends."
+  },
+  {
+    "id": "GP042",
+    "category": "動名詞",
+    "pattern": "need/want/require + V-ing",
+    "explanation": "當主詞是「事物」時，動詞 need/want/require 後可接動名詞，表達「被動」的意義（= need to be + p.p.）。",
+    "example_zh": "我的車需要修理了。",
+    "example_en": "My car needs repairing."
+  },
+  {
+    "id": "GP043",
+    "category": "動名詞",
+    "pattern": "be worth + V-ing/N",
+    "explanation": "表示「值得做某事」，worth 後面必須接動名詞或名詞。",
+    "example_zh": "這部電影值得一看。",
+    "example_en": "The movie is worth watching."
+  },
+  {
+    "id": "GP044",
+    "category": "動名詞",
+    "pattern": "have difficulty/trouble + (in) + V-ing",
+    "explanation": "表示「做某事有困難」，此句型中的 in 通常會被省略。",
+    "example_zh": "他學習中文有困難。",
+    "example_en": "He has trouble learning Chinese."
+  },
+  {
+    "id": "GP045",
+    "category": "動名詞",
+    "pattern": "can't help + V-ing",
+    "explanation": "表示「忍不住、情不自禁地做某事」。",
+    "example_zh": "聽到這個感人的故事，她忍不住哭了起來。",
+    "example_en": "She couldn't help crying when she heard the touching story."
+  },
+  {
+    "id": "GP046",
+    "category": "動名詞",
+    "pattern": "There is no + V-ing",
+    "explanation": "表示「不可能做某事」，與 It is impossible to V... 意思相同。",
+    "example_zh": "沒辦法知道他下一步會做什麼。",
+    "example_en": "There is no knowing what he will do next."
+  },
+  {
+    "id": "GP047",
+    "category": "動名詞",
+    "pattern": "go + V-ing",
+    "explanation": "一種常用的動名詞片語，通常指從事某項休閒、娛樂或運動。",
+    "example_zh": "你這個週末想去逛街嗎？",
+    "example_en": "Do you want to go shopping this weekend?"
+  },
+  {
+    "id": "GP048",
+    "category": "動名詞",
+    "pattern": "stop + V-ing / stop + to + V",
+    "explanation": "stop + V-ing 指「停止正在做的事」；stop to V 則指「停下原來的事，去做另一件事」。",
+    "example_zh": "他停下來綁鞋帶。",
+    "example_en": "He stopped to tie his shoelaces."
+  },
+  {
+    "id": "GP049",
+    "category": "動名詞",
+    "pattern": "On/In + V-ing",
+    "explanation": "On + V-ing 表示「一...就...」；In + V-ing 表示「在做...的時候」。",
+    "example_zh": "一抵達倫敦，他就打電話給我。",
+    "example_en": "On arriving in London, he called me."
+  },
+  {
+    "id": "GP050",
+    "category": "介系詞",
+    "pattern": "Despite/In spite of + N/V-ing",
+    "explanation": "表示「儘管、雖然」，為介系詞片語，後面只能接名詞或動名詞。",
+    "example_zh": "儘管天氣不好，比賽還是照常舉行。",
+    "example_en": "The game was held in spite of the bad weather."
+  },
+  {
+    "id": "GP051",
+    "category": "介系詞",
+    "pattern": "Instead of + N/V-ing",
+    "explanation": "表示「代替；而不是...」。",
+    "example_zh": "我決定喝茶，而不是咖啡。",
+    "example_en": "I decided to have tea instead of coffee."
+  },
+  {
+    "id": "GP052",
+    "category": "介系詞",
+    "pattern": "Besides/In addition to + N/V-ing",
+    "explanation": "表示「除了...之外（還）」，有「包含在內、累加」的意味。",
+    "example_zh": "除了是一位作家，他也是一位畫家。",
+    "example_en": "In addition to being a writer, he is also a painter."
+  },
+  {
+    "id": "GP053",
+    "category": "介系詞",
+    "pattern": "because of/due to/owing to + N",
+    "explanation": "表示「因為、由於」，後面接名詞或名詞片語來表達原因。",
+    "example_zh": "由於大雪，班機被取消了。",
+    "example_en": "The flight was canceled due to the heavy snow."
+  },
+  {
+    "id": "GP054",
+    "category": "介系詞",
+    "pattern": "(因) + result in/lead to + (果)",
+    "explanation": "用來表達「因果關係」，主詞為「原因」，介系詞後的受詞為「結果」。",
+    "example_zh": "魯莽駕駛導致了一場嚴重的事故。",
+    "example_en": "Reckless driving resulted in a serious accident."
+  },
+  {
+    "id": "GP055",
+    "category": "介系詞",
+    "pattern": "To one's + 情緒名詞, S + V",
+    "explanation": "置於句首，用來表達某人對某件事的情緒反應。",
+    "example_zh": "令我們高興的是，我們的團隊贏得了比賽。",
+    "example_en": "To our delight, our team won the game."
+  },
+  {
+    "id": "GP056",
+    "category": "介系詞",
+    "pattern": "of + 抽象名詞 = adj. / with + 抽象名詞 = adv.",
+    "explanation": "介系詞加上抽象名詞，可以分別形成具有形容詞或副詞功能的片語。",
+    "example_zh": "這資訊對我們極為重要。",
+    "example_en": "This information is of great importance to us."
+  },
+  {
+    "id": "GP057",
+    "category": "介系詞",
+    "pattern": "with a view to + N/V-ing",
+    "explanation": "表示「為了、目的在於」，此處的 to 是介系詞，因此後面需接名詞或動名詞。",
+    "example_zh": "他買這塊地是為了蓋一棟房子。",
+    "example_en": "He bought the land with a view to building a house."
+  },
+  {
+    "id": "GP058",
+    "category": "介系詞",
+    "pattern": "nothing but / anything but / all but",
+    "explanation": "nothing but 意為「僅僅是」；anything but 意為「一點也不」；all but 意為「幾乎」。",
+    "example_zh": "這個計畫一點也不完美。",
+    "example_en": "The plan is anything but perfect."
+  },
+  {
+    "id": "GP059",
+    "category": "It 的用法",
+    "pattern": "It is + adj. + for sb. + to V",
+    "explanation": "It 作為虛主詞，代替後面的 to V 不定詞片語。for sb. 則是不定詞的邏輯主語。",
+    "example_zh": "對孩子們來說，在戶外玩耍是很好的。",
+    "example_en": "It is good for children to play outside."
+  },
+  {
+    "id": "GP060",
+    "category": "It 的用法",
+    "pattern": "It is + adj. + of sb. + to V",
+    "explanation": "當形容詞是用來描述「人的特質或個性」（如 kind, polite, selfish）時，不定詞的邏輯主語用 of sb. 表示。",
+    "example_zh": "你這樣幫助我真是太好了。",
+    "example_en": "It is nice of you to help me like this."
+  },
+  {
+    "id": "GP061",
+    "category": "It 的用法",
+    "pattern": "It is said/believed/reported that...",
+    "explanation": "It 作為虛主詞，用來引導一個由 that 帶領的名詞子句，常表示客觀的陳述、普遍看法或傳聞。",
+    "example_zh": "據報導，那場地震造成了嚴重損害。",
+    "example_en": "It is reported that the earthquake caused serious damage."
+  },
+  {
+    "id": "GP062",
+    "category": "It 的用法",
+    "pattern": "It is a/the/one's + N + to V/that ~",
+    "explanation": "It 作為虛主詞，代替後面的 to V 或 that 子句，而中間的名詞用來表達對這件事的看法或描述。",
+    "example_zh": "和朋友分享是我的榮幸。",
+    "example_en": "It is my pleasure to share with friends."
+  },
+  {
+    "id": "GP063",
+    "category": "It 的用法",
+    "pattern": "find/make + it + adj. + to V",
+    "explanation": "It 作為虛受詞，代替後面真正的受詞 to V 不定詞片語，以保持句子結構的平衡。",
+    "example_zh": "他認為早起很困難。",
+    "example_en": "He finds it difficult to get up early."
+  },
+  {
+    "id": "GP064",
+    "category": "It 的用法",
+    "pattern": "take it for granted that...",
+    "explanation": "一個固定片語，表示「認為...是理所當然的」，其中 it 是虛受詞，代替後面的 that 子句。",
+    "example_zh": "我們不應該把我們的健康視為理所當然。",
+    "example_en": "We shouldn't take it for granted that we are healthy."
+  },
+  {
+    "id": "GP065",
+    "category": "It 的用法",
+    "pattern": "It is no use + V-ing",
+    "explanation": "It 作為虛主詞，表示「做某事是沒有用的、徒勞的」。",
+    "example_zh": "現在擔心考試是沒有用的。",
+    "example_en": "It is no use worrying about the exam now."
+  },
+  {
+    "id": "GP066",
+    "category": "It 的用法",
+    "pattern": "It occurs to/hits/strikes sb. that...",
+    "explanation": "表示「某人突然想到某事」，It 是虛主詞，真正的主詞是後面的 that 子句。",
+    "example_zh": "我突然想到我把鑰匙忘在車裡了。",
+    "example_en": "It suddenly hit me that I had left my keys in the car."
+  },
+  {
+    "id": "GP067",
+    "category": "It 的用法",
+    "pattern": "It takes (sb.) time to V / It costs (sb.) money to V",
+    "explanation": "It 作為虛主詞，用來表達「做某事花了某人多少時間或金錢」。",
+    "example_zh": "買這輛車花了他很多錢。",
+    "example_en": "It cost him a lot of money to buy this car."
+  },
+  {
+    "id": "GP068",
+    "category": "It 的用法",
+    "pattern": "It pays to V",
+    "explanation": "It 作為虛主詞，表示「做某事是值得的、有好處的」。",
+    "example_zh": "保持耐心是值得的。",
+    "example_en": "It pays to be patient."
+  },
+  {
+    "id": "GP069",
+    "category": "名詞與代名詞",
+    "pattern": "One..., another..., the other...",
+    "explanation": "用於指稱「（三個中的）一個...，另一個...，還有一個...」。若是兩個，則用 One..., the other....",
+    "example_zh": "我有兩隻寵物，一隻是貓，另一隻是狗。",
+    "example_en": "I have two pets; one is a cat, and the other is a dog."
+  },
+  {
+    "id": "GP070",
+    "category": "名詞與代名詞",
+    "pattern": "from one... to another",
+    "explanation": "表示在不同事物或地點之間轉移或變動。",
+    "example_zh": "訊息很快地從一個人傳到另一個人。",
+    "example_en": "The message passed quickly from one person to another."
+  },
+  {
+    "id": "GP071",
+    "category": "名詞與代名詞",
+    "pattern": "by oneself / on one's own",
+    "explanation": "均表示「獨自地、獨立地」。by oneself 強調獨處；on one's own 強調不依賴他人、靠自己。",
+    "example_zh": "她靠自己完成了整個專案。",
+    "example_en": "She finished the entire project on her own."
+  },
+  {
+    "id": "GP072",
+    "category": "名詞與代名詞",
+    "pattern": "the former... the latter...",
+    "explanation": "the former 指「前者」（提及兩者中的第一個），the latter 指「後者」（提及兩者中的第二個）。",
+    "example_zh": "健康和財富都很重要，但我更看重前者。",
+    "example_en": "Health and wealth are both important, but I prefer the former."
+  },
+  {
+    "id": "GP073",
+    "category": "名詞與代名詞",
+    "pattern": "the + adjective",
+    "explanation": "the 加上形容詞，用來指稱「某一類的人」，為複數概念。",
+    "example_zh": "政府應該為失業者提供更多就業機會。",
+    "example_en": "The government should provide more job opportunities for the unemployed."
+  },
+  {
+    "id": "GP074",
+    "category": "名詞與代名詞",
+    "pattern": "N(s) such as...",
+    "explanation": "用來「舉例說明」，such as 後面接名詞或名詞片語作為例子。",
+    "example_zh": "有些國家，例如日本和義大利，有著豐富的文化遺產。",
+    "example_en": "Some countries, such as Japan and Italy, have a rich cultural heritage."
+  },
+  {
+    "id": "GP075",
+    "category": "名詞與代名詞",
+    "pattern": "a number of (+可數N) / an amount of (+不可數N)",
+    "explanation": "a number of 修飾複數可數名詞，視為複數；an amount of 修飾不可數名詞，視為單數。",
+    "example_zh": "有許多學生參加了這次活動。",
+    "example_en": "A large number of students took part in the event."
+  },
+  {
+    "id": "GP076",
+    "category": "關係詞",
+    "pattern": "those who + V...",
+    "explanation": "用來指稱「那些...的人」，those 為先行詞，who 引導形容詞子句修飾 those。",
+    "example_zh": "機會是留給那些準備好的人。",
+    "example_en": "Opportunities are for those who are ready."
+  },
+  {
+    "id": "GP077",
+    "category": "關係詞",
+    "pattern": "whoever + V...",
+    "explanation": "複合關係代名詞，意為「任何...的人」(anyone who)，本身已包含先行詞，用來引導一個名詞子句。",
+    "example_zh": "凡是想參加的人都歡迎。",
+    "example_en": "Whoever wants to join is welcome."
+  },
+  {
+    "id": "GP078",
+    "category": "關係詞",
+    "pattern": "whatever + S + V...",
+    "explanation": "複合關係代名詞，意為「任何...的事物」(anything that)，本身已包含先行詞，用來引導名詞子句。",
+    "example_zh": "你可以做任何你想做的事。",
+    "example_en": "You can do whatever you want to do."
+  },
+  {
+    "id": "GP079",
+    "category": "關係詞",
+    "pattern": "what (= the thing that)",
+    "explanation": "複合關係代名詞，意為「...的事物」(the thing which)，本身已包含先行詞，引導名詞子句。",
+    "example_zh": "這正是我一直在尋找的。",
+    "example_en": "This is exactly what I have been looking for."
+  },
+  {
+    "id": "GP080",
+    "category": "關係詞",
+    "pattern": "All S have to do is (to) V...",
+    "explanation": "用來強調「唯一需要做的事就是...」，is 後面作為補語的不定詞 to 通常可以省略。",
+    "example_zh": "你唯一要做的就是保持冷靜。",
+    "example_en": "All you have to do is stay calm."
+  },
+  {
+    "id": "GP081",
+    "category": "關係詞",
+    "pattern": "介系詞 + which",
+    "explanation": "在關係子句中，可將介系詞移至關係代名詞 which 或 whom 之前，形成較正式的書面語體。",
+    "example_zh": "這是我長大的房子。",
+    "example_en": "This is the house in which I grew up."
+  },
+  {
+    "id": "GP082",
+    "category": "關係詞",
+    "pattern": "..., some of whom/which + V ~",
+    "explanation": "在非限定用法的關係子句中，可使用「數量詞/代名詞 + of whom/which」來補充說明先行詞。",
+    "example_zh": "他有許多書，其中有些是關於歷史的。",
+    "example_en": "He has many books, some of which are about history."
+  },
+  {
+    "id": "GP083",
+    "category": "關係詞",
+    "pattern": "... the place where / the time when / the reason why ...",
+    "explanation": "where, when, why 作為關係副詞，分別用來修飾表示地方、時間、原因的先行詞。",
+    "example_zh": "沒有人知道他離開的原因。",
+    "example_en": "Nobody knows the reason why he left."
+  },
+  {
+    "id": "GP084",
+    "category": "關係詞",
+    "pattern": "There is no... but...",
+    "explanation": "雙重否定句型，but 在此作關係代名詞，意為 that...not，整句表示「沒有...而不...」的肯定意思。",
+    "example_zh": "凡事皆有例外。",
+    "example_en": "There is no rule but has exceptions."
+  },
+  {
+    "id": "GP085",
+    "category": "關係詞",
+    "pattern": "... more + N ... than + S + V",
+    "explanation": "一種結合比較級的關係子句結構，than 在此引導子句，表示「多於...的數量」。",
+    "example_zh": "需要的錢比我們預期的還多。",
+    "example_en": "We need more money than we expected."
+  },
+  {
+    "id": "GP086",
+    "category": "As 的句型",
+    "pattern": "As is known to all, ...",
+    "explanation": "as 在此引導一個關係子句，其先行詞是後面的整個主要子句，為固定用法，意為「眾所周知」。",
+    "example_zh": "眾所周知，運動有益健康。",
+    "example_en": "As is known to all, exercise is good for health."
+  },
+  {
+    "id": "GP087",
+    "category": "As 的句型",
+    "pattern": "As a saying goes, ...",
+    "explanation": "用來引述諺語或俗語的固定開頭句型。",
+    "example_zh": "俗話說：「熟能生巧。」",
+    "example_en": "As a saying goes, \"Practice makes perfect.\""
+  },
+  {
+    "id": "GP088",
+    "category": "As 的句型",
+    "pattern": "As for + N/V-ing, ...",
+    "explanation": "用作轉承詞，以引導出一個新的話題，表示「關於、至於」。",
+    "example_zh": "至於這項提議，我有一些不同的看法。",
+    "example_en": "As for the proposal, I have a different opinion."
+  },
+  {
+    "id": "GP089",
+    "category": "As 的句型",
+    "pattern": "S + V + as + adj./adv. + as ...",
+    "explanation": "原級比較句型，用於表達兩者在某方面的程度相同。",
+    "example_zh": "他和他哥哥一樣高。",
+    "example_en": "He is as tall as his brother."
+  },
+  {
+    "id": "GP090",
+    "category": "As 的句型",
+    "pattern": "as soon as / as long as / as far as ...",
+    "explanation": "由 as...as... 構成的常見連接詞片語：as soon as (一...就...)；as long as (只要)；as far as (就...而言)。",
+    "example_zh": "我一到家就會打電話給你。",
+    "example_en": "I will call you as soon as I get home."
+  },
+  {
+    "id": "GP091",
+    "category": "As 的句型",
+    "pattern": "regard/view/see/think of A as B",
+    "explanation": "表示「將A視為B；把A看作B」，as 在此為介系詞。",
+    "example_zh": "許多人視他為英雄。",
+    "example_en": "Many people regard him as a hero."
+  },
+  {
+    "id": "GP092",
+    "category": "As 的句型",
+    "pattern": "S + be known as ...",
+    "explanation": "表示「以...的身分或名稱而聞名」。另有 be known for (因...特色而聞名)；be known to (為...所熟知)。",
+    "example_zh": "威廉·莎士比亞被譽為最偉大的作家之一。",
+    "example_en": "William Shakespeare is known as one of the greatest writers."
+  },
+  {
+    "id": "GP093",
+    "category": "As 的句型",
+    "pattern": "Adj./N + as + S + V, ...",
+    "explanation": "由 as 引導的讓步子句倒裝用法，相當於 Although/Though...，但語氣更強。",
+    "example_zh": "儘管他還是個孩子，他卻懂得很多。",
+    "example_en": "Child as he is, he knows a lot."
+  },
+  {
+    "id": "GP094",
+    "category": "As 的句型",
+    "pattern": "A is to B as C is to D",
+    "explanation": "一個對稱的比喻句型，用來表示「A之於B，猶如C之於D」，說明兩組事物間的關係相似。",
+    "example_zh": "魚之於水，猶如鳥之於空氣。",
+    "example_en": "A fish is to water as a bird is to the air."
+  },
+  {
+    "id": "GP095",
+    "category": "比較級",
+    "pattern": "... -er than that/those of ...",
+    "explanation": "在比較句中，為避免重複，用 that (單數) 或 those (複數) 來代替前面已提過的被比較名詞。",
+    "example_zh": "這座城市的人口比那座城市的人口多。",
+    "example_en": "The population of this city is larger than that of that city."
+  },
+  {
+    "id": "GP096",
+    "category": "比較級",
+    "pattern": "倍數 + as ... as / 倍數 + -er than",
+    "explanation": "用來表達倍數差異的兩種常見方式。",
+    "example_zh": "我的房子是你的兩倍大。",
+    "example_en": "My house is twice as large as yours. / My house is twice larger than yours."
+  },
+  {
+    "id": "GP097",
+    "category": "比較級",
+    "pattern": "... superior/inferior/senior/junior to ...",
+    "explanation": "源自拉丁文的比較級形容詞，其後需搭配介系詞 to，而不是 than。",
+    "example_zh": "在經驗方面，他比我資深。",
+    "example_en": "He is senior to me in experience."
+  },
+  {
+    "id": "GP098",
+    "category": "比較級",
+    "pattern": "The + -er..., the + -er...",
+    "explanation": "表示「越...，就越...」，一方的程度會隨著另一方的程度而相應改變。",
+    "example_zh": "你讀的書越多，你知道的就越多。",
+    "example_en": "The more you read, the more you know."
+  },
+  {
+    "id": "GP099",
+    "category": "比較級",
+    "pattern": "would rather V₁ than V₂",
+    "explanation": "表示「寧願（做V₁）...也不願（做V₂）...」，在兩者之間做出選擇。",
+    "example_zh": "他寧願死也不願投降。",
+    "example_en": "He would rather die than surrender."
+  },
+  {
+    "id": "GP100",
+    "category": "比較級",
+    "pattern": "not so much A as B",
+    "explanation": "表示「與其說是A，不如說是B」，用來修正語意，強調B比A更貼切。",
+    "example_zh": "成功與其說是因為天賦，不如說是因為勤奮。",
+    "example_en": "Success depends not so much on talent as on diligence."
+  },
+  {
+    "id": "GP101",
+    "category": "比較級",
+    "pattern": "know better than to V",
+    "explanation": "表示「明理而不至於去做...」，指某人有足夠的判斷力或經驗，不會去做某件傻事。",
+    "example_zh": "他很明理，不會和客戶爭吵的。",
+    "example_en": "He knows better than to quarrel with a customer."
+  },
+  {
+    "id": "GP102",
+    "category": "特殊動詞用法",
+    "pattern": "rob/inform/remind + sb + of + sth",
+    "explanation": "某些動詞的受詞結構是「動詞 + 人 + of + 事物」，of 後面接與動詞相關的內容。",
+    "example_zh": "這張照片讓我想起了我的童年。",
+    "example_en": "This picture reminds me of my childhood."
+  },
+  {
+    "id": "GP103",
+    "category": "特殊動詞用法",
+    "pattern": "V + sb. + on/in/by the + body part",
+    "explanation": "描述「觸及或打到身體某部位」的動作時，介系詞後的身體部位前要用定冠詞 the，而非所有格。",
+    "example_zh": "他抓住了我的手臂。",
+    "example_en": "He seized me by the arm."
+  },
+  {
+    "id": "GP104",
+    "category": "特殊動詞用法",
+    "pattern": "prevent/stop/keep + O + from + V-ing",
+    "explanation": "表示「阻止、防止某人或某物做某事」。",
+    "example_zh": "沒有什麼能阻止我追求我的夢想。",
+    "example_en": "Nothing can stop me from pursuing my dream."
+  },
+  {
+    "id": "GP105",
+    "category": "特殊動詞用法",
+    "pattern": "be devoted/dedicated/accustomed to + N/V-ing",
+    "explanation": "表示「致力於、獻身於、習慣於...」，此處的 to 為介系詞，後面需接名詞或動名詞。",
+    "example_zh": "她把一生都奉獻給了科學研究。",
+    "example_en": "She dedicated her life to scientific research."
+  },
+  {
+    "id": "GP106",
+    "category": "特殊動詞用法",
+    "pattern": "persuade sb. into V-ing / dissuade sb. from V-ing",
+    "explanation": "persuade...into... 指「說服某人去做某事」；dissuade...from... 指「勸阻某人不要做某事」。",
+    "example_zh": "他們說服我加入他們的團隊。",
+    "example_en": "They persuaded me into joining their team."
+  },
+  {
+    "id": "GP107",
+    "category": "特殊動詞用法",
+    "pattern": "put/lay/place emphasis/stress on ...",
+    "explanation": "將動詞（如 emphasize）轉換成名詞（emphasis），並搭配其他動詞（如 put）來表達相同意思，以變化句型。",
+    "example_zh": "學校非常重視學生的安全。",
+    "example_en": "The school puts great stress on the safety of its students."
+  },
+  {
+    "id": "GP108",
+    "category": "特殊動詞用法",
+    "pattern": "V-sense + O + V/V-ing/p.p.",
+    "explanation": "感官動詞（see, hear, feel...）後接原形動詞(V)表示看到/聽到動作的全程；接現在分詞(V-ing)表示動作正在進行；接過去分詞(p.p.)表示受詞被...。",
+    "example_zh": "我感覺到地板在震動。",
+    "example_en": "I felt the floor shaking."
+  },
+  {
+    "id": "GP109",
+    "category": "特殊動詞用法",
+    "pattern": "make/have/let + O + V / get + O + to V",
+    "explanation": "使役動詞表示「使、讓、叫某人做某事」。make/have/let 後的受詞補語用原形動詞；get 後用不定詞。",
+    "example_zh": "別讓那件事困擾你。",
+    "example_en": "Don't let that bother you."
+  },
+  {
+    "id": "GP110",
+    "category": "特殊動詞用法",
+    "pattern": "consist of / be composed of / be made up of",
+    "explanation": "均表示「由...所組成」。consist of 為主動語態；be composed of 和 be made up of 為被動語態。",
+    "example_zh": "水是由氫和氧組成的。",
+    "example_en": "Water is composed of hydrogen and oxygen."
+  },
+  {
+    "id": "GP111",
+    "category": "特殊動詞用法",
+    "pattern": "date back to... / can be traced back to...",
+    "explanation": "用來表示某事物的起源或歷史可以追溯到某個特定的時間點。",
+    "example_zh": "這座城堡的歷史可以追溯到中世紀。",
+    "example_en": "The castle can be traced back to the Middle Ages."
+  }
+]

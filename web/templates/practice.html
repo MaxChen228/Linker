@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}翻譯練習 - Linker{% endblock %}
+{% block content %}
+  <form method="post" class="stack">
+    <div class="row">
+      <label>長度</label>
+      <select name="length">
+        <option value="short" {% if length == 'short' %}selected{% endif %}>短</option>
+        <option value="medium" {% if length == 'medium' %}selected{% endif %}>中</option>
+        <option value="long" {% if length == 'long' %}selected{% endif %}>長</option>
+      </select>
+      <label>難度</label>
+      <select name="level">
+        {% for lv in [1,2,3,4,5] %}
+        <option value="{{ lv }}" {% if level == lv %}selected{% endif %}>{{ lv }}</option>
+        {% endfor %}
+      </select>
+      <a class="btn outline" href="/practice?length={{ length }}&level={{ level }}&shuffle=1">換一句</a>
+    </div>
+
+    <label>中文句子</label>
+    <textarea name="chinese" rows="3">{{ chinese }}</textarea>
+    {% if hint %}
+    <div class="muted">提示：{{ hint }}</div>
+    {% endif %}
+    <label>你的英文翻譯</label>
+    <textarea name="english" rows="3">{{ english or '' }}</textarea>
+    <div class="row">
+      <button class="btn" type="submit">提交</button>
+    </div>
+  </form>
+
+  {% if result %}
+  <section class="card">
+    <h2>批改結果</h2>
+    <div class="stack">
+      <div>
+        <div class="muted">建議：</div>
+        <div>{{ result.overall_suggestion }}</div>
+      </div>
+      {% if result.error_analysis %}
+      <div>
+        <div class="muted">錯誤分析：</div>
+        <ul class="list">
+          {% for e in result.error_analysis %}
+          <li class="item">
+            <div class="title">{{ e.key_point_summary }}</div>
+            {% if e.explanation %}<p class="muted">{{ e.explanation }}</p>{% endif %}
+            {% if e.original_phrase or e.correction %}
+            <div class="examples">
+              {% if e.original_phrase %}<div class="zh">原：{{ e.original_phrase }}</div>{% endif %}
+              {% if e.correction %}<div class="en">正：{{ e.correction }}</div>{% endif %}
+            </div>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+{% endblock %}
+
+

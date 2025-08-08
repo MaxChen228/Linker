@@ -1,0 +1,83 @@
+[tool.ruff]
+# 基礎設定
+line-length = 100
+target-version = "py39"
+exclude = [
+    "venv/",
+    ".git/",
+    "__pycache__/",
+    "*.egg-info/",
+    ".pytest_cache/",
+]
+
+# 選擇要啟用的規則
+select = [
+    "E",    # pycodestyle 錯誤
+    "F",    # pyflakes
+    "W",    # pycodestyle 警告
+    "I",    # isort (import 排序)
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+]
+
+# 忽略特定規則
+ignore = [
+    "E501",  # 行太長（因為我們設定了 line-length）
+    "B008",  # 函數調用中的默認參數
+]
+
+[tool.ruff.isort]
+# import 排序設定
+known-first-party = ["core", "settings"]
+
+[tool.ruff.format]
+# 格式化設定
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+# pytest 設定
+testpaths = ["tests", "."]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",           # 詳細輸出
+    "--tb=short",   # 簡短的 traceback
+    "--strict-markers",  # 標記必須預先定義
+]
+markers = [
+    "slow: 標記為慢速測試",
+    "integration: 整合測試",
+    "unit: 單元測試",
+]
+
+[project]
+name = "linker-cli"
+version = "2.0.0"
+description = "智能英文學習工具 - 翻譯練習與知識點管理"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "google-generativeai>=0.4.0",
+    "rich>=13.0.0",
+    "colorama>=0.4.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

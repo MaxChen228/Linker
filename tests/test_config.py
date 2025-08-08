@@ -1,0 +1,145 @@
+"""
+測試 config.py 模組
+"""
+
+import os
+import tempfile
+from pathlib import Path
+
+import pytest
+
+from config import Config
+
+
+class TestConfig:
+    """測試Config類"""
+
+    def test_config_attributes(self):
+        """測試配置屬性"""
+        # 測試屬性存在
+        assert hasattr(Config, "GEMINI_MODEL")
+        assert hasattr(Config, "BASE_DIR")
+        assert hasattr(Config, "DATA_DIR")
+        assert hasattr(Config, "CACHE_TTL")
+        assert hasattr(Config, "MAX_CACHE_SIZE")
+        assert hasattr(Config, "REVIEW_INTERVALS")
+        assert hasattr(Config, "DIFFICULTY_LEVELS")
+        assert hasattr(Config, "ERROR_PRIORITIES")
+        assert hasattr(Config, "MASTERY_THRESHOLDS")
+
+    def test_default_values(self):
+        """測試默認值"""
+        assert Config.GEMINI_MODEL == "gemini-2.0-flash-exp"
+        assert Config.CACHE_TTL == 300
+        assert Config.MAX_CACHE_SIZE == 100
+
+        # 測試複習間隔
+        assert Config.REVIEW_INTERVALS["immediate"] == 1
+        assert Config.REVIEW_INTERVALS["short"] == 3
+        assert Config.REVIEW_INTERVALS["medium"] == 7
+
+        # 測試難度級別
+        assert 1 in Config.DIFFICULTY_LEVELS
+        assert 2 in Config.DIFFICULTY_LEVELS
+        assert 3 in Config.DIFFICULTY_LEVELS
+
+        # 測試錯誤優先級
+        assert Config.ERROR_PRIORITIES["systematic"] == 1
+        assert Config.ERROR_PRIORITIES["isolated"] == 2
+
+        # 測試掌握度閾值
+        assert Config.MASTERY_THRESHOLDS["beginner"] == 0.3
+        assert Config.MASTERY_THRESHOLDS["expert"] == 0.9
+
+    def test_base_dir(self):
+        """測試BASE_DIR路徑"""
+        assert isinstance(Config.BASE_DIR, Path)
+        assert Config.BASE_DIR.exists()
+
+        # DATA_DIR應該是BASE_DIR的子目錄
+        assert Config.DATA_DIR == Config.BASE_DIR / "data"
+
+    def test_validate_without_api_key(self):
+        """測試沒有API密鑰時的驗證"""
+        # 暫時移除環境變數
+        original_key = os.environ.get("GEMINI_API_KEY")
+        if original_key:
+            del os.environ["GEMINI_API_KEY"]
+
+        try:
+            # 應該拋出ValueError
+            with pytest.raises(ValueError) as exc_info:
+                Config.validate()
+
+            assert "GEMINI_API_KEY" in str(exc_info.value)
+        finally:
+            # 恢復環境變數
+            if original_key:
+                os.environ["GEMINI_API_KEY"] = original_key
+
+    def test_validate_with_api_key(self):
+        """測試有API密鑰時的驗證"""
+        # 設置臨時API密鑰
+        original_key = os.environ.get("GEMINI_API_KEY")
+        os.environ["GEMINI_API_KEY"] = "test_key"
+
+        # 重新導入Config以獲取新的環境變數
+        import importlib
+
+        import config
+
+        importlib.reload(config)
+
+        try:
+            with tempfile.TemporaryDirectory() as tmpdir:
+                # 臨時修改DATA_DIR
+                original_data_dir = config.Config.DATA_DIR
+                config.Config.DATA_DIR = Path(tmpdir) / "data"
+
+                # 驗證應該成功
+                result = config.Config.validate()
+                assert result is True
+
+                # 檢查目錄是否創建
+                assert config.Config.DATA_DIR.exists()
+
+                # 恢復原始DATA_DIR
+                config.Config.DATA_DIR = original_data_dir
+        finally:
+            # 恢復或清除環境變數
+            if original_key:
+                os.environ["GEMINI_API_KEY"] = original_key
+            else:
+                if "GEMINI_API_KEY" in os.environ:
+                    del os.environ["GEMINI_API_KEY"]
+            # 重新導入以恢復原始狀態
+            importlib.reload(config)
+
+    def test_environment_override(self):
+        """測試環境變數覆蓋"""
+        # 設置環境變數
+        original_model = os.environ.get("GEMINI_MODEL")
+        os.environ["GEMINI_MODEL"] = "test-model"
+
+        try:
+            # 重新導入模組以獲取新的環境變數
+            import importlib
+
+            import config
+
+            importlib.reload(config)
+
+            assert config.Config.GEMINI_MODEL == "test-model"
+        finally:
+            # 恢復環境變數
+            if original_model:
+                os.environ["GEMINI_MODEL"] = original_model
+            else:
+                del os.environ["GEMINI_MODEL"]
+
+            # 重新導入以恢復原始狀態
+            import importlib
+
+            import config
+
+            importlib.reload(config)
