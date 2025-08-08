@@ -1,32 +1,147 @@
 {% extends "base.html" %}
 {% block title %}文法句型 - Linker{% endblock %}
 {% block content %}
-  <form class="row" method="get">
-    <select name="category">
-      <option value="" {% if not category %}selected{% endif %}>全部分類</option>
+  <!-- 搜尋與篩選區 -->
+  <div class="patterns-header">
+    <div class="search-bar">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input type="text" 
+             id="searchInput" 
+             placeholder="搜尋句型、說明或例句..." 
+             value="{{ q }}"
+             autocomplete="off" />
+      <span class="search-hint">即時搜尋</span>
+    </div>
+    
+    <!-- 分類標籤 -->
+    <div class="category-tabs">
+      <button class="category-tab {% if not category %}active{% endif %}" 
+              data-category="">
+        全部
+        <span class="count" id="count-all">{{ patterns|length }}</span>
+      </button>
       {% for c in categories %}
-        <option value="{{ c }}" {% if c == category %}selected{% endif %}>{{ c }}</option>
+        <button class="category-tab {% if c == category %}active{% endif %}" 
+                data-category="{{ c }}">
+          {{ c }}
+          <span class="count" id="count-{{ c }}">0</span>
+        </button>
       {% endfor %}
-    </select>
-    <input type="text" name="q" placeholder="關鍵字搜尋 (pattern / 說明 / 範例)" value="{{ q }}" />
-    <button class="btn" type="submit">搜尋</button>
-  </form>
+    </div>
+    
+    <!-- 統計資訊 -->
+    <div class="stats-bar">
+      <span class="stat-item">
+        共 <strong id="totalCount">{{ patterns|length }}</strong> 個句型
+      </span>
+      <span class="stat-item">
+        顯示 <strong id="visibleCount">{{ patterns|length }}</strong> 個
+      </span>
+    </div>
+  </div>
 
-  <ul class="list">
+  <!-- 句型列表 -->
+  <div class="patterns-grid" id="patternsContainer">
     {% for p in patterns %}
-    <li class="item">
-      <div class="title">{{ p.pattern }}</div>
-      {% if p.category %}<div class="tag">{{ p.category }}</div>{% endif %}
-      {% if p.explanation %}<p class="muted">{{ p.explanation }}</p>{% endif %}
-      {% if p.example_zh or p.example_en %}
-        <div class="examples">
-          {% if p.example_zh %}<div class="zh">{{ p.example_zh }}</div>{% endif %}
-          {% if p.example_en %}<div class="en">{{ p.example_en }}</div>{% endif %}
+    <div class="pattern-card" 
+         data-category="{{ p.category or '' }}"
+         data-pattern="{{ p.pattern|lower }}"
+         data-explanation="{{ (p.explanation or '')|lower }}"
+         data-examples="{{ (p.example_zh or '')|lower }} {{ (p.example_en or '')|lower }}">
+      
+      <!-- 卡片頭部 -->
+      <div class="pattern-header">
+        <h3 class="pattern-title">{{ p.pattern }}</h3>
+        <div class="pattern-actions">
+          <button class="btn-icon btn-copy" title="複製句型" data-copy="{{ p.pattern }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+          <button class="btn-icon btn-favorite" title="收藏">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+            </svg>
+          </button>
         </div>
+      </div>
+      
+      <!-- 分類標籤 -->
+      {% if p.category %}
+      <div class="pattern-category">
+        <span class="category-badge">{{ p.category }}</span>
+      </div>
       {% endif %}
-    </li>
+      
+      <!-- 說明文字 -->
+      {% if p.explanation %}
+      <div class="pattern-explanation">
+        <p>{{ p.explanation }}</p>
+      </div>
+      {% endif %}
+      
+      <!-- 例句區塊 -->
+      {% if p.example_zh or p.example_en %}
+      <div class="pattern-examples">
+        <div class="examples-header">
+          <span class="examples-label">例句</span>
+          <button class="btn-icon btn-expand" title="展開/收合">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+        <div class="examples-content">
+          {% if p.example_zh %}
+          <div class="example-item">
+            <span class="example-zh">{{ p.example_zh }}</span>
+            <button class="btn-copy-example" data-copy="{{ p.example_zh }}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+          {% endif %}
+          {% if p.example_en %}
+          <div class="example-item">
+            <span class="example-en">{{ p.example_en }}</span>
+            <button class="btn-copy-example" data-copy="{{ p.example_en }}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
     {% endfor %}
-  </ul>
+  </div>
+  
+  <!-- 無結果提示 -->
+  <div class="no-results" id="noResults" style="display: none;">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+      <path d="M8 11h6"></path>
+    </svg>
+    <h3>找不到符合的句型</h3>
+    <p>試試其他關鍵字或清除篩選條件</p>
+    <button class="btn outline" onclick="clearSearch()">清除搜尋</button>
+  </div>
+  
+  <!-- 複製成功提示 -->
+  <div class="toast" id="copyToast">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span>已複製到剪貼簿</span>
+  </div>
 {% endblock %}
-
-

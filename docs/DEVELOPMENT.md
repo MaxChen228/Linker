@@ -62,8 +62,8 @@ linker-cli/
 ├── data/                  # 數據存儲
 │   ├── knowledge.json     # 知識點數據
 │   ├── practice_log.json  # 練習記錄
-│   ├── examples.json      # 例句庫
-│   └── grammar.json       # 文法規則
+│   ├── grammar_patterns.json # 文法句型庫
+│   └── assets.py          # 分級例句庫
 │
 ├── docs/                  # 專案文檔
 │   ├── API.md            # API 文檔

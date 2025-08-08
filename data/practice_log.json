@@ -455,5 +455,381 @@
         }
       ]
     }
+  },
+  {
+    "timestamp": "2025-08-08T13:51:38.008757",
+    "chinese_sentence": "他們週末會去看電影。",
+    "user_answer": "",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "They will go to the movies on the weekend.",
+      "error_analysis": [
+        {
+          "error_nature": "其他錯誤",
+          "key_point_summary": "漏譯句子",
+          "original_phrase": "",
+          "correction": "They will go to the movies on the weekend.",
+          "explanation": "學生沒有提供任何翻譯。中文原句「他們週末會去看電影」可以指未來的計畫或習慣性的活動。翻譯成未來式 'They will go to the movies on the weekend.' 或現在簡單式 'They go to the movies on weekends.' 都是可行的。前者強調未來的某個特定計畫，後者強調一個重複的習慣。",
+          "severity": "major"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T13:53:27.913857",
+    "chinese_sentence": "他們週末會去看電影。",
+    "user_answer": "",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "They will go to the movies on the weekend.",
+      "error_analysis": [
+        {
+          "error_nature": "其他錯誤",
+          "key_point_summary": "漏譯句子",
+          "original_phrase": "",
+          "correction": "They will go to the movies on the weekend.",
+          "explanation": "學生沒有提供任何翻譯，導致整個句子被遺漏了。一個完整的翻譯應該包含主詞（他們）、動詞（去看電影）和時間（週末）。",
+          "severity": "major"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T14:05:04.696642",
+    "chinese_sentence": "面對日益加劇的氣候變遷挑戰，各國政府應當加速推動永續發展政策，旨在透過跨領域合作來緩解其對社會經濟的潛在衝擊。",
+    "user_answer": "Facing the increasingly serious challenge of climate change, governments should accelerate the promotion of sustainable development policies, aiming to ease its potential impact on society and economy through cross-domain cooperation.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "Facing the escalating challenge of climate change, governments should accelerate the implementation of sustainable development policies, aiming to mitigate the potential socioeconomic impact through cross-sectoral cooperation.",
+      "error_analysis": [
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "「日益加劇」的用詞選擇",
+          "original_phrase": "increasingly serious",
+          "correction": "escalating / intensifying",
+          "explanation": "「increasingly serious」雖然文法正確，但「escalating」(逐步升級的) 或「intensifying」(不斷加劇的) 更能精準表達「日益加劇」的動態和嚴重性，在討論氣候變遷等議題時是更專業、更強烈的用詞。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "「推動政策」的表達方式",
+          "original_phrase": "accelerate the promotion of",
+          "correction": "accelerate the implementation of",
+          "explanation": "「Promotion of policies」(宣傳政策) 和「implementation of policies」(實施政策) 意思不同。「推動」在此處更側重於「執行與落實」，因此使用「implementation」更為貼切。學生的寫法雖然可以理解，但精確度稍嫌不足。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "「緩解衝擊」的動詞選擇",
+          "original_phrase": "ease",
+          "correction": "mitigate / alleviate",
+          "explanation": "「ease」(減輕、緩和) 通常用於較不嚴重的情況，例如「ease the pain」。對於「衝擊」(impact) 這種較為嚴重的負面影響，使用「mitigate」(減輕、使緩和，常用於風險或損害) 或「alleviate」(緩解、減輕，常用於痛苦或問題) 更為正式且語氣更強，是學術和政策文件中更常見的用法。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "「社會經濟」的表達方式",
+          "original_phrase": "society and economy",
+          "correction": "socioeconomic",
+          "explanation": "「impact on society and economy」文法正確，但「socioeconomic」是一個更簡潔、更學術的複合形容詞，專門用來形容與社會和經濟相關的事物。使用「socioeconomic impact」可以讓句子更精煉、專業。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "「跨領域合作」的用詞",
+          "original_phrase": "cross-domain cooperation",
+          "correction": "cross-sectoral cooperation",
+          "explanation": "「cross-domain」是「跨領域」的直譯，雖然可以理解，但在特定語境下有更精確的詞。若指政府、企業、非營利組織等不同「部門」的合作，「cross-sectoral」更常用。若指不同學術「學科」的合作，則用「interdisciplinary」。在此政策語境下，「cross-sectoral」較為貼切。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T14:12:52.815632",
+    "chinese_sentence": "儘管面臨重重挑戰，他們仍然堅持不懈地追求夢想，最終取得了顯著的成功。",
+    "user_answer": "Although facing several challenges they still persue their dream persistantly, and finally achieve significant success.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "Despite facing formidable challenges, they persistently pursued their dream and ultimately achieved remarkable success.",
+      "error_analysis": [
+        {
+          "error_nature": "系統性錯誤",
+          "key_point_summary": "動詞時態錯誤",
+          "original_phrase": "achieve",
+          "correction": "achieved",
+          "explanation": "中文原句「取得了」表示動作發生在過去並已完成，因此英文動詞應使用過去式 (Past Tense)。學生使用了現在式 (Present Tense)，這是不正確的。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "單字拼寫錯誤",
+          "original_phrase": "persue",
+          "correction": "pursue",
+          "explanation": "「追求」的正確拼法是 \"pursue\"。\"persue\" 是一個常見的拼寫錯誤，需要個別記憶。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "單字拼寫錯誤",
+          "original_phrase": "persistantly",
+          "correction": "persistently",
+          "explanation": "副詞「堅持不懈地」的正確拼法是 \"persistently\"。學生錯誤地拼寫為 \"persistantly\"。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "系統性錯誤",
+          "key_point_summary": "標點符號錯誤",
+          "original_phrase": "challenges they",
+          "correction": "challenges, they",
+          "explanation": "當一個句子由一個引導性的片語或子句（如 \"Although facing several challenges\"）開頭時，後面需要加上逗號，將其與主要子句 (main clause) 分開。這是一個常見的標點符號規則。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "用詞可以更精準",
+          "original_phrase": "several challenges",
+          "correction": "numerous/formidable challenges",
+          "explanation": "中文「重重挑戰」帶有困難且數量多的含義。\"several\" (幾個) 語氣較弱。使用 \"numerous\" (許多的) 或 \"formidable\" (艱鉅的) 更能貼切地表達原文的強度。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "贅字使句子不夠精煉",
+          "original_phrase": "still persue",
+          "correction": "pursued",
+          "explanation": "連接詞 \"Although\" (儘管) 已經表達了「雖然...但仍然...」的轉折語氣，因此 \"still\" (仍然) 在此處是多餘的 (redundant)。刪除可以讓句子更簡潔有力。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T14:35:54.848137",
+    "chinese_sentence": "為了確保計畫順利進行，團隊成員必須密切合作，並將所有潛在風險納入考量。",
+    "user_answer": "In order to make sure the plan goes well,  the team have to work together and take all the potential risks in account.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "To ensure the plan proceeds smoothly, team members must work closely together and take all potential risks into account.",
+      "error_analysis": [
+        {
+          "error_nature": "系統性錯誤",
+          "key_point_summary": "主詞動詞不一致",
+          "original_phrase": "the team have to",
+          "correction": "the team has to",
+          "explanation": "\"team\" 是一個集合名詞 (collective noun)。在美式英文中，通常將其視為一個單一的實體，因此動詞應該使用單數形式 \"has\"。雖然在英式英文中有時可將其視為複數（指代團隊中的個體成員），但在正式寫作或一般情況下，使用單數 \"has\" 更為普遍和安全。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "慣用語介係詞錯誤",
+          "original_phrase": "take... in account",
+          "correction": "take... into account",
+          "explanation": "「將...納入考量」的正確英文慣用語是 \"take something into account\"，介係詞應該用 \"into\" 而不是 \"in\"。這是一個固定的搭配詞用法，需要個別記憶。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "用詞可以更精準正式",
+          "original_phrase": "make sure the plan goes well",
+          "correction": "ensure the plan proceeds smoothly",
+          "explanation": "\"make sure\" 和 \"goes well\" 在語氣上比較口語化。在較正式的商業或計畫情境中，使用 \"ensure\" (確保) 和 \"proceeds smoothly\" (順利進行) 會更精準、更專業。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "語意可以更貼切",
+          "original_phrase": "work together",
+          "correction": "work closely together / collaborate closely",
+          "explanation": "中文的「密切合作」強調的是合作的緊密程度。雖然 \"work together\" (一起工作) 是正確的，但使用 \"work closely together\" 或 \"collaborate closely\" 更能準確傳達「密切」這一層含義。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T14:52:42.184667",
+    "chinese_sentence": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+    "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems.",
+      "error_analysis": [
+        {
+          "error_nature": "系統性錯誤",
+          "key_point_summary": "主詞動詞不一致",
+          "original_phrase": "life style have",
+          "correction": "lifestyle has",
+          "explanation": "此句的主詞是單數名詞 \"lifestyle\"（生活方式），因此動詞應該使用第三人稱單數形式 \"has\"，而不是複數形式 \"have\"。這是英文文法中主詞與動詞必須在人稱和數量上保持一致的「主謂一致」基本規則。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "詞性使用錯誤",
+          "original_phrase": "society problem",
+          "correction": "social problems",
+          "explanation": "在這裡需要一個形容詞來修飾名詞 \"problems\"。\"Society\" 是名詞，其形容詞形式是 \"social\"。因此，應該使用 \"social problems\"。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "系統性錯誤",
+          "key_point_summary": "名詞單複數錯誤",
+          "original_phrase": "some society problem",
+          "correction": "some social problems",
+          "explanation": "不定代名詞 \"some\"（一些）後面應接可數名詞的複數形式。因此，\"problem\" 應該寫成複數的 \"problems\"。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "慣用語冠詞錯誤",
+          "original_phrase": "As the result of",
+          "correction": "As a result of",
+          "explanation": "表達「由於...」或「作為...的結果」的正確固定片語是 \"As a result of\" 或 \"Due to\"。這裡應該使用不定冠詞 \"a\"，而不是定冠詞 \"the\"。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "拼寫錯誤",
+          "original_phrase": "life style",
+          "correction": "lifestyle",
+          "explanation": "\"Lifestyle\"（生活方式）在現代英文中是一個單字（複合名詞），不應分開寫成 \"life style\"。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "用詞可以更精確道地",
+          "original_phrase": "the fast development of technologies",
+          "correction": "the rapid development of technology",
+          "explanation": "雖然您的用法文法正確，但有更自然的表達方式。1. 使用 \"rapid\" 取代 \"fast\" 來形容「發展」會更為正式且貼切。2. 當泛指「科技」這個抽象概念時，通常使用不可數名詞 \"technology\"，而非複數 \"technologies\"。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T15:01:11.489530",
+    "chinese_sentence": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+    "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems.",
+      "error_analysis": [
+        {
+          "error_nature": "系統性錯誤",
+          "key_point_summary": "主詞動詞不一致",
+          "original_phrase": "life style have undergone",
+          "correction": "lifestyle has undergone",
+          "explanation": "此處的主詞是單數名詞 \"lifestyle\"（生活方式），因此動詞必須使用第三人稱單數形式。現在完成式的助動詞應為 \"has\"，而非 \"have\"。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "詞性錯誤：名詞誤用為形容詞",
+          "original_phrase": "society problem",
+          "correction": "social problems",
+          "explanation": "在這裡需要一個形容詞來修飾名詞 \"problem\"。\"society\" 是名詞，意為「社會」；其對應的形容詞是 \"social\"（社會的）。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "系統性錯誤",
+          "key_point_summary": "名詞單複數錯誤",
+          "original_phrase": "some society problem",
+          "correction": "some social problems",
+          "explanation": "限定詞 \"some\"（一些）後面應接可數名詞的複數形式。因此，\"problem\" 應改為複數 \"problems\"。",
+          "severity": "major"
+        },
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "單字拼寫錯誤",
+          "original_phrase": "life style",
+          "correction": "lifestyle",
+          "explanation": "\"lifestyle\"（生活方式）是一個複合名詞，應拼寫為一個單字，而非分開的兩個字。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "開頭片語可以更簡潔自然",
+          "original_phrase": "As the result of",
+          "correction": "Due to / Owing to / As a result of",
+          "explanation": "\"As the result of\" 文法正確，但較為冗長。在句首表達原因時，\"Due to\" 或 \"Owing to\" 更為常見且簡潔。若要使用 result，\"As a result of\"（使用不定冠詞 'a'）是更自然的搭配。",
+          "severity": "minor"
+        },
+        {
+          "error_nature": "可以更好",
+          "key_point_summary": "詞語搭配可以更道地",
+          "original_phrase": "the fast development of technologies",
+          "correction": "the rapid development of technology",
+          "explanation": "雖然 \"fast\" 意思正確，但在描述發展、變化時，\"rapid\" 是更常用且更正式的搭配詞。此外，\"technology\" 在此通常作為不可數名詞使用，指稱「科技」這個總體概念。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T15:04:13.539175",
+    "chinese_sentence": "學生們正在教室裡學習。",
+    "user_answer": "The students are studying at the classroom.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "The students are studying in the classroom.",
+      "error_analysis": [
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "介係詞使用錯誤",
+          "original_phrase": "at the classroom",
+          "correction": "in the classroom",
+          "explanation": "當表示在一個封閉空間（如房間、建築物）的「內部」時，應使用介係詞 'in'。'at' 通常用於表示一個較籠統的地點或某個點（例如 at the bus stop, at school）。雖然可以說 'at school'（在學校），但若要指明在教室這個房間裡面，'in the classroom' 是最正確的用法。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T15:15:49.743463",
+    "chinese_sentence": "我媽媽現在正在廚房煮晚餐。",
+    "user_answer": "My mother is cooking dinner in the kitchen.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "My mother is cooking dinner in the kitchen now.",
+      "error_analysis": [
+        {
+          "error_nature": "其他錯誤",
+          "key_point_summary": "漏譯時間副詞「現在」",
+          "original_phrase": "My mother is cooking dinner in the kitchen.",
+          "correction": "My mother is cooking dinner in the kitchen now.",
+          "explanation": "你的翻譯在文法上完全正確，也清楚表達了主要意思。不過，中文原句中的「現在」這個詞，用來強調動作正在此刻發生。在英文翻譯中加上 'now' 或 'right now' 會更貼近原文的語氣和意思，讓語意更精準。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-08T15:22:57.016725",
+    "chinese_sentence": "我們週末常去海邊。",
+    "user_answer": "We often go to the beach in the weekend.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "We often go to the beach on weekends.",
+      "error_analysis": [
+        {
+          "error_nature": "單一性錯誤",
+          "key_point_summary": "時間介係詞錯誤",
+          "original_phrase": "in the weekend",
+          "correction": "on the weekend / at the weekend / on weekends",
+          "explanation": "表示「在週末」時，正確的介係詞用法在美式英文中是 'on the weekend'，在英式英文中是 'at the weekend'。'in' 是不正確的用法。此外，因為中文原句的「常」帶有習慣性、重複性的意味，使用複數 'on weekends' (不加 the) 也是一個非常自然且常見的說法，用來強調這個動作是每個週末都會發生的習慣。",
+          "severity": "minor"
+        }
+      ]
+    }
   }
 ]

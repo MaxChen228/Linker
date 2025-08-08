@@ -19,9 +19,11 @@ class AIService:
         self.grade_model_name = os.getenv("GEMINI_GRADE_MODEL", "gemini-2.5-pro")
         self.generate_model = None
         self.grade_model = None
-        self.cache = {}
+        # self.cache = {}  # 完全禁用快取
         self._init_gemini()
         self.logger = get_logger("ai")
+        # 儲存最近的 LLM 互動記錄（用於調試）
+        self.last_llm_interaction = None
 
     def _init_gemini(self):
         """初始化 Gemini"""
@@ -29,13 +31,14 @@ class AIService:
             import google.generativeai as genai
 
             genai.configure(api_key=self.api_key)
-            # 出題模型（快速）
+            # 出題模型（快速）- 提高溫度增加變化性
             self.generate_model = genai.GenerativeModel(
                 self.generate_model_name,
                 generation_config=genai.GenerationConfig(
                     response_mime_type="application/json",
-                    temperature=0.9,
+                    temperature=1.0,  # 提高溫度以增加創意和變化
                     top_p=0.95,
+                    top_k=40,  # 增加候選token數量
                 ),
             )
             # 批改模型（高品質）
@@ -55,27 +58,54 @@ class AIService:
             print(f"❌ Gemini 初始化失敗: {e}")
             raise
 
-    def _call_model(self, model, system_prompt: str, user_prompt: str) -> dict[str, Any]:
+    def _call_model(self, model, system_prompt: str, user_prompt: str, use_cache: bool = True) -> dict[str, Any]:
         """調用指定模型的 LLM API"""
-        # 檢查緩存
-        cache_key = f"{system_prompt[:50]}_{user_prompt[:50]}"
-        if cache_key in self.cache:
-            cached = self.cache[cache_key]
-            if time.time() - cached["time"] < 300:  # 5分鐘緩存
-                return cached["data"]
-
+        import time
+        start_time = time.time()
+        
         try:
             # 組合提示詞
             full_prompt = f"{system_prompt}\n\n{user_prompt}"
+            
+            # 取得模型配置
+            model_config = {
+                "model_name": model.model_name if hasattr(model, 'model_name') else str(model),
+                "temperature": model.generation_config.temperature if hasattr(model, 'generation_config') else None,
+                "top_p": model.generation_config.top_p if hasattr(model, 'generation_config') else None,
+                "top_k": model.generation_config.top_k if hasattr(model, 'generation_config') else None,
+            }
 
             # 調用 API
             response = model.generate_content(full_prompt)
+            
+            # 計算耗時
+            duration_ms = int((time.time() - start_time) * 1000)
 
             # 解析 JSON 回應
             result = self._parse_response(response.text)
+            
+            # 儲存調試資料
+            self.last_llm_interaction = {
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "duration_ms": duration_ms,
+                "model_config": model_config,
+                "input": {
+                    "system_prompt": system_prompt,
+                    "user_prompt": user_prompt,
+                    "full_prompt": full_prompt,
+                    "prompt_length": len(full_prompt)
+                },
+                "output": {
+                    "raw_response": response.text,
+                    "parsed_result": result,
+                    "response_length": len(response.text)
+                },
+                "status": "success"
+            }
 
-            # 儲存到緩存
-            self.cache[cache_key] = {"data": result, "time": time.time()}
+            # 完全禁用快取儲存
+            # if use_cache:
+            #     self.cache[cache_key] = {"data": result, "time": time.time()}
 
             try:
                 self.logger.log_api_call(
@@ -90,6 +120,24 @@ class AIService:
             return result
 
         except Exception as e:
+            # 儲存錯誤調試資料
+            self.last_llm_interaction = {
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "duration_ms": int((time.time() - start_time) * 1000),
+                "model_config": model_config if 'model_config' in locals() else {},
+                "input": {
+                    "system_prompt": system_prompt,
+                    "user_prompt": user_prompt,
+                    "full_prompt": f"{system_prompt}\n\n{user_prompt}",
+                    "prompt_length": len(f"{system_prompt}\n\n{user_prompt}")
+                },
+                "output": {
+                    "error": str(e),
+                    "error_type": type(e).__name__
+                },
+                "status": "error"
+            }
+            
             self.logger.log_api_call(
                 api_name="gemini",
                 method="generate_content",
@@ -136,11 +184,11 @@ class AIService:
         2. overall_suggestion (string): 建議的最佳翻譯（完整句子，使用英文）
         
         3. error_analysis (array): 錯誤分析列表，每個錯誤包含：
-           - error_nature (string): 錯誤性質，必須是以下其中一種：
-             * "系統性錯誤" - 涉及文法規則，學會規則後可避免同類錯誤（如時態、主謂一致、動詞變化）
-             * "單一性錯誤" - 需要個別記憶的內容（如特定詞彙、搭配詞、介係詞、拼寫）
-             * "可以更好" - 文法正確但表達可以更自然、更道地
-             * "其他錯誤" - 不屬於上述類別的錯誤（如漏譯、理解錯誤）
+           - category (string): 錯誤分類代碼，必須是以下其中一種：
+             * "systematic" - 系統性錯誤：涉及文法規則，學會規則後可避免同類錯誤（如時態、主謂一致、動詞變化）
+             * "isolated" - 單一性錯誤：需要個別記憶的內容（如特定詞彙、搭配詞、介係詞、拼寫）
+             * "enhancement" - 可以更好：文法正確但表達可以更自然、更道地
+             * "other" - 其他錯誤：不屬於上述類別的錯誤（如漏譯、理解錯誤）
            
            - key_point_summary (string): 錯誤重點的簡潔描述（使用繁體中文）
            
@@ -153,13 +201,13 @@ class AIService:
            - severity (string): 嚴重程度，"major"（重要錯誤）或 "minor"（次要問題）
         
         分類原則：
-        - 如果錯誤涉及可以通過學習規則解決的文法問題，歸類為"系統性錯誤"
-        - 如果錯誤需要記憶特定用法或單字，歸類為"單一性錯誤"
-        - 如果翻譯正確但可以更自然，歸類為"可以更好"（通常是 minor）
-        - 其他情況歸類為"其他錯誤"
+        - 如果錯誤涉及可以通過學習規則解決的文法問題，使用 "systematic"
+        - 如果錯誤需要記憶特定用法或單字，使用 "isolated"
+        - 如果翻譯正確但可以更自然，使用 "enhancement"（通常是 minor）
+        - 其他情況使用 "other"
         
         重要：
-        - 請確保 error_nature 欄位完全匹配上述四個選項之一
+        - 請確保 category 欄位完全匹配上述四個代碼之一（systematic, isolated, enhancement, other）
         - 每個錯誤都要有清楚的 explanation
         - overall_suggestion 必須是完整、正確的英文句子
         """
@@ -175,16 +223,20 @@ class AIService:
         level: int = 1,
         length: str = "short",
         examples: Optional[List[str]] = None,
+        shuffle: bool = False,
     ) -> dict[str, str]:
         """生成練習句子（使用出題模型）
 
         examples: 來自分級例句庫的代表例句（few-shot context），不會回傳給使用者。
         length: "short" | "medium" | "long" 影響目標字數/結構。
+        shuffle: True 時禁用快取，強制生成新句子。
         """
         difficulty_map = {
             1: "國中基礎程度，簡單詞彙和基本句型",
             2: "高中程度，包含常見片語和複雜句型",
             3: "學測程度，包含進階詞彙和複雜語法",
+            4: "指考程度，包含高階詞彙和複雜結構",
+            5: "進階程度，包含學術或專業用語",
         }
         length_hint = {
             "short": "字數約10-20，句子簡潔",
@@ -223,7 +275,8 @@ class AIService:
         if not self.generate_model:
             result = {}
         else:
-            result = self._call_model(self.generate_model, system_prompt, user_prompt)
+            # 永遠不使用快取，確保每次都獲得新結果
+            result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
 
         # 處理可能的列表返回（API 有時返回列表）
         if isinstance(result, list) and len(result) > 0:
@@ -242,6 +295,124 @@ class AIService:
             "grammar_points": result.get("grammar_points", []),
         }
 
+    def generate_review_sentence(
+        self,
+        knowledge_points: list,
+        level: int = 2,
+        length: str = "medium",
+    ) -> dict[str, Any]:
+        """生成複習句子（基於待複習知識點）
+        
+        Args:
+            knowledge_points: 待複習的知識點列表
+            level: 難度等級
+            length: 句子長度
+            
+        Returns:
+            包含句子、提示、考點ID等信息
+        """
+        import random
+        
+        if not knowledge_points:
+            # 如果沒有待複習知識點，回退到普通出題
+            return self.generate_practice_sentence(level=level, length=length)
+        
+        # 根據句子長度決定要選幾個知識點
+        if length == "long":
+            num_points = 2
+            length_hint = "較長句子（35-60字）"
+        else:  # short 或 medium
+            num_points = 1
+            length_hint = "簡短句子（10-20字）" if length == "short" else "中等長度（20-35字）"
+        
+        # 從候選知識點中隨機選擇
+        candidates = knowledge_points[:5]  # 最多考慮前5個
+        if len(candidates) <= num_points:
+            selected_points = candidates
+        else:
+            selected_points = random.sample(candidates, num_points)
+        
+        # 只準備被選中的知識點信息給 AI
+        points_info = []
+        for point in selected_points:
+            points_info.append({
+                "id": point.id,
+                "key_point": point.key_point,
+                "explanation": point.explanation,
+                "original_phrase": point.original_phrase,
+                "correction": point.correction,
+            })
+        
+        # 記錄選中的知識點
+        self.logger.info(f"Selected {len(selected_points)} knowledge points for review")
+        
+        system_prompt = f"""
+        你是一位專業的英文教師，正在幫助學生複習。
+        
+        請使用以下知識點設計一個{length_hint}的中文句子讓學生翻譯：
+        {json.dumps(points_info, ensure_ascii=False, indent=2)}
+        
+        要求：
+        - 必須考察到所有提供的知識點
+        - 句子要自然、實用，不要生硬堆砌
+        - 確保錯誤點能在翻譯中被自然考察到
+        
+        請以 JSON 格式回覆：
+        {{
+            "sentence": "要翻譯的中文句子",
+            "hint": "給學生的提示（簡潔指出要注意什麼）",
+            "target_point_ids": {[point['id'] for point in points_info]},
+            "target_points_description": "本題考察：{', '.join([p['key_point'] for p in points_info])}",
+            "difficulty_level": {level}
+        }}
+        """
+        
+        user_prompt = "請設計一個複習句子，要有創意且每次都不同。"
+        
+        if not self.generate_model:
+            # Fallback
+            return {
+                "sentence": "今天天氣很好。",
+                "hint": "注意時態",
+                "target_point_ids": [],
+                "difficulty_level": level
+            }
+        
+        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
+        
+        # 處理返回結果
+        if isinstance(result, list) and len(result) > 0:
+            result = result[0]
+        elif not isinstance(result, dict):
+            result = {}
+        
+        # 使用已選中的知識點信息（不需要再從 AI 回應中找）
+        target_points = []
+        for point in selected_points:
+            target_points.append({
+                "id": point.id,
+                "key_point": point.key_point,
+                "category": point.category.value,
+                "mastery_level": round(point.mastery_level, 2)
+            })
+        
+        return {
+            "sentence": result.get("sentence", "今天天氣很好。"),
+            "hint": result.get("hint", "注意之前的錯誤"),
+            "target_point_ids": [p.id for p in selected_points],  # 使用實際選中的點
+            "target_points": target_points,  # 完整知識點信息
+            "target_points_description": result.get("target_points_description", ""),
+            "difficulty_level": result.get("difficulty_level", level),
+            "is_review": True  # 標記為複習題
+        }
+    
+    def get_last_interaction(self) -> dict[str, Any]:
+        """獲取最近一次的 LLM 互動記錄"""
+        return self.last_llm_interaction if self.last_llm_interaction else {
+            "status": "no_data",
+            "message": "尚無 LLM 互動記錄"
+        }
+    
     def analyze_common_mistakes(self, practice_history: list) -> dict[str, Any]:
         """分析常見錯誤模式"""
         if not practice_history:

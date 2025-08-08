@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: linker-translator
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python start.py
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    autoDeploy: false
+    disk:
+      name: linker-data
+      mountPath: /data
+      sizeGB: 1

@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block title %}知識點 - Linker{% endblock %}
+{% block content %}
+  <!-- 頁面標題與統計 -->
+  <div class="knowledge-header">
+    <div class="header-top">
+      <h2 class="page-title">我的知識點庫</h2>
+      <div class="quick-stats">
+        <div class="stat-badge">
+          <span class="stat-label">總知識點</span>
+          <span class="stat-value">{{ points|length }}</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-label">待複習</span>
+          <span class="stat-value">{{ stats.due_reviews }}</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-label">平均掌握度</span>
+          <span class="stat-value">{{ "%.0f"|format(stats.avg_mastery * 100) }}%</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 搜尋欄 -->
+    <div class="search-bar">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input type="text" 
+             id="knowledgeSearch" 
+             placeholder="搜尋知識點..." 
+             autocomplete="off" />
+      <span class="search-hint">即時搜尋</span>
+    </div>
+    
+    <!-- 篩選標籤 -->
+    <div class="filter-section">
+      <!-- 錯誤類別篩選 -->
+      <div class="filter-group">
+        <span class="filter-label">錯誤類別</span>
+        <div class="filter-tabs">
+          <button class="filter-tab {% if not current_category %}active{% endif %}" 
+                  data-filter-type="category" data-filter-value="">
+            全部
+            <span class="count">{{ points|length }}</span>
+          </button>
+          {% for cat in categories %}
+            <button class="filter-tab {% if current_category == cat %}active{% endif %}" 
+                    data-filter-type="category" data-filter-value="{{ cat }}">
+              {{ cat }}
+              <span class="count" data-category="{{ cat }}">0</span>
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- 掌握度篩選 -->
+      <div class="filter-group">
+        <span class="filter-label">掌握程度</span>
+        <div class="filter-tabs">
+          <button class="filter-tab {% if not current_mastery %}active{% endif %}" 
+                  data-filter-type="mastery" data-filter-value="">
+            全部
+          </button>
+          <button class="filter-tab {% if current_mastery == 'low' %}active{% endif %}" 
+                  data-filter-type="mastery" data-filter-value="low">
+            <span class="mastery-dot low"></span>
+            需加強 (&lt;30%)
+          </button>
+          <button class="filter-tab {% if current_mastery == 'medium' %}active{% endif %}" 
+                  data-filter-type="mastery" data-filter-value="medium">
+            <span class="mastery-dot medium"></span>
+            進步中 (30-70%)
+          </button>
+          <button class="filter-tab {% if current_mastery == 'high' %}active{% endif %}" 
+                  data-filter-type="mastery" data-filter-value="high">
+            <span class="mastery-dot high"></span>
+            已掌握 (&gt;70%)
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 統計條 -->
+    <div class="stats-bar">
+      <span class="stat-item">
+        顯示 <strong id="visibleCount">{{ points|length }}</strong> 個知識點
+      </span>
+      <span class="stat-item">
+        篩選結果：<span id="filterStatus">全部</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- 知識點列表 -->
+  <div class="knowledge-grid" id="knowledgeContainer">
+    {% for point in points %}
+    <div class="knowledge-card" 
+         data-category="{{ point.category.to_chinese() }}"
+         data-mastery="{{ point.mastery_level }}"
+         data-keywords="{{ point.key_point|lower }} {{ point.explanation|lower }}">
+      
+      <!-- 卡片頭部 -->
+      <div class="knowledge-header">
+        <div class="knowledge-title-section">
+          <h3 class="knowledge-title">{{ point.key_point }}</h3>
+          <div class="knowledge-meta">
+            <span class="category-badge {{ point.category.value }}">
+              {{ point.category.to_chinese() }}
+            </span>
+            {% if point.subtype %}
+            <span class="subtype-badge">{{ point.subtype }}</span>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- 掌握度指示器 -->
+        <div class="mastery-indicator">
+          <div class="mastery-circle" data-mastery="{{ point.mastery_level }}">
+            <svg width="48" height="48">
+              <circle cx="24" cy="24" r="20" stroke-width="3" fill="none" stroke="#e5e7eb" />
+              <circle cx="24" cy="24" r="20" stroke-width="3" fill="none" 
+                      stroke="{% if point.mastery_level < 0.3 %}#ef4444{% elif point.mastery_level < 0.7 %}#f59e0b{% else %}#10b981{% endif %}"
+                      stroke-dasharray="{{ point.mastery_level * 125.6 }} 125.6"
+                      stroke-dashoffset="0"
+                      transform="rotate(-90 24 24)" />
+            </svg>
+            <span class="mastery-percent">{{ "%.0f"|format(point.mastery_level * 100) }}%</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 說明區 -->
+      <div class="knowledge-explanation">
+        <p>{{ point.explanation }}</p>
+      </div>
+      
+      <!-- 錯誤修正對比 -->
+      {% if point.original_phrase or point.correction %}
+      <div class="correction-section">
+        {% if point.original_phrase %}
+        <div class="correction-item error">
+          <span class="correction-label">❌ 錯誤</span>
+          <span class="correction-text">{{ point.original_phrase }}</span>
+        </div>
+        {% endif %}
+        {% if point.correction %}
+        <div class="correction-item correct">
+          <span class="correction-label">✅ 正確</span>
+          <span class="correction-text">{{ point.correction }}</span>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+      <!-- 統計資訊 -->
+      <div class="knowledge-stats">
+        <div class="stat-row">
+          <span class="stat-label">錯誤次數</span>
+          <span class="stat-value error">{{ point.mistake_count }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">正確次數</span>
+          <span class="stat-value success">{{ point.correct_count }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">下次複習</span>
+          <span class="stat-value">{{ point.next_review[:10] }}</span>
+        </div>
+      </div>
+      
+      <!-- 例句展開區 -->
+      {% if point.examples %}
+      <div class="examples-section">
+        <button class="examples-toggle" data-point-id="{{ point.id }}">
+          <span>查看 {{ point.examples|length }} 個例句</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="examples-content" id="examples-{{ point.id }}">
+          {% for example in point.examples %}
+          <div class="example-item">
+            <div class="example-chinese">{{ example.chinese }}</div>
+            <div class="example-user">你的答案：{{ example.user_answer }}</div>
+            <div class="example-correct">正確答案：{{ example.correct }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      
+      <!-- 操作按鈕 -->
+      <div class="knowledge-actions">
+        <button class="btn-action btn-review" data-point-id="{{ point.id }}" title="立即複習">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 4v6h6"></path>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          複習
+        </button>
+        <button class="btn-action btn-mark-mastered" data-point-id="{{ point.id }}" title="標記為已掌握">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          已掌握
+        </button>
+        <button class="btn-action btn-delete" data-point-id="{{ point.id }}" title="刪除">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- 無結果提示 -->
+  <div class="no-results" id="noKnowledgeResults" style="display: none;">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+    </svg>
+    <h3>沒有找到知識點</h3>
+    <p>試試調整篩選條件或開始練習累積新的知識點</p>
+    <a href="/practice" class="btn">開始練習</a>
+  </div>
+  
+  <!-- 操作成功提示 -->
+  <div class="toast" id="knowledgeToast">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toastMessage">操作成功</span>
+  </div>
+{% endblock %}

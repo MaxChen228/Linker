@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  linker:
+    build: .
+    container_name: linker-web
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      # 持久化數據
+      - ./data:/app/data
+      # 如果需要即時更新代碼（開發模式）
+      # - ./web:/app/web
+      # - ./core:/app/core
+    restart: unless-stopped

@@ -213,8 +213,14 @@ class KnowledgeManager:
         explanation = error.get("explanation", "")
         severity = error.get("severity", "major")
 
-        # 使用新的分類系統
-        category, subtype = self.type_system.classify(key_point, explanation, severity)
+        # 優先使用AI返回的category，如果沒有則用分類系統推斷
+        if "category" in error:
+            category = ErrorCategory.from_string(error["category"])
+            # 使用分類系統推斷subtype
+            _, subtype = self.type_system.classify(key_point, explanation, severity)
+        else:
+            # 使用新的分類系統
+            category, subtype = self.type_system.classify(key_point, explanation, severity)
 
         # 查找現有知識點
         existing = self._find_knowledge_point(key_point)
@@ -275,6 +281,60 @@ class KnowledgeManager:
         """獲取需要複習的知識點"""
         now = datetime.now().isoformat()
         return [p for p in self.knowledge_points if p.next_review <= now]
+    
+    def get_review_candidates(self, max_points: int = 5) -> list[KnowledgePoint]:
+        """獲取適合複習的知識點（單一性錯誤和可以更好類別）
+        
+        Args:
+            max_points: 最多返回的知識點數量
+            
+        Returns:
+            需要複習的知識點列表，優先返回已到期的
+        """
+        # 篩選單一性錯誤和可以更好類別
+        candidates = [
+            p for p in self.knowledge_points 
+            if p.category in [ErrorCategory.ISOLATED, ErrorCategory.ENHANCEMENT]
+        ]
+        
+        if not candidates:
+            return []
+        
+        # 按複習優先級排序：
+        # 1. 已到期的（next_review <= now）
+        # 2. 掌握度低的
+        # 3. 錯誤次數多的
+        now = datetime.now().isoformat()
+        
+        def sort_key(point: KnowledgePoint) -> tuple:
+            is_due = point.next_review <= now
+            return (
+                not is_due,  # 到期的排前面
+                point.mastery_level,  # 掌握度低的排前面
+                -point.mistake_count  # 錯誤次數多的排前面
+            )
+        
+        candidates.sort(key=sort_key)
+        
+        # 返回前max_points個最需要複習的
+        return candidates[:max_points]
+    
+    def update_knowledge_point(self, point_id: int, is_correct: bool) -> bool:
+        """更新指定知識點的掌握狀態
+        
+        Args:
+            point_id: 知識點ID
+            is_correct: 是否答對
+            
+        Returns:
+            是否成功更新
+        """
+        for point in self.knowledge_points:
+            if point.id == point_id:
+                point.update_mastery(is_correct)
+                self._save_knowledge()
+                return True
+        return False
 
     def get_statistics(self) -> dict[str, Any]:
         """獲取統計資料"""

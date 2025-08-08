@@ -497,16 +497,26 @@
     "original_phrase": "discover",
     "correction": "discoveries",
     "mastery_level": 0.0,
-    "mistake_count": 1,
+    "mistake_count": 3,
     "correct_count": 0,
     "created_at": "2025-08-07T17:59:06.104544",
-    "last_seen": "2025-08-07T17:59:06.104549",
-    "next_review": "2025-08-08T17:59:06.104557",
+    "last_seen": "2025-08-08T15:01:11.493548",
+    "next_review": "2025-08-09T15:01:11.493552",
     "examples": [
       {
         "chinese": "被認為是本世紀最偉大的科學發現之一。",
         "user_answer": "Be considered as one of the greatest scientific discover in this century.",
         "correct": "Considered one of the greatest scientific discoveries of this century."
+      },
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      },
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
       }
     ]
   },
@@ -541,11 +551,11 @@
     "original_phrase": "he work",
     "correction": "he works",
     "mastery_level": 0.0,
-    "mistake_count": 2,
+    "mistake_count": 4,
     "correct_count": 0,
     "created_at": "2025-08-08T10:27:45.094933",
-    "last_seen": "2025-08-08T12:52:43.568634",
-    "next_review": "2025-08-09T12:52:43.568648",
+    "last_seen": "2025-08-08T15:01:11.491218",
+    "next_review": "2025-08-09T15:01:11.491231",
     "examples": [
       {
         "chinese": "儘管他工作非常努力，卻總是事倍功半，這讓他感到非常沮喪。",
@@ -556,6 +566,16 @@
         "chinese": "他每天清晨跑步。",
         "user_answer": "He go jogging every morning.",
         "correct": "He goes jogging every morning."
+      },
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      },
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
       }
     ]
   },
@@ -568,16 +588,21 @@
     "original_phrase": "he always do more but earn less",
     "correction": "he always achieves less than expected",
     "mastery_level": 0.0,
-    "mistake_count": 1,
+    "mistake_count": 2,
     "correct_count": 0,
     "created_at": "2025-08-08T10:27:45.096368",
-    "last_seen": "2025-08-08T10:27:45.096373",
-    "next_review": "2025-08-09T10:27:45.096379",
+    "last_seen": "2025-08-08T14:12:52.819045",
+    "next_review": "2025-08-09T14:12:52.819105",
     "examples": [
       {
         "chinese": "儘管他工作非常努力，卻總是事倍功半，這讓他感到非常沮喪。",
         "user_answer": "Although he work very hard, he always do more but earn less, this  makes him fell terribly depressed.",
         "correct": "Although he works very hard, he always achieves less than expected, which makes him feel terribly frustrated."
+      },
+      {
+        "chinese": "儘管面臨重重挑戰，他們仍然堅持不懈地追求夢想，最終取得了顯著的成功。",
+        "user_answer": "Although facing several challenges they still persue their dream persistantly, and finally achieve significant success.",
+        "correct": "Despite facing formidable challenges, they persistently pursued their dream and ultimately achieved remarkable success."
       }
     ]
   },
@@ -644,6 +669,285 @@
         "chinese": "他每天清晨跑步。",
         "user_answer": "He run every morning.",
         "correct": "He runs every morning."
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "key_point": "漏譯句子",
+    "category": "isolated",
+    "subtype": "vocabulary",
+    "explanation": "學生沒有提供任何翻譯。中文原句「他們週末會去看電影」可以指未來的計畫或習慣性的活動。翻譯成未來式 'They will go to the movies on the weekend.' 或現在簡單式 'They go to the movies on weekends.' 都是可行的。前者強調未來的某個特定計畫，後者強調一個重複的習慣。",
+    "original_phrase": "",
+    "correction": "They will go to the movies on the weekend.",
+    "mastery_level": 0.0,
+    "mistake_count": 2,
+    "correct_count": 0,
+    "created_at": "2025-08-08T13:51:38.012072",
+    "last_seen": "2025-08-08T13:53:27.915917",
+    "next_review": "2025-08-09T13:53:27.915952",
+    "examples": [
+      {
+        "chinese": "他們週末會去看電影。",
+        "user_answer": "",
+        "correct": "They will go to the movies on the weekend."
+      },
+      {
+        "chinese": "他們週末會去看電影。",
+        "user_answer": "",
+        "correct": "They will go to the movies on the weekend."
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "key_point": "單字拼寫錯誤",
+    "category": "isolated",
+    "subtype": "vocabulary",
+    "explanation": "「追求」的正確拼法是 \"pursue\"。\"persue\" 是一個常見的拼寫錯誤，需要個別記憶。",
+    "original_phrase": "persue",
+    "correction": "pursue",
+    "mastery_level": 0.0,
+    "mistake_count": 3,
+    "correct_count": 0,
+    "created_at": "2025-08-08T14:12:52.821578",
+    "last_seen": "2025-08-08T15:01:11.494551",
+    "next_review": "2025-08-09T15:01:11.494555",
+    "examples": [
+      {
+        "chinese": "儘管面臨重重挑戰，他們仍然堅持不懈地追求夢想，最終取得了顯著的成功。",
+        "user_answer": "Although facing several challenges they still persue their dream persistantly, and finally achieve significant success.",
+        "correct": "Despite facing formidable challenges, they persistently pursued their dream and ultimately achieved remarkable success."
+      },
+      {
+        "chinese": "儘管面臨重重挑戰，他們仍然堅持不懈地追求夢想，最終取得了顯著的成功。",
+        "user_answer": "Although facing several challenges they still persue their dream persistantly, and finally achieve significant success.",
+        "correct": "Despite facing formidable challenges, they persistently pursued their dream and ultimately achieved remarkable success."
+      },
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "key_point": "標點符號錯誤",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "當一個句子由一個引導性的片語或子句（如 \"Although facing several challenges\"）開頭時，後面需要加上逗號，將其與主要子句 (main clause) 分開。這是一個常見的標點符號規則。",
+    "original_phrase": "challenges they",
+    "correction": "challenges, they",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T14:12:52.826366",
+    "last_seen": "2025-08-08T14:12:52.826373",
+    "next_review": "2025-08-09T14:12:52.826387",
+    "examples": [
+      {
+        "chinese": "儘管面臨重重挑戰，他們仍然堅持不懈地追求夢想，最終取得了顯著的成功。",
+        "user_answer": "Although facing several challenges they still persue their dream persistantly, and finally achieve significant success.",
+        "correct": "Despite facing formidable challenges, they persistently pursued their dream and ultimately achieved remarkable success."
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "key_point": "用詞可以更精準",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "中文「重重挑戰」帶有困難且數量多的含義。\"several\" (幾個) 語氣較弱。使用 \"numerous\" (許多的) 或 \"formidable\" (艱鉅的) 更能貼切地表達原文的強度。",
+    "original_phrase": "several challenges",
+    "correction": "numerous/formidable challenges",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T14:12:52.828442",
+    "last_seen": "2025-08-08T14:12:52.828448",
+    "next_review": "2025-08-09T14:12:52.828458",
+    "examples": [
+      {
+        "chinese": "儘管面臨重重挑戰，他們仍然堅持不懈地追求夢想，最終取得了顯著的成功。",
+        "user_answer": "Although facing several challenges they still persue their dream persistantly, and finally achieve significant success.",
+        "correct": "Despite facing formidable challenges, they persistently pursued their dream and ultimately achieved remarkable success."
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "key_point": "贅字使句子不夠精煉",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "連接詞 \"Although\" (儘管) 已經表達了「雖然...但仍然...」的轉折語氣，因此 \"still\" (仍然) 在此處是多餘的 (redundant)。刪除可以讓句子更簡潔有力。",
+    "original_phrase": "still persue",
+    "correction": "pursued",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T14:12:52.831913",
+    "last_seen": "2025-08-08T14:12:52.831928",
+    "next_review": "2025-08-09T14:12:52.831945",
+    "examples": [
+      {
+        "chinese": "儘管面臨重重挑戰，他們仍然堅持不懈地追求夢想，最終取得了顯著的成功。",
+        "user_answer": "Although facing several challenges they still persue their dream persistantly, and finally achieve significant success.",
+        "correct": "Despite facing formidable challenges, they persistently pursued their dream and ultimately achieved remarkable success."
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "key_point": "詞性使用錯誤",
+    "category": "other",
+    "subtype": "unclassified",
+    "explanation": "在這裡需要一個形容詞來修飾名詞 \"problems\"。\"Society\" 是名詞，其形容詞形式是 \"social\"。因此，應該使用 \"social problems\"。",
+    "original_phrase": "society problem",
+    "correction": "social problems",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T14:52:42.188318",
+    "last_seen": "2025-08-08T14:52:42.188324",
+    "next_review": "2025-08-09T14:52:42.188331",
+    "examples": [
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "key_point": "慣用語冠詞錯誤",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "表達「由於...」或「作為...的結果」的正確固定片語是 \"As a result of\" 或 \"Due to\"。這裡應該使用不定冠詞 \"a\"，而不是定冠詞 \"the\"。",
+    "original_phrase": "As the result of",
+    "correction": "As a result of",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T14:52:42.190752",
+    "last_seen": "2025-08-08T14:52:42.190755",
+    "next_review": "2025-08-09T14:52:42.190761",
+    "examples": [
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "key_point": "拼寫錯誤",
+    "category": "enhancement",
+    "subtype": "style",
+    "explanation": "\"Lifestyle\"（生活方式）在現代英文中是一個單字（複合名詞），不應分開寫成 \"life style\"。",
+    "original_phrase": "life style",
+    "correction": "lifestyle",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T14:52:42.192349",
+    "last_seen": "2025-08-08T14:52:42.192351",
+    "next_review": "2025-08-09T14:52:42.192356",
+    "examples": [
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "key_point": "用詞可以更精確道地",
+    "category": "enhancement",
+    "subtype": "naturalness",
+    "explanation": "雖然您的用法文法正確，但有更自然的表達方式。1. 使用 \"rapid\" 取代 \"fast\" 來形容「發展」會更為正式且貼切。2. 當泛指「科技」這個抽象概念時，通常使用不可數名詞 \"technology\"，而非複數 \"technologies\"。",
+    "original_phrase": "the fast development of technologies",
+    "correction": "the rapid development of technology",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T14:52:42.193783",
+    "last_seen": "2025-08-08T14:52:42.193786",
+    "next_review": "2025-08-09T14:52:42.193791",
+    "examples": [
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "key_point": "詞性錯誤：名詞誤用為形容詞",
+    "category": "other",
+    "subtype": "unclassified",
+    "explanation": "在這裡需要一個形容詞來修飾名詞 \"problem\"。\"society\" 是名詞，意為「社會」；其對應的形容詞是 \"social\"（社會的）。",
+    "original_phrase": "society problem",
+    "correction": "social problems",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T15:01:11.492551",
+    "last_seen": "2025-08-08T15:01:11.492553",
+    "next_review": "2025-08-09T15:01:11.492557",
+    "examples": [
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "key_point": "開頭片語可以更簡潔自然",
+    "category": "enhancement",
+    "subtype": "naturalness",
+    "explanation": "\"As the result of\" 文法正確，但較為冗長。在句首表達原因時，\"Due to\" 或 \"Owing to\" 更為常見且簡潔。若要使用 result，\"As a result of\"（使用不定冠詞 'a'）是更自然的搭配。",
+    "original_phrase": "As the result of",
+    "correction": "Due to / Owing to / As a result of",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T15:01:11.495542",
+    "last_seen": "2025-08-08T15:01:11.495544",
+    "next_review": "2025-08-09T15:01:11.495547",
+    "examples": [
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "key_point": "詞語搭配可以更道地",
+    "category": "enhancement",
+    "subtype": "naturalness",
+    "explanation": "雖然 \"fast\" 意思正確，但在描述發展、變化時，\"rapid\" 是更常用且更正式的搭配詞。此外，\"technology\" 在此通常作為不可數名詞使用，指稱「科技」這個總體概念。",
+    "original_phrase": "the fast development of technologies",
+    "correction": "the rapid development of technology",
+    "mastery_level": 0.0,
+    "mistake_count": 1,
+    "correct_count": 0,
+    "created_at": "2025-08-08T15:01:11.496567",
+    "last_seen": "2025-08-08T15:01:11.496568",
+    "next_review": "2025-08-09T15:01:11.496572",
+    "examples": [
+      {
+        "chinese": "由於科技的快速發展，人們的生活方式發生了顯著變化，這同時也帶來了一些社會問題。",
+        "user_answer": "As the result of the fast development of technologies, human life style have undergone significant changes, causing some society problem at the same time.",
+        "correct": "Due to the rapid development of technology, people's lifestyles have undergone significant changes, which has also brought about some social problems."
       }
     ]
   }

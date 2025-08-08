@@ -202,8 +202,8 @@ logger = get_logger(
 | DATA_DIR | data | 數據目錄 |
 | KNOWLEDGE_FILE | knowledge.json | 知識點文件 |
 | PRACTICE_LOG_FILE | practice_log.json | 練習記錄文件 |
-| EXAMPLES_FILE | examples.json | 例句文件 |
-| GRAMMAR_FILE | grammar.json | 文法文件 |
+| GRAMMAR_PATTERNS_FILE | grammar_patterns.json | 文法句型文件 |
+| EXAMPLES_MODULE | assets.py | 分級例句庫模組 |
 
 **使用範例：**
 ```python

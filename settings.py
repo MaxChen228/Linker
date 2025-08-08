@@ -79,11 +79,11 @@ class LearningSettings:
 
 @dataclass
 class CacheSettings:
-    """緩存配置"""
+    """緩存配置（已禁用）"""
 
-    CACHE_TTL_SECONDS: int = 300  # 5分鐘
-    MAX_CACHE_SIZE: int = 100
-    CACHE_KEY_LENGTH: int = 50  # 緩存鍵的截取長度
+    CACHE_TTL_SECONDS: int = 0  # 完全禁用緩存
+    MAX_CACHE_SIZE: int = 0  # 不儲存任何緩存
+    CACHE_KEY_LENGTH: int = 50  # 緩存鍵的截取長度（已無作用）
 
 
 @dataclass
