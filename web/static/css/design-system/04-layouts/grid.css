@@ -1,0 +1,89 @@
+/* ============================================ */
+/* 網格佈局系統                                 */
+/* ============================================ */
+
+/* 基礎卡片網格 */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+  margin: var(--space-6) 0;
+}
+
+/* 知識點頁面卡片網格 */
+.knowledge-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+/* 知識群組網格 */
+.knowledge-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* 文法句型網格 */
+.patterns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+
+/* 實例網格 */
+.group-instances {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+/* ============================================ */
+/* 響應式調整                                   */
+/* ============================================ */
+
+/* 平板尺寸 */
+@media (max-width: 768px) {
+  .cards-grid,
+  .knowledge-cards,
+  .patterns-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .knowledge-groups {
+    gap: var(--space-4);
+  }
+  
+  .group-instances {
+    gap: var(--space-2);
+    padding: var(--space-4);
+  }
+}
+
+/* 大螢幕優化 */
+@media (min-width: 1200px) {
+  .cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  }
+  
+  .knowledge-cards {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+  
+  .patterns-grid {
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  }
+}
+
+/* 超大螢幕優化 */
+@media (min-width: 1600px) {
+  .cards-grid,
+  .knowledge-cards {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

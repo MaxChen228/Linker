@@ -373,6 +373,16 @@ def create_app() -> FastAPI:
     return app
 
 
+@app.get("/test-buttons")
+def test_buttons(request: Request):
+    return templates.TemplateResponse("test_buttons.html", {"request": request})
+
+
+@app.get("/test-cards")
+def test_cards(request: Request):
+    return templates.TemplateResponse("test_cards.html", {"request": request})
+
+
 @app.get("/healthz")
 def healthz():
     # 簡易健康檢查：確保模板與資料夾存在

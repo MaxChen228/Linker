@@ -56,7 +56,7 @@
   <!-- 句型列表 -->
   <div class="patterns-grid" id="patternsContainer">
     {% for p in patterns %}
-    <div class="pattern-card" 
+    <div class="card pattern-card" data-type="pattern" data-interactive="true" data-decorated="true"
          data-category="{{ p.category or '' }}"
          data-pattern="{{ p.pattern|lower }}"
          data-explanation="{{ (p.explanation or '')|lower }}"

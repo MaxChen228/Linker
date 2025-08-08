@@ -1,0 +1,422 @@
+/* ============================================ */
+/* 統一卡片組件系統                              */
+/* ============================================ */
+
+/* 基礎卡片樣式 */
+.card {
+  /* 結構 */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  
+  /* 間距 */
+  padding: var(--space-6);
+  
+  /* 視覺 */
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  
+  /* 動畫 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================ */
+/* 卡片變體                                     */
+/* ============================================ */
+
+/* 可互動卡片 */
+.card[data-interactive="true"] {
+  cursor: pointer;
+}
+
+.card[data-interactive="true"]:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(var(--accent-rgb), 0.15);
+}
+
+/* Glass Morphism 卡片 */
+.card[data-glass="true"] {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 帶裝飾線卡片 */
+.card[data-decorated="true"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card[data-decorated="true"]:hover::before {
+  opacity: 1;
+}
+
+/* ============================================ */
+/* 卡片類型變體                                 */
+/* ============================================ */
+
+/* 問題卡片 */
+.card[data-type="question"] {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* 知識點卡片 */
+.card[data-type="knowledge"] {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+/* 文法卡片 */
+.card[data-type="pattern"] {
+  background: var(--surface);
+}
+
+.card[data-type="pattern"]:hover {
+  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* 實例卡片 */
+.card[data-type="instance"] {
+  background: var(--bg);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
+/* 系統性錯誤群組卡片 */
+.card[data-type="group"] {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 0; /* 群組卡片特殊處理 */
+}
+
+.card[data-type="group"]:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ============================================ */
+/* 掌握度變體                                   */
+/* ============================================ */
+
+.card[data-mastery="low"] {
+  border-color: rgba(239, 68, 68, 0.2);
+  background: linear-gradient(to bottom, rgba(254, 242, 242, 0.5), white);
+}
+
+.card[data-mastery="medium"] {
+  border-color: rgba(245, 158, 11, 0.2);
+  background: linear-gradient(to bottom, rgba(255, 251, 235, 0.5), white);
+}
+
+.card[data-mastery="high"] {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: linear-gradient(to bottom, rgba(236, 253, 245, 0.5), white);
+}
+
+/* ============================================ */
+/* 尺寸變體                                     */
+/* ============================================ */
+
+.card[data-size="sm"] {
+  padding: var(--space-4);
+}
+
+.card[data-size="lg"] {
+  padding: var(--space-8);
+}
+
+.card[data-size="xl"] {
+  padding: var(--space-10);
+}
+
+/* ============================================ */
+/* 卡片內部結構                                 */
+/* ============================================ */
+
+/* 卡片頭部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
+  gap: var(--space-3);
+}
+
+.card-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text);
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.card-subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+/* 卡片元信息 */
+.card-meta {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
+}
+
+/* 卡片主體 */
+.card-body {
+  flex: 1;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.card-body p {
+  margin: 0 0 var(--space-4) 0;
+}
+
+.card-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* 卡片統計區 */
+.card-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin: var(--space-4) 0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text);
+}
+
+/* 卡片對比區 */
+.card-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  margin: var(--space-3) 0;
+}
+
+.compare-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  line-height: 1.5;
+}
+
+.compare-label {
+  font-weight: var(--font-medium);
+  min-width: 60px;
+  flex-shrink: 0;
+}
+
+/* 卡片腳部 */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.card-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* ============================================ */
+/* 特殊卡片組件                                 */
+/* ============================================ */
+
+/* 群組卡片特殊樣式 */
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  cursor: pointer;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.group-header:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(139, 92, 246, 0.03) 100%);
+}
+
+.group-content {
+  background: rgba(249, 250, 251, 0.5);
+  border-top: 1px solid var(--border);
+  padding: 0;
+  display: none;
+  transition: all 0.3s ease-out;
+}
+
+.group-content.expanded {
+  display: block;
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+/* 進度環 */
+.progress-ring {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.progress-ring svg {
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text);
+}
+
+/* 掌握度指示器 */
+.mastery-indicator {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.mastery-circle {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.mastery-circle svg {
+  transform: rotate(-90deg);
+}
+
+.mastery-percent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text);
+}
+
+/* ============================================ */
+/* 響應式設計                                   */
+/* ============================================ */
+
+@media (max-width: 768px) {
+  .card {
+    padding: var(--space-4);
+  }
+  
+  .card[data-size="lg"],
+  .card[data-size="xl"] {
+    padding: var(--space-5);
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .card-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .group-header {
+    padding: var(--space-4) var(--space-5);
+  }
+}
+
+/* ============================================ */
+/* 暗色模式                                     */
+/* ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: var(--surface-dark);
+    border-color: var(--border-dark);
+  }
+  
+  .card[data-glass="true"] {
+    background: rgba(24, 24, 27, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .card[data-type="question"] {
+    background: var(--surface-dark);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+  
+  .card[data-type="group"] {
+    background: var(--surface-dark);
+  }
+  
+  .card[data-mastery="low"] {
+    background: linear-gradient(to bottom, rgba(239, 68, 68, 0.05), var(--surface-dark));
+  }
+  
+  .card[data-mastery="medium"] {
+    background: linear-gradient(to bottom, rgba(245, 158, 11, 0.05), var(--surface-dark));
+  }
+  
+  .card[data-mastery="high"] {
+    background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), var(--surface-dark));
+  }
+}

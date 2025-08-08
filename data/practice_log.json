@@ -831,5 +831,41 @@
         }
       ]
     }
+  },
+  {
+    "timestamp": "2025-08-09T00:12:47.320683",
+    "chinese_sentence": "他們週末常去公園散步。",
+    "user_answer": "They often have a walk on the weekend.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "They often take a walk in the park on weekends.",
+      "error_analysis": [
+        {
+          "category": "other",
+          "key_point_summary": "漏譯「去公園」",
+          "original_phrase": "They often have a walk on the weekend.",
+          "correction": "They often take a walk in the park on weekends.",
+          "explanation": "原句提到「去公園散步」，但學生的翻譯中缺少了「公園」這個地點，這是個重要的資訊。完整的翻譯應包含地點，例如 \"take a walk in the park\" 或 \"go to the park for a walk\"。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "動詞搭配詞不夠道地",
+          "original_phrase": "have a walk",
+          "correction": "take a walk / go for a walk",
+          "explanation": "「散步」在英文中更常見的搭配詞是 \"take a walk\" 或 \"go for a walk\"。雖然 \"have a walk\" 在文法上可以理解，但它不是最自然或最普遍的說法。學習並使用正確的搭配詞能讓你的英文聽起來更道地。",
+          "severity": "minor"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "介系詞片語未能完全表達「習慣性」",
+          "original_phrase": "on the weekend",
+          "correction": "on weekends",
+          "explanation": "中文的「週末」在這裡指的是一個習慣性的活動，表示「每逢週末」。雖然 \"on the weekend\" (美式) 或 \"at the weekend\" (英式) 是正確的，但使用複數 \"on weekends\" 更能清楚地表達這種「每週末」的重複性、習慣性動作，語意更精準。",
+          "severity": "minor"
+        }
+      ]
+    }
   }
 ]

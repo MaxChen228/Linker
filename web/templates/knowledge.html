@@ -140,7 +140,7 @@
       </h3>
       <div class="knowledge-groups">
         {% for group in knowledge_groups %}
-        <div class="knowledge-group-card" data-group-name="{{ group.name }}">
+        <div class="card" data-type="group" data-mastery="{% if group.avg_mastery < 0.3 %}low{% elif group.avg_mastery < 0.7 %}medium{% else %}high{% endif %}" data-group-name="{{ group.name }}">
           <div class="group-header" onclick="toggleGroup(this)">
             <div class="group-info">
               <h4 class="group-title">{{ group.name }}</h4>
@@ -182,7 +182,7 @@
           <div class="group-content">
             <div class="group-instances">
               {% for point in group.points %}
-              <div class="instance-card" id="point-{{ point.id }}">
+              <div class="card instance-card" data-type="instance" data-size="sm" id="point-{{ point.id }}">
                 <div class="instance-header">
                   <span class="instance-title">{{ point.key_point }}</span>
                   <span class="instance-mastery">{{ "%.0f"|format(point.mastery_level * 100) }}%</span>
@@ -244,9 +244,9 @@
         <span class="section-icon isolated">📝</span>
         單一性錯誤（{{ isolated_points|length }} 個）
       </h3>
-      <div class="knowledge-cards">
+      <div class="cards-grid knowledge-cards">
         {% for point in isolated_points %}
-        <div class="knowledge-single-card" id="point-{{ point.id }}" data-category="單一性錯誤" data-mastery="{{ point.mastery_level }}">
+        <div class="card knowledge-single-card" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" id="point-{{ point.id }}" data-category="單一性錯誤">
           <div class="card-header">
             <h4 class="card-title">{{ point.key_point }}</h4>
             <div class="mastery-badge {% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}">
@@ -291,9 +291,9 @@
         <span class="section-icon enhancement">✨</span>
         可以更好（{{ enhancement_points|length }} 個）
       </h3>
-      <div class="knowledge-cards">
+      <div class="cards-grid knowledge-cards">
         {% for point in enhancement_points %}
-        <div class="knowledge-single-card enhancement" id="point-{{ point.id }}" data-category="可以更好" data-mastery="{{ point.mastery_level }}">
+        <div class="card knowledge-single-card enhancement" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" id="point-{{ point.id }}" data-category="可以更好">
           <div class="card-header">
             <h4 class="card-title">{{ point.key_point }}</h4>
             <div class="mastery-badge high">
@@ -338,9 +338,9 @@
         <span class="section-icon other">📌</span>
         其他錯誤（{{ other_points|length }} 個）
       </h3>
-      <div class="knowledge-cards">
+      <div class="cards-grid knowledge-cards">
         {% for point in other_points %}
-        <div class="knowledge-single-card" data-category="其他錯誤" data-mastery="{{ point.mastery_level }}">
+        <div class="card knowledge-single-card" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" data-category="其他錯誤">
           <div class="card-header">
             <h4 class="card-title">{{ point.key_point }}</h4>
             <div class="mastery-badge {% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}">
@@ -393,7 +393,7 @@
   
   <script>
     function toggleGroup(header) {
-      const card = header.closest('.knowledge-group-card');
+      const card = header.closest('.card[data-type="group"]');
       const content = card.querySelector('.group-content');
       const toggle = header.querySelector('.group-toggle svg');
       
