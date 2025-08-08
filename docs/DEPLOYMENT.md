@@ -86,20 +86,59 @@ docker-compose down
 
 Render 提供免費套餐，適合個人項目。
 
-1. **準備工作**
-   - Fork 專案到你的 GitHub
-   - 註冊 [Render](https://render.com) 帳號
+#### 快速部署步驟
 
-2. **創建 Web Service**
-   - 連接 GitHub 倉庫
-   - 選擇 Python 環境
-   - 設置環境變數：
-     - `GEMINI_API_KEY`: 你的 API Key
-     - `PYTHON_VERSION`: 3.11.0
+1. **準備 GitHub 倉庫**
+```bash
+git init
+git add .
+git commit -m "Initial commit for Render deployment"
+git remote add origin https://github.com/你的用戶名/linker-cli.git
+git push -u origin main
+```
 
-3. **自動部署**
-   - Render 會自動使用 `render.yaml` 配置
+2. **創建 Render 服務**
+   - 登入 [Render Dashboard](https://render.com)
+   - 點擊 **"New +"** → **"Web Service"**
+   - 連接你的 GitHub 帳號
+   - 選擇 `linker-cli` 倉庫
+   - 填寫服務設定：
+     - **Name**: `linker-translator`
+     - **Region**: Singapore（離亞洲較近）
+     - **Branch**: `main`
+     - **Runtime**: Python 3
+     - **Build Command**: `pip install -r requirements.txt`
+     - **Start Command**: `python start.py`
+     - **Instance Type**: Free
+
+3. **設置環境變數**
+   - **Key**: `GEMINI_API_KEY`
+   - **Value**: 你的 Gemini API Key
+   - 獲取 API Key：[Google AI Studio](https://makersuite.google.com/app/apikey)
+
+4. **添加持久化儲存（可選）**
+   - 在服務設定頁面，找到 "Disks" 區域
+   - 點擊 "Add Disk"
+   - 設定：
+     - **Name**: `linker-data`
+     - **Mount Path**: `/data`
+     - **Size**: 1 GB（免費方案）
+
+5. **部署完成**
+   - 點擊 **"Create Web Service"** 開始部署
    - 首次部署約需 5-10 分鐘
+   - 部署成功後獲得 URL：`https://your-app.onrender.com`
+
+#### Render 免費方案說明
+- 750 小時/月的運行時間
+- 服務會在 15 分鐘無活動後休眠
+- 首次訪問可能需要等待啟動（約 30 秒）
+- 100 GB 頻寬/月
+
+#### 監控與管理
+- **查看日誌**：Dashboard → "Logs" 標籤
+- **手動部署**：Dashboard → "Manual Deploy" → "Deploy latest commit"
+- **自動部署**：每次推送到 GitHub 會自動部署
 
 ### Railway 部署
 
@@ -208,7 +247,7 @@ environment=GEMINI_API_KEY="your-key"
 1. **啟動局域網服務**
 ```bash
 ./run-network.sh
-# 會顯示類似：📱 其他設備請訪問: http://192.168.1.100:8000
+# 會顯示類似：其他設備請訪問: http://192.168.1.100:8000
 ```
 
 2. **手機/平板訪問**
@@ -296,6 +335,11 @@ pip install -r requirements.txt
 # 重啟服務
 ```
 
+**Q: Render 部署常見問題？**
+- **構建失敗**：檢查 requirements.txt 是否完整
+- **服務無法啟動**：確認 start.py 存在且語法正確
+- **API 無法使用**：檢查環境變數是否正確設置
+
 ### 數據管理
 
 **Q: 如何遷移數據？**
@@ -319,20 +363,23 @@ pip install -r requirements.txt
 ## 資源鏈接
 
 ### 文檔
-- [系統架構](docs/ARCHITECTURE.md)
-- [配置指南](docs/CONFIGURATION.md)
-- [開發文檔](docs/DEVELOPMENT.md)
-- [API 文檔](docs/API.md)
+- [系統架構](ARCHITECTURE.md)
+- [配置指南](CONFIGURATION.md)
+- [開發文檔](DEVELOPMENT.md)
+- [API 文檔](API.md)
+- [快速開始](QUICK_START.md)
 
 ### 獲取幫助
 - 提交 [GitHub Issue](https://github.com/your-repo/issues)
-- 查看 [FAQ](docs/FAQ.md)
+- 查看項目文檔
 - 聯繫開發團隊
 
 ### 相關工具
 - [Gemini API](https://makersuite.google.com/app/apikey) - 獲取 API Key
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) - 容器化部署
 - [Render](https://render.com) - 雲端託管
+- [Railway](https://railway.app) - 簡易部署
+- [Fly.io](https://fly.io) - 全球部署
 
 ---
 

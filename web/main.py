@@ -343,7 +343,7 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
     now = datetime.now().isoformat()
     
     return templates.TemplateResponse(
-        "knowledge_new.html",
+        "knowledge.html",
         {
             "request": request,
             "knowledge_groups": knowledge_groups,

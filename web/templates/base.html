@@ -4,7 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Linker{% endblock %}</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <!-- 新設計系統 -->
+  <link rel="stylesheet" href="/static/css/design-system/index.css" />
+  <!-- 使用拆分後的模組化 CSS -->
+  <!-- 1. 基礎層（必須最先載入） -->
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <!-- 2. 元件層（依賴基礎層的變數） -->
+  <link rel="stylesheet" href="/static/css/components.css" />
+  <!-- 3. 工具層 -->
+  <link rel="stylesheet" href="/static/css/utilities.css" />
+  <!-- 4. 頁面專屬樣式 -->
+  {% block styles %}{% endblock %}
 </head>
 <body>
   <header class="container">

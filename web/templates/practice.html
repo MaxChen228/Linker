@@ -1,34 +1,75 @@
 {% extends "base.html" %}
 {% block title %}翻譯練習 - Linker{% endblock %}
+
+{% block styles %}
+<!-- 練習頁面專屬樣式 -->
+<link rel="stylesheet" href="/static/css/pages/practice.css" />
+<link rel="stylesheet" href="/static/css/features/review.css" />
+<link rel="stylesheet" href="/static/css/features/llm-debug.css" />
+<link rel="stylesheet" href="/static/css/features/loading.css" />
+{% endblock %}
+
 {% block content %}
-  <form method="post" class="stack" id="practiceForm">
-    <div class="row">
-      <label>模式</label>
-      <select name="mode" id="modeSelect">
-        <option value="new" {% if mode == 'new' or not mode %}selected{% endif %}>新題目</option>
-        <option value="review" {% if mode == 'review' %}selected{% endif %}>複習題</option>
-      </select>
-      <label>長度</label>
-      <select name="length" id="lengthSelect">
-        <option value="short" {% if length == 'short' %}selected{% endif %}>短</option>
-        <option value="medium" {% if length == 'medium' %}selected{% endif %}>中</option>
-        <option value="long" {% if length == 'long' %}selected{% endif %}>長</option>
-      </select>
-      <label>難度</label>
-      <select name="level" id="levelSelect">
-        {% for lv in [1,2,3,4,5] %}
-        <option value="{{ lv }}" {% if level == lv %}selected{% endif %}>{{ lv }}</option>
-        {% endfor %}
-      </select>
-      <button type="button" class="btn outline" id="shuffleBtn">
-        <span class="btn-text">{% if chinese %}換一句{% else %}出題{% endif %}</span>
-      </button>
-      {% if llm_debug_data and llm_debug_data.status != 'no_data' %}
-      <button type="button" class="btn outline" id="debugBtn" onclick="showDebugModal()">
-        <span class="btn-text">🔍 查看AI對話</span>
-      </button>
-      {% endif %}
+  <div class="practice-container">
+    <!-- 頁面標題 -->
+    <div class="practice-header">
+      <h2>翻譯練習</h2>
+      <p class="practice-subtitle">選擇練習模式，開始提升你的英文能力</p>
     </div>
+    
+    <!-- 模式選擇 -->
+    <div class="mode-selection">
+      <button type="button" 
+              class="btn mode-btn" 
+              data-variant="card"
+              data-mode="new"
+              {% if mode == 'new' or not mode %}data-active="true"{% endif %}
+              onclick="selectMode('new')">
+        <span class="btn-title">新題目</span>
+        <span class="btn-desc">練習新句子</span>
+      </button>
+      <button type="button" 
+              class="btn mode-btn" 
+              data-variant="card"
+              data-mode="review"
+              {% if mode == 'review' %}data-active="true"{% endif %}
+              onclick="selectMode('review')">
+        <span class="btn-title">複習題</span>
+        <span class="btn-desc">鞏固已學知識</span>
+      </button>
+    </div>
+    
+    <form method="post" class="stack" id="practiceForm">
+      <!-- 參數設定 -->
+      <div class="params-row">
+        <div class="param-group">
+          <label>長度</label>
+          <select name="length" id="lengthSelect">
+            <option value="short" {% if length == 'short' %}selected{% endif %}>短句</option>
+            <option value="medium" {% if length == 'medium' %}selected{% endif %}>中句</option>
+            <option value="long" {% if length == 'long' %}selected{% endif %}>長句</option>
+          </select>
+        </div>
+        <div class="param-group">
+          <label>難度</label>
+          <select name="level" id="levelSelect">
+            {% for lv in [1,2,3,4,5] %}
+            <option value="{{ lv }}" {% if level == lv %}selected{% endif %}>Level {{ lv }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="button" class="btn" data-variant="primary" data-size="lg" id="shuffleBtn">
+          <span class="btn-text">{% if chinese %}換一句{% else %}開始出題{% endif %}</span>
+        </button>
+        {% if llm_debug_data and llm_debug_data.status != 'no_data' %}
+        <button type="button" class="btn" data-variant="secondary" data-size="sm" id="debugBtn" onclick="showDebugModal()">
+          <span class="btn-text">🔍</span>
+        </button>
+        {% endif %}
+      </div>
+      
+      <!-- 隱藏的mode input -->
+      <input type="hidden" name="mode" id="modeInput" value="{{ mode or 'new' }}">
 
     {% if review_empty_message %}
     <!-- 複習佇列為空的提示 -->
@@ -41,48 +82,79 @@
       <p class="muted">建議切換到「新題目」模式開始練習</p>
     </div>
     {% elif chinese %}
-    <label>中文句子</label>
-    <textarea name="chinese" rows="3" readonly>{{ chinese }}</textarea>
-    {% if hint %}
-    <div class="muted">提示：{{ hint }}</div>
-    {% endif %}
-    {% if mode == 'review' and target_points_description %}
-    <div class="muted">複習重點：{{ target_points_description }}</div>
-    {% endif %}
-    {% if target_points %}
-    <div class="knowledge-links">
-      <span class="muted">相關知識點：</span>
-      {% for point in target_points %}
-      <a href="/knowledge#point-{{ point.id }}" 
-         target="_blank" 
-         class="point-link">
-        {{ point.key_point }} 
-        <small>(掌握度: {{ (point.mastery_level * 100)|int }}%)</small>
-      </a>
-      {% if not loop.last %} | {% endif %}
-      {% endfor %}
+    <!-- 題目展示區 -->
+    <div class="question-section">
+      <div class="question-card">
+        <div class="question-label">
+          <span class="label-text">中文句子</span>
+          {% if mode == 'review' %}
+          <span class="mode-indicator review">複習模式</span>
+          {% endif %}
+        </div>
+        <div class="question-content">
+          {{ chinese }}
+        </div>
+        <textarea name="chinese" style="display: none;" readonly>{{ chinese }}</textarea>
+        
+        {% if hint %}
+        <div class="question-hint">
+          <svg class="hint-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+          </svg>
+          <span>提示：{{ hint }}</span>
+        </div>
+        {% endif %}
+        
+        {% if mode == 'review' and target_points_description %}
+        <div class="review-focus">
+          <span class="focus-label">複習重點：</span>
+          <span class="focus-content">{{ target_points_description }}</span>
+        </div>
+        {% endif %}
+      </div>
+      
+      {% if target_points %}
+      <div class="knowledge-links">
+        <span class="muted">相關知識點：</span>
+        {% for point in target_points %}
+        <a href="/knowledge#point-{{ point.id }}" 
+           target="_blank" 
+           class="point-link">
+          {{ point.key_point }} 
+          <small>(掌握度: {{ (point.mastery_level * 100)|int }}%)</small>
+        </a>
+        {% if not loop.last %} | {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
     </div>
-    {% endif %}
-    <label>你的英文翻譯</label>
-    <textarea name="english" rows="3" placeholder="請輸入你的英文翻譯...">{{ english or '' }}</textarea>
+    
+    <!-- 答案輸入區 -->
+    <div class="answer-section">
+      <div class="answer-label">你的英文翻譯</div>
+      <textarea name="english" 
+                rows="4" 
+                class="answer-input" 
+                placeholder="請輸入你的英文翻譯..."
+                autofocus>{{ english or '' }}</textarea>
+    </div>
     {% else %}
-    <div class="empty-state">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-      </svg>
-      <h3>準備開始練習</h3>
-      <p>請選擇練習模式、長度和難度，然後點擊「出題」開始練習</p>
+    <div class="practice-ready">
+      <p>點擊「開始出題」按鈕開始練習</p>
     </div>
     {% endif %}
     <input type="hidden" name="target_point_ids" value="{{ target_point_ids | tojson if target_point_ids else '[]' }}">
     {% if chinese %}
-    <div class="row">
-      <button class="btn" type="submit" id="submitBtn">
-        <span class="btn-text">提交</span>
+    <div class="submit-section">
+      <button class="btn" data-variant="primary" data-size="lg" type="submit" id="submitBtn">
+        <span class="btn-text">提交答案</span>
       </button>
     </div>
     {% endif %}
   </form>
+  </div>
   
   <!-- Loading Overlay -->
   <div class="loading-overlay" id="loadingOverlay">
@@ -178,7 +250,7 @@
     <div class="debug-modal-content">
       <div class="debug-modal-header">
         <h2>🤖 AI 對話調試資訊</h2>
-        <button class="close-btn" onclick="closeDebugModal()">&times;</button>
+        <button class="btn close-btn" data-variant="icon" onclick="closeDebugModal()">&times;</button>
       </div>
       <div class="debug-modal-body">
         <!-- 基本資訊 -->
@@ -214,7 +286,7 @@
           <div class="prompt-container">
             <div class="prompt-stats">
               <span>總長度：{{ llm_debug_data.input.prompt_length }} 字符</span>
-              <button class="copy-btn" onclick="copyToClipboard('full-prompt')">📋 複製</button>
+              <button class="btn copy-btn" data-variant="gradient" data-size="sm" onclick="copyToClipboard('full-prompt')">📋 複製</button>
             </div>
             <pre id="full-prompt" class="debug-prompt">{{ llm_debug_data.input.full_prompt }}</pre>
           </div>
@@ -226,7 +298,7 @@
           <div class="response-container">
             <div class="prompt-stats">
               <span>回應長度：{{ llm_debug_data.output.response_length }} 字符</span>
-              <button class="copy-btn" onclick="copyToClipboard('raw-response')">📋 複製原始回應</button>
+              <button class="btn copy-btn" data-variant="gradient" data-size="sm" onclick="copyToClipboard('raw-response')">📋 複製原始回應</button>
             </div>
             
             <h4>原始回應：</h4>
@@ -242,17 +314,34 @@
   {% endif %}
   
   <script>
+    // 模式選擇函數
+    function selectMode(mode) {
+      // 更新按鈕狀態
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.removeAttribute('data-active');
+      });
+      document.querySelector(`.mode-btn[data-mode="${mode}"]`).setAttribute('data-active', 'true');
+      
+      // 更新隱藏的input
+      document.getElementById('modeInput').value = mode;
+      
+      // 更新URL但不刷新頁面（可選）
+      const lengthSelect = document.getElementById('lengthSelect');
+      const levelSelect = document.getElementById('levelSelect');
+      const newUrl = `/practice?mode=${mode}&length=${lengthSelect.value}&level=${levelSelect.value}`;
+      window.history.pushState({}, '', newUrl);
+    }
+    
     // 確保 DOM 載入完成後再綁定事件
     document.addEventListener('DOMContentLoaded', function() {
       // 出題按鈕 - 使用當前選擇的值
       const shuffleBtn = document.getElementById('shuffleBtn');
       if (shuffleBtn) {
         shuffleBtn.addEventListener('click', function() {
-          const modeSelect = document.getElementById('modeSelect');
+          const mode = document.getElementById('modeInput').value;
           const lengthSelect = document.getElementById('lengthSelect');
           const levelSelect = document.getElementById('levelSelect');
           
-          const mode = modeSelect.value;
           const length = lengthSelect.value;
           const level = levelSelect.value;
           
@@ -263,17 +352,6 @@
           const url = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
           console.log('Navigating to:', url);
           window.location.href = url;
-        });
-      }
-      
-      // 模式切換時重新載入頁面
-      const modeSelect = document.getElementById('modeSelect');
-      if (modeSelect) {
-        modeSelect.addEventListener('change', function() {
-          const mode = this.value;
-          const length = document.getElementById('lengthSelect').value;
-          const level = document.getElementById('levelSelect').value;
-          window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
         });
       }
       
