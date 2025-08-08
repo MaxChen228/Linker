@@ -10,7 +10,3 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.0
     autoDeploy: false
-    disk:
-      name: linker-data
-      mountPath: /data
-      sizeGB: 1
