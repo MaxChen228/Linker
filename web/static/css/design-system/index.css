@@ -15,7 +15,7 @@
 /* 3. 組件 (Components) */
 @import url('./03-components/buttons.css');
 @import url('./03-components/cards.css');
-/* @import url('./03-components/badges.css'); */
+@import url('./03-components/badges.css');
 /* @import url('./03-components/forms.css'); */
 /* @import url('./03-components/modals.css'); */
 

@@ -213,7 +213,7 @@
               {% set nature = e.error_nature or '' %}
               {% if cat or nature %}
                 {% if cat %}
-                  <span class="error-category-badge {{ cat }}">
+                  <span class="badge error-category-badge" data-category="{{ cat }}" data-size="sm">
                     {% if cat == 'systematic' %}系統性錯誤
                     {% elif cat == 'isolated' %}單一性錯誤
                     {% elif cat == 'enhancement' %}可以更好
@@ -222,7 +222,7 @@
                 {% elif nature %}
                   {% set nature_map = {'系統性錯誤': 'systematic', '單一性錯誤': 'isolated', '可以更好': 'enhancement', '其他錯誤': 'other'} %}
                   {% set cat_class = nature_map.get(nature, 'other') %}
-                  <span class="error-category-badge {{ cat_class }}">
+                  <span class="badge error-category-badge" data-category="{{ cat_class }}" data-size="sm">
                     {{ nature }}
                   </span>
                 {% endif %}

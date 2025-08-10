@@ -13,17 +13,17 @@
     <div class="header-top">
       <h2 class="page-title">我的知識點庫</h2>
       <div class="quick-stats">
-        <div class="stat-badge">
-          <span class="stat-label">總知識點</span>
-          <span class="stat-value">{{ points|length }}</span>
+        <div class="badge stat-badge" data-variant="primary" data-size="xl">
+          <span class="badge-label">總知識點</span>
+          <span class="badge-value">{{ points|length }}</span>
         </div>
-        <div class="stat-badge">
-          <span class="stat-label">待複習</span>
-          <span class="stat-value">{{ due_points|length }}</span>
+        <div class="badge stat-badge" data-variant="warning" data-size="xl">
+          <span class="badge-label">待複習</span>
+          <span class="badge-value">{{ due_points|length }}</span>
         </div>
-        <div class="stat-badge">
-          <span class="stat-label">平均掌握度</span>
-          <span class="stat-value">{{ "%.0f"|format(stats.avg_mastery * 100) }}%</span>
+        <div class="badge stat-badge" data-variant="success" data-size="xl">
+          <span class="badge-label">平均掌握度</span>
+          <span class="badge-value">{{ "%.0f"|format(stats.avg_mastery * 100) }}%</span>
         </div>
       </div>
     </div>
@@ -249,7 +249,7 @@
         <div class="card knowledge-single-card" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" id="point-{{ point.id }}" data-category="單一性錯誤">
           <div class="card-header">
             <h4 class="card-title">{{ point.key_point }}</h4>
-            <div class="mastery-badge {% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}">
+            <div class="badge mastery-badge" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}">
               {{ "%.0f"|format(point.mastery_level * 100) }}%
             </div>
           </div>
@@ -296,7 +296,7 @@
         <div class="card knowledge-single-card enhancement" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" id="point-{{ point.id }}" data-category="可以更好">
           <div class="card-header">
             <h4 class="card-title">{{ point.key_point }}</h4>
-            <div class="mastery-badge high">
+            <div class="badge mastery-badge" data-mastery="high">
               {{ "%.0f"|format(point.mastery_level * 100) }}%
             </div>
           </div>
@@ -343,7 +343,7 @@
         <div class="card knowledge-single-card" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" data-category="其他錯誤">
           <div class="card-header">
             <h4 class="card-title">{{ point.key_point }}</h4>
-            <div class="mastery-badge {% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}">
+            <div class="badge mastery-badge" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}">
               {{ "%.0f"|format(point.mastery_level * 100) }}%
             </div>
           </div>

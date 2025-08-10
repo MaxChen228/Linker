@@ -383,6 +383,11 @@ def test_cards(request: Request):
     return templates.TemplateResponse("test_cards.html", {"request": request})
 
 
+@app.get("/test-badges")
+def test_badges(request: Request):
+    return templates.TemplateResponse("test_badges.html", {"request": request})
+
+
 @app.get("/healthz")
 def healthz():
     # 簡易健康檢查：確保模板與資料夾存在
