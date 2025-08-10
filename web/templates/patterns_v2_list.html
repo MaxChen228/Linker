@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+{% block title %}句型知識庫 - Linker{% endblock %}
+
+{% block styles %}
+<!-- 句型列表頁面專屬樣式 - 使用新設計系統 -->
+<link rel="stylesheet" href="/static/css/pages/patterns_v2.css" />
+{% endblock %}
+
+{% block content %}
+  <!-- 頁面標題與統計 -->
+  <div class="patterns-header">
+    <div class="header-top">
+      <h2 class="page-title">英文句型知識庫</h2>
+      <div class="quick-stats">
+        <div class="badge stat-badge" data-variant="primary" data-size="xl">
+          <span class="badge-label">總句型</span>
+          <span class="badge-value">{{ patterns|length }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 搜尋欄 -->
+    <div class="search-bar">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input type="text" 
+             id="patternSearch" 
+             placeholder="搜尋句型、公式或例句..." 
+             value="{{ q }}"
+             autocomplete="off" />
+      <span class="search-hint">即時搜尋</span>
+    </div>
+  </div>
+  
+  <!-- 分類篩選 -->
+  <div class="filter-container">
+    <div class="filter-section">
+      <h3 class="filter-title">句型分類</h3>
+      <div class="filter-tabs">
+        <button class="btn filter-tab {% if not category %}active{% endif %}" 
+                data-variant="tab" 
+                data-filter-type="category" 
+                data-filter-value="">
+          全部
+          <span class="btn-count">{{ patterns|length }}</span>
+        </button>
+        {% for cat in categories %}
+          <button class="btn filter-tab {% if cat == category %}active{% endif %}" 
+                  data-variant="tab" 
+                  data-filter-type="category" 
+                  data-filter-value="{{ cat }}">
+            {{ cat }}
+            <span class="btn-count">{{ patterns|selectattr('category', 'equalto', cat)|list|length }}</span>
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- 難度篩選 -->
+    <div class="filter-section">
+      <h3 class="filter-title">難度等級</h3>
+      <div class="filter-pills">
+        <button class="btn filter-pill active" data-variant="pill" data-filter-type="difficulty" data-filter-value="">
+          全部
+        </button>
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="1">
+          ⭐ 基礎
+        </button>
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="2">
+          ⭐⭐ 初級
+        </button>
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="3">
+          ⭐⭐⭐ 中級
+        </button>
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="4">
+          ⭐⭐⭐⭐ 進階
+        </button>
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="5">
+          ⭐⭐⭐⭐⭐ 專業
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 句型列表網格 -->
+  <div class="patterns-grid">
+    {% for pattern in patterns %}
+    <div class="pattern-card-compact" 
+         data-category="{{ pattern.category or '' }}" 
+         data-difficulty="{{ pattern.difficulty or 3 }}"
+         data-search-text="{{ (pattern.pattern|lower) ~ ' ' ~ (pattern.formula|default('')|lower) ~ ' ' ~ (pattern.category|default('')|lower) }}">
+      
+      <a href="/patterns/v2/{{ pattern.id }}" class="pattern-link">
+        <div class="pattern-header-compact">
+          <h3 class="pattern-formula">{{ pattern.pattern }}</h3>
+          <div class="pattern-badges">
+            {% if pattern.category %}
+              <span class="badge category-badge" data-variant="primary">{{ pattern.category }}</span>
+            {% endif %}
+            <span class="badge difficulty-badge" data-level="{{ pattern.difficulty or 3 }}">
+              {% if pattern.difficulty == 1 %}⭐{% elif pattern.difficulty == 2 %}⭐⭐{% elif pattern.difficulty == 3 %}⭐⭐⭐{% elif pattern.difficulty == 4 %}⭐⭐⭐⭐{% else %}⭐⭐⭐⭐⭐{% endif %}
+            </span>
+            {% if pattern.frequency %}
+              <span class="badge frequency-badge" data-freq="{{ pattern.frequency }}">
+                {% if pattern.frequency == 'high' %}高頻{% elif pattern.frequency == 'medium' %}中頻{% else %}低頻{% endif %}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+        
+        {% if pattern.formula %}
+        <div class="pattern-formula-compact">
+          <code>{{ pattern.formula[:80] }}{% if pattern.formula|length > 80 %}...{% endif %}</code>
+        </div>
+        {% endif %}
+        
+        <div class="pattern-stats-compact">
+          {% if pattern.examples %}
+            <span class="stat-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+              {{ pattern.examples|length }} 例句
+            </span>
+          {% endif %}
+          {% if pattern.variations %}
+            <span class="stat-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+              </svg>
+              {{ pattern.variations|length }} 變化
+            </span>
+          {% endif %}
+          {% if pattern.common_errors %}
+            <span class="stat-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              {{ pattern.common_errors|length }} 錯誤
+            </span>
+          {% endif %}
+        </div>
+        
+        {% if pattern.examples and pattern.examples|length > 0 %}
+        <div class="pattern-example-preview">
+          <div class="example-item">
+            <span class="example-zh">{{ pattern.examples[0].zh[:40] }}{% if pattern.examples[0].zh|length > 40 %}...{% endif %}</span>
+            <span class="example-en">{{ pattern.examples[0].en[:40] }}{% if pattern.examples[0].en|length > 40 %}...{% endif %}</span>
+          </div>
+        </div>
+        {% endif %}
+        
+        <div class="pattern-footer">
+          <span class="view-detail">查看詳情 →</span>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- 無結果提示 -->
+  <div class="no-results" style="display: none;">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+      <path d="M11 8v3m0 4h.01"></path>
+    </svg>
+    <p>沒有找到符合條件的句型</p>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 篩選功能
+let activeFilters = {
+  category: '{{ category }}',
+  difficulty: '',
+  search: '{{ q }}'
+};
+
+function applyFilters() {
+  const items = document.querySelectorAll('.pattern-card-compact');
+  let hasResults = false;
+  
+  items.forEach(item => {
+    let show = true;
+    
+    // 檢查類別篩選
+    if (activeFilters.category) {
+      show = show && item.dataset.category === activeFilters.category;
+    }
+    
+    // 檢查難度篩選
+    if (activeFilters.difficulty) {
+      show = show && item.dataset.difficulty === activeFilters.difficulty;
+    }
+    
+    // 檢查搜尋條件
+    if (activeFilters.search) {
+      const searchText = item.dataset.searchText || '';
+      show = show && searchText.includes(activeFilters.search.toLowerCase());
+    }
+    
+    item.style.display = show ? '' : 'none';
+    if (show) hasResults = true;
+  });
+  
+  document.querySelector('.no-results').style.display = hasResults ? 'none' : 'flex';
+}
+
+// 搜尋功能
+document.getElementById('patternSearch').addEventListener('input', function(e) {
+  activeFilters.search = e.target.value;
+  applyFilters();
+  
+  // 更新 URL 參數
+  const url = new URL(window.location);
+  if (e.target.value) {
+    url.searchParams.set('q', e.target.value);
+  } else {
+    url.searchParams.delete('q');
+  }
+  window.history.replaceState({}, '', url);
+});
+
+// 分類篩選
+document.querySelectorAll('[data-filter-type="category"]').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const value = this.dataset.filterValue;
+    
+    // 更新按鈕狀態
+    document.querySelectorAll('[data-filter-type="category"]').forEach(b => {
+      b.classList.remove('active');
+    });
+    this.classList.add('active');
+    
+    // 更新篩選
+    activeFilters.category = value;
+    applyFilters();
+    
+    // 更新 URL
+    const url = new URL(window.location);
+    if (value) {
+      url.searchParams.set('category', value);
+    } else {
+      url.searchParams.delete('category');
+    }
+    window.history.replaceState({}, '', url);
+  });
+});
+
+// 難度篩選
+document.querySelectorAll('[data-filter-type="difficulty"]').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const value = this.dataset.filterValue;
+    
+    // 更新按鈕狀態
+    document.querySelectorAll('[data-filter-type="difficulty"]').forEach(b => {
+      b.classList.remove('active');
+    });
+    this.classList.add('active');
+    
+    // 更新篩選
+    activeFilters.difficulty = value;
+    applyFilters();
+  });
+});
+
+// 初始化
+applyFilters();
+</script>
+{% endblock %}

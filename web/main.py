@@ -141,6 +141,103 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
     )
 
 
+@app.get("/patterns/v2", response_class=HTMLResponse)
+def patterns_v2(request: Request, category: Optional[str] = None, q: Optional[str] = None):
+    """擴充版句型列表頁面"""
+    import json
+    from pathlib import Path
+    
+    # 暫時使用測試資料，之後改為完整資料
+    enriched_file = Path("data/test_patterns_enriched.json")
+    if enriched_file.exists():
+        with open(enriched_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            patterns = data.get('patterns', [])
+    else:
+        # 降級使用原始資料
+        all_patterns = assets.get_grammar_patterns()
+        patterns = [
+            {
+                'id': p.id or f"GP{i:03d}",
+                'pattern': p.pattern,
+                'category': p.category,
+                'explanation': p.explanation,
+                'difficulty': 3,  # 預設中等難度
+                'frequency': 'medium',
+                'examples': [
+                    {'zh': p.example_zh, 'en': p.example_en}
+                ] if p.example_zh or p.example_en else []
+            }
+            for i, p in enumerate(all_patterns, 1)
+        ]
+    
+    # 提取分類
+    categories = sorted({p.get('category') for p in patterns if p.get('category')})
+    
+    # 篩選
+    filtered_patterns = patterns
+    if category:
+        filtered_patterns = [p for p in filtered_patterns if p.get('category') == category]
+    if q:
+        query = q.strip().lower()
+        filtered_patterns = [
+            p for p in filtered_patterns
+            if (query in p.get('pattern', '').lower())
+            or (query in p.get('formula', '').lower())
+            or (query in p.get('explanation', '').lower())
+            or any(query in ex.get('zh', '').lower() or query in ex.get('en', '').lower() 
+                   for ex in p.get('examples', []))
+        ]
+    
+    return templates.TemplateResponse(
+        "patterns_v2_list.html",
+        {
+            "request": request,
+            "patterns": filtered_patterns[:200],
+            "category": category or "",
+            "categories": categories,
+            "q": q or "",
+            "active": "patterns",
+        },
+    )
+
+
+@app.get("/patterns/v2/{pattern_id}", response_class=HTMLResponse)
+def pattern_detail(request: Request, pattern_id: str):
+    """句型詳情頁面"""
+    import json
+    from pathlib import Path
+    
+    # 載入擴充資料
+    enriched_file = Path("data/test_patterns_enriched.json")
+    if enriched_file.exists():
+        with open(enriched_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            patterns = data.get('patterns', [])
+    else:
+        patterns = []
+    
+    # 尋找指定句型
+    pattern = None
+    for p in patterns:
+        if p.get('id') == pattern_id:
+            pattern = p
+            break
+    
+    if not pattern:
+        # 如果找不到，返回列表頁
+        return RedirectResponse(url="/patterns/v2", status_code=302)
+    
+    return templates.TemplateResponse(
+        "patterns_v2_detail.html",
+        {
+            "request": request,
+            "pattern": pattern,
+            "active": "patterns",
+        },
+    )
+
+
 # 分級例句頁面不對使用者展示；仍保留 API 給日後管理用途（暫時移出導覽，不渲染）
 
 

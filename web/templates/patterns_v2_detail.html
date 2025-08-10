@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+{% block title %}{{ pattern.pattern }} - 句型詳情 - Linker{% endblock %}
+
+{% block styles %}
+<!-- 句型詳情頁面專屬樣式 -->
+<link rel="stylesheet" href="/static/css/pages/patterns_v2_detail.css" />
+{% endblock %}
+
+{% block content %}
+<div class="pattern-detail-container">
+  <!-- 返回按鈕 -->
+  <div class="breadcrumb">
+    <a href="/patterns/v2" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      返回列表
+    </a>
+  </div>
+
+  <!-- 1. 頂部概覽 -->
+  <section class="pattern-overview">
+    <div class="overview-header">
+      <h1 class="pattern-title">{{ pattern.pattern }}</h1>
+      {% if pattern.formula %}
+      <div class="pattern-formula-box">
+        <code>{{ pattern.formula }}</code>
+      </div>
+      {% endif %}
+    </div>
+    
+    <div class="quick-info">
+      {% if pattern.category %}
+      <div class="info-card">
+        <span class="label">分類</span>
+        <span class="value">{{ pattern.category }}</span>
+      </div>
+      {% endif %}
+      <div class="info-card">
+        <span class="label">難度</span>
+        <span class="value">
+          {% if pattern.difficulty == 1 %}⭐ 基礎
+          {% elif pattern.difficulty == 2 %}⭐⭐ 初級
+          {% elif pattern.difficulty == 3 %}⭐⭐⭐ 中級  
+          {% elif pattern.difficulty == 4 %}⭐⭐⭐⭐ 進階
+          {% else %}⭐⭐⭐⭐⭐ 專業{% endif %}
+        </span>
+      </div>
+      {% if pattern.frequency %}
+      <div class="info-card">
+        <span class="label">使用頻率</span>
+        <span class="value">
+          {% if pattern.frequency == 'high' %}高{% elif pattern.frequency == 'medium' %}中{% else %}低{% endif %}
+        </span>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if pattern.usage_context %}
+    <div class="usage-context">
+      {% if pattern.usage_context.primary_function %}
+      <div class="context-item">
+        <strong>主要功能：</strong>{{ pattern.usage_context.primary_function }}
+      </div>
+      {% endif %}
+      {% if pattern.usage_context.pragmatic_effect %}
+      <div class="context-item">
+        <strong>語用效果：</strong>{{ pattern.usage_context.pragmatic_effect }}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- 2. 結構分析 -->
+  {% if pattern.structure_analysis %}
+  <section class="pattern-structure collapsible expanded">
+    <h2 class="section-title">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M12 6v6l4 2"></path>
+      </svg>
+      結構分析
+      <button class="toggle-btn" aria-label="切換展開">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+    </h2>
+    <div class="section-content">
+      {% if pattern.structure_analysis.components %}
+      <div class="structure-block">
+        <h3>成分說明</h3>
+        <p>{{ pattern.structure_analysis.components }}</p>
+      </div>
+      {% endif %}
+      
+      {% if pattern.structure_analysis.word_order %}
+      <div class="structure-block">
+        <h3>語序規則</h3>
+        <p>{{ pattern.structure_analysis.word_order }}</p>
+      </div>
+      {% endif %}
+      
+      <div class="components-grid">
+        {% if pattern.structure_analysis.required_elements %}
+        <div class="component-card required">
+          <h4>必要成分</h4>
+          <ul>
+            {% for element in pattern.structure_analysis.required_elements %}
+            <li>{{ element }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        
+        {% if pattern.structure_analysis.optional_elements %}
+        <div class="component-card optional">
+          <h4>可選成分</h4>
+          <ul>
+            {% for element in pattern.structure_analysis.optional_elements %}
+            <li>{{ element }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+      
+      {% if pattern.structure_analysis.grammatical_features %}
+      <div class="structure-block">
+        <h3>語法特徵</h3>
+        <p>{{ pattern.structure_analysis.grammatical_features }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- 3. 例句展示 -->
+  {% if pattern.examples %}
+  <section class="pattern-examples">
+    <h2 class="section-title">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+      例句學習
+      <span class="count-badge">{{ pattern.examples|length }} 個</span>
+    </h2>
+    
+    <!-- 難度篩選 -->
+    <div class="level-filter">
+      <button class="level-btn active" data-level="all">全部</button>
+      <button class="level-btn" data-level="basic">基礎</button>
+      <button class="level-btn" data-level="intermediate">中級</button>
+      <button class="level-btn" data-level="advanced">進階</button>
+    </div>
+    
+    <!-- 例句卡片 -->
+    <div class="examples-grid">
+      {% for example in pattern.examples %}
+      <div class="example-card" data-level="{{ example.level or 'intermediate' }}">
+        <div class="example-header">
+          <span class="level-badge {{ example.level or 'intermediate' }}">
+            {{ example.level|default('intermediate')|capitalize }}
+          </span>
+          {% if example.vocabulary_level %}
+          <span class="vocab-level">{{ example.vocabulary_level }}</span>
+          {% endif %}
+        </div>
+        <div class="example-content">
+          <p class="chinese">{{ example.zh }}</p>
+          <p class="english">{{ example.en }}</p>
+        </div>
+        {% if example.focus or example.context_note %}
+        <div class="example-footer">
+          {% if example.focus %}
+          <span class="focus-point">{{ example.focus }}</span>
+          {% endif %}
+          {% if example.context_note %}
+          <span class="context-note">{{ example.context_note }}</span>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- 4. 變化形式 -->
+  {% if pattern.variations %}
+  <section class="pattern-variations">
+    <h2 class="section-title">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M8 12h8M12 8v8"></path>
+      </svg>
+      變化形式
+    </h2>
+    
+    <div class="variation-tabs">
+      {% if pattern.variations.tense_forms %}
+      <button class="tab-btn active" data-tab="tense">時態</button>
+      {% endif %}
+      {% if pattern.variations.voice %}
+      <button class="tab-btn" data-tab="voice">語態</button>
+      {% endif %}
+      {% if pattern.variations.polarity %}
+      <button class="tab-btn" data-tab="polarity">肯否疑</button>
+      {% endif %}
+      {% if pattern.variations.modality %}
+      <button class="tab-btn" data-tab="modal">情態</button>
+      {% endif %}
+    </div>
+    
+    {% if pattern.variations.tense_forms %}
+    <div class="tab-content active" data-content="tense">
+      <div class="variation-grid">
+        {% for tense, example in pattern.variations.tense_forms.items() %}
+        <div class="variation-item">
+          <h4>{{ tense|replace('_', ' ')|title }}</h4>
+          <p>{{ example }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if pattern.variations.voice %}
+    <div class="tab-content" data-content="voice">
+      <div class="variation-grid">
+        {% for voice, example in pattern.variations.voice.items() %}
+        <div class="variation-item">
+          <h4>{{ voice|capitalize }}</h4>
+          <p>{{ example }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if pattern.variations.polarity %}
+    <div class="tab-content" data-content="polarity">
+      <div class="variation-grid">
+        {% for polarity, example in pattern.variations.polarity.items() %}
+        <div class="variation-item">
+          <h4>{{ polarity|capitalize }}</h4>
+          <p>{{ example }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <!-- 5. 常用搭配 -->
+  {% if pattern.collocations %}
+  <section class="pattern-collocations">
+    <h2 class="section-title">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="9" y1="3" x2="9" y2="21"></line>
+        <line x1="3" y1="9" x2="21" y2="9"></line>
+      </svg>
+      常用搭配
+    </h2>
+    
+    <div class="collocation-container">
+      {% if pattern.collocations.high_frequency %}
+      <div class="collocation-lists">
+        {% if pattern.collocations.high_frequency.verbs %}
+        <div class="collocation-category">
+          <h4>高頻動詞</h4>
+          <ol class="freq-list">
+            {% for verb in pattern.collocations.high_frequency.verbs %}
+            <li>{{ verb }}</li>
+            {% endfor %}
+          </ol>
+        </div>
+        {% endif %}
+        
+        {% if pattern.collocations.high_frequency.nouns %}
+        <div class="collocation-category">
+          <h4>高頻名詞</h4>
+          <ol class="freq-list">
+            {% for noun in pattern.collocations.high_frequency.nouns %}
+            <li>{{ noun }}</li>
+            {% endfor %}
+          </ol>
+        </div>
+        {% endif %}
+        
+        {% if pattern.collocations.high_frequency.adjectives %}
+        <div class="collocation-category">
+          <h4>高頻形容詞</h4>
+          <ol class="freq-list">
+            {% for adj in pattern.collocations.high_frequency.adjectives %}
+            <li>{{ adj }}</li>
+            {% endfor %}
+          </ol>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+      {% if pattern.collocations.fixed_phrases %}
+      <div class="fixed-phrases">
+        <h4>固定搭配</h4>
+        <div class="phrase-list">
+          {% for phrase in pattern.collocations.fixed_phrases %}
+          <div class="phrase-item">
+            <strong>{{ phrase.phrase }}</strong>
+            <span class="meaning">{{ phrase.meaning }}</span>
+            {% if phrase.example %}
+            <p class="phrase-example">{{ phrase.example }}</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- 6. 常見錯誤 -->
+  {% if pattern.common_errors %}
+  <section class="pattern-errors">
+    <h2 class="section-title">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      常見錯誤
+    </h2>
+    
+    <div class="errors-list">
+      {% for error in pattern.common_errors %}
+      <div class="error-card">
+        <div class="error-header">
+          <span class="error-type">{{ error.error_type|replace('_', ' ')|title }}</span>
+          {% if error.frequency %}
+          <span class="frequency-badge {{ error.frequency }}">
+            {% if error.frequency == 'very_common' %}極常見
+            {% elif error.frequency == 'common' %}常見
+            {% else %}偶爾{% endif %}
+          </span>
+          {% endif %}
+        </div>
+        <div class="error-content">
+          <div class="wrong">
+            <span class="label">❌ 錯誤</span>
+            <p>{{ error.error_pattern }}</p>
+          </div>
+          <div class="correct">
+            <span class="label">✓ 正確</span>
+            <p>{{ error.correction }}</p>
+          </div>
+          {% if error.explanation %}
+          <div class="explanation">
+            <p>{{ error.explanation }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- 7. 練習句子 -->
+  {% if pattern.practice_sentences %}
+  <section class="pattern-practice">
+    <h2 class="section-title">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+      </svg>
+      練習題目
+    </h2>
+    
+    <div class="practice-list">
+      {% for sentence in pattern.practice_sentences %}
+      <div class="practice-item">
+        <span class="practice-number">{{ loop.index }}</span>
+        <p class="practice-question">{{ sentence }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 可摺疊區塊
+document.querySelectorAll('.collapsible').forEach(section => {
+  const toggle = section.querySelector('.toggle-btn');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      section.classList.toggle('expanded');
+    });
+  }
+});
+
+// 標籤頁切換
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    
+    // 更新按鈕狀態
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // 切換內容
+    document.querySelectorAll('.tab-content').forEach(content => {
+      if (content.dataset.content === tab) {
+        content.classList.add('active');
+      } else {
+        content.classList.remove('active');
+      }
+    });
+  });
+});
+
+// 例句難度篩選
+document.querySelectorAll('.level-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const level = btn.dataset.level;
+    
+    // 更新按鈕狀態
+    document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // 篩選例句
+    document.querySelectorAll('.example-card').forEach(card => {
+      if (level === 'all' || card.dataset.level === level) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+</script>
+{% endblock %}
