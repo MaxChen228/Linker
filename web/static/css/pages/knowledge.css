@@ -940,8 +940,25 @@
   }
   
   .queue-item {
-    background: var(--surface-base);
+    background: var(--surface-elevated);
     border-color: var(--border-dark);
+  }
+  
+  .queue-item:hover {
+    background: var(--surface-base);
+    border-color: var(--border-focus);
+  }
+  
+  .queue-item-badge .badge.isolated {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #fbbf24;
+  }
+  
+  .queue-item-badge .badge.enhancement {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #34d399;
   }
   
   .filter-tab {

@@ -17,14 +17,14 @@
 
 .debug-modal-content {
   position: relative;
-  background-color: white;
+  background-color: var(--surface-base);
   margin: 2% auto;
   padding: 0;
   width: 90%;
   max-width: 1200px;
   max-height: 90vh;
   border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px var(--shadow-color-dark);
   display: flex;
   flex-direction: column;
   animation: slideUp 0.3s ease-out;
@@ -32,8 +32,8 @@
 
 .debug-modal-header {
   padding: 20px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--accent-600) 0%, var(--accent-700) 100%);
+  color: var(--text-inverse);
   border-radius: 12px 12px 0 0;
   display: flex;
   justify-content: space-between;
@@ -55,29 +55,29 @@
 .debug-section {
   margin-bottom: 30px;
   padding: 20px;
-  background: #f8f9fa;
+  background: var(--surface-elevated);
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--border-default);
 }
 
 .debug-section h3 {
   margin: 0 0 15px 0;
-  color: #495057;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid var(--border-default);
   padding-bottom: 10px;
 }
 
 .debug-section h4 {
   margin: 15px 0 10px 0;
-  color: #6c757d;
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 600;
 }
 
 .debug-info {
-  background: white;
+  background: var(--surface-base);
   padding: 15px;
   border-radius: 6px;
 }
@@ -86,7 +86,7 @@
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .info-row:last-child {
@@ -95,24 +95,24 @@
 
 .info-label {
   font-weight: 600;
-  color: #495057;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .info-value {
-  color: #212529;
+  color: var(--text-primary);
   font-size: 14px;
   font-family: 'Courier New', monospace;
 }
 
 .info-value.success {
-  color: #28a745;
+  color: var(--color-success);
   font-weight: 600;
 }
 
 .debug-json, .debug-prompt {
-  background: #282c34;
-  color: #abb2bf;
+  background: var(--surface-dark, #282c34);
+  color: var(--text-secondary);
   padding: 15px;
   border-radius: 6px;
   overflow-x: auto;
@@ -707,7 +707,8 @@
   }
   
   .answer-input:focus {
-    background: rgba(79, 70, 229, 0.05);
+    background: rgba(79, 70, 229, 0.15);  /* Increased opacity from 0.05 to 0.15 for better visibility */
+    border-color: var(--accent-500);
   }
   
   .knowledge-links {

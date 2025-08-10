@@ -98,7 +98,7 @@
 /* Ghost - 輕量操作 */
 .btn[data-variant="ghost"] {
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-secondary);  /* Changed from muted to secondary for better contrast */
   border: none;
 }
 
@@ -368,4 +368,76 @@
   height: var(--btn-height-sm);
   padding: var(--btn-padding-sm);
   font-size: var(--btn-font-sm);
+}
+
+/* ========== 深色模式 ========== */
+@media (prefers-color-scheme: dark) {
+  .btn {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-dark);
+  }
+  
+  .btn:hover:not(:disabled):not([data-loading="true"]) {
+    background: var(--surface-base);
+    border-color: var(--border-focus);
+  }
+  
+  .btn[data-variant="primary"] {
+    background: var(--color-primary);
+    color: var(--text-inverse);
+  }
+  
+  .btn[data-variant="primary"]:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+  }
+  
+  .btn[data-variant="secondary"] {
+    background: transparent;
+    color: var(--text-primary);
+    border-color: var(--border-dark);
+  }
+  
+  .btn[data-variant="secondary"]:hover:not(:disabled) {
+    background: var(--surface-elevated);
+    border-color: var(--border-focus);
+  }
+  
+  .btn[data-variant="ghost"] {
+    color: var(--text-secondary);
+  }
+  
+  .btn[data-variant="ghost"]:hover:not(:disabled) {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+  }
+  
+  .btn[data-variant="tab"] {
+    color: var(--text-secondary);
+  }
+  
+  .btn[data-variant="tab"]:hover:not(:disabled) {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+  }
+  
+  .btn[data-variant="tab"].active,
+  .btn[data-variant="tab"][data-active="true"] {
+    background: var(--color-primary);
+    color: var(--text-inverse);
+  }
+  
+  .btn[data-variant="card"]:hover:not(:disabled) {
+    background: var(--surface-elevated);
+  }
+  
+  .btn[data-variant="card"].active,
+  .btn[data-variant="card"][data-active="true"] {
+    background: var(--surface-elevated);
+  }
+  
+  .btn[data-variant="icon"]:hover:not(:disabled) {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+  }
 }

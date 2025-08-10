@@ -469,6 +469,13 @@
   
   .category-tab {
     background: var(--surface-elevated);
+    color: var(--text-secondary);
+    border-color: var(--border-dark);
+  }
+  
+  .category-tab:hover {
+    background: var(--surface-base);
+    color: var(--text-primary);
   }
   
   .category-tab.active {
@@ -481,6 +488,11 @@
   
   .pattern-card {
     background: var(--surface-elevated);
+    border-color: var(--border-dark);
+  }
+  
+  .pattern-card:hover {
+    border-color: var(--border-focus);
   }
   
   .pattern-card[data-glass="true"] {
@@ -490,12 +502,25 @@
     border-color: var(--glass-border-dark);
   }
   
+  .pattern-category {
+    background: var(--surface-base);
+    color: var(--text-primary);
+    border: 1px solid var(--border-dark);
+  }
+  
   .example-item {
     background: var(--surface-base);
+    border-color: var(--border-dark);
+  }
+  
+  .btn-icon:hover {
+    background: var(--hover-bg);
+    border-color: var(--border-dark);
   }
   
   #noResults {
     background: var(--surface-elevated);
+    border-color: var(--border-dark);
   }
   
   #copyToast {

@@ -38,15 +38,21 @@
   --color-primary-light: var(--accent-50);
   --color-primary-lighter: var(--accent-100);
   
-  /* Success, Warning, Error using subtle variations */
-  --color-success: var(--accent-600);
-  --color-success-light: var(--accent-50);
+  /* Proper Semantic Colors for better UX */
+  --color-success: #10b981;  /* Green for success */
+  --color-success-hover: #059669;
+  --color-success-active: #047857;
+  --color-success-light: #d1fae5;
   
-  --color-warning: var(--gray-600);
-  --color-warning-light: var(--gray-100);
+  --color-warning: #f59e0b;  /* Orange for warning */
+  --color-warning-hover: #d97706;
+  --color-warning-active: #b45309;
+  --color-warning-light: #fed7aa;
   
-  --color-error: var(--gray-700);
-  --color-error-light: var(--gray-100);
+  --color-error: #ef4444;  /* Red for error */
+  --color-error-hover: #dc2626;
+  --color-error-active: #b91c1c;
+  --color-error-light: #fee2e2;
   
   --color-info: var(--accent-500);
   --color-info-light: var(--accent-50);
@@ -90,6 +96,16 @@
   --hover-border: var(--gray-400);
   --active-bg: var(--gray-200);
   --focus-ring: 0 0 0 3px var(--accent-100);
+  
+  /* ========== Missing Variables for Compatibility ========== */
+  --primary-base: var(--accent-600);
+  --warning-base: #f59e0b;
+  --success-base: #10b981;
+  --error-base: #ef4444;
+  --bg-tertiary: var(--gray-200);
+  --error-border: #fca5a5;
+  --brand-600-rgb: 79, 70, 229;  /* RGB values for accent-600 */
+  --accent-600-rgb: 79, 70, 229;  /* Alternative name */
 }
 
 /* ========== Dark Mode ========== */
@@ -98,24 +114,39 @@
     /* Surface Colors */
     --surface-base: #18181b;
     --surface-elevated: #27272a;
+    --surface-subtle: #1f1f23;  /* Added for dark mode */
     --surface-overlay: rgba(24, 24, 27, 0.9);
     --surface-glass: rgba(24, 24, 27, 0.8);
+    --surface-dark: #0f0f11;  /* Added for components needing darker surface */
     
     /* Text Colors */
     --text-primary: #fafafa;
     --text-secondary: #a1a1aa;
     --text-muted: #71717a;
     --text-disabled: #52525b;
+    --text-accent: var(--accent-400);  /* Lighter accent for dark mode */
     
     /* Border Colors */
     --border-light: #27272a;
     --border-default: #3f3f46;
     --border-dark: #52525b;
+    --border-focus: var(--accent-500);  /* Brighter focus for dark mode */
+    --glass-border-dark: rgba(255, 255, 255, 0.1);  /* Added for glass morphism */
     
     /* Background Colors */
     --bg-primary: var(--surface-base);
     --bg-secondary: var(--surface-elevated);
+    --bg-tertiary: var(--surface-subtle);  /* Added */
     --bg-overlay: rgba(0, 0, 0, 0.7);
+    --bg-accent-subtle: rgba(99, 102, 241, 0.1);  /* Added - dark mode accent bg */
+    --bg-gray-subtle: var(--gray-900);  /* Added */
+    
+    /* Interactive States */
+    --hover-bg: rgba(255, 255, 255, 0.05);  /* Added - subtle hover for dark */
+    --hover-bg-dark: rgba(0, 0, 0, 0.3);  /* Added - darker hover option */
+    --hover-border: var(--gray-600);
+    --active-bg: rgba(255, 255, 255, 0.1);  /* Added - active state for dark */
+    --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.3);  /* Adjusted for dark */
     
     /* Shadow Colors */
     --shadow-color: rgba(0, 0, 0, 0.3);
