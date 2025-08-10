@@ -1,0 +1,528 @@
+/* ===================================
+   Design System - Loading Components
+   統一載入狀態組件系統
+   =================================== */
+
+/* ========== Loading Spinners ========== */
+
+/* Base Spinner */
+.spinner {
+  display: inline-block;
+  width: var(--spinner-size, 40px);
+  height: var(--spinner-size, 40px);
+  position: relative;
+  animation: var(--animation-spin);
+}
+
+/* Spinner Sizes */
+.spinner[data-size="xs"] {
+  --spinner-size: 16px;
+}
+
+.spinner[data-size="sm"] {
+  --spinner-size: 24px;
+}
+
+.spinner[data-size="md"] {
+  --spinner-size: 40px;
+}
+
+.spinner[data-size="lg"] {
+  --spinner-size: 56px;
+}
+
+.spinner[data-size="xl"] {
+  --spinner-size: 72px;
+}
+
+/* Simple Spinner */
+.spinner-simple {
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: var(--animation-spin);
+}
+
+/* Dual Ring Spinner */
+.spinner-dual {
+  display: inline-block;
+  width: var(--spinner-size, 40px);
+  height: var(--spinner-size, 40px);
+}
+
+.spinner-dual::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid var(--color-primary);
+  border-color: var(--color-primary) transparent var(--color-primary) transparent;
+  animation: var(--animation-spin);
+}
+
+/* Multi-ring Spinner */
+.spinner-rings {
+  display: inline-block;
+  width: var(--spinner-size, 64px);
+  height: var(--spinner-size, 64px);
+  position: relative;
+}
+
+.spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid transparent;
+}
+
+.spinner-ring:nth-child(1) {
+  border-top-color: var(--color-primary);
+  animation: spinnerRing1 1s linear infinite;
+}
+
+.spinner-ring:nth-child(2) {
+  border-right-color: var(--color-primary);
+  opacity: 0.7;
+  animation: spinnerRing2 1.5s linear infinite;
+}
+
+.spinner-ring:nth-child(3) {
+  border-bottom-color: var(--color-primary);
+  opacity: 0.5;
+  animation: spinnerRing3 2s linear infinite;
+}
+
+/* Dots Spinner */
+.spinner-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  height: var(--spinner-size, 40px);
+}
+
+.spinner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: var(--animation-pulse);
+}
+
+.spinner-dot:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.spinner-dot:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.spinner-dot:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+/* ========== Loading Overlays ========== */
+
+/* Full Page Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.loading-overlay[data-visible="true"],
+.loading-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Loading Modal */
+.loading-modal {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10);
+  text-align: center;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: var(--shadow-modal);
+  animation: var(--animation-scale-in);
+}
+
+/* Glass Effect Loading Modal */
+.loading-modal[data-glass="true"] {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  .loading-modal[data-glass="true"] {
+    background: rgba(24, 24, 27, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Loading Content */
+.loading-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-2);
+  color: var(--text);
+}
+
+.loading-message {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+  line-height: 1.5;
+}
+
+/* Loading Tips */
+.loading-tips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+.loading-tip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-align: left;
+  opacity: 0;
+  animation: tipFadeIn 0.5s ease forwards;
+}
+
+.loading-tip:nth-child(1) { animation-delay: 0.5s; }
+.loading-tip:nth-child(2) { animation-delay: 1s; }
+.loading-tip:nth-child(3) { animation-delay: 1.5s; }
+
+.loading-tip svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--color-primary);
+}
+
+/* ========== Inline Loading States ========== */
+
+/* Button Loading */
+.btn[data-loading="true"] {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn[data-loading="true"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: var(--animation-spin);
+}
+
+/* Form Loading */
+.form-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.form-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(2px);
+  border-radius: var(--radius);
+  z-index: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-loading::after {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Card Loading */
+.card[data-loading="true"] {
+  position: relative;
+  pointer-events: none;
+}
+
+.card[data-loading="true"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  animation: var(--animation-shimmer);
+}
+
+/* ========== Skeleton Loading ========== */
+
+/* Base Skeleton */
+.skeleton {
+  background: var(--gray-200);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  animation: skeletonWave 2s ease-in-out infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: var(--gray-800);
+  }
+  
+  .skeleton::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+  }
+}
+
+/* Skeleton Elements */
+.skeleton-text {
+  height: 1em;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-text[data-lines="2"] {
+  margin-bottom: calc(var(--space-2) * 3);
+}
+
+.skeleton-text[data-lines="3"] {
+  margin-bottom: calc(var(--space-2) * 5);
+}
+
+.skeleton-heading {
+  height: 1.5em;
+  width: 60%;
+  margin-bottom: var(--space-3);
+}
+
+.skeleton-button {
+  height: 40px;
+  width: 120px;
+  border-radius: var(--radius-lg);
+}
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.skeleton-card {
+  height: 200px;
+  border-radius: var(--radius-xl);
+}
+
+/* ========== Progress Indicators ========== */
+
+/* Progress Bar */
+.progress {
+  width: 100%;
+  height: 8px;
+  background: var(--gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.progress[data-indeterminate="true"] .progress-bar {
+  width: 30%;
+  position: absolute;
+  animation: progressIndeterminate 1.5s ease-in-out infinite;
+}
+
+@keyframes progressIndeterminate {
+  0% {
+    left: -30%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Progress Circle */
+.progress-circle {
+  width: var(--spinner-size, 40px);
+  height: var(--spinner-size, 40px);
+  position: relative;
+}
+
+.progress-circle svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-circle-bg {
+  stroke: var(--gray-200);
+  fill: none;
+  stroke-width: 4;
+}
+
+.progress-circle-bar {
+  stroke: var(--color-primary);
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: var(--progress, 0) 100;
+  transition: stroke-dasharray var(--duration-normal) var(--ease-out);
+}
+
+/* ========== Loading States ========== */
+
+/* Page Loading State */
+.page-loading {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Content Loading State */
+.content-loading {
+  position: relative;
+  min-height: 100px;
+}
+
+.content-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: var(--animation-spin);
+}
+
+/* ========== Utility Classes ========== */
+
+/* Loading State Utilities */
+.is-loading {
+  pointer-events: none;
+  opacity: 0.6;
+  filter: blur(1px);
+}
+
+.loading-blur {
+  filter: blur(2px);
+  transition: filter var(--duration-normal) var(--ease-out);
+}
+
+.loading-fade {
+  opacity: 0.5;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.loading-disable {
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Hide on Loading */
+.hide-on-loading {
+  display: none;
+}
+
+.is-loading .hide-on-loading {
+  display: none;
+}
+
+/* Show on Loading */
+.show-on-loading {
+  display: none;
+}
+
+.is-loading .show-on-loading {
+  display: block;
+}
+
+/* ========== Accessibility ========== */
+
+/* Screen Reader Text for Loading States */
+.sr-loading-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .spinner,
+  .spinner-simple,
+  .spinner-dual::after,
+  .spinner-ring,
+  .spinner-dot,
+  .skeleton::after,
+  .progress[data-indeterminate="true"] .progress-bar,
+  .btn[data-loading="true"]::after,
+  .content-loading::after {
+    animation-duration: 2s !important;
+  }
+}

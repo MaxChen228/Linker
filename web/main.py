@@ -388,6 +388,21 @@ def test_badges(request: Request):
     return templates.TemplateResponse("test_badges.html", {"request": request})
 
 
+@app.get("/test-forms")
+def test_forms(request: Request):
+    return templates.TemplateResponse("test_forms.html", {"request": request})
+
+
+@app.get("/test-loading")
+def test_loading(request: Request):
+    return templates.TemplateResponse("test_loading.html", {"request": request})
+
+
+@app.get("/test-modals")
+def test_modals(request: Request):
+    return templates.TemplateResponse("test_modals.html", {"request": request})
+
+
 @app.get("/healthz")
 def healthz():
     # 簡易健康檢查：確保模板與資料夾存在

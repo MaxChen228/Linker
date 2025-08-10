@@ -7,6 +7,9 @@
 @import url('./01-tokens/spacing.css');
 @import url('./01-tokens/typography.css');
 @import url('./01-tokens/effects.css');
+@import url('./01-tokens/animations.css');
+@import url('./01-tokens/shadows.css');
+@import url('./01-tokens/glass.css');
 
 /* 2. 基礎樣式 (Base Styles) */
 /* @import url('./02-base/reset.css'); */
@@ -16,8 +19,9 @@
 @import url('./03-components/buttons.css');
 @import url('./03-components/cards.css');
 @import url('./03-components/badges.css');
-/* @import url('./03-components/forms.css'); */
-/* @import url('./03-components/modals.css'); */
+@import url('./03-components/forms.css');
+@import url('./03-components/loading.css');
+@import url('./03-components/modals.css');
 
 /* 4. 佈局 (Layouts) */
 /* @import url('./04-layouts/container.css'); */

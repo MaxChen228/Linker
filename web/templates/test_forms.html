@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block title %}測試表單系統 - Linker{% endblock %}
+
+{% block styles %}
+<style>
+  .test-section {
+    margin: 40px 0;
+    padding: 20px 0;
+    border-bottom: 2px solid var(--border);
+  }
+  
+  .test-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+  
+  .test-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 20px 0 16px;
+    color: var(--text-muted);
+  }
+  
+  .form-showcase {
+    padding: 20px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 style="text-align: center; margin: 40px 0;">統一表單系統測試頁</h1>
+  
+  <!-- 基礎輸入框 -->
+  <section class="test-section">
+    <h2 class="test-title">基礎輸入框</h2>
+    
+    <div class="form-showcase">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">文字輸入</label>
+          <input type="text" class="form-control" placeholder="請輸入文字...">
+          <span class="form-hint">這是一個提示文字</span>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-required="true">必填欄位</label>
+          <input type="email" class="form-control" placeholder="email@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">密碼輸入</label>
+          <input type="password" class="form-control" placeholder="請輸入密碼">
+        </div>
+      </div>
+    </div>
+    
+    <h3 class="test-subtitle">狀態變體</h3>
+    <div class="form-showcase">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">成功狀態</label>
+          <input type="text" class="form-control" data-status="success" value="輸入正確">
+          <span class="form-hint">✓ 格式正確</span>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">警告狀態</label>
+          <input type="text" class="form-control" data-status="warning" value="需要注意">
+          <span class="form-hint">⚠ 請確認輸入</span>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">錯誤狀態</label>
+          <input type="text" class="form-control" data-status="error" value="格式錯誤">
+          <span class="form-error">✗ 請輸入有效的內容</span>
+        </div>
+      </div>
+    </div>
+    
+    <h3 class="test-subtitle">尺寸變體</h3>
+    <div class="form-showcase">
+      <div class="form-group">
+        <input type="text" class="form-control" data-size="sm" placeholder="小尺寸輸入框">
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="預設尺寸輸入框">
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" data-size="lg" placeholder="大尺寸輸入框">
+      </div>
+    </div>
+  </section>
+  
+  <!-- 文字區域 -->
+  <section class="test-section">
+    <h2 class="test-title">文字區域</h2>
+    
+    <div class="form-showcase">
+      <div class="form-group">
+        <label class="form-label">多行文字輸入</label>
+        <textarea class="form-control" rows="4" placeholder="請輸入多行文字..."></textarea>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">小尺寸</label>
+          <textarea class="form-control" data-size="sm" rows="3" placeholder="小尺寸文字區域"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">大尺寸</label>
+          <textarea class="form-control" data-size="lg" rows="3" placeholder="大尺寸文字區域"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 選擇器 -->
+  <section class="test-section">
+    <h2 class="test-title">選擇器</h2>
+    
+    <div class="form-showcase">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">基礎選擇器</label>
+          <select class="form-control">
+            <option>選項一</option>
+            <option>選項二</option>
+            <option>選項三</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">小尺寸選擇器</label>
+          <select class="form-control" data-size="sm">
+            <option>小選項 1</option>
+            <option>小選項 2</option>
+            <option>小選項 3</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">大尺寸選擇器</label>
+          <select class="form-control" data-size="lg">
+            <option>大選項 A</option>
+            <option>大選項 B</option>
+            <option>大選項 C</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 輸入群組 -->
+  <section class="test-section">
+    <h2 class="test-title">輸入群組</h2>
+    
+    <div class="form-showcase">
+      <div class="form-group">
+        <label class="form-label">前綴群組</label>
+        <div class="input-group">
+          <span class="input-group-text">@</span>
+          <input type="text" class="form-control" placeholder="使用者名稱">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">後綴群組</label>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="網域名稱">
+          <span class="input-group-text">.com</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">雙側群組</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input type="number" class="form-control" placeholder="0.00">
+          <span class="input-group-text">USD</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 核取方塊與單選按鈕 -->
+  <section class="test-section">
+    <h2 class="test-title">核取方塊與單選按鈕</h2>
+    
+    <div class="form-showcase">
+      <h3 class="test-subtitle">核取方塊</h3>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="check1" checked>
+        <label class="form-check-label" for="check1">已選取的核取方塊</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="check2">
+        <label class="form-check-label" for="check2">未選取的核取方塊</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="check3" disabled>
+        <label class="form-check-label" for="check3">禁用的核取方塊</label>
+      </div>
+      
+      <h3 class="test-subtitle">單選按鈕</h3>
+      <div class="form-check">
+        <input type="radio" class="form-check-input" name="radio-group" id="radio1" checked>
+        <label class="form-check-label" for="radio1">選項一</label>
+      </div>
+      <div class="form-check">
+        <input type="radio" class="form-check-input" name="radio-group" id="radio2">
+        <label class="form-check-label" for="radio2">選項二</label>
+      </div>
+      <div class="form-check">
+        <input type="radio" class="form-check-input" name="radio-group" id="radio3">
+        <label class="form-check-label" for="radio3">選項三</label>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 開關與滑桿 -->
+  <section class="test-section">
+    <h2 class="test-title">開關與滑桿</h2>
+    
+    <div class="form-showcase">
+      <h3 class="test-subtitle">開關切換</h3>
+      <div class="form-switch">
+        <input type="checkbox" class="form-switch-input" id="switch1" checked>
+        <label class="form-check-label" for="switch1">已開啟的開關</label>
+      </div>
+      <div class="form-switch">
+        <input type="checkbox" class="form-switch-input" id="switch2">
+        <label class="form-check-label" for="switch2">已關閉的開關</label>
+      </div>
+      <div class="form-switch">
+        <input type="checkbox" class="form-switch-input" id="switch3" disabled>
+        <label class="form-check-label" for="switch3">禁用的開關</label>
+      </div>
+      
+      <h3 class="test-subtitle">範圍滑桿</h3>
+      <div class="form-group">
+        <label class="form-label">音量控制：<span id="rangeValue">50</span>%</label>
+        <input type="range" class="form-range" min="0" max="100" value="50" 
+               oninput="document.getElementById('rangeValue').textContent = this.value">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">亮度調節</label>
+        <input type="range" class="form-range" min="0" max="100" value="75">
+      </div>
+    </div>
+  </section>
+  
+  <!-- 檔案上傳 -->
+  <section class="test-section">
+    <h2 class="test-title">檔案上傳</h2>
+    
+    <div class="form-showcase">
+      <div class="form-file">
+        <input type="file" class="form-file-input" id="file1">
+        <label class="form-file-label" for="file1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>選擇檔案</span>
+        </label>
+      </div>
+      
+      <div class="form-group" style="margin-top: 20px;">
+        <div class="form-file">
+          <input type="file" class="form-file-input" id="file2" multiple>
+          <label class="form-file-label" for="file2">
+            <span>拖曳檔案到此處或點擊選擇（支援多檔案）</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 完整表單示例 -->
+  <section class="test-section">
+    <h2 class="test-title">完整表單示例</h2>
+    
+    <div class="form-showcase">
+      <form>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" data-required="true">姓名</label>
+            <input type="text" class="form-control" placeholder="請輸入姓名">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" data-required="true">電子郵件</label>
+            <input type="email" class="form-control" placeholder="email@example.com">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">主題</label>
+          <select class="form-control">
+            <option>一般詢問</option>
+            <option>技術支援</option>
+            <option>合作提案</option>
+            <option>其他</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" data-required="true">訊息內容</label>
+          <textarea class="form-control" rows="4" placeholder="請輸入您的訊息..."></textarea>
+        </div>
+        
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="agree">
+          <label class="form-check-label" for="agree">我同意服務條款與隱私政策</label>
+        </div>
+        
+        <div style="margin-top: 24px; display: flex; gap: 12px;">
+          <button type="submit" class="btn" data-variant="primary">提交表單</button>
+          <button type="reset" class="btn" data-variant="secondary">重設</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  
+  <!-- 向後兼容測試 -->
+  <section class="test-section">
+    <h2 class="test-title">向後兼容性測試（舊類名）</h2>
+    
+    <div class="form-showcase">
+      <div class="form-group">
+        <label>舊 .answer-input 類</label>
+        <textarea class="answer-input" rows="3" placeholder="測試舊類名兼容性"></textarea>
+      </div>
+      
+      <div class="param-group">
+        <label>舊 .param-group select</label>
+        <select>
+          <option>選項 1</option>
+          <option>選項 2</option>
+          <option>選項 3</option>
+        </select>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  // 表單互動測試
+  document.querySelectorAll('.form-control, .form-check-input, .form-switch-input').forEach(input => {
+    input.addEventListener('focus', () => {
+      console.log('Focus:', input);
+    });
+    
+    input.addEventListener('change', () => {
+      console.log('Change:', input.value || input.checked);
+    });
+  });
+  
+  // 檔案上傳處理
+  document.querySelectorAll('.form-file-input').forEach(fileInput => {
+    fileInput.addEventListener('change', (e) => {
+      const label = e.target.nextElementSibling;
+      const fileCount = e.target.files.length;
+      if (fileCount > 0) {
+        label.querySelector('span').textContent = 
+          fileCount === 1 ? e.target.files[0].name : `已選擇 ${fileCount} 個檔案`;
+      }
+    });
+  });
+</script>
+{% endblock %}

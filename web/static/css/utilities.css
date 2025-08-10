@@ -29,7 +29,7 @@ footer small {
 
 /* Draft Functionality */
 .draft-notification {
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+  background: var(--bg-accent-subtle);
   border: none;
   border-radius: var(--radius);
   padding: 20px;
@@ -38,7 +38,7 @@ footer small {
   align-items: center;
   justify-content: space-between;
   animation: slideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .draft-notification span {
@@ -68,7 +68,7 @@ footer small {
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   z-index: 1000;
   pointer-events: none;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .save-indicator.saving {
@@ -77,12 +77,12 @@ footer small {
 }
 
 .save-indicator.saved {
-  border-color: #10b981;
-  color: #10b981;
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
 
 .save-indicator.restored {
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(79, 70, 229, 0.05) 100%);
+  background: var(--bg-accent-subtle);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -135,7 +135,7 @@ footer small {
 /* Focus Styles */
 textarea[name="english"]:not(:placeholder-shown) {
   border-color: var(--accent);
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(79, 70, 229, 0.02) 100%);
+  background: var(--bg-accent-subtle);
 }
 
 @keyframes spin {
@@ -151,7 +151,7 @@ html {
 
 /* Selection Styles */
 ::selection {
-  background: rgba(79, 70, 229, 0.2);
+  background: var(--bg-accent-hover);
   color: var(--text);
 }
 
@@ -222,7 +222,7 @@ html {
 }
 
 .spinner-ring:nth-child(3) {
-  border-bottom-color: rgba(79, 70, 229, 0.3);
+  border-bottom-color: var(--border-accent);
   animation: spinnerRing1 2s linear infinite;
 }
 
@@ -307,7 +307,7 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--white-50);
   backdrop-filter: blur(2px);
   border-radius: var(--radius);
   z-index: 1;
@@ -315,7 +315,7 @@ html {
 
 @media (prefers-color-scheme: dark) {
   .form-loading::after {
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--black-50);
   }
 }
 
@@ -324,8 +324,8 @@ html {
   background: linear-gradient(
     90deg,
     var(--bg) 0%,
-    rgba(255, 255, 255, 0.1) 20%,
-    rgba(255, 255, 255, 0.1) 60%,
+    var(--white-10) 20%,
+    var(--white-10) 60%,
     var(--bg) 100%
   );
   background-size: 200% 100%;
@@ -346,8 +346,8 @@ html {
     background: linear-gradient(
       90deg,
       var(--bg) 0%,
-      rgba(255, 255, 255, 0.05) 20%,
-      rgba(255, 255, 255, 0.05) 60%,
+      var(--white-5) 20%,
+      var(--white-5) 60%,
       var(--bg) 100%
     );
   }
@@ -394,7 +394,7 @@ html {
   font-weight: 600;
   padding: 4px 8px;
   border-radius: var(--radius-full);
-  background: rgba(79, 70, 229, 0.1);
+  background: var(--bg-accent-subtle);
   color: var(--accent);
 }
 
@@ -511,8 +511,8 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
+  background: var(--bg-overlay);
+  backdrop-filter: var(--glass-blur-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -537,11 +537,11 @@ html {
   will-change: opacity, transform;
   
   /* Optimized glass effect for modal */
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 10px 40px -8px rgba(0, 0, 0, 0.2);
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-xl);
   position: relative;
   overflow: hidden;
 }
@@ -553,8 +553,8 @@ html {
 /* ============================================ */
 
 .save-indicator.error {
-  border-color: #ef4444;
-  color: #ef4444;
+  border-color: var(--color-error);
+  color: var(--color-error);
 }
 
 .error-header {
@@ -585,35 +585,38 @@ html {
 }
 
 .error-category-badge.systematic {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: var(--color-error-light);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  border-opacity: 0.3;
 }
 
 .error-category-badge.isolated {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+  border-opacity: 0.3;
 }
 
 .error-category-badge.enhancement {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+  border-opacity: 0.3;
 }
 
 .error-category-badge.other {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.15) 0%, rgba(107, 114, 128, 0.1) 100%);
-  color: #6b7280;
-  border: 1px solid rgba(107, 114, 128, 0.3);
+  background: var(--gray-100);
+  color: var(--gray-600);
+  border: 1px solid var(--gray-400);
 }
 
 .correction-item.error .correction-label {
-  color: #ef4444;
+  color: var(--color-error);
 }
 
 .correction-item.correct .correction-label {
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .correction-text {
@@ -622,11 +625,11 @@ html {
 }
 
 .compare-item.error {
-  color: #ef4444;
+  color: var(--color-error);
 }
 
 .compare-item.correct {
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .compare-item.original {
@@ -649,24 +652,24 @@ html {
 
 /* 完整句子對照樣式 */
 .sentence-item.error .sentence-text {
-  color: #ef4444;
+  color: var(--color-error);
   text-decoration: line-through;
   opacity: 0.8;
 }
 
 .sentence-item.correct .sentence-text {
-  color: #10b981;
+  color: var(--color-success);
   font-weight: 500;
 }
 
 /* 單卡片的完整句子樣式 */
 .sentence-en.error {
-  color: #ef4444;
+  color: var(--color-error);
   opacity: 0.8;
 }
 
 .sentence-en.correct {
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .sentence-en.original {
@@ -680,6 +683,6 @@ html {
 }
 
 .info-value.error {
-  color: #dc3545;
+  color: var(--color-error);
   font-weight: 600;
 }

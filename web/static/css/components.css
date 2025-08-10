@@ -20,16 +20,12 @@ header.container {
   margin: 16px auto;
   max-width: calc(1200px - 32px);
   
-  /* Optimized Glass effect - reduced layers */
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.05) 100%),
-    rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 4px 16px 0 rgba(31, 38, 135, 0.12),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+  /* Optimized Glass effect - using design tokens */
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Specular highlight effect */
@@ -42,20 +38,16 @@ header.container::before {
   height: 1px;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    rgba(255, 255, 255, 0.8) 50%, 
+    var(--white-80) 50%, 
     transparent 100%);
   opacity: 0.6;
 }
 
 @media (prefers-color-scheme: dark) {
   header.container {
-    background: 
-      linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%),
-      rgba(24, 24, 27, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-      0 4px 16px 0 rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    background: var(--glass-surface-dark);
+    border: 1px solid var(--glass-border-dark);
+    box-shadow: var(--shadow-lg);
   }
 }
 
@@ -94,19 +86,19 @@ nav a {
 
 nav a:hover {
   color: var(--text);
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--hover-bg);
 }
 
 @media (prefers-color-scheme: dark) {
   nav a:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--hover-bg-dark);
   }
 }
 
 nav a.active {
   color: white;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-md);
 }
 
 /* Main Content */
@@ -133,42 +125,29 @@ main.container {
   position: relative;
   overflow: hidden;
   
-  /* Multi-layer glass effect */
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%),
-    radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.05) 0%, transparent 50%);
-  backdrop-filter: blur(10px) saturate(150%);
-  -webkit-backdrop-filter: blur(10px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 
-    0 4px 16px 0 rgba(31, 38, 135, 0.1),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+  /* Multi-layer glass effect using tokens */
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
 }
 
 /* Shimmer effect disabled for performance */
 
 .card:hover {
-  box-shadow: 
-    0 20px 40px -10px rgba(79, 70, 229, 0.2),
-    0 8px 16px -6px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-xl);
   transform: translateY(-4px) scale(1.02);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid var(--border-accent);
 }
 
 /* Hover shimmer disabled */
 
 @media (prefers-color-scheme: dark) {
   .card {
-    background: 
-      linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.7) 100%),
-      radial-gradient(circle at 20% 80%, rgba(129, 140, 248, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-      0 4px 16px 0 rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    background: var(--glass-surface-dark);
+    border: 1px solid var(--glass-border-dark);
+    box-shadow: var(--shadow-md);
   }
 }
 
@@ -208,7 +187,7 @@ main.container {
 }
 
 .item:hover {
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, transparent 100%);
+  background: var(--hover-bg);
   margin: 0 -16px;
   padding: 16px;
   border-radius: var(--radius-sm);
@@ -216,7 +195,7 @@ main.container {
 
 @media (prefers-color-scheme: dark) {
   .item:hover {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--hover-bg-dark);
   }
 }
 
@@ -237,17 +216,17 @@ main.container {
   align-items: center;
   padding: 6px 16px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+  background: var(--bg-accent-subtle);
   color: var(--accent);
   font-size: 0.75rem;
   font-weight: 600;
   margin: 4px 4px 4px 0;
   transition: var(--transition);
-  border: 1px solid rgba(79, 70, 229, 0.2);
+  border: 1px solid var(--border-accent);
 }
 
 .tag:hover {
-  background: rgba(79, 70, 229, 0.2);
+  background: var(--bg-accent-hover);
 }
 
 /* Forms & Inputs - Glass Morphism */
@@ -273,35 +252,22 @@ input[type="number"] {
   font-family: inherit;
   position: relative;
   
-  /* Glass effect */
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 2px 8px 0 rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+  /* Glass effect using tokens */
+  background: var(--input-bg);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border: 1px solid var(--input-border);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Holographic focus effect */
+/* Focus effect using tokens */
 textarea:focus,
 select:focus,
 input:focus {
   outline: none;
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%),
-    linear-gradient(135deg, 
-      rgba(79, 70, 229, 0.05) 0%, 
-      rgba(99, 102, 241, 0.05) 25%, 
-      rgba(129, 140, 248, 0.05) 50%, 
-      rgba(165, 180, 252, 0.05) 75%, 
-      rgba(199, 210, 254, 0.05) 100%);
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  box-shadow: 
-    0 0 0 4px rgba(79, 70, 229, 0.1),
-    0 0 20px 0 rgba(99, 102, 241, 0.15),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+  background: var(--input-bg-focus);
+  border: 1px solid var(--color-primary);
+  box-shadow: var(--focus-ring);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -310,23 +276,16 @@ input:focus {
   input[type="text"],
   input[type="email"],
   input[type="number"] {
-    background: 
-      linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.8) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-      0 2px 8px 0 rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    background: var(--input-bg-dark);
+    border: 1px solid var(--input-border-dark);
+    box-shadow: var(--shadow-sm);
   }
   
   textarea:focus,
   select:focus,
   input:focus {
-    background: 
-      linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(24, 24, 27, 0.9) 100%),
-      linear-gradient(135deg, 
-        rgba(129, 140, 248, 0.05) 0%, 
-        rgba(165, 180, 252, 0.05) 100%);
-    border: 1px solid rgba(129, 140, 248, 0.3);
+    background: var(--input-bg-focus-dark);
+    border: 1px solid var(--color-primary);
   }
 }
 
