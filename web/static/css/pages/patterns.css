@@ -463,23 +463,42 @@
 /* ========== 深色模式 ========== */
 @media (prefers-color-scheme: dark) {
   .search-bar input {
-    background: var(--surface-elevated);
+    background: var(--surface-base);
     color: var(--text-primary);
+    border-color: var(--border-default);
   }
   
-  .category-tab {
-    background: var(--surface-elevated);
-    color: var(--text-secondary);
+  .search-bar input:hover {
+    background: var(--surface-dark);
     border-color: var(--border-dark);
   }
   
-  .category-tab:hover {
+  .search-bar input:focus {
     background: var(--surface-base);
-    color: var(--text-primary);
+    border-color: var(--accent-500);
   }
   
-  .category-tab.active {
-    background: var(--color-primary);
+  .category-tab {
+    background: var(--surface-base);
+    color: var(--text-secondary);
+    border-color: var(--border-default);
+  }
+  
+  .category-tab:hover {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-dark);
+  }
+  
+  .category-tab.active,
+  .category-tab[data-active="true"] {
+    background: var(--accent-600);
+    color: var(--text-inverse);
+    border-color: var(--accent-600);
+  }
+  
+  .category-tab .btn-count {
+    background: rgba(255, 255, 255, 0.2);
   }
   
   .stats-bar {

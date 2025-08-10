@@ -2,6 +2,7 @@
 AI 服務模組 - 處理與 Gemini API 的互動
 """
 
+import asyncio
 import json
 import os
 import time
@@ -166,6 +167,47 @@ class AIService:
             "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
             "error_analysis": [],
         }
+    
+    async def generate_async(
+        self,
+        prompt: str,
+        temperature: float = 0.7,
+        max_tokens: int = 3000,
+        model: Optional[Any] = None
+    ) -> str:
+        """異步生成內容"""
+        # 使用 asyncio 在後台執行同步方法
+        loop = asyncio.get_event_loop()
+        
+        # 準備完整的 prompt
+        full_prompt = prompt
+        
+        # 使用指定的模型或預設生成模型
+        if model is None:
+            model = self.generate_model
+            
+        # 在執行緒池中執行同步方法
+        def _generate():
+            try:
+                # 更新生成配置
+                import google.generativeai as genai
+                model.generation_config = genai.GenerationConfig(
+                    response_mime_type="application/json",
+                    temperature=temperature,
+                    max_output_tokens=max_tokens,
+                    top_p=0.95,
+                    top_k=40,
+                )
+                
+                response = model.generate_content(full_prompt)
+                return response.text
+            except Exception as e:
+                self.logger.error(f"Async generation failed: {e}")
+                raise
+        
+        # 在執行緒池中執行
+        result = await loop.run_in_executor(None, _generate)
+        return result
 
     def grade_translation(
         self, chinese: str, english: str, hint: Optional[str] = None
