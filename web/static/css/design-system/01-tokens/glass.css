@@ -3,11 +3,14 @@
    ================================================ */
 
 :root {
-  /* ========== Glass Morphism ========== */
-  --glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
-  --glass-surface-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.7) 100%);
-  --glass-blur: blur(12px) saturate(150%);
-  --glass-blur-sm: blur(10px);
+  /* ========== Glass Morphism - Performance Optimized ========== */
+  --glass-surface: rgba(255, 255, 255, 0.85); /* Simplified for performance */
+  --glass-surface-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%); /* Use only when needed */
+  --glass-surface-dark: rgba(24, 24, 27, 0.85); /* Simplified for performance */
+  --glass-surface-gradient-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.7) 100%); /* Use only when needed */
+  --glass-blur: blur(8px) saturate(120%); /* Reduced blur for better performance */
+  --glass-blur-sm: blur(4px); /* Light blur for minor elements */
+  --glass-blur-heavy: blur(20px) saturate(180%); /* Heavy blur for critical elements only */
   --glass-border: rgba(255, 255, 255, 0.3);
   --glass-border-dark: rgba(255, 255, 255, 0.1);
   

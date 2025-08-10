@@ -1,0 +1,168 @@
+/* 
+ * Will-change Optimization
+ * 動畫性能優化管理
+ */
+
+/* ========== Will-change Management ========== */
+
+/* Apply will-change before animation starts */
+.will-animate {
+  will-change: transform;
+}
+
+.will-animate-opacity {
+  will-change: opacity;
+}
+
+.will-animate-transform {
+  will-change: transform;
+}
+
+.will-animate-filter {
+  will-change: filter;
+}
+
+.will-animate-all {
+  will-change: transform, opacity, filter;
+}
+
+/* Remove will-change after animation completes */
+.animation-done {
+  will-change: auto !important;
+}
+
+/* Interactive Elements */
+.btn,
+.card[data-interactive="true"],
+.modal {
+  /* Only on hover/focus to avoid memory overhead */
+  will-change: auto;
+}
+
+.btn:hover,
+.btn:focus,
+.card[data-interactive="true"]:hover,
+.modal.modal-entering {
+  will-change: transform, box-shadow;
+}
+
+/* Transition Management */
+.transition-smooth {
+  transition: all var(--duration-normal) var(--ease-smooth);
+  will-change: auto;
+}
+
+.transition-smooth:hover {
+  will-change: transform, opacity;
+}
+
+/* Loading States */
+.spinner,
+.skeleton,
+.progress-bar-fill {
+  will-change: transform;
+}
+
+/* Glass Morphism Elements */
+header.container {
+  will-change: auto; /* Sticky header doesn't need will-change */
+}
+
+.modal[data-glass="true"] {
+  will-change: auto;
+}
+
+.modal[data-glass="true"].modal-entering {
+  will-change: transform, opacity, filter;
+}
+
+/* Navigation */
+nav a {
+  will-change: auto;
+}
+
+nav a:hover,
+nav a:focus {
+  will-change: background-color, color;
+}
+
+/* Form Elements */
+input:focus,
+textarea:focus,
+select:focus {
+  will-change: border-color, box-shadow;
+}
+
+/* Auto-remove will-change after animations */
+.animate-fade-in,
+.animate-slide-in-up,
+.animate-scale-in,
+.animate-slide-in-right {
+  animation-fill-mode: both;
+}
+
+/* Performance Profile Classes */
+@media (max-width: 768px) {
+  /* Reduce will-change on mobile */
+  .btn:hover,
+  .card[data-interactive="true"]:hover {
+    will-change: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable will-change for reduced motion */
+  * {
+    will-change: auto !important;
+  }
+}
+
+/* JavaScript Hook Classes */
+.js-will-animate {
+  will-change: transform, opacity;
+}
+
+.js-animating {
+  will-change: transform, opacity;
+}
+
+.js-animation-complete {
+  will-change: auto;
+  transition: none;
+}
+
+/* Critical Performance Areas */
+.perf-critical {
+  /* Elements that must perform well */
+  transform: translateZ(0); /* Force GPU layer */
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.perf-optimize {
+  /* Optimize paint and layout */
+  contain: layout style paint;
+}
+
+/* Scroll Performance */
+.scroll-container {
+  will-change: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-container.is-scrolling {
+  will-change: scroll-position;
+}
+
+/* Page Transitions */
+.page-entering {
+  will-change: transform, opacity;
+}
+
+.page-leaving {
+  will-change: transform, opacity;
+}
+
+.page-idle {
+  will-change: auto;
+}

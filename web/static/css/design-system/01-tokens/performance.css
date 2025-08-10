@@ -1,0 +1,120 @@
+/* 
+ * Performance Optimization Tokens
+ * 性能優化令牌
+ */
+
+:root {
+  /* Performance Settings */
+  --enable-backdrop-filter: 1; /* 1 = enabled, 0 = disabled */
+  --enable-animations: 1;
+  --enable-shadows: 1;
+  --enable-transitions: 1;
+  
+  /* Optimized Glass Effects */
+  --glass-blur-light: blur(8px); /* Reduced from 12px */
+  --glass-blur-heavy: blur(20px); /* Only for critical elements */
+  
+  /* Will-change Management */
+  --will-change-transform: transform;
+  --will-change-opacity: opacity;
+  --will-change-filter: filter;
+  --will-change-auto: auto;
+}
+
+/* Performance Profiles */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --enable-animations: 0;
+    --enable-transitions: 0;
+  }
+}
+
+/* Low Performance Mode */
+@media (max-width: 768px) {
+  :root {
+    /* Reduce glass blur on mobile for better performance */
+    --glass-blur: var(--glass-blur-light);
+  }
+}
+
+/* GPU Acceleration Hints */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: var(--will-change-transform);
+}
+
+.gpu-accelerated-filter {
+  transform: translateZ(0);
+  will-change: var(--will-change-filter);
+}
+
+/* Selective Backdrop Filter */
+@supports not (backdrop-filter: blur(1px)) {
+  :root {
+    --enable-backdrop-filter: 0;
+  }
+  
+  /* Fallback styles */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Performance Classes */
+.perf-no-blur {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.perf-no-animation {
+  animation: none !important;
+  transition: none !important;
+}
+
+.perf-no-shadow {
+  box-shadow: none !important;
+}
+
+/* Optimized Animation Triggers */
+.will-animate {
+  will-change: var(--will-change-transform);
+}
+
+.will-animate-opacity {
+  will-change: var(--will-change-opacity);
+}
+
+.animation-done {
+  will-change: var(--will-change-auto);
+}
+
+/* Critical CSS Marker */
+.critical {
+  /* Elements that should load with highest priority */
+  contain: layout style paint;
+}
+
+/* Content Visibility for Long Lists */
+.lazy-render {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
+}
+
+/* Reduce Paint Areas */
+.isolate {
+  isolation: isolate;
+}
+
+/* Optimize Scroll Performance */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smooth-scroll {
+    scroll-behavior: auto;
+  }
+}
