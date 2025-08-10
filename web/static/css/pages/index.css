@@ -1,0 +1,194 @@
+/* ================================================
+   首頁專屬樣式 - 使用新設計系統
+   ================================================ */
+
+/* ========== 統計卡片網格 ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+/* ========== 統計卡片 ========== */
+.stat-card {
+  background: var(--surface-base);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-base);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-focus);
+}
+
+/* Glass 效果變體 */
+.stat-card[data-glass="true"] {
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border: 1px solid var(--glass-border);
+}
+
+/* 統計標題 */
+.stat-card h2 {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-3) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* 統計數字 */
+.stat-card .stat-value {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  line-height: 1;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 統計數字變體 */
+.stat-card[data-variant="primary"] .stat-value {
+  color: var(--color-primary);
+}
+
+.stat-card[data-variant="success"] .stat-value {
+  color: var(--color-success);
+}
+
+.stat-card[data-variant="warning"] .stat-value {
+  color: var(--color-warning);
+}
+
+.stat-card[data-variant="info"] .stat-value {
+  color: var(--color-info);
+}
+
+/* 背景裝飾 */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--color-primary-light) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+}
+
+.stat-card:hover::before {
+  opacity: 0.1;
+}
+
+/* ========== 行動區塊 ========== */
+.action-section {
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+}
+
+.action-buttons {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* 建議文字 */
+.suggestion-text {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-accent-subtle);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--color-primary);
+}
+
+/* ========== 動畫 ========== */
+.stats-grid > * {
+  animation: var(--animation-fade-in-up);
+  animation-fill-mode: both;
+}
+
+.stats-grid > *:nth-child(1) { animation-delay: 0ms; }
+.stats-grid > *:nth-child(2) { animation-delay: 50ms; }
+.stats-grid > *:nth-child(3) { animation-delay: 100ms; }
+.stats-grid > *:nth-child(4) { animation-delay: 150ms; }
+
+.action-section {
+  animation: var(--animation-fade-in);
+  animation-delay: 200ms;
+  animation-fill-mode: both;
+}
+
+/* ========== 響應式設計 ========== */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+  
+  .stat-card {
+    padding: var(--space-4);
+  }
+  
+  .stat-card h2 {
+    font-size: var(--text-xs);
+  }
+  
+  .stat-card .stat-value {
+    font-size: var(--text-2xl);
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== 深色模式 ========== */
+@media (prefers-color-scheme: dark) {
+  .stat-card {
+    background: var(--surface-elevated);
+  }
+  
+  .stat-card[data-glass="true"] {
+    background: linear-gradient(135deg, 
+      rgba(24, 24, 27, 0.95) 0%, 
+      rgba(24, 24, 27, 0.85) 100%);
+  }
+  
+  .action-section {
+    background: var(--surface-base);
+  }
+  
+  .suggestion-text {
+    background: rgba(79, 70, 229, 0.1);
+  }
+}

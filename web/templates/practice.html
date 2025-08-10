@@ -2,11 +2,10 @@
 {% block title %}翻譯練習 - Linker{% endblock %}
 
 {% block styles %}
-<!-- 練習頁面專屬樣式 -->
-<link rel="stylesheet" href="/static/css/pages/practice.css" />
+<!-- 練習頁面專屬樣式 - 使用新設計系統 -->
+<link rel="stylesheet" href="/static/css/pages/practice-new.css" />
 <link rel="stylesheet" href="/static/css/features/review.css" />
 <link rel="stylesheet" href="/static/css/features/llm-debug.css" />
-<link rel="stylesheet" href="/static/css/features/loading.css" />
 {% endblock %}
 
 {% block content %}
@@ -156,11 +155,11 @@
   </form>
   </div>
   
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-modal">
+  <!-- Loading Overlay - 使用新設計系統 -->
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="loading-modal" data-glass="true">
       <div class="spinner-container">
-        <div class="spinner">
+        <div class="spinner" data-type="multi-ring">
           <div class="spinner-ring"></div>
           <div class="spinner-ring"></div>
           <div class="spinner-ring"></div>
@@ -194,7 +193,7 @@
   </div>
 
   {% if result %}
-  <section class="card">
+  <section class="card result-section" data-type="result" data-glass="true">
     <h2>批改結果</h2>
     <div class="stack">
       <div>
@@ -373,6 +372,20 @@
           const length = document.getElementById('lengthSelect').value;
           const level = this.value;
           window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
+        });
+      }
+      
+      // 處理表單提交時顯示載入覆蓋層
+      const form = document.getElementById('practiceForm');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          const loadingOverlay = document.getElementById('loadingOverlay');
+          if (loadingOverlay) {
+            loadingOverlay.style.display = 'block';
+            setTimeout(() => {
+              loadingOverlay.classList.add('show');
+            }, 10);
+          }
         });
       }
     });

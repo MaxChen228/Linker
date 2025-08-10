@@ -1,31 +1,44 @@
 {% extends "base.html" %}
-{% block title %}Linker{% endblock %}
+{% block title %}Linker - 英文翻譯練習系統{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/css/pages/index.css" />
+{% endblock %}
+
 {% block content %}
-  <section class="cards">
-    <div class="card">
+  <!-- 統計卡片區 -->
+  <section class="stats-grid">
+    <div class="stat-card" data-variant="primary" data-glass="true">
       <h2>總練習次數</h2>
-      <p class="num">{{ stats.total_practices }}</p>
+      <p class="stat-value">{{ stats.total_practices }}</p>
     </div>
-    <div class="card">
+    <div class="stat-card" data-variant="success" data-glass="true">
       <h2>正確數</h2>
-      <p class="num">{{ stats.correct_count }}</p>
+      <p class="stat-value">{{ stats.correct_count }}</p>
     </div>
-    <div class="card">
+    <div class="stat-card" data-variant="info" data-glass="true">
       <h2>知識點</h2>
-      <p class="num">{{ stats.knowledge_points }}</p>
+      <p class="stat-value">{{ stats.knowledge_points }}</p>
     </div>
-    <div class="card">
+    <div class="stat-card" data-variant="warning" data-glass="true">
       <h2>待複習</h2>
-      <p class="num">{{ stats.due_reviews }}</p>
+      <p class="stat-value">{{ stats.due_reviews }}</p>
     </div>
   </section>
 
-  <section class="stack" style="margin-top: 24px;">
-    <div class="row">
-      <a class="btn" data-variant="primary" href="/practice">開始練習</a>
-      <a class="btn" data-variant="secondary" href="/patterns">瀏覽文法</a>
+  <!-- 行動區塊 -->
+  <section class="action-section">
+    <div class="action-buttons">
+      <a class="btn" data-variant="primary" data-size="lg" href="/practice">
+        <span>開始練習</span>
+      </a>
+      <a class="btn" data-variant="secondary" data-size="lg" href="/patterns">
+        <span>瀏覽文法</span>
+      </a>
     </div>
-    <p class="muted">建議流程：先在「分級例句」選擇長度/難度 → 到「翻譯練習」進行作答 → 於「複習」查看待複習重點。</p>
+    <p class="suggestion-text">
+      💡 建議流程：先在「文法句型」選擇練習範圍 → 到「翻譯練習」進行作答 → 於「知識點」查看待複習重點
+    </p>
   </section>
 {% endblock %}
 
