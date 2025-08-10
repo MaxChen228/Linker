@@ -1,0 +1,132 @@
+/* ================================================
+   設計令牌 - 向後兼容性映射
+   Phase 1: 確保舊變數名稱繼續工作
+   ================================================ */
+
+:root {
+  /* ========== 顏色系統兼容性映射 ========== */
+  /* 
+   * 將舊的brand-*變數映射到新的primary-*變數
+   * 確保現有代碼不會破壞
+   */
+  --brand-50: var(--primary-100);   /* 映射到最接近的層級 */
+  --brand-100: var(--primary-100);
+  --brand-200: var(--primary-100);  /* 簡化後沒有200，使用100 */
+  --brand-300: var(--primary-300);
+  --brand-400: var(--primary-300);  /* 簡化後沒有400，使用300 */
+  --brand-500: var(--primary-500);
+  --brand-600: var(--primary-600);
+  --brand-700: var(--primary-700);
+  --brand-800: var(--primary-700);  /* 簡化後沒有800，使用700 */
+  --brand-900: var(--primary-700);  /* 簡化後沒有900，使用700 */
+  
+  /* ========== 間距系統兼容性映射 ========== */
+  /* 
+   * 保留舊的間距變數名稱
+   * 新系統使用點符號，舊系統使用數字
+   */
+  --spacing-xs: var(--space-1);
+  --spacing-sm: var(--space-2);
+  --spacing-md: var(--space-3);
+  --spacing-lg: var(--space-4);
+  --spacing-xl: var(--space-6);
+  --spacing-2xl: var(--space-8);
+  
+  /* ========== 按鈕兼容性映射 ========== */
+  /* 
+   * 保留舊的按鈕padding格式
+   */
+  --btn-padding-sm: 0 var(--btn-padding-x-sm);
+  --btn-padding-md: 0 var(--btn-padding-x-md);
+  --btn-padding-lg: 0 var(--btn-padding-x-lg);
+  
+  /* ========== 圓角兼容性映射 ========== */
+  /* 
+   * 圓角系統已移至effects.css但保留在spacing.css的引用
+   */
+  --radius-none: var(--radius-none);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-full: var(--radius-full);
+  
+  /* ========== 過渡效果兼容性映射 ========== */
+  /* 
+   * 舊系統使用transition-*，新系統使用duration-*
+   */
+  --transition-fast: 150ms ease-out;
+  --transition-base: 250ms ease-out;
+  --transition-normal: 250ms ease-out;
+  --transition-slow: 350ms ease-out;
+  --transition-slower: 500ms ease-out;
+  
+  /* ========== 陰影兼容性映射 ========== */
+  /* 
+   * 保留舊的陰影變數名稱（如果需要）
+   */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-button-active: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  
+  /* ========== 字型兼容性映射 ========== */
+  /* 
+   * 保留可能被移除的字型大小和權重
+   */
+  --text-3xl: 1.875rem;  /* 30px - 如果仍在使用 */
+  --text-4xl: 2.25rem;   /* 36px - 如果仍在使用 */
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* 字體大小兼容性映射 */
+  --font-size-xs: var(--text-xs);
+  --font-size-sm: var(--text-sm);
+  --font-size-base: var(--text-base);
+  --font-size-lg: var(--text-lg);
+  --font-size-xl: var(--text-xl);
+  --font-size-2xl: var(--text-2xl);
+  
+  /* ========== 顏色系統額外兼容性映射 ========== */
+  --color-background-paper: var(--surface-base);
+  --color-background-elevated: var(--surface-elevated);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-muted);
+  --color-border: var(--border-default);
+  --color-neutral-bg: var(--gray-100);
+  
+  /* 語義化顏色邊框 */
+  --color-error-bg: var(--gray-50);
+  --color-error-border: var(--gray-300);
+  --color-warning-bg: var(--accent-50);
+  --color-warning-border: var(--accent-200);
+  --color-info-bg: var(--accent-50);
+  --color-info-border: var(--accent-200);
+  --color-success-bg: var(--accent-50);
+  --color-success-border: var(--accent-200);
+  
+  /* Primary 色系兼容 */
+  --color-primary: var(--accent-600);
+  --color-primary-hover: var(--accent-700);
+  --color-primary-border: var(--accent-400);
+  
+  /* Error/Warning/Success/Info 兼容 */
+  --color-error: var(--gray-700);
+  --color-warning: var(--gray-600);
+  --color-success: var(--accent-600);
+  --color-info: var(--accent-500);
+  
+  /* Text tertiary */
+  --text-tertiary: var(--text-muted);
+}
+
+/* 
+ * 注意：這個文件是臨時的兼容性層
+ * 建議逐步遷移到新的設計令牌系統
+ * 在所有代碼更新完成後可以移除此文件
+ */

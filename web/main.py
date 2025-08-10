@@ -17,6 +17,7 @@ import random
 import time
 from uuid import uuid4
 from core.logger import get_logger
+from datetime import datetime
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -68,10 +69,37 @@ async def access_log_middleware(request: Request, call_next):
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
+    # 獲取複習列表（最多顯示10個）
+    review_queue = knowledge.get_review_candidates(max_points=10)
+    
+    # 修正統計資料，讓「待複習」顯示實際可複習的數量
     stats = knowledge.get_statistics()
+    # 計算實際可複習的知識點數量（單一性錯誤和可以更好類別中已到期的）
+    reviewable_points = knowledge.get_review_candidates(max_points=100)  # 獲取所有可複習的
+    stats['due_reviews'] = len(reviewable_points)  # 覆蓋原本的統計
+    
+    # 為每個知識點準備顯示資料
+    review_items = []
+    for point in review_queue:
+        review_items.append({
+            "id": point.id,
+            "key_point": point.key_point,
+            "category": point.category.to_chinese(),
+            "category_value": point.category.value,
+            "mastery_level": round(point.mastery_level * 100),
+            "mistake_count": point.mistake_count,
+            "next_review": point.next_review,
+            "is_due": point.next_review <= datetime.now().isoformat() if point.next_review else False
+        })
+    
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "stats": stats, "active": "home"},
+        {
+            "request": request, 
+            "stats": stats, 
+            "review_items": review_items,
+            "active": "home"
+        },
     )
 
 
@@ -127,6 +155,7 @@ def practice_get(request: Request, length: str = "short", level: int = 1, shuffl
     
     # 檢查是否要生成新題目（shuffle=1表示要出題）
     logger.info(f"Practice GET: mode={mode}, shuffle={shuffle}, length={length}, level={level}")
+    logger.info(f"Practice GET: mode type={type(mode)}, mode value='{mode}'")
     
     if shuffle:
         if mode == "review":
@@ -371,6 +400,90 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
 
 def create_app() -> FastAPI:
     return app
+
+
+@app.get("/knowledge/{point_id}", response_class=HTMLResponse)
+def knowledge_detail(request: Request, point_id: str):
+    """知識點詳情頁面"""
+    # 獲取指定的知識點
+    point = knowledge.get_knowledge_point(point_id)
+    
+    if not point:
+        # 如果找不到知識點，重定向到知識點列表頁
+        return RedirectResponse(url="/knowledge", status_code=303)
+    
+    # 獲取相關的錯誤記錄（最近的10個）
+    related_mistakes = []
+    all_mistakes = knowledge.get_all_mistakes()
+    for mistake in all_mistakes[-50:] if len(all_mistakes) > 50 else all_mistakes:  # 檢查最近50個錯誤
+        if mistake.get("knowledge_points"):
+            for kp in mistake["knowledge_points"]:
+                if kp.get("id") == point_id:
+                    # 添加必要的字段以兼容模板
+                    if "feedback" in mistake:
+                        mistake["correct_answer"] = mistake["feedback"].get("overall_suggestion", "")
+                        mistake["explanation"] = mistake["feedback"].get("detailed_feedback", "")
+                    related_mistakes.append(mistake)
+                    break
+        if len(related_mistakes) >= 10:
+            break
+    
+    # 獲取錯誤類型系統，以顯示子類型的中文名稱
+    from core.error_types import ErrorTypeSystem
+    type_system = ErrorTypeSystem()
+    subtype_obj = type_system.get_subtype_by_name(point.subtype) if point.subtype else None
+    
+    # 計算下次複習時間
+    from datetime import datetime
+    next_review_display = None
+    if point.next_review:
+        try:
+            next_review_date = datetime.fromisoformat(point.next_review.replace("Z", "+00:00"))
+            now = datetime.now(next_review_date.tzinfo)
+            if next_review_date > now:
+                days_until = (next_review_date - now).days
+                if days_until == 0:
+                    next_review_display = "今天"
+                elif days_until == 1:
+                    next_review_display = "明天"
+                else:
+                    next_review_display = f"{days_until} 天後"
+            else:
+                next_review_display = "已到期"
+        except:
+            pass
+    
+    # 為模板準備point對象，添加缺少的屬性
+    point_dict = {
+        "id": point.id,
+        "title": point.key_point,  # 使用 key_point 作為 title
+        "key_point": point.key_point,
+        "category": {
+            "value": point.category.value,
+            "chinese_name": point.category.to_chinese()
+        },
+        "subtype": point.subtype,
+        "description": point.explanation,  # 使用 explanation 作為 description
+        "original_phrase": point.original_phrase,  # 原始錯誤句子
+        "correction": point.correction,  # 修正後的句子
+        "mastery_level": point.mastery_level,
+        "mistake_count": point.mistake_count,
+        "correct_count": point.correct_count,
+        "next_review": point.next_review,
+        "improvement_suggestion": "",  # 保留為空或其他用途
+    }
+    
+    return templates.TemplateResponse(
+        "knowledge_detail.html",
+        {
+            "request": request,
+            "point": point_dict,
+            "subtype_display": subtype_obj.chinese_name if subtype_obj else point.subtype,
+            "related_mistakes": related_mistakes,
+            "next_review_display": next_review_display,
+            "active": "knowledge",
+        },
+    )
 
 
 @app.get("/test-buttons")

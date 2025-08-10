@@ -41,50 +41,6 @@
     </div>
   </div>
   
-  <!-- 複習佇列 -->
-  {% if review_queue %}
-    <div class="review-queue-section">
-      <div class="queue-header">
-        <h3 class="queue-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          複習佇列
-        </h3>
-        <a href="/practice?mode=review&shuffle=1" class="btn" data-variant="primary" data-size="sm">
-          開始複習練習
-        </a>
-      </div>
-      <div class="queue-content">
-        <div class="queue-items">
-          {% for point in review_queue[:5] %}
-          <div class="queue-item {% if point.next_review <= now %}due{% endif %}">
-            <div class="queue-item-info">
-              <span class="queue-item-title">{{ point.key_point }}</span>
-              <span class="queue-item-stats">
-                錯誤{{ point.mistake_count }}次 · 掌握度{{ "%.0f"|format(point.mastery_level * 100) }}%
-              </span>
-            </div>
-            <div class="queue-item-badge">
-              {% if point.category.value == 'isolated' %}
-                <span class="badge isolated">單一</span>
-              {% elif point.category.value == 'enhancement' %}
-                <span class="badge enhancement">改進</span>
-              {% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        {% if review_queue|length > 5 %}
-        <div class="queue-more">
-          還有 {{ review_queue|length - 5 }} 個知識點可複習
-        </div>
-        {% endif %}
-      </div>
-    </div>
-  {% endif %}
-  
   <!-- 改進的篩選區域 -->
   <div class="filter-container">
     <!-- 錯誤類別篩選 -->
@@ -98,357 +54,212 @@
         {% for cat in categories %}
           <button class="btn filter-tab" data-variant="tab" data-filter-type="category" data-filter-value="{{ cat }}">
             {{ cat }}
-            <span class="btn-count">{{ category_counts.get(cat, 0) }}</span>
+            <span class="btn-count">{{ category_counts[cat] }}</span>
           </button>
         {% endfor %}
       </div>
     </div>
     
-    <!-- 掌握程度篩選 -->
+    <!-- 掌握度篩選 -->
     <div class="filter-section">
       <h3 class="filter-title">掌握程度</h3>
-      <div class="filter-tabs">
-        <button class="btn filter-tab active" data-variant="tab" data-filter-type="mastery" data-filter-value="">
+      <div class="filter-pills">
+        <button class="btn filter-pill active" data-variant="pill" data-filter-type="mastery" data-filter-value="">
           全部
         </button>
-        <button class="btn filter-tab" data-variant="tab" data-filter-type="mastery" data-filter-value="low">
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="low">
           <span class="mastery-dot low"></span>
-          需加強 (&lt;30%)
+          低 (&lt;30%)
         </button>
-        <button class="btn filter-tab" data-variant="tab" data-filter-type="mastery" data-filter-value="medium">
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="medium">
           <span class="mastery-dot medium"></span>
-          進步中 (30-70%)
+          中 (30-70%)
         </button>
-        <button class="btn filter-tab" data-variant="tab" data-filter-type="mastery" data-filter-value="high">
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="high">
           <span class="mastery-dot high"></span>
-          已掌握 (&gt;70%)
+          高 (&gt;70%)
         </button>
       </div>
     </div>
   </div>
   
-  <!-- 知識點內容區 -->
-  <div class="knowledge-content">
-    
+  <!-- 知識點網格 - 緊湊卡片佈局 -->
+  <div class="knowledge-grid">
     <!-- 系統性錯誤群組 -->
-    {% if knowledge_groups %}
-    <section class="knowledge-section">
-      <h3 class="section-title">
-        <span class="section-icon systematic">📚</span>
-        系統性錯誤（{{ knowledge_groups|length }} 個規則群組）
-      </h3>
-      <div class="knowledge-groups">
-        {% for group in knowledge_groups %}
-        <div class="card" data-type="group" data-mastery="{% if group.avg_mastery < 0.3 %}low{% elif group.avg_mastery < 0.7 %}medium{% else %}high{% endif %}" data-group-name="{{ group.name }}">
-          <div class="group-header" onclick="toggleGroup(this)">
-            <div class="group-info">
-              <h4 class="group-title">{{ group.name }}</h4>
-              <div class="group-stats">
-                <span class="stat-item">
-                  <span class="stat-icon">📝</span>
-                  {{ group.count }} 個實例
-                </span>
-                <span class="stat-item">
-                  <span class="stat-icon">❌</span>
-                  總計 {{ group.total_mistakes }} 次錯誤
-                </span>
-                <span class="stat-item">
-                  <span class="stat-icon">📊</span>
-                  掌握度 {{ "%.0f"|format(group.avg_mastery * 100) }}%
-                </span>
-              </div>
-            </div>
-            <div class="group-progress">
-              <div class="progress-ring">
-                <svg width="60" height="60">
-                  <circle cx="30" cy="30" r="25" stroke-width="4" fill="none" stroke="#e5e7eb" />
-                  <circle cx="30" cy="30" r="25" stroke-width="4" fill="none" 
-                          stroke="{% if group.avg_mastery < 0.3 %}#ef4444{% elif group.avg_mastery < 0.7 %}#f59e0b{% else %}#10b981{% endif %}"
-                          stroke-dasharray="{{ group.avg_mastery * 157 }} 157"
-                          stroke-dashoffset="0"
-                          transform="rotate(-90 30 30)" />
-                </svg>
-                <span class="progress-text">{{ "%.0f"|format(group.avg_mastery * 100) }}%</span>
-              </div>
-            </div>
-            <button class="btn group-toggle" data-variant="icon" data-size="sm">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
-          </div>
-          
-          <div class="group-content">
-            <div class="group-instances">
-              {% for point in group.points %}
-              <div class="card instance-card" data-type="instance" data-size="sm" id="point-{{ point.id }}">
-                <div class="instance-header">
-                  <span class="instance-title">{{ point.key_point }}</span>
-                  <span class="instance-mastery">{{ "%.0f"|format(point.mastery_level * 100) }}%</span>
-                </div>
-                {% if point.explanation %}
-                <p class="instance-explanation">{{ point.explanation }}</p>
-                {% endif %}
-                {% if point.original_phrase or point.correction %}
-                <div class="instance-comparison">
-                  {% if point.original_phrase %}
-                  <div class="compare-item error">❌ {{ point.original_phrase }}</div>
-                  {% endif %}
-                  {% if point.correction %}
-                  <div class="compare-item correct">✅ {{ point.correction }}</div>
-                  {% endif %}
-                </div>
-                {% endif %}
-                
-                {% if point.examples and point.examples|length > 0 %}
-                <div class="instance-examples">
-                  <div class="examples-label">完整句子對照：</div>
-                  {% set latest_example = point.examples[-1] %}
-                  <div class="full-sentence-compare">
-                    <div class="sentence-item">
-                      <span class="sentence-label">中文原句：</span>
-                      <span class="sentence-text">{{ latest_example.chinese }}</span>
-                    </div>
-                    <div class="sentence-item error">
-                      <span class="sentence-label">你的翻譯：</span>
-                      <span class="sentence-text">{{ latest_example.user_answer }}</span>
-                    </div>
-                    <div class="sentence-item correct">
-                      <span class="sentence-label">正確翻譯：</span>
-                      <span class="sentence-text">{{ latest_example.correct }}</span>
-                    </div>
-                  </div>
-                </div>
-                {% endif %}
-                
-                <div class="instance-stats">
-                  <span>錯誤 {{ point.mistake_count }} 次</span>
-                  <span>正確 {{ point.correct_count }} 次</span>
-                  <span>下次複習：{{ point.next_review[:10] }}</span>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
+    {% for group in knowledge_groups %}
+    <div class="knowledge-group-compact" data-category="系統性錯誤" data-mastery-level="{{ group.avg_mastery }}" data-search-text="{{ group.name|lower }}">
+      <div class="group-header-compact">
+        <h3 class="group-title-compact">{{ group.name }}</h3>
+        <div class="group-badges">
+          <span class="badge" data-variant="error">系統性</span>
+          <span class="badge" data-variant="neutral">{{ group.count }}個</span>
         </div>
-        {% endfor %}
       </div>
-    </section>
-    {% endif %}
+      <div class="group-points-compact">
+        {% for point in group.points[:3] %}
+        <a href="/knowledge/{{ point.id }}" class="point-item-compact" data-mastery-level="{{ point.mastery_level }}">
+          <span class="point-title-compact">{{ point.key_point[:30] }}{% if point.key_point|length > 30 %}...{% endif %}</span>
+          <div class="point-stats-compact">
+            <span class="mastery-indicator" style="width: {{ (point.mastery_level * 100)|int }}%"></span>
+            <span class="mistake-count">{{ point.mistake_count }}</span>
+          </div>
+        </a>
+        {% endfor %}
+        {% if group.points|length > 3 %}
+        <div class="group-more">還有 {{ group.points|length - 3 }} 個知識點...</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
     
     <!-- 單一性錯誤 -->
-    {% if isolated_points %}
-    <section class="knowledge-section">
-      <h3 class="section-title">
-        <span class="section-icon isolated">📝</span>
-        單一性錯誤（{{ isolated_points|length }} 個）
-      </h3>
-      <div class="cards-grid knowledge-cards">
-        {% for point in isolated_points %}
-        <div class="card knowledge-single-card" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" id="point-{{ point.id }}" data-category="單一性錯誤">
-          <div class="card-header">
-            <h4 class="card-title">{{ point.key_point }}</h4>
-            <div class="badge mastery-badge" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}">
-              {{ "%.0f"|format(point.mastery_level * 100) }}%
-            </div>
-          </div>
-          {% if point.explanation %}
-          <p class="card-explanation">{{ point.explanation }}</p>
-          {% endif %}
-          {% if point.original_phrase or point.correction %}
-          <div class="card-comparison">
-            {% if point.original_phrase %}
-            <div class="compare-item error">❌ {{ point.original_phrase }}</div>
-            {% endif %}
-            {% if point.correction %}
-            <div class="compare-item correct">✅ {{ point.correction }}</div>
-            {% endif %}
-          </div>
-          {% endif %}
-          
-          {% if point.examples and point.examples|length > 0 %}
-          <div class="card-examples">
-            <div class="examples-label">完整句子：</div>
-            {% set latest_example = point.examples[-1] %}
-            <div class="full-sentence">
-              <div class="sentence-zh">{{ latest_example.chinese }}</div>
-              <div class="sentence-en error">❌ {{ latest_example.user_answer }}</div>
-              <div class="sentence-en correct">✅ {{ latest_example.correct }}</div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-        {% endfor %}
+    {% for point in isolated_points %}
+    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+       data-category="單一性錯誤" 
+       data-mastery-level="{{ point.mastery_level }}"
+       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+      <div class="card-header-compact">
+        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <span class="badge" data-variant="warning">單一</span>
       </div>
-    </section>
-    {% endif %}
+      <div class="card-body-compact">
+        <div class="mastery-bar-compact">
+          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+        </div>
+        <div class="card-stats-compact">
+          <span class="stat">錯誤 {{ point.mistake_count }}</span>
+          <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
     
     <!-- 可以更好 -->
-    {% if enhancement_points %}
-    <section class="knowledge-section">
-      <h3 class="section-title">
-        <span class="section-icon enhancement">✨</span>
-        可以更好（{{ enhancement_points|length }} 個）
-      </h3>
-      <div class="cards-grid knowledge-cards">
-        {% for point in enhancement_points %}
-        <div class="card knowledge-single-card enhancement" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" id="point-{{ point.id }}" data-category="可以更好">
-          <div class="card-header">
-            <h4 class="card-title">{{ point.key_point }}</h4>
-            <div class="badge mastery-badge" data-mastery="high">
-              {{ "%.0f"|format(point.mastery_level * 100) }}%
-            </div>
-          </div>
-          {% if point.explanation %}
-          <p class="card-explanation">{{ point.explanation }}</p>
-          {% endif %}
-          {% if point.original_phrase or point.correction %}
-          <div class="card-comparison">
-            {% if point.original_phrase %}
-            <div class="compare-item original">原：{{ point.original_phrase }}</div>
-            {% endif %}
-            {% if point.correction %}
-            <div class="compare-item improved">✨ {{ point.correction }}</div>
-            {% endif %}
-          </div>
-          {% endif %}
-          
-          {% if point.examples and point.examples|length > 0 %}
-          <div class="card-examples">
-            <div class="examples-label">完整句子：</div>
-            {% set latest_example = point.examples[-1] %}
-            <div class="full-sentence">
-              <div class="sentence-zh">{{ latest_example.chinese }}</div>
-              <div class="sentence-en original">原：{{ latest_example.user_answer }}</div>
-              <div class="sentence-en improved">✨ {{ latest_example.correct }}</div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-        {% endfor %}
+    {% for point in enhancement_points %}
+    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+       data-category="可以更好" 
+       data-mastery-level="{{ point.mastery_level }}"
+       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+      <div class="card-header-compact">
+        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <span class="badge" data-variant="info">改進</span>
       </div>
-    </section>
-    {% endif %}
+      <div class="card-body-compact">
+        <div class="mastery-bar-compact">
+          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+        </div>
+        <div class="card-stats-compact">
+          <span class="stat">錯誤 {{ point.mistake_count }}</span>
+          <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
     
     <!-- 其他錯誤 -->
-    {% if other_points %}
-    <section class="knowledge-section">
-      <h3 class="section-title">
-        <span class="section-icon other">📌</span>
-        其他錯誤（{{ other_points|length }} 個）
-      </h3>
-      <div class="cards-grid knowledge-cards">
-        {% for point in other_points %}
-        <div class="card knowledge-single-card" data-type="knowledge" data-interactive="true" data-decorated="true" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}" data-category="其他錯誤">
-          <div class="card-header">
-            <h4 class="card-title">{{ point.key_point }}</h4>
-            <div class="badge mastery-badge" data-mastery="{% if point.mastery_level < 0.3 %}low{% elif point.mastery_level < 0.7 %}medium{% else %}high{% endif %}">
-              {{ "%.0f"|format(point.mastery_level * 100) }}%
-            </div>
-          </div>
-          {% if point.explanation %}
-          <p class="card-explanation">{{ point.explanation }}</p>
-          {% endif %}
-          
-          {% if point.original_phrase or point.correction %}
-          <div class="card-comparison">
-            {% if point.original_phrase %}
-            <div class="compare-item error">❌ {{ point.original_phrase }}</div>
-            {% endif %}
-            {% if point.correction %}
-            <div class="compare-item correct">✅ {{ point.correction }}</div>
-            {% endif %}
-          </div>
-          {% endif %}
-          
-          {% if point.examples and point.examples|length > 0 %}
-          <div class="card-examples">
-            <div class="examples-label">完整句子：</div>
-            {% set latest_example = point.examples[-1] %}
-            <div class="full-sentence">
-              <div class="sentence-zh">{{ latest_example.chinese }}</div>
-              <div class="sentence-en error">❌ {{ latest_example.user_answer }}</div>
-              <div class="sentence-en correct">✅ {{ latest_example.correct }}</div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-        {% endfor %}
+    {% for point in other_points %}
+    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+       data-category="其他錯誤" 
+       data-mastery-level="{{ point.mastery_level }}"
+       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+      <div class="card-header-compact">
+        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <span class="badge" data-variant="neutral">其他</span>
       </div>
-    </section>
-    {% endif %}
-    
+      <div class="card-body-compact">
+        <div class="mastery-bar-compact">
+          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+        </div>
+        <div class="card-stats-compact">
+          <span class="stat">錯誤 {{ point.mistake_count }}</span>
+          <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
   </div>
   
   <!-- 無結果提示 -->
-  <div class="no-results" id="noKnowledgeResults" style="display: none;">
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+  <div class="no-results" style="display: none;">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+      <path d="M11 8v3m0 4h.01"></path>
     </svg>
-    <h3>沒有找到知識點</h3>
-    <p>試試調整篩選條件或開始練習累積新的知識點</p>
-    <a href="/practice" class="btn" data-variant="primary">開始練習</a>
+    <p>沒有找到符合條件的知識點</p>
   </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 篩選功能 - 支援組合篩選
+let activeFilters = {
+  category: '',
+  mastery: '',
+  search: ''
+};
+
+function applyFilters() {
+  const items = document.querySelectorAll('.knowledge-card-compact, .knowledge-group-compact');
+  let hasResults = false;
   
-  <script>
-    function toggleGroup(header) {
-      const card = header.closest('.card[data-type="group"]');
-      const content = card.querySelector('.group-content');
-      const toggle = header.querySelector('.group-toggle svg');
-      
-      if (content.classList.contains('expanded')) {
-        // 收起
-        content.classList.remove('expanded');
-        header.classList.remove('expanded');
-        content.style.display = 'none';
-      } else {
-        // 展開
-        content.classList.add('expanded');
-        header.classList.add('expanded');
-        content.style.display = 'block';
-      }
-      
-      // 旋轉箭頭
-      if (toggle) {
-        toggle.style.transform = content.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0)';
+  items.forEach(item => {
+    let show = true;
+    
+    // 檢查類別篩選
+    if (activeFilters.category) {
+      show = show && item.dataset.category === activeFilters.category;
+    }
+    
+    // 檢查掌握度篩選
+    if (activeFilters.mastery) {
+      const mastery = parseFloat(item.dataset.masteryLevel || 0);
+      if (activeFilters.mastery === 'low') {
+        show = show && mastery < 0.3;
+      } else if (activeFilters.mastery === 'medium') {
+        show = show && mastery >= 0.3 && mastery < 0.7;
+      } else if (activeFilters.mastery === 'high') {
+        show = show && mastery >= 0.7;
       }
     }
     
-    // 頁面載入時初始化所有 group-content 為隱藏
-    document.addEventListener('DOMContentLoaded', function() {
-      const groupContents = document.querySelectorAll('.group-content');
-      groupContents.forEach(content => {
-        if (!content.classList.contains('expanded')) {
-          content.style.display = 'none';
-        }
-      });
-    });
+    // 檢查搜尋條件
+    if (activeFilters.search) {
+      const searchText = item.dataset.searchText || '';
+      show = show && searchText.includes(activeFilters.search);
+    }
     
-    // 處理URL hash定位到特定知識點
-    window.addEventListener('load', function() {
-      const hash = window.location.hash;
-      if (hash && hash.startsWith('#point-')) {
-        const element = document.querySelector(hash);
-        if (element) {
-          // 如果知識點在折疊的群組中，先展開群組
-          const groupContent = element.closest('.group-content');
-          if (groupContent && !groupContent.classList.contains('expanded')) {
-            const groupSummary = groupContent.previousElementSibling;
-            toggleGroup(groupSummary);
-          }
-          
-          // 滾動到元素
-          setTimeout(() => {
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // 高亮顯示
-            element.style.transition = 'background-color 0.3s';
-            element.style.backgroundColor = '#fef3c7';
-            setTimeout(() => {
-              element.style.backgroundColor = '';
-            }, 3000);
-          }, 500);
-        }
-      }
+    item.style.display = show ? '' : 'none';
+    if (show) hasResults = true;
+  });
+  
+  document.querySelector('.no-results').style.display = hasResults ? 'none' : 'flex';
+}
+
+// 更新搜尋功能
+document.getElementById('knowledgeSearch').addEventListener('input', function(e) {
+  activeFilters.search = e.target.value.toLowerCase();
+  applyFilters();
+});
+
+// 更新篩選按鈕功能
+document.querySelectorAll('.filter-tab, .filter-pill').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const filterType = this.dataset.filterType;
+    const filterValue = this.dataset.filterValue;
+    
+    // 更新按鈕狀態
+    document.querySelectorAll(`[data-filter-type="${filterType}"]`).forEach(b => {
+      b.classList.remove('active');
     });
-  </script>
+    this.classList.add('active');
+    
+    // 更新活躍篩選條件
+    activeFilters[filterType] = filterValue;
+    
+    // 應用所有篩選條件
+    applyFilters();
+  });
+});
+</script>
 {% endblock %}

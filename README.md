@@ -206,13 +206,25 @@ docker-compose up -d
 **Q**: 如何備份學習數據？  
 **A**: 複製 `data/` 目錄即可，包含所有知識點和練習記錄
 
-## 項目結構
+## 項目文檔
 
-詳細的項目架構和開發指南請參考：
-- [系統架構](docs/ARCHITECTURE.md)
-- [配置指南](docs/CONFIGURATION.md)
-- [開發文檔](docs/DEVELOPMENT.md)
-- [API 文檔](docs/API.md)
+### 核心文檔
+- **[專案指引](CLAUDE.md)** - 核心開發指引
+- **[專案交接文檔](PROJECT_HANDOVER.md)** - 完整的專案交接資訊（含快速上手）
+- **[快速參考指南](QUICK_REFERENCE.md)** - 常用命令和速查表
+- **[待辦事項](TODO.md)** - 開發任務清單
+
+### 技術文檔
+- [系統架構](docs/ARCHITECTURE.md) - 詳細架構設計
+- [設計系統](docs/DESIGN-SYSTEM-COMPLETE.md) - UI/UX 設計規範
+- [API 文檔](docs/API.md) - 接口說明
+- [配置指南](docs/CONFIGURATION.md) - 配置詳解
+- [開發文檔](docs/DEVELOPMENT.md) - 開發指南
+- [部署文檔](docs/DEPLOYMENT.md) - 部署說明
+
+### 其他資源
+- [MCP 測試設置](MCP_SETUP.md) - Playwright 測試配置
+- [變更日誌](CHANGELOG.md) - 版本歷史
 
 ## 貢獻指南
 

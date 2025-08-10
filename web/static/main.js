@@ -307,6 +307,9 @@ class PracticeSync {
     });
     
     // 攔截換一句按鈕點擊，確保使用最新的參數
+    // 2024-12-10: 暫時禁用這個功能，因為在 practice.html 中已有更完善的實現
+    // 這個代碼會覆蓋 practice.html 中的事件處理器，導致複習模式無法正常工作
+    /*
     if (this.shuffleButton) {
       console.log('✅ Setting up click handler for shuffle button');
       
@@ -320,8 +323,11 @@ class PracticeSync {
         e.stopPropagation();
         
         // 讀取當前選擇器的值，包括模式
-        const modeSelect = document.getElementById('modeSelect');
-        const mode = modeSelect ? modeSelect.value : 'new';
+        // 修正：使用正確的 ID 'modeInput' 而不是 'modeSelect'
+        const modeInput = document.getElementById('modeInput');
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlMode = urlParams.get('mode');
+        const mode = urlMode || (modeInput ? modeInput.value : 'new');
         const length = this.lengthSelect.value;
         const level = this.levelSelect.value;
         const newUrl = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
@@ -340,6 +346,8 @@ class PracticeSync {
     } else {
       console.error('❌ Shuffle button not found, cannot attach handler');
     }
+    */
+    console.log('[PracticeSync] Skipping shuffle button handler - handled in practice.html');
   }
   
   syncFromURL() {
@@ -355,11 +363,16 @@ class PracticeSync {
   updateShuffleButton() {
     // 動態更新「換一句」按鈕的 href（作為備份）
     if (this.shuffleButton) {
+      // 從 URL 獲取當前的 mode
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode') || 'new';
       const length = this.lengthSelect.value;
       const level = this.levelSelect.value;
-      const newHref = `/practice?length=${length}&level=${level}&shuffle=1`;
+      // 重要：包含 mode 參數！
+      const newHref = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
       this.shuffleButton.href = newHref;
       console.log('📝 Updated button href');
+      console.log('  Mode:', mode);
       console.log('  Length:', length);
       console.log('  Level:', level);
       console.log('  New href:', newHref);
@@ -830,6 +843,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // 處理換一句按鈕載入狀態
+    // 2024-12-10: 暫時禁用，因為會干擾 practice.html 中的事件處理
+    // 這會導致複習模式無法正常工作
+    /*
     const shuffleBtn = document.getElementById('shuffleBtn');
     if (shuffleBtn) {
       // 修改原有的點擊事件處理
@@ -856,6 +872,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
       });
     }
+    */
+    console.log('[LoadingManager] Skipping shuffle button loading handler - handled in practice.html');
     
     // 掛載到全域以便調試
     window.draftManager = draftManager;

@@ -40,6 +40,73 @@
       💡 建議流程：先在「文法句型」選擇練習範圍 → 到「翻譯練習」進行作答 → 於「知識點」查看待複習重點
     </p>
   </section>
+
+  <!-- 複習列表區塊 -->
+  {% if review_items %}
+  <section class="review-section">
+    <div class="review-header">
+      <h2 class="review-title">待複習知識點</h2>
+      <a href="/practice?mode=review" class="btn review-action-btn" data-variant="accent" data-size="sm">
+        開始複習
+      </a>
+    </div>
+    
+    <div class="review-grid">
+      {% for item in review_items %}
+      <div class="review-card {% if item.is_due %}is-due{% endif %}" 
+           data-mastery="{{ item.mastery_level }}">
+        <div class="review-card-header">
+          <span class="review-category badge-{{ item.category_value }}">
+            {{ item.category }}
+          </span>
+          <div class="review-stats">
+            <span class="mastery-indicator" title="掌握度">
+              <span class="mastery-bar">
+                <span class="mastery-fill" style="width: {{ item.mastery_level }}%"></span>
+              </span>
+              <span class="mastery-text">{{ item.mastery_level }}%</span>
+            </span>
+          </div>
+        </div>
+        
+        <div class="review-card-content">
+          <a href="/knowledge/{{ item.id }}" class="review-point-link">
+            {{ item.key_point }}
+          </a>
+        </div>
+        
+        <div class="review-card-footer">
+          <span class="mistake-count">
+            錯誤 {{ item.mistake_count }} 次
+          </span>
+          {% if item.is_due %}
+          <span class="due-badge">待複習</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    {% if review_items|length >= 10 %}
+    <div class="review-more">
+      <a href="/knowledge" class="btn" data-variant="ghost" data-size="sm">
+        查看全部知識點 →
+      </a>
+    </div>
+    {% endif %}
+  </section>
+  {% else %}
+  <section class="review-empty">
+    <div class="empty-state">
+      <svg class="empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M9 11l3 3L22 4"></path>
+        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+      </svg>
+      <p class="empty-message">目前沒有待複習的知識點</p>
+      <p class="empty-hint">繼續練習累積更多知識點吧！</p>
+    </div>
+  </section>
+  {% endif %}
 {% endblock %}
 
 

@@ -58,7 +58,15 @@
           </select>
         </div>
         <button type="button" class="btn" data-variant="primary" data-size="lg" id="shuffleBtn">
-          <span class="btn-text">{% if chinese %}換一句{% else %}開始出題{% endif %}</span>
+          <span class="btn-text">
+            {% if chinese %}
+              換一句
+            {% elif mode == 'review' %}
+              開始複習
+            {% else %}
+              開始出題
+            {% endif %}
+          </span>
         </button>
         {% if llm_debug_data and llm_debug_data.status != 'no_data' %}
         <button type="button" class="btn" data-variant="secondary" data-size="sm" id="debugBtn" onclick="showDebugModal()">
@@ -68,7 +76,8 @@
       </div>
       
       <!-- 隱藏的mode input -->
-      <input type="hidden" name="mode" id="modeInput" value="{{ mode or 'new' }}">
+      {% set actual_mode = request.query_params.get('mode', mode or 'new') %}
+      <input type="hidden" name="mode" id="modeInput" value="{{ actual_mode }}">
 
     {% if review_empty_message %}
     <!-- 複習佇列為空的提示 -->
@@ -313,22 +322,31 @@
   {% endif %}
   
   <script>
-    // 模式選擇函數
+    // 模式選擇函數 - 改為直接刷新頁面以確保狀態一致
     function selectMode(mode) {
-      // 更新按鈕狀態
-      document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.removeAttribute('data-active');
-      });
-      document.querySelector(`.mode-btn[data-mode="${mode}"]`).setAttribute('data-active', 'true');
-      
-      // 更新隱藏的input
-      document.getElementById('modeInput').value = mode;
-      
-      // 更新URL但不刷新頁面（可選）
-      const lengthSelect = document.getElementById('lengthSelect');
-      const levelSelect = document.getElementById('levelSelect');
-      const newUrl = `/practice?mode=${mode}&length=${lengthSelect.value}&level=${levelSelect.value}`;
-      window.history.pushState({}, '', newUrl);
+      try {
+        console.log('[selectMode] Switching to mode:', mode);
+        
+        // 獲取當前參數
+        const lengthSelect = document.getElementById('lengthSelect');
+        const levelSelect = document.getElementById('levelSelect');
+        
+        if (!lengthSelect || !levelSelect) {
+          console.error('[selectMode] Cannot find select elements');
+          return;
+        }
+        
+        const length = lengthSelect.value;
+        const level = levelSelect.value;
+        
+        // 直接導航到新URL，確保前後端狀態同步
+        const url = `/practice?mode=${mode}&length=${length}&level=${level}`;
+        console.log('[selectMode] Navigating to:', url);
+        window.location.href = url;
+      } catch (error) {
+        console.error('[selectMode] Error:', error);
+        alert('切換模式時發生錯誤，請重新整理頁面');
+      }
     }
     
     // 確保 DOM 載入完成後再綁定事件
@@ -337,41 +355,141 @@
       const shuffleBtn = document.getElementById('shuffleBtn');
       if (shuffleBtn) {
         shuffleBtn.addEventListener('click', function() {
-          const mode = document.getElementById('modeInput').value;
-          const lengthSelect = document.getElementById('lengthSelect');
-          const levelSelect = document.getElementById('levelSelect');
-          
-          const length = lengthSelect.value;
-          const level = levelSelect.value;
-          
-          console.log('Current mode:', mode);  // 調試用
-          console.log('Current length:', length);
-          console.log('Current level:', level);
-          
-          const url = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
-          console.log('Navigating to:', url);
-          window.location.href = url;
+          try {
+            console.error('[shuffleBtn] ===== CRITICAL DEBUG START =====');
+            console.error('[shuffleBtn] Button clicked at', new Date().toISOString());
+            
+            // 檢查是否有多個 shuffleBtn
+            const allShuffleBtns = document.querySelectorAll('#shuffleBtn');
+            console.error('[shuffleBtn] Number of shuffleBtn elements:', allShuffleBtns.length);
+            
+            const modeInput = document.getElementById('modeInput');
+            const lengthSelect = document.getElementById('lengthSelect');
+            const levelSelect = document.getElementById('levelSelect');
+            
+            // 檢查是否有多個 modeInput
+            const allModeInputs = document.querySelectorAll('#modeInput');
+            console.error('[shuffleBtn] Number of modeInput elements:', allModeInputs.length);
+            if (allModeInputs.length > 1) {
+              console.error('[shuffleBtn] WARNING: Multiple modeInput elements found!');
+              allModeInputs.forEach((input, index) => {
+                console.error(`  modeInput[${index}].value:`, input.value);
+              });
+            }
+            
+            if (!modeInput || !lengthSelect || !levelSelect) {
+              console.error('[shuffleBtn] Cannot find required elements');
+              alert('無法找到必要的元素，請重新整理頁面');
+              return;
+            }
+            
+            // 優先從 URL 獲取 mode，確保狀態一致
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlMode = urlParams.get('mode');
+            
+            console.error('[shuffleBtn] RAW VALUES:');
+            console.error('  window.location.search:', window.location.search);
+            console.error('  urlParams:', Object.fromEntries(urlParams));
+            console.error('  urlMode:', urlMode);
+            console.error('  modeInput.value BEFORE:', modeInput.value);
+            console.error('  modeInput.getAttribute("value"):', modeInput.getAttribute('value'));
+            
+            // 強制同步 modeInput 到 URL 的值
+            if (urlMode && urlMode !== modeInput.value) {
+              console.error('[shuffleBtn] Fixing mode mismatch: Input was', modeInput.value, 'but URL is', urlMode);
+              modeInput.value = urlMode;
+              console.error('  modeInput.value AFTER fix:', modeInput.value);
+            }
+            
+            const mode = urlMode || modeInput.value || 'new';
+            const length = lengthSelect.value;
+            const level = levelSelect.value;
+            
+            console.error('[shuffleBtn] FINAL VALUES:');
+            console.error('  mode:', mode);
+            console.error('  length:', length);
+            console.error('  level:', level);
+            
+            const url = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
+            console.error('[shuffleBtn] NAVIGATING TO:', url);
+            console.error('[shuffleBtn] ===== CRITICAL DEBUG END =====');
+            
+            // 添加一個短暫延遲以確保日誌能被看到
+            setTimeout(() => {
+              window.location.href = url;
+            }, 100);
+          } catch (error) {
+            console.error('[shuffleBtn] Error:', error);
+            alert('出題時發生錯誤，請重新整理頁面');
+          }
         });
+      }
+      
+      // 顯示當前狀態（調試用）
+      const modeInput = document.getElementById('modeInput');
+      const debugMode = document.querySelector('[data-debug-mode]');
+      if (modeInput) {
+        console.log('[Initial] Current mode from modeInput:', modeInput.value);
+        console.log('[Initial] Current URL:', window.location.href);
+        if (debugMode) {
+          console.log('[Initial] Server-side mode value:', debugMode.dataset.debugMode);
+        }
+        
+        // 檢查是否有不一致
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlMode = urlParams.get('mode') || 'new';
+        if (urlMode !== modeInput.value) {
+          console.warn('[WARNING] Mode mismatch! URL mode:', urlMode, 'vs Input mode:', modeInput.value);
+          // 強制同步到URL的值
+          modeInput.value = urlMode;
+          console.log('[FIX] Updated modeInput to match URL:', urlMode);
+        }
       }
       
       // 長度或難度切換時也重新載入
       const lengthSelect = document.getElementById('lengthSelect');
       if (lengthSelect) {
         lengthSelect.addEventListener('change', function() {
-          const mode = document.getElementById('modeSelect').value;
-          const length = this.value;
-          const level = document.getElementById('levelSelect').value;
-          window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
+          try {
+            const modeInput = document.getElementById('modeInput');  // 修正：使用 modeInput 而非 modeSelect
+            const length = this.value;
+            const level = document.getElementById('levelSelect').value;
+            
+            if (!modeInput) {
+              console.error('[lengthSelect] Cannot find modeInput');
+              return;
+            }
+            
+            const mode = modeInput.value;
+            console.log('[lengthSelect] Changed to:', { mode, length, level });
+            
+            window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
+          } catch (error) {
+            console.error('[lengthSelect] Error:', error);
+          }
         });
       }
       
       const levelSelect = document.getElementById('levelSelect');
       if (levelSelect) {
         levelSelect.addEventListener('change', function() {
-          const mode = document.getElementById('modeSelect').value;
-          const length = document.getElementById('lengthSelect').value;
-          const level = this.value;
-          window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
+          try {
+            const modeInput = document.getElementById('modeInput');  // 修正：使用 modeInput 而非 modeSelect
+            const length = document.getElementById('lengthSelect').value;
+            const level = this.value;
+            
+            if (!modeInput) {
+              console.error('[levelSelect] Cannot find modeInput');
+              return;
+            }
+            
+            const mode = modeInput.value;
+            console.log('[levelSelect] Changed to:', { mode, length, level });
+            
+            window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
+          } catch (error) {
+            console.error('[levelSelect] Error:', error);
+          }
         });
       }
       

@@ -267,6 +267,17 @@ class KnowledgeManager:
                 return point
         return None
 
+    def get_knowledge_point(self, point_id: str) -> Optional[KnowledgePoint]:
+        """根據ID獲取知識點"""
+        try:
+            target_id = int(point_id)
+            for point in self.knowledge_points:
+                if point.id == target_id:
+                    return point
+        except (ValueError, TypeError):
+            self.logger.warning(f"Invalid point_id: {point_id}")
+        return None
+
     def _get_next_id(self) -> int:
         """獲取下一個ID"""
         if not self.knowledge_points:
@@ -276,6 +287,30 @@ class KnowledgeManager:
     def get_points_by_category(self, category: ErrorCategory) -> list[KnowledgePoint]:
         """根據類別獲取知識點"""
         return [p for p in self.knowledge_points if p.category == category]
+    
+    def get_all_mistakes(self) -> list[dict]:
+        """獲取所有錯誤記錄"""
+        # 返回練習歷史中的錯誤記錄，並為每個記錄添加知識點信息
+        mistakes = []
+        for practice in self.practice_history:
+            if not practice.get("is_correct", True):
+                # 為每個錯誤記錄添加關聯的知識點
+                mistake = practice.copy()
+                # 從feedback中提取知識點信息
+                if "feedback" in mistake and "error_analysis" in mistake["feedback"]:
+                    knowledge_points = []
+                    for error in mistake["feedback"]["error_analysis"]:
+                        key_point = error.get("key_point", "")
+                        point = self._find_knowledge_point(key_point)
+                        if point:
+                            knowledge_points.append({
+                                "id": str(point.id),
+                                "key_point": point.key_point,
+                                "category": point.category.value
+                            })
+                    mistake["knowledge_points"] = knowledge_points
+                mistakes.append(mistake)
+        return mistakes
 
     def get_due_points(self) -> list[KnowledgePoint]:
         """獲取需要複習的知識點"""
