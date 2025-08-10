@@ -1,0 +1,298 @@
+/* Layout */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header - Enhanced Liquid Glass */
+header.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: none;
+  position: sticky;
+  top: 16px;
+  z-index: 100;
+  border-radius: var(--radius);
+  margin: 16px auto;
+  max-width: calc(1200px - 32px);
+  
+  /* Optimized Glass effect - using design tokens */
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Specular highlight effect */
+header.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--white-80) 50%, 
+    transparent 100%);
+  opacity: 0.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  header.container {
+    background: var(--glass-surface-dark);
+    border: 1px solid var(--glass-border-dark);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brand a {
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand a:hover {
+  color: var(--accent);
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  gap: 8px;
+}
+
+nav a {
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: var(--transition);
+  position: relative;
+  will-change: background-color, color;
+}
+
+nav a:hover {
+  color: var(--text);
+  background: var(--hover-bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  nav a:hover {
+    background: var(--hover-bg-dark);
+  }
+}
+
+nav a.active {
+  color: white;
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-md);
+}
+
+/* Main Content */
+main.container {
+  flex: 1;
+  padding: 48px 24px;
+  max-width: 1200px;
+}
+
+/* Cards Grid */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+
+/* Card Component - Enhanced Liquid Glass */
+.card {
+  will-change: transform, box-shadow;
+  border-radius: var(--radius);
+  padding: 28px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  
+  /* Multi-layer glass effect using tokens */
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+}
+
+/* Shimmer effect disabled for performance */
+
+.card:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-4px) scale(1.02);
+  border: 1px solid var(--border-accent);
+}
+
+/* Hover shimmer disabled */
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: var(--glass-surface-dark);
+    border: 1px solid var(--glass-border-dark);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.card h2 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.card .num {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+/* Lists */
+.list {
+  list-style: none;
+  margin: 24px 0;
+}
+
+.item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item:hover {
+  background: var(--hover-bg);
+  margin: 0 -16px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-color-scheme: dark) {
+  .item:hover {
+    background: var(--hover-bg-dark);
+  }
+}
+
+.title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 1.125rem;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+/* Tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-subtle);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin: 4px 4px 4px 0;
+  transition: var(--transition);
+  border: 1px solid var(--border-accent);
+}
+
+.tag:hover {
+  background: var(--bg-accent-hover);
+}
+
+/* Forms & Inputs - Glass Morphism */
+label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+textarea,
+select,
+input[type="text"],
+input[type="email"],
+input[type="number"] {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 1rem;
+  transition: var(--transition);
+  font-family: inherit;
+  position: relative;
+  
+  /* Glass effect using tokens */
+  background: var(--input-bg);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border: 1px solid var(--input-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Focus effect using tokens */
+textarea:focus,
+select:focus,
+input:focus {
+  outline: none;
+  background: var(--input-bg-focus);
+  border: 1px solid var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+@media (prefers-color-scheme: dark) {
+  textarea,
+  select,
+  input[type="text"],
+  input[type="email"],
+  input[type="number"] {
+    background: var(--input-bg-dark);
+    border: 1px solid var(--input-border-dark);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  textarea:focus,
+  select:focus,
+  input:focus {
+    background: var(--input-bg-focus-dark);
+    border: 1px solid var(--color-primary);
+  }
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* 按鈕樣式已遷移至 design-system/03-components/buttons.css */
+/* 保留空白以維持文件結構 */

@@ -1,0 +1,185 @@
+/* 
+ * Layout Components
+ * 布局組件
+ */
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.container-sm {
+  max-width: 768px;
+}
+
+.container-lg {
+  max-width: 1400px;
+}
+
+/* Header - Enhanced Glass Effect */
+header.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border-bottom: none;
+  position: sticky;
+  top: var(--space-4);
+  z-index: 100;
+  border-radius: var(--radius-lg);
+  margin: var(--space-4) auto;
+  max-width: calc(1200px - var(--space-8));
+  
+  /* Glass Morphism */
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Specular highlight */
+header.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--white-80) 50%, 
+    transparent 100%);
+  opacity: 0.6;
+}
+
+/* Brand */
+.brand {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.brand a {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: var(--transition-colors);
+}
+
+.brand a:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  gap: var(--space-2);
+}
+
+nav a {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-all);
+  position: relative;
+  will-change: background-color, color;
+}
+
+nav a:hover {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+  text-decoration: none;
+}
+
+nav a.active {
+  color: white;
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-md);
+}
+
+/* Main Content */
+main {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  min-height: calc(100vh - 200px);
+}
+
+/* Stack Layout */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.stack-sm {
+  gap: var(--space-3);
+}
+
+.stack-lg {
+  gap: var(--space-8);
+}
+
+/* Row Layout */
+.row {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.row-between {
+  justify-content: space-between;
+}
+
+.row-center {
+  justify-content: center;
+}
+
+.row-wrap {
+  flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header.container {
+    flex-direction: column;
+    gap: var(--space-4);
+    top: 0;
+    margin: 0;
+    border-radius: 0;
+    max-width: 100%;
+  }
+  
+  nav {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  main {
+    padding: var(--space-6) var(--space-4);
+  }
+  
+  .row {
+    flex-direction: column;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  header.container {
+    background: var(--glass-surface-dark);
+    border-color: var(--glass-border-dark);
+  }
+  
+  nav a:hover {
+    background: var(--hover-bg-dark);
+  }
+}

@@ -1,0 +1,138 @@
+/* 
+ * Utility Components
+ * 實用工具組件
+ */
+
+/* Footer */
+footer.container {
+  border-top: none;
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+  background: var(--surface-base);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  margin-top: var(--space-12);
+}
+
+footer small {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Draft Functionality */
+.draft-notification {
+  background: var(--color-info-subtle);
+  border: 1px solid var(--color-info);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: var(--animation-slide-in-up);
+  box-shadow: var(--shadow-sm);
+}
+
+.draft-notification span {
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.draft-buttons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Save Indicator */
+.save-indicator {
+  position: fixed;
+  bottom: var(--space-8);
+  right: var(--space-8);
+  background: var(--surface-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  opacity: 0;
+  transition: var(--transition-all);
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+.save-indicator.show {
+  opacity: 1;
+  animation: var(--animation-pulse);
+}
+
+.save-indicator.saving {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+
+.save-indicator.saved {
+  border-color: var(--color-success);
+  color: var(--color-success);
+  background: var(--color-success-subtle);
+}
+
+.save-indicator.restored {
+  background: var(--color-info-subtle);
+  border-color: var(--color-info);
+  color: var(--color-info);
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .card,
+  .btn,
+  nav a,
+  .item {
+    transform: none !important;
+    will-change: auto !important;
+  }
+  
+  .save-indicator,
+  .draft-notification {
+    animation: none !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .card,
+  .btn,
+  .badge,
+  .form-control {
+    border-width: 2px;
+  }
+  
+  .focus-ring {
+    outline-width: 3px;
+  }
+}
+
+/* Print Utilities */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .page-break-before {
+    page-break-before: always;
+  }
+  
+  .page-break-after {
+    page-break-after: always;
+  }
+}
