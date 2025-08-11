@@ -76,7 +76,7 @@
 
 .btn[data-variant="primary"]:hover:not(:disabled) {
   background: var(--gray-800);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn[data-variant="primary"]:active:not(:disabled) {
@@ -109,26 +109,26 @@
 
 /* Success - 成功操作 */
 .btn[data-variant="success"] {
-  background: var(--color-success);
+  background: var(--success);
   color: var(--text-inverse);
-  border-color: var(--color-success);
+  border-color: var(--success);
 }
 
 .btn[data-variant="success"]:hover:not(:disabled) {
-  background: var(--color-success-hover);
-  border-color: var(--color-success-hover);
+  background: var(--success-hover);
+  border-color: var(--success-hover);
 }
 
 /* Danger - 危險操作 */
 .btn[data-variant="danger"] {
-  background: var(--color-error);
+  background: var(--error);
   color: var(--text-inverse);
-  border-color: var(--color-error);
+  border-color: var(--error);
 }
 
 .btn[data-variant="danger"]:hover:not(:disabled) {
-  background: var(--color-error-hover);
-  border-color: var(--color-error-hover);
+  background: var(--error-hover);
+  border-color: var(--error-hover);
 }
 
 /* Tab - 標籤式按鈕 */
@@ -149,7 +149,7 @@
 .btn[data-variant="tab"][data-active="true"] {
   background: var(--text-primary);
   color: var(--text-inverse);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 /* Card - 卡片式按鈕 */
@@ -170,13 +170,13 @@
 
 .btn[data-variant="card"]:hover:not(:disabled) {
   background: var(--surface-base);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn[data-variant="card"].active,
 .btn[data-variant="card"][data-active="true"] {
   background: var(--surface-base);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Icon - 圖標按鈕 */
@@ -204,7 +204,7 @@
 
 .btn[data-variant="gradient"]:hover:not(:disabled) {
   background: var(--accent-700);
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+  box-shadow: var(--shadow-primary);
 }
 
 /* Filter Tab - 篩選標籤（如錯誤類別、句型分類） */
@@ -232,7 +232,7 @@
   background: var(--gray-900) !important;
   color: #ffffff !important;
   border-color: var(--gray-900) !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: var(--shadow-lg) !important;
   font-weight: 600 !important;
 }
 
@@ -263,7 +263,7 @@
   background: #4f46e5 !important;  /* Indigo-600 */
   color: #ffffff !important;
   border-color: #4f46e5 !important;
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3) !important;
+  box-shadow: var(--shadow-primary-lg) !important;
   font-weight: 600 !important;
 }
 
@@ -423,9 +423,9 @@
 /* ========== 兼容性處理 ========== */
 /* 保留舊類名的基本支援（過渡期） */
 .btn.primary {
-  background: var(--color-primary);
+  background: var(--primary);
   color: var(--text-inverse);
-  border-color: var(--color-primary);
+  border-color: var(--primary);
 }
 
 .btn.outline {
@@ -460,12 +460,12 @@
   }
   
   .btn[data-variant="primary"] {
-    background: var(--color-primary);
+    background: var(--primary);
     color: var(--text-inverse);
   }
   
   .btn[data-variant="primary"]:hover:not(:disabled) {
-    background: var(--color-primary-hover);
+    background: var(--primary-hover);
   }
   
   .btn[data-variant="secondary"] {
@@ -499,7 +499,7 @@
   
   .btn[data-variant="tab"].active,
   .btn[data-variant="tab"][data-active="true"] {
-    background: var(--color-primary);
+    background: var(--primary);
     color: var(--text-inverse);
   }
   

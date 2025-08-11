@@ -191,7 +191,7 @@
 .tag-search:focus {
   outline: none;
   border-color: var(--accent-400);
-  box-shadow: 0 0 0 3px rgba(var(--accent-500-rgb), 0.1);
+  box-shadow: var(--shadow-focus-accent);
 }
 
 .tag-filters {
@@ -611,7 +611,7 @@
 
 .start-practice-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(var(--accent-600-rgb), 0.3);
+  box-shadow: var(--shadow-accent-lg);
 }
 
 .start-practice-btn:disabled {

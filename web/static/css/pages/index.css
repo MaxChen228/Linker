@@ -20,12 +20,12 @@
   overflow: hidden;
   transition: all 0.2s ease;
   border: 1px solid var(--border-light);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-2xs);
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   border-color: var(--border-default);
 }
 
@@ -218,7 +218,7 @@
 
 .review-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   border-color: var(--accent-300);
   background: var(--surface-base);
 }

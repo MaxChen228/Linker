@@ -402,9 +402,28 @@ def practice_post(
         except (json.JSONDecodeError, TypeError) as e:
             logger.error(f"Failed to parse target_point_ids: {e}")
 
-    # 保存錯誤到知識庫（新題和複習題都要保存）
+    # 保存結果到知識庫（區分新題和複習模式）
     if not result.get("is_generally_correct", False):
-        knowledge.save_mistake(chinese_sentence=chinese, user_answer=english, feedback=result)
+        # 錯誤情況：新題會創建新知識點，複習會更新現有知識點
+        knowledge.save_mistake(
+            chinese_sentence=chinese, 
+            user_answer=english, 
+            feedback=result, 
+            practice_mode=mode
+        )
+    elif mode == "review" and target_point_ids:
+        # 複習模式答對：為相關知識點添加成功記錄
+        try:
+            import json
+            point_ids = json.loads(target_point_ids)
+            for point_id in point_ids:
+                knowledge.add_review_success(
+                    knowledge_point_id=point_id,
+                    chinese_sentence=chinese,
+                    user_answer=english
+                )
+        except (json.JSONDecodeError, TypeError) as e:
+            logger.error(f"Failed to process review success: {e}")
 
     return templates.TemplateResponse(
         "practice.html",
@@ -587,13 +606,12 @@ def knowledge_detail(request: Request, point_id: str):
             pass
 
     # 為模板準備point對象，添加缺少的屬性
-    # 從 examples 中取得完整的句子（如果有的話）
+    # 從 original_error 中取得完整的句子
     full_user_answer = ""
     full_correct_answer = ""
-    if point.examples and len(point.examples) > 0:
-        first_example = point.examples[0]
-        full_user_answer = first_example.get("user_answer", "")
-        full_correct_answer = first_example.get("correct", "")
+    if hasattr(point, 'original_error') and point.original_error:
+        full_user_answer = point.original_error.user_answer
+        full_correct_answer = point.original_error.correct_answer
     
     point_dict = {
         "id": point.id,

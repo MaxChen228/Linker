@@ -3,13 +3,13 @@
    ================================================ */
 
 /* 1. 設計令牌 (Design Tokens) */
-@import url('./01-tokens/colors.css');
+@import url('./01-tokens/colors-v2.css');
 @import url('./01-tokens/compatibility.css');  /* Fix: Import compatibility layer */
 @import url('./01-tokens/spacing.css');
 @import url('./01-tokens/typography.css');
 @import url('./01-tokens/effects.css');
 @import url('./01-tokens/animations.css');
-@import url('./01-tokens/shadows.css');
+@import url('./01-tokens/shadows-v2.css');
 @import url('./01-tokens/glass.css');
 @import url('./01-tokens/performance.css');
 @import url('./01-tokens/will-change.css');

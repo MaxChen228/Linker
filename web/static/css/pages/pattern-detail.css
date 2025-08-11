@@ -141,7 +141,7 @@
 
 .example-card:hover {
   transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-xs);
   border-color: var(--accent-300);
 }
 
@@ -390,7 +390,7 @@
 .btn-practice:hover {
   background: var(--accent-700);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+  box-shadow: var(--shadow-accent-lg);
 }
 
 /* ========== 響應式設計 ========== */

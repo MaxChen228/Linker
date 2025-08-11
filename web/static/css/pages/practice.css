@@ -96,7 +96,7 @@
 .queue-item[data-status="active"] {
   background: linear-gradient(135deg, var(--accent-100) 0%, var(--accent-200) 100%);
   border-color: var(--accent-500);
-  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
+  box-shadow: var(--shadow-focus);
 }
 
 .queue-item[data-status="used"] {
@@ -328,7 +328,7 @@
 }
 
 .info-value.success {
-  color: var(--color-success);
+  color: var(--success);
   font-weight: 600;
 }
 
@@ -558,7 +558,7 @@
 
 #shuffleBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 #debugBtn {
@@ -639,7 +639,7 @@
   padding: var(--space-6);
   position: relative;
   overflow: visible;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-2xs);
 }
 
 .question-label {
@@ -666,9 +666,9 @@
 }
 
 .mode-indicator.review {
-  background: var(--color-warning-light);
-  color: var(--color-warning);
-  border: 1px solid var(--color-warning);
+  background: var(--warning-light);
+  color: var(--warning);
+  border: 1px solid var(--warning);
   border-opacity: 0.3;
 }
 
@@ -689,15 +689,15 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  background: var(--color-info-light);
+  background: var(--info-light);
   border-radius: var(--radius);
-  border-left: 3px solid var(--color-info);
+  border-left: 3px solid var(--info);
   margin-top: var(--space-4);
   animation: var(--animation-fade-in);
 }
 
 .hint-icon {
-  color: var(--color-info);
+  color: var(--info);
   flex-shrink: 0;
 }
 
@@ -711,15 +711,15 @@
 .review-focus {
   margin-top: var(--space-4);
   padding: var(--space-3) var(--space-4);
-  background: var(--color-warning-light);
+  background: var(--warning-light);
   border-radius: var(--radius);
-  border-left: 3px solid var(--color-warning);
+  border-left: 3px solid var(--warning);
   animation: var(--animation-highlight);
 }
 
 .focus-label {
   font-weight: var(--font-semibold);
-  color: var(--color-warning);
+  color: var(--warning);
   margin-right: var(--space-2);
 }
 
@@ -744,7 +744,7 @@
 }
 
 .point-link {
-  color: var(--color-primary);
+  color: var(--text-accent);
   text-decoration: none;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
@@ -831,7 +831,7 @@
 #submitBtn:hover {
   background: var(--accent-700);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  box-shadow: var(--shadow-primary-lg);
 }
 
 /* ========== 批改結果 ========== */

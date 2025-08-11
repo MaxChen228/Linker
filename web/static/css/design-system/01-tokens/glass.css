@@ -42,10 +42,10 @@
   --border-accent: rgba(79, 70, 229, 0.2);
   
   /* ========== Gradients ========== */
-  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-  --gradient-success: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-hover) 100%);
-  --gradient-error: linear-gradient(135deg, var(--color-error) 0%, var(--color-error-hover) 100%);
-  --gradient-warning: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-hover) 100%);
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  --gradient-success: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);
+  --gradient-error: linear-gradient(135deg, var(--error) 0%, var(--error-hover) 100%);
+  --gradient-warning: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);
   
   /* ========== Input Styles ========== */
   --input-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
@@ -60,8 +60,8 @@
   /* Do not redefine gray colors here to avoid conflicts */
   
   /* ========== Legacy Compatibility ========== */
-  --accent: var(--color-primary);
-  --accent-light: var(--color-primary-hover);
+  --accent: var(--primary);
+  --accent-light: var(--primary-hover);
   --text: var(--text-primary);
   --text-muted: var(--text-secondary);
   --border: var(--border-default);

@@ -3,20 +3,6 @@
    ================================================ */
 
 :root {
-  /* ========== Shadows ========== */
-  --shadow-xs: 0 1px 2px 0 var(--shadow-color-light);
-  --shadow-sm: 0 2px 4px 0 var(--shadow-color-light);
-  --shadow-md: 0 4px 8px 0 var(--shadow-color);
-  --shadow-lg: 0 8px 16px 0 var(--shadow-color);
-  --shadow-xl: 0 12px 24px 0 var(--shadow-color);
-  --shadow-2xl: 0 16px 32px 0 var(--shadow-color-dark);
-  --shadow-inner: inset 0 2px 4px 0 var(--shadow-color-light);
-  
-  /* Button specific shadows */
-  --btn-shadow-hover: 0 4px 12px 0 rgba(79, 70, 229, 0.25);
-  --btn-shadow-active: 0 2px 4px 0 rgba(79, 70, 229, 0.3);
-  --btn-shadow-focus: 0 0 0 3px rgba(79, 70, 229, 0.2);
-  
   /* ========== Transitions ========== */
   --transition-fast: 150ms ease;
   --transition-base: 200ms ease;

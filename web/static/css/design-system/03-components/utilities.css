@@ -20,8 +20,8 @@ footer small {
 
 /* Draft Functionality */
 .draft-notification {
-  background: var(--color-info-subtle);
-  border: 1px solid var(--color-info);
+  background: var(--info-subtle);
+  border: 1px solid var(--info);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   margin-bottom: var(--space-5);
@@ -66,21 +66,21 @@ footer small {
 }
 
 .save-indicator.saving {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: var(--color-primary-subtle);
+  border-color: var(--border-accent);
+  color: var(--text-accent);
+  background: var(--primary-subtle);
 }
 
 .save-indicator.saved {
-  border-color: var(--color-success);
-  color: var(--color-success);
-  background: var(--color-success-subtle);
+  border-color: var(--success);
+  color: var(--success);
+  background: var(--success-subtle);
 }
 
 .save-indicator.restored {
-  background: var(--color-info-subtle);
-  border-color: var(--color-info);
-  color: var(--color-info);
+  background: var(--info-subtle);
+  border-color: var(--info);
+  color: var(--info);
 }
 
 /* Accessibility Improvements */

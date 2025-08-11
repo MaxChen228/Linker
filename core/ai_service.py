@@ -236,7 +236,9 @@ class AIService:
              * "enhancement" - 可以更好：文法正確但表達可以更自然、更道地
              * "other" - 其他錯誤：不屬於上述類別的錯誤（如漏譯、理解錯誤）
            
-           - key_point_summary (string): 錯誤重點的簡潔描述（使用繁體中文）
+           - key_point_summary (string): 錯誤重點的具體描述，格式為「錯誤類型: 具體錯誤內容」
+             例如：「單字拼寫錯誤: irrevertable」、「時態錯誤: have → has」、「介系詞搭配: in → on」
+             這樣可以區分不同的具體錯誤，避免把不相關的錯誤歸在一起（使用繁體中文）
            
            - original_phrase (string): 學生寫錯的片語或句子部分
            

@@ -24,7 +24,7 @@ html {
 }
 
 body {
-  background: var(--color-background);
+  background: var(--surface-base);
   color: var(--text-primary);
   font-family: var(--font-family-base);
   font-size: var(--text-base);
@@ -55,18 +55,18 @@ p {
 
 /* Links */
 a {
-  color: var(--color-primary);
+  color: var(--text-accent);
   text-decoration: none;
   transition: var(--transition-colors);
 }
 
 a:hover {
-  color: var(--color-primary-hover);
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
 a:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -138,13 +138,13 @@ table {
 
 /* Focus Styles */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 /* Selection */
 ::selection {
-  background-color: var(--color-primary-subtle);
+  background-color: var(--primary-subtle);
   color: var(--text-primary);
 }
 

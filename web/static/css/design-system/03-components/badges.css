@@ -51,28 +51,28 @@
 /* 成功變體 */
 .badge[data-variant="success"] {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-  color: var(--color-success);
+  color: var(--success);
   border-color: rgba(16, 185, 129, 0.2);
 }
 
 /* 警告變體 */
 .badge[data-variant="warning"] {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
-  color: var(--color-warning);
+  color: var(--warning);
   border-color: rgba(245, 158, 11, 0.2);
 }
 
 /* 錯誤變體 */
 .badge[data-variant="error"] {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-  color: var(--color-error);
+  color: var(--error);
   border-color: rgba(239, 68, 68, 0.2);
 }
 
 /* 信息變體 */
 .badge[data-variant="info"] {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
-  color: var(--color-info);
+  color: var(--info);
   border-color: rgba(59, 130, 246, 0.2);
 }
 
@@ -91,21 +91,21 @@
 }
 
 .badge[data-variant="solid-success"] {
-  background: var(--color-success);
+  background: var(--success);
   color: white;
-  border-color: var(--color-success);
+  border-color: var(--success);
 }
 
 .badge[data-variant="solid-warning"] {
-  background: var(--color-warning);
+  background: var(--warning);
   color: white;
-  border-color: var(--color-warning);
+  border-color: var(--warning);
 }
 
 .badge[data-variant="solid-error"] {
-  background: var(--color-error);
+  background: var(--error);
   color: white;
-  border-color: var(--color-error);
+  border-color: var(--error);
 }
 
 /* ============================================ */
@@ -115,7 +115,7 @@
 /* 錯誤分類徽章 */
 .badge[data-category="systematic"] {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%);
-  color: var(--color-error);
+  color: var(--error);
   border-color: rgba(239, 68, 68, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -123,7 +123,7 @@
 
 .badge[data-category="isolated"] {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
-  color: var(--color-warning);
+  color: var(--warning);
   border-color: rgba(245, 158, 11, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -131,7 +131,7 @@
 
 .badge[data-category="enhancement"] {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
-  color: var(--color-success);
+  color: var(--success);
   border-color: rgba(16, 185, 129, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -148,21 +148,21 @@
 /* 掌握度徽章 */
 .badge[data-mastery="low"] {
   background: rgba(239, 68, 68, 0.1);
-  color: var(--color-error);
+  color: var(--error);
   border-color: transparent;
   backdrop-filter: blur(10px);
 }
 
 .badge[data-mastery="medium"] {
   background: rgba(245, 158, 11, 0.1);
-  color: var(--color-warning);
+  color: var(--warning);
   border-color: transparent;
   backdrop-filter: blur(10px);
 }
 
 .badge[data-mastery="high"] {
   background: rgba(16, 185, 129, 0.1);
-  color: var(--color-success);
+  color: var(--success);
   border-color: transparent;
   backdrop-filter: blur(10px);
 }
@@ -221,7 +221,7 @@
 
 .badge[data-clickable="true"]:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-xs);
 }
 
 /* 帶圖標徽章 */

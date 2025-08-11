@@ -72,7 +72,7 @@ header.container::before {
 }
 
 .brand a:hover {
-  color: var(--color-primary);
+  color: var(--text-accent);
   text-decoration: none;
 }
 

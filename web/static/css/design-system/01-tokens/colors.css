@@ -57,6 +57,13 @@
   --color-info: var(--accent-500);
   --color-info-light: var(--accent-50);
   
+  /* Add missing subtle variants */
+  --color-primary-subtle: var(--accent-50);
+  --color-success-subtle: #d1fae5;
+  --color-warning-subtle: #fed7aa;
+  --color-error-subtle: #fee2e2;
+  --color-info-subtle: var(--accent-50);
+  
   /* ========== Surface Colors ========== */
   --surface-base: #ffffff;
   --surface-elevated: var(--gray-50);
@@ -139,6 +146,13 @@
     --bg-overlay: rgba(0, 0, 0, 0.7);
     --bg-accent-subtle: rgba(99, 102, 241, 0.1);  /* Added - dark mode accent bg */
     --bg-gray-subtle: var(--gray-900);  /* Added */
+    
+    /* Dark mode subtle variants */
+    --color-primary-subtle: rgba(99, 102, 241, 0.1);
+    --color-success-subtle: rgba(16, 185, 129, 0.1);
+    --color-warning-subtle: rgba(245, 158, 11, 0.1);
+    --color-error-subtle: rgba(239, 68, 68, 0.1);
+    --color-info-subtle: rgba(99, 102, 241, 0.1);
     
     /* Interactive States */
     --hover-bg: rgba(255, 255, 255, 0.05);  /* Added - subtle hover for dark */

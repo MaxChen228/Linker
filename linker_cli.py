@@ -400,8 +400,8 @@ class LinkerCLI:
             print(f"   錯誤/正確: {point.mistake_count}/{point.correct_count}")
             print(f"   下次複習: {point.next_review[:10]}")
 
-            if point.examples:
-                print(f"   例句: {point.examples[0]['chinese'][:30]}...")
+            if hasattr(point, 'original_error') and point.original_error:
+                print(f"   原始句子: {point.original_error.chinese_sentence[:30]}...")
 
         if len(points) > 10:
             print(f"\n... 還有 {len(points) - 10} 個知識點")

@@ -67,7 +67,7 @@
 .search-bar input:focus {
   outline: none;
   border-color: var(--accent-500);
-  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+  box-shadow: var(--shadow-focus-accent);
 }
 
 .search-icon {
@@ -147,7 +147,7 @@
 
 .pattern-card-compact:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   border-color: var(--accent-200);
 }
 

@@ -35,7 +35,7 @@
   border-radius: var(--radius-lg);
   padding: var(--space-8) var(--space-6) var(--space-6);
   margin-bottom: var(--space-8);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-elevated-sm);
   position: relative;
 }
 
@@ -125,7 +125,7 @@
   font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
   font-size: var(--text-xl);
   letter-spacing: 0.5px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-elevated-xl);
   border: 3px solid var(--success-500);
   transform: scale(1.05);
   align-self: flex-end;
@@ -148,7 +148,7 @@
   justify-content: center;
   font-size: var(--text-lg);
   font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-xl);
 }
 
 /* 知識點描述文字 */
@@ -264,7 +264,7 @@
 
 .stat-item:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 .stat-label {
@@ -330,7 +330,7 @@
   border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-inner-sm);
 }
 
 .mastery-fill {
@@ -338,7 +338,7 @@
   background: linear-gradient(90deg, var(--accent-400) 0%, var(--accent-600) 100%);
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  box-shadow: 0 1px 2px rgba(99, 102, 241, 0.3);
+  box-shadow: var(--shadow-focus-purple);
 }
 
 .mastery-fill::after {
@@ -378,7 +378,7 @@
   padding: 0;
   margin-bottom: var(--space-8);
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-elevated-md);
 }
 
 .section-title {
@@ -502,14 +502,14 @@
 .corrected-sentence {
   border: 2px solid var(--success-200);
   background: linear-gradient(135deg, white 0%, var(--success-50) 100%);
-  box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.1);
+  box-shadow: var(--shadow-success-light);
   padding-left: var(--space-8);
   transform: scale(1.02);
 }
 
 .corrected-sentence:hover {
   transform: scale(1.03);
-  box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.15);
+  box-shadow: var(--shadow-success-heavy);
 }
 
 .corrected-sentence::before {

@@ -1,0 +1,93 @@
+/* ===================================================
+   陰影系統遷移映射檔案 (臨時)
+   用於向後兼容，在遷移完成後刪除
+   =================================================== */
+
+:root {
+  /* ========== 舊系統變數映射 ========== */
+  
+  /* colors.css 中的陰影顏色變數映射到新系統 */
+  --shadow-color: rgb(var(--shadow-rgb) / var(--shadow-alpha-4));
+  --shadow-color-light: rgb(var(--shadow-rgb) / var(--shadow-alpha-2));
+  --shadow-color-dark: rgb(var(--shadow-rgb) / var(--shadow-alpha-6));
+  
+  /* effects.css 中的按鈕陰影映射 */
+  --btn-shadow-hover: var(--shadow-button-hover);
+  --btn-shadow-active: var(--shadow-button-active);
+  --btn-shadow-focus: var(--shadow-focus);
+  
+  /* ========== 常見硬編碼值映射 ========== */
+  
+  /* 這些是專案中最常用的硬編碼陰影值 */
+  /* 使用 CSS 變數無法直接替換硬編碼，但提供對應的變數供替換使用 */
+  
+  /* rgba(0, 0, 0, 0.05) → var(--shadow-xs) */
+  /* rgba(0, 0, 0, 0.1) → var(--shadow-sm) */
+  /* rgba(0, 0, 0, 0.15) → var(--shadow-md) */
+  /* rgba(0, 0, 0, 0.2) → var(--shadow-lg) */
+  
+  /* 複合陰影映射 */
+  /* 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) → var(--shadow-elevated-sm) */
+  /* 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) → var(--shadow-elevated-md) */
+  
+  /* 焦點陰影映射 */
+  /* 0 0 0 3px rgba(79, 70, 229, 0.2) → var(--shadow-focus) */
+  
+  /* 按鈕專用陰影映射 */
+  /* inset 0 2px 4px 0 rgba(0, 0, 0, 0.06) → var(--shadow-button-active) */
+  
+  /* ========== 特殊情況處理 ========== */
+  
+  /* Glass morphism 相關 */
+  --glass-shadow: var(--shadow-glass);
+  
+  /* 高程系統兼容 */
+  --elevation-1: var(--shadow-elevation-1);
+  --elevation-2: var(--shadow-elevation-2);
+  --elevation-3: var(--shadow-elevation-3);
+  --elevation-4: var(--shadow-elevation-4);
+  --elevation-5: var(--shadow-elevation-5);
+}
+
+/* ========== 深色模式映射 ========== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 深色模式下的舊變數映射 */
+    --shadow-color: rgb(var(--shadow-rgb) / var(--shadow-alpha-5));
+    --shadow-color-light: rgb(var(--shadow-rgb) / var(--shadow-alpha-3));
+    --shadow-color-dark: rgb(var(--shadow-rgb) / var(--shadow-alpha-8));
+  }
+}
+
+/* ===================================================
+   遷移指南和替換表
+   
+   請按照以下對應關係進行替換：
+   
+   硬編碼 rgba 值 → 語義變數
+   ----------------------------------------
+   rgba(0, 0, 0, 0.05)     → var(--shadow-xs)
+   rgba(0, 0, 0, 0.1)      → var(--shadow-sm) 
+   rgba(0, 0, 0, 0.15)     → var(--shadow-md)
+   rgba(0, 0, 0, 0.2)      → var(--shadow-lg)
+   
+   複合陰影 → 專用變數
+   ----------------------------------------
+   0 1px 3px 0 rgba(...), 0 1px 2px 0 rgba(...)     → var(--shadow-elevated-sm)
+   0 4px 6px -1px rgba(...), 0 2px 4px -1px rgba(...) → var(--shadow-elevated-md)
+   
+   組件專用替換
+   ----------------------------------------
+   .card box-shadow                → var(--shadow-card)
+   .btn box-shadow                 → var(--shadow-button)
+   .modal box-shadow               → var(--shadow-modal)
+   input:focus box-shadow          → var(--shadow-focus)
+   .btn:active box-shadow          → var(--shadow-button-active)
+   
+   舊變數名 → 新變數名
+   ----------------------------------------
+   var(--shadow-color)             → rgb(var(--shadow-rgb) / var(--shadow-alpha-4))
+   var(--btn-shadow-hover)         → var(--shadow-button-hover)
+   var(--btn-shadow-active)        → var(--shadow-button-active)
+   
+   =================================================== */

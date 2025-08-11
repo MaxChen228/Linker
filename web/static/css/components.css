@@ -57,7 +57,7 @@
 }
 
 .examples .en {
-  color: var(--color-primary);
+  color: var(--text-accent);
   font-weight: var(--font-weight-medium);
 }
 
@@ -157,13 +157,13 @@
 }
 
 .toast-success {
-  border-color: var(--color-success);
-  background: var(--color-success-subtle);
+  border-color: var(--success);
+  background: var(--success-subtle);
 }
 
 .toast-error {
-  border-color: var(--color-error);
-  background: var(--color-error-subtle);
+  border-color: var(--error);
+  background: var(--error-subtle);
 }
 
 /* Divider */
@@ -175,7 +175,7 @@
 
 /* Focus States */
 .focus-ring {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: var(--radius-md);
 }

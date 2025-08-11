@@ -69,7 +69,7 @@ select {
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: var(--color-primary);
+  border-color: var(--border-accent);
   background: var(--form-focus-bg, var(--surface));
   box-shadow: 
     0 0 0 3px rgba(var(--accent-600-rgb), 0.1),
@@ -124,7 +124,7 @@ textarea[data-size="lg"] {
 input[data-status="error"],
 select[data-status="error"],
 textarea[data-status="error"] {
-  border-color: var(--color-error);
+  border-color: var(--error);
   background: linear-gradient(135deg, var(--surface) 0%, rgba(239, 68, 68, 0.02) 100%);
 }
 
@@ -141,7 +141,7 @@ textarea[data-status="error"]:focus {
 input[data-status="success"],
 select[data-status="success"],
 textarea[data-status="success"] {
-  border-color: var(--color-success);
+  border-color: var(--success);
   background: linear-gradient(135deg, var(--surface) 0%, rgba(16, 185, 129, 0.02) 100%);
 }
 
@@ -158,7 +158,7 @@ textarea[data-status="success"]:focus {
 input[data-status="warning"],
 select[data-status="warning"],
 textarea[data-status="warning"] {
-  border-color: var(--color-warning);
+  border-color: var(--warning);
   background: linear-gradient(135deg, var(--surface) 0%, rgba(245, 158, 11, 0.02) 100%);
 }
 
@@ -177,7 +177,7 @@ textarea[data-status="warning"] {
 
 .form-label[data-required="true"]::after {
   content: " *";
-  color: var(--color-error);
+  color: var(--error);
 }
 
 .form-hint {
@@ -189,7 +189,7 @@ textarea[data-status="warning"] {
 .form-error {
   margin-top: var(--space-1);
   font-size: 0.8125rem;
-  color: var(--color-error);
+  color: var(--error);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -278,8 +278,8 @@ textarea[data-status="warning"] {
 }
 
 .form-check-input:checked {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--primary);
+  border-color: var(--border-accent);
 }
 
 .form-check-input:checked::after {
@@ -309,7 +309,7 @@ textarea[data-status="warning"] {
 
 .form-check-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(var(--accent-600-rgb), 0.2);
+  box-shadow: var(--shadow-focus);
 }
 
 .form-check-input:disabled {
@@ -358,12 +358,12 @@ textarea[data-status="warning"] {
   height: 20px;
   background: white;
   border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-xl);
   transition: transform 0.3s ease;
 }
 
 .form-switch-input:checked {
-  background: var(--color-primary);
+  background: var(--primary);
 }
 
 .form-switch-input:checked::after {
@@ -372,7 +372,7 @@ textarea[data-status="warning"] {
 
 .form-switch-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(var(--accent-600-rgb), 0.2);
+  box-shadow: var(--shadow-focus);
 }
 
 .form-switch-input:disabled {
@@ -403,20 +403,20 @@ textarea[data-status="warning"] {
   appearance: none;
   width: 20px;
   height: 20px;
-  background: var(--color-primary);
+  background: var(--primary);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-xl);
   transition: all 0.2s ease;
 }
 
 .form-range::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: var(--color-primary);
+  background: var(--primary);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-xl);
   transition: all 0.2s ease;
   border: none;
 }
@@ -434,11 +434,11 @@ textarea[data-status="warning"] {
 }
 
 .form-range:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 3px rgba(var(--accent-600-rgb), 0.2);
+  box-shadow: var(--shadow-focus);
 }
 
 .form-range:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 3px rgba(var(--accent-600-rgb), 0.2);
+  box-shadow: var(--shadow-focus);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -475,12 +475,12 @@ textarea[data-status="warning"] {
 
 .form-file-label:hover {
   background: var(--gray-50);
-  border-color: var(--color-primary);
+  border-color: var(--border-accent);
 }
 
 .form-file-input:focus + .form-file-label {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(var(--accent-600-rgb), 0.2);
+  box-shadow: var(--shadow-focus);
 }
 
 @media (prefers-color-scheme: dark) {

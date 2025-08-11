@@ -25,6 +25,7 @@
 UI/UX 設計相關文檔
 
 - **[設計系統](DESIGN-SYSTEM-COMPLETE.md)** - 完整的 UI 組件與設計規範
+- **[陰影系統遷移](SHADOW_SYSTEM_MIGRATION.md)** - CSS 陰影系統重構指南
 
 ### 📋 專案管理
 - **[變更日誌](../CHANGELOG.md)** - 版本更新記錄
@@ -48,6 +49,7 @@ UI/UX 設計相關文檔
 - [清理報告 2025-08-11](archive/CLEANUP_REPORT_2025-08-11.md)
 - [程式篩查](archive/CODE-REVIEW.md)
 - [文檔組織報告](archive/DOCUMENTATION_ORGANIZATION_REPORT.md)
+- [Claude UI/UX Agent 配置](archive/CLAUDE_UI_UX_AGENT_CONFIG.md)
 - [測試報告](archive/TEST_REPORT.md)
 
 ## 🎯 學習路徑

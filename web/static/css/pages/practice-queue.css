@@ -141,7 +141,7 @@
 /* 題目卡片懸停效果 */
 .queue-item:hover:not(.add-new):not([data-status="generating"]):not([data-status="used"]) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-md);
   border-color: #2196f3;
 }
 
@@ -154,7 +154,7 @@
 .queue-item[data-status="ready"]:hover {
   background: #f1f8e9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 /* 生成中狀態 */
@@ -169,7 +169,7 @@
 .queue-item[data-status="active"] {
   background: #e3f2fd;
   border-color: #2196f3;
-  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+  box-shadow: var(--shadow-focus-accent);
 }
 
 /* 批改中狀態 */
@@ -338,7 +338,7 @@
   border: 1px solid #dee2e6;
   border-radius: 12px;
   padding: 16px 24px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-lg);
   z-index: 100;
   display: flex;
   align-items: center;

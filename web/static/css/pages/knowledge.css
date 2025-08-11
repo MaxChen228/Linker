@@ -121,8 +121,8 @@
 
 .search-bar input:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-focus-purple);
   background: var(--surface-base);
 }
 
@@ -153,7 +153,7 @@
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   margin-bottom: var(--space-8);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-xs);
   animation: var(--animation-slide-in-up);
   animation-delay: 100ms;
 }
@@ -176,7 +176,7 @@
 }
 
 .queue-title svg {
-  color: var(--color-warning);
+  color: var(--warning);
 }
 
 .queue-content {
@@ -209,7 +209,7 @@
 }
 
 .queue-item.due {
-  border-left: 3px solid var(--color-warning);
+  border-left: 3px solid var(--warning);
   background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);
 }
 
@@ -238,13 +238,13 @@
 
 .queue-item-badge .badge.isolated {
   background: rgba(245, 158, 11, 0.1);
-  color: var(--color-warning);
+  color: var(--warning);
   border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .queue-item-badge .badge.enhancement {
   background: rgba(16, 185, 129, 0.1);
-  color: var(--color-success);
+  color: var(--success);
   border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
@@ -295,15 +295,15 @@
 }
 
 .mastery-dot.low {
-  background: var(--color-error);
+  background: var(--error);
 }
 
 .mastery-dot.medium {
-  background: var(--color-warning);
+  background: var(--warning);
 }
 
 .mastery-dot.high {
-  background: var(--color-success);
+  background: var(--success);
 }
 
 /* ========== 知識點內容區 ========== */
@@ -336,15 +336,15 @@
 }
 
 .section-icon.systematic {
-  color: var(--color-error);
+  color: var(--error);
 }
 
 .section-icon.isolated {
-  color: var(--color-warning);
+  color: var(--warning);
 }
 
 .section-icon.enhancement {
-  color: var(--color-success);
+  color: var(--success);
 }
 
 .section-icon.other {
@@ -367,7 +367,7 @@
 .card[data-type="group"] {
   background: var(--surface-base);
   border-radius: var(--radius-lg);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-xs);
   transition: var(--transition-base);
   overflow: hidden;
   border: 1px solid var(--border-default);
@@ -383,15 +383,15 @@
 
 /* 掌握度變體 - 使用更細微的視覺提示 */
 .card[data-type="group"][data-mastery="low"] {
-  border-left: 3px solid var(--color-error);
+  border-left: 3px solid var(--error);
 }
 
 .card[data-type="group"][data-mastery="medium"] {
-  border-left: 3px solid var(--color-warning);
+  border-left: 3px solid var(--warning);
 }
 
 .card[data-type="group"][data-mastery="high"] {
-  border-left: 3px solid var(--color-success);
+  border-left: 3px solid var(--success);
 }
 
 .group-header {
@@ -549,7 +549,7 @@
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-full);
   background: rgba(99, 102, 241, 0.1);
-  color: var(--color-primary);
+  color: var(--text-accent);
 }
 
 .instance-explanation {
@@ -614,12 +614,12 @@
 
 .sentence-item.error {
   background: rgba(239, 68, 68, 0.03);
-  border-left: 2px solid var(--color-error);
+  border-left: 2px solid var(--error);
 }
 
 .sentence-item.correct {
   background: rgba(16, 185, 129, 0.03);
-  border-left: 2px solid var(--color-success);
+  border-left: 2px solid var(--success);
 }
 
 .compare-item {
@@ -632,13 +632,13 @@
 .compare-item.error {
   background: rgba(239, 68, 68, 0.03);
   color: var(--text-primary);
-  border-left: 2px solid var(--color-error);
+  border-left: 2px solid var(--error);
 }
 
 .compare-item.correct {
   background: rgba(16, 185, 129, 0.03);
   color: var(--text-primary);
-  border-left: 2px solid var(--color-success);
+  border-left: 2px solid var(--success);
 }
 
 .compare-item.original {
@@ -650,7 +650,7 @@
 .compare-item.improved {
   background: rgba(16, 185, 129, 0.03);
   color: var(--text-primary);
-  border-left: 2px solid var(--color-success);
+  border-left: 2px solid var(--success);
 }
 
 .instance-stats {
@@ -668,7 +668,7 @@
   background: var(--surface-base);
   border-radius: var(--radius);
   padding: var(--space-5);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-xs);
   transition: var(--transition-base);
   border: 1px solid var(--border-default);
   position: relative;
@@ -682,13 +682,13 @@
 
 /* 單一性錯誤樣式 */
 .card.knowledge-single-card[data-category="單一性錯誤"] {
-  border-left: 3px solid var(--color-warning);
+  border-left: 3px solid var(--warning);
 }
 
 /* 可以更好樣式 */
 .card.knowledge-single-card.enhancement,
 .card.knowledge-single-card[data-category="可以更好"] {
-  border-left: 3px solid var(--color-success);
+  border-left: 3px solid var(--success);
   background: linear-gradient(to right, rgba(16, 185, 129, 0.02), transparent);
 }
 
@@ -762,13 +762,13 @@
 .sentence-en.error {
   background: rgba(239, 68, 68, 0.03);
   color: var(--text-primary);
-  border-left: 2px solid var(--color-error);
+  border-left: 2px solid var(--error);
 }
 
 .sentence-en.correct {
   background: rgba(16, 185, 129, 0.03);
   color: var(--text-primary);
-  border-left: 2px solid var(--color-success);
+  border-left: 2px solid var(--success);
 }
 
 .sentence-en.original {
@@ -780,7 +780,7 @@
 .sentence-en.improved {
   background: rgba(16, 185, 129, 0.03);
   color: var(--text-primary);
-  border-left: 2px solid var(--color-success);
+  border-left: 2px solid var(--success);
 }
 
 /* 掌握度徽章 */
@@ -794,19 +794,19 @@
 
 .mastery-badge[data-mastery="low"] {
   background: rgba(239, 68, 68, 0.1);
-  color: var(--color-error);
+  color: var(--error);
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .mastery-badge[data-mastery="medium"] {
   background: rgba(245, 158, 11, 0.1);
-  color: var(--color-warning);
+  color: var(--warning);
   border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .mastery-badge[data-mastery="high"] {
   background: rgba(16, 185, 129, 0.1);
-  color: var(--color-success);
+  color: var(--success);
   border: 1px solid rgba(16, 185, 129, 0.2);
 }
 

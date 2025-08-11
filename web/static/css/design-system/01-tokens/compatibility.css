@@ -11,14 +11,6 @@
    */
   --transition-normal: var(--transition-base);  /* 250ms → 200ms，統一使用 base */
   
-  /* ========== 陰影兼容性映射 ========== */
-  /* 
-   * 保留舊的陰影變數名稱（如果需要）
-   */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-button-active: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
   
   /* ========== 字型兼容性映射 ========== */
   /* 
@@ -39,26 +31,19 @@
   --color-border: var(--border-default);
   --color-neutral-bg: var(--gray-100);
   
-  /* 語義化顏色邊框 */
-  --color-error-bg: var(--gray-50);
-  --color-error-border: var(--gray-300);
-  --color-warning-bg: var(--accent-50);
-  --color-warning-border: var(--accent-200);
-  --color-info-bg: var(--accent-50);
-  --color-info-border: var(--accent-200);
-  --color-success-bg: var(--accent-50);
-  --color-success-border: var(--accent-200);
   
   /* Primary 色系兼容 */
-  --color-primary: var(--accent-600);
-  --color-primary-hover: var(--accent-700);
-  --color-primary-border: var(--accent-400);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-border: var(--border-accent);
   
   /* Error/Warning/Success/Info 兼容 */
-  --color-error: var(--gray-700);
-  --color-warning: var(--gray-600);
-  --color-success: var(--accent-600);
   --color-info: var(--accent-500);
+  
+  /* 新變數定義 (縮短命名) */
+  --info: var(--accent-500);
+  --info-light: var(--accent-50);
+  --info-subtle: var(--accent-50);
   
   /* Text tertiary */
   --text-tertiary: var(--text-muted);
