@@ -104,8 +104,7 @@
   --error-base: #ef4444;
   --bg-tertiary: var(--gray-200);
   --error-border: #fca5a5;
-  --brand-600-rgb: 79, 70, 229;  /* RGB values for accent-600 */
-  --accent-600-rgb: 79, 70, 229;  /* Alternative name */
+  --accent-600-rgb: 79, 70, 229;  /* RGB values for accent-600 */
 }
 
 /* ========== Dark Mode ========== */

@@ -22,6 +22,22 @@ from core.version_manager import VersionManager
 logger = get_module_logger(__name__)
 from datetime import datetime
 
+# 配置 uvicorn 的日誌過濾器
+import logging
+
+class IgnoreFaviconFilter(logging.Filter):
+    """過濾掉 favicon.ico 的 404 錯誤日誌"""
+    def filter(self, record):
+        # 檢查是否是 favicon.ico 的 404 錯誤
+        message = record.getMessage()
+        if "favicon.ico" in message and "404" in message:
+            return False
+        return True
+
+# 為 uvicorn.access logger 添加過濾器
+uvicorn_logger = logging.getLogger("uvicorn.access")
+uvicorn_logger.addFilter(IgnoreFaviconFilter())
+
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 STATIC_DIR = BASE_DIR / "static"
