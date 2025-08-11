@@ -160,8 +160,6 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
                     'pattern': p.pattern,
                     'category': p.category,
                     'explanation': p.explanation,
-                    'difficulty': 3,  # 預設中等難度
-                    'frequency': 'medium',
                     'examples': [
                         {'zh': p.example_zh, 'en': p.example_en}
                     ] if p.example_zh or p.example_en else []

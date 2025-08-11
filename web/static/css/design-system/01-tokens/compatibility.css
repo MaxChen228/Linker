@@ -20,12 +20,6 @@
   --brand-800: var(--primary-700);  /* 簡化後沒有800，使用700 */
   --brand-900: var(--primary-700);  /* 簡化後沒有900，使用700 */
   
-  /* ========== 間距系統兼容性映射 ========== */
-  /* 
-   * [已移除] 舊的 --spacing-* 變數已完全棄用
-   * 所有代碼已成功遷移至新系統 (--space-*)
-   * 映射已於 2025-08-11 移除
-   */
   
   /* ========== 按鈕兼容性映射 ========== */
   /* 
@@ -78,13 +72,6 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   
-  /* 字體大小兼容性映射 */
-  --font-size-xs: var(--text-xs);
-  --font-size-sm: var(--text-sm);
-  --font-size-base: var(--text-base);
-  --font-size-lg: var(--text-lg);
-  --font-size-xl: var(--text-xl);
-  --font-size-2xl: var(--text-2xl);
   
   /* ========== 顏色系統額外兼容性映射 ========== */
   --color-background-paper: var(--surface-base);

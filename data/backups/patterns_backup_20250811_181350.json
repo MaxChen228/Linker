@@ -105,6 +105,8 @@
         "我直到半夜才完成報告。",
         "你真正需要面對的是你自己。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is...that...",
       "original_explanation": "強調句型，用來強調句子中的某個部分",
       "enriched_at": "2025-08-10T23:50:03.761025",
@@ -204,6 +206,8 @@
         "請用強調句型表達：我們今天早上討論了這個計畫。(We discussed the plan this morning.)",
         "請用強調句型表達並轉為疑問句：難道不是你的建議解決了這個問題嗎？(Your suggestion solved the problem.)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is...who/which...",
       "original_explanation": "強調句型，用來強調人或物",
       "enriched_at": "2025-08-10T23:50:08.648322",
@@ -297,6 +301,8 @@
         "請用這個句型描述你在學習英文的經驗。（例如：你看得越多，聽得越多，理解就越深。）",
         "財富不一定帶來幸福。請用這個句型表達「你擁有的越多，你擔心的就可能越多」。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "The more...the more...",
       "original_explanation": "表示「越...越...」的比較句型",
       "enriched_at": "2025-08-10T23:51:09.820220",
@@ -397,6 +403,8 @@
         "我現在有如此多的事情要做，以至於我不知道從何開始。",
         "她的表現是如此出色，以至於她被授予了年度最佳員工獎。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "so/such...that...",
       "original_explanation": "表示「如此...以至於...」，用來強調原因和結果的關係。",
       "enriched_at": "2025-08-11T00:24:40.266140",
@@ -491,6 +499,8 @@
         "她練習了數小時，只為在比賽中脫穎而出。",
         "政府實施了更嚴格的法規，目的是確保公共安全。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "so as to + V",
       "original_explanation": "用於表達「為了要...」的目的，是 in order to 的較正式用法。",
       "enriched_at": "2025-08-11T00:24:35.769355",
@@ -585,6 +595,8 @@
         "你做得夠好，可以獨立完成這項任務。(形容詞後接 enough)",
         "這個嬰兒還太小，無法理解複雜的指令。(說明能力不足)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "too...to... / enough...to...",
       "original_explanation": "too...to... 表示「太...以至於不能...」；enough...to... 表示「足夠...可以去...」。",
       "enriched_at": "2025-08-11T00:25:09.073761",
@@ -678,6 +690,8 @@
         "他對團隊的奉獻精神，我們再怎麼讚揚也不為過。",
         "身為領導者，再怎麼與團隊成員溝通也不為過。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "cannot...too...",
       "original_explanation": "表示「無論怎麼...也不為過」，用來強調某事的重要性。",
       "enriched_at": "2025-08-11T00:25:46.842572",
@@ -772,6 +786,8 @@
         "為了保護環境，專家們建議政府應該採取更嚴格的措施。(To protect the environment, experts recommended that the government ______ stricter measures.)",
         "老師建議我們下次考試應該更仔細地檢查答案，以避免粗心錯誤。(The teacher advised that we ______ our answers more carefully in the next exam to avoid careless mistakes.)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "suggest that + S + (should) + VR",
       "original_explanation": "在表「建議、要求、命令、堅持」的動詞後，that子句中的動詞需使用原形或 should + 原形。",
       "enriched_at": "2025-08-11T00:25:12.812806",
@@ -872,6 +888,8 @@
         "在任何緊急情況下，你都必須首先確保自身的安全，這點很重要。",
         "雖然這項任務看起來很艱鉅，但關鍵在於我們必須堅持到底，永不放棄。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is important that + S + (should) + VR",
       "original_explanation": "表示「...是重要的/必要的」，後接的that子句中，動詞需使用原形或 should + 原形。",
       "enriched_at": "2025-08-11T00:26:10.541014",
@@ -966,6 +984,8 @@
         "在所有人都認為不可能的情況下，他竟然成功了，這真是令人難以置信。",
         "你竟然會問這樣的問題，這讓我很訝異。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is surprising that + S + should + VR",
       "original_explanation": "表示對某事感到「驚訝、奇怪」，that子句中的動詞常使用 should 來表達這種意外的情緒。",
       "enriched_at": "2025-08-11T00:26:06.862331",
@@ -1053,6 +1073,8 @@
         "請確保您的數據已備份，以免資料遺失。",
         "他們不斷練習，以確保萬無一失，唯恐在比賽中出錯。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "lest + S + (should) + VR",
       "original_explanation": "表示「以免；唯恐」，引導一個帶有預防目的的子句。",
       "enriched_at": "2025-08-11T00:26:09.183668",
@@ -1153,6 +1175,8 @@
         "What he yearned for, freedom, _____ ahead. (lie, past tense)",
         "Within these pages _____ centuries of wisdom. (lie)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "地方副詞(片語) + V/be動詞 + S",
       "original_explanation": "當地方副詞（片語）置於句首以示強調時，動詞與主詞（名詞）需倒裝。",
       "enriched_at": "2025-08-11T00:26:09.529245",
@@ -1247,6 +1271,8 @@
         "我剛到家，外面就下起了大雨。（Scarcely）",
         "他對她的真實意圖一無所知。（Little）"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "否定副詞(片語) + 助動詞/be動詞 + S",
       "original_explanation": "否定副詞（如 Never, Seldom, Hardly）置於句首時，需用倒裝句。",
       "enriched_at": "2025-08-11T00:26:06.329293",
@@ -1347,6 +1373,8 @@
         "這種情況絕不允許再次發生。",
         "你絕不能低估持續學習的力量。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "By no means + 助動詞/be動詞 + S",
       "original_explanation": "表示「絕不」，為強烈的否定。當置於句首時，句子需部分倒裝。",
       "enriched_at": "2025-08-11T00:31:53.154869",
@@ -1440,6 +1468,8 @@
         "這部電影是如此的感人，以致於許多觀眾都哭了。",
         "他所面對的挑戰如此巨大，以致於許多人都認為他會失敗。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "So + adj. + 助動詞/be動詞 + S + that...",
       "original_explanation": "為了強調「如此...」的程度，將 So + 形容詞移至句首所形成的倒裝句。",
       "enriched_at": "2025-08-11T00:31:27.268151",
@@ -1534,6 +1564,8 @@
         "俗話說得好：「條條大路通羅馬。」這意味著解決問題有多種方法。(應用)",
         "諺語說得好：「天助自助者。」這個觀念在現代社會依然具有啟發性。(綜合)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Well goes a saying that...",
       "original_explanation": "一種引用諺語的倒裝句型，較為正式或具有文學色彩。",
       "enriched_at": "2025-08-11T00:31:17.799568",
@@ -1627,6 +1659,8 @@
         "政府一頒布新政策，股市就應聲下跌。",
         "她一讀完那封信，眼淚就奪眶而出。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "No sooner + had + S + p.p. ... than + S + V-ed",
       "original_explanation": "表示「一...就...」，強調兩個動作接連發生。No sooner 置於句首時需倒裝。",
       "enriched_at": "2025-08-11T00:31:01.734971",
@@ -1721,6 +1755,8 @@
         "直到他完成了學位，他才打算出國旅行。",
         "直到那座橋修好，車輛才被允許通過。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Not until... + 助動詞/be動詞 + S + V",
       "original_explanation": "表示「直到...才...」。當 Not until 引導的部分置於句首時，主要子句需倒裝。",
       "enriched_at": "2025-08-11T00:32:19.149019",
@@ -1814,6 +1850,8 @@
         "在這種經濟形勢下，只有削減成本，公司才能生存下來。",
         "只有在深入研究了所有證據後，調查人員才揭示了真相。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Only + adv. ... + 助動詞/be動詞 + S + V",
       "original_explanation": "當 Only 修飾副詞、介詞片語或子句並置於句首時，主要子句需倒裝。",
       "enriched_at": "2025-08-11T00:32:39.579312",
@@ -1913,6 +1951,8 @@
         "我們應該多練習，他們也應該。",
         "傑克不喜歡甜食，我也不喜歡。但是他喜歡運動，我也喜歡。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "..., and so/neither + 助動詞/be動詞 + S",
       "original_explanation": "用於附和前述的肯定句（so）或否定句（neither），表示「...也是/也不是」。",
       "enriched_at": "2025-08-11T00:32:51.064903",
@@ -2013,6 +2053,8 @@
         "我們不僅要重視教育，也要促進公民參與。",
         "這位藝術家不僅以其創新的風格聞名，其作品也深刻地影響了後世。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Not only + 助動詞/be動詞 + S + V ..., but also...",
       "original_explanation": "表示「不僅...而且...」。當 Not only 置於句首時，其引導的子句需倒裝。",
       "enriched_at": "2025-08-11T00:32:47.711773",
@@ -2106,6 +2148,8 @@
         "假設你明天放假，你會做什麼？",
         "要是人類都能和動物溝通，世界會變成怎樣？"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "If + S + were/V-ed..., S + would/could/should/might + V...",
       "original_explanation": "用於與現在事實相反的假設。",
       "enriched_at": "2025-08-11T00:32:49.692828",
@@ -2206,6 +2250,8 @@
         "假設當時政府採取了更嚴格的措施，那場危機可能就不會發生。(If the government had taken stricter measures, ...)",
         "如果我沒那麼衝動，當時就不會說出那些話，也就不會讓現在的局面這麼尷尬了。(If I hadn't been so impulsive, ...)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "If + S + had p.p. ..., S + would/could/should/might + have p.p. ...",
       "original_explanation": "用於與過去事實相反的假設。",
       "enriched_at": "2025-08-11T00:32:45.794625",
@@ -2299,6 +2345,8 @@
         "雖然可能性很小，但如果我明天被選為班長，我會努力為大家服務。",
         "你認為如果氣候變遷突然惡化到一個無法逆轉的地步，世界會變成怎樣？"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "If + S + were to + V..., S + would/could/should/might + V...",
       "original_explanation": "用於對未來不大可能發生的情況進行假設，語氣較弱。",
       "enriched_at": "2025-08-11T00:33:23.710289",
@@ -2394,6 +2442,8 @@
         "Were the company to expand, it would create many new jobs.",
         "Had he not intervened, the situation could have escalated significantly."
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Were/Had/Should + S ...",
       "original_explanation": "省略if的假設語氣倒裝句。將 Were, Had, Should 移至主詞前，常用於正式文體。",
       "enriched_at": "2025-08-11T00:33:16.055811",
@@ -2488,6 +2538,8 @@
         "若沒有你，我可能不會走到今天這一步。 (I might not have come this far...)",
         "若不是那次重要的會議，公司就不會改變方向，也不會達成今日的成就。 (But for that important meeting, the company would not have changed its direction, nor would it have achieved what it has today.)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Without/But for + N, S + would... + V...",
       "original_explanation": "表示「若非...」，用於與現在事實相反的假設。",
       "enriched_at": "2025-08-11T00:33:21.982206",
@@ -2582,6 +2634,8 @@
         "要不是他，你不可能在這麼短的時間內完成任務。(finish)",
         "若非他那天沒有來，我們可能就永遠見不到面了。(not meet)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Without/But for + N, S + would... + have p.p. ...",
       "original_explanation": "表示「若非...」，用於與過去事實相反的假設。",
       "enriched_at": "2025-08-11T00:33:23.305074",
@@ -2681,6 +2735,8 @@
         "若非你的建議，我可能會選錯科系。",
         "想像一下，若非有電，我們的現代生活會是怎樣？"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "If it were not for + N...",
       "original_explanation": "「若非...」的子句形式，用於與現在事實相反的假設。",
       "enriched_at": "2025-08-11T00:33:17.235777",
@@ -2775,6 +2831,8 @@
         "鑑於目前的經濟狀況，政府是時候採取果斷行動了。",
         "你覺得難道他還不該為自己過去的行為承擔責任嗎？"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is time that + S + V-ed",
       "original_explanation": "表示「早該做某事了」，後面的子句動詞使用過去式，屬於假設語氣的一種。",
       "enriched_at": "2025-08-11T00:33:48.213715",
@@ -2874,6 +2932,8 @@
         "我真希望我當時投資了那支股票，現在一定發財了。",
         "雖然我現在很喜歡這裡，但我有時還是希望我從未搬離我的家鄉。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "I wish (that) + S + V-ed/had p.p.",
       "original_explanation": "表示與現在或過去事實不符的願望。與現在事實相反用過去式；與過去事實相反用過去完成式。",
       "enriched_at": "2025-08-11T00:33:55.233898",
@@ -2968,6 +3028,8 @@
         "4. 請用 \"as if\" 或 \"as though\" 描述一個孩子在玩耍時，假裝自己是超級英雄的樣子。",
         "5. 整個房間瀰漫著奇怪的氣味，好像有什麼東西腐爛了。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "as if/as though + S + V-ed/had p.p.",
       "original_explanation": "表示「彷彿；好像」，用於描述不真實或與事實相反的情況。",
       "enriched_at": "2025-08-11T00:38:21.385685",
@@ -3062,6 +3124,8 @@
         "當你看到一個「正在流浪的動物」時，你會怎麼做？",
         "請描述一個「最近發生的令人震驚的事件」和你的感想。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "V-ing/p.p. + N",
       "original_explanation": "分詞作為形容詞，置於名詞前修飾該名詞。V-ing 表主動/進行；p.p. 表被動/完成。",
       "enriched_at": "2025-08-11T00:37:47.271633",
@@ -3161,6 +3225,8 @@
         "描述你辦公室或家中你最喜歡的一件物品，使用至少一個 N + V-ing/p.p. 句型。",
         "翻譯：所有參加會議並表達意見的經理都對最終決定感到滿意。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "N + V-ing/p.p.",
       "original_explanation": "分詞（片語）置於名詞後修飾該名詞，相當於一個簡化的關係子句。",
       "enriched_at": "2025-08-11T00:37:56.025704",
@@ -3259,6 +3325,8 @@
         "請用一個複合形容詞來描述一個「快速成長的市場」。",
         "用一個複合形容詞描述一個「手工製作的」產品，並將其放入一個疑問句中。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "adv./adj./N-V-ing/p.p.",
       "original_explanation": "由「副詞/形容詞/名詞」與「分詞」組成的複合形容詞，用來修飾名詞。",
       "enriched_at": "2025-08-11T00:37:58.521859",
@@ -3359,6 +3427,8 @@
         "請用 S + V + V-ing/p.p. 句型描述一個人在圖書館裡認真學習的畫面。（請自行創作中文和英文句子）",
         "將以下中文翻譯成英文，並使用 S + V + V-ing/p.p. 句型：儘管感到沮喪，她還是站了起來，繼續奮鬥。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "S + V + V-ing/p.p.",
       "original_explanation": "分詞作為主詞補語，補充說明主詞正在進行的動作或所處的狀態。",
       "enriched_at": "2025-08-11T00:39:10.529646",
@@ -3457,6 +3527,8 @@
         "你需要讓你的護照更新。",
         "當我們走進去時，我聽到狗在吠，而且感覺地板在震動。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "V + O + V-ing/p.p.",
       "original_explanation": "分詞作為受詞補語，補充說明受詞的動作或狀態。",
       "enriched_at": "2025-08-11T00:39:30.321038",
@@ -3556,6 +3628,8 @@
         "將以下句子譯成英文：他坐在那裡，臉上帶著嚴肅的表情。",
         "將以下句子譯成英文：隨著科技進步，我們的生活變得更便捷。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "with + O + V-ing/p.p.",
       "original_explanation": "附帶狀況的用法，用來描述伴隨發生的動作或狀態。",
       "enriched_at": "2025-08-11T00:39:36.773640",
@@ -3656,6 +3730,8 @@
         "_______ (被那噪音困擾)，她無法專心讀書。",
         "_______ (坐在窗邊)，她觀察著外面的人群。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "V-ing/p.p. ..., S + V ...",
       "original_explanation": "分詞構句，由副詞子句簡化而來，用來表示時間、原因、條件、讓步或附帶狀況。",
       "enriched_at": "2025-08-11T00:39:26.880535",
@@ -3750,6 +3826,8 @@
         "演出結束後，每個人都感到滿意。",
         "考慮到所有的因素，這個決定似乎是最好的。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "S₁ + V-ing/p.p. ..., S₂ + V ...",
       "original_explanation": "獨立分詞構句，當分詞的邏輯主詞與主要子句的主詞不同時，必須將其保留。",
       "enriched_at": "2025-08-11T00:39:32.085573",
@@ -3850,6 +3928,8 @@
         "從她蒼白的臉色來看，她可能生病了。",
         "一般來說，早睡早起對健康有益。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Generally speaking, ... / Judging from ...",
       "original_explanation": "由分詞演變而來的慣用語，其邏輯主詞並非主要子句的主詞，功能相當於連接副詞。",
       "enriched_at": "2025-08-11T00:39:36.959522",
@@ -3949,6 +4029,8 @@
         "Think about something you enjoy doing in your free time. (Translate: 我喜歡在空閒時間______。)",
         "Imagine (travel) around the world without (worry) about money."
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "V + V-ing",
       "original_explanation": "某些動詞（如 enjoy, finish, mind, practice, avoid）的受詞必須是動名詞（V-ing）形式。",
       "enriched_at": "2025-08-11T00:39:53.781577",
@@ -4043,6 +4125,8 @@
         "這台咖啡機似乎需要清洗。",
         "你認為這份合約需要修改嗎？"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "need/want/require + V-ing",
       "original_explanation": "當主詞是「事物」時，動詞 need/want/require 後可接動名詞，表達「被動」的意義（= need to be + p.p.）。",
       "enriched_at": "2025-08-11T00:39:55.596107",
@@ -4135,6 +4219,8 @@
         "你認為這趟長途跋涉去拜訪偏遠地區的寺廟值得嗎？（應用）",
         "雖然有風險，但這項研究發現對未來醫學發展而言，絕對是值得深入探索的。（綜合）"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "be worth + V-ing/N",
       "original_explanation": "表示「值得做某事」，worth 後面必須接動名詞或名詞。",
       "enriched_at": "2025-08-11T00:39:55.273993",
@@ -4228,6 +4314,8 @@
         "許多老年人在使用高科技產品時常有困難。",
         "如果你有困難做決定，請不要猶豫尋求協助。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "have difficulty/trouble + (in) + V-ing",
       "original_explanation": "表示「做某事有困難」，此句型中的 in 通常會被省略。",
       "enriched_at": "2025-08-11T00:39:52.229943",
@@ -4320,6 +4408,8 @@
         "每次下雨天，我_____ (渴望喝杯熱咖啡)。 (提示：表達一種強烈的慾望或習慣)",
         "面對如此嚴峻的挑戰，他_____ (表達自己的擔憂)。 (提示：應用在較正式或抽象的情境)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "can't help + V-ing",
       "original_explanation": "表示「忍不住、情不自禁地做某事」。",
       "enriched_at": "2025-08-11T00:40:16.897650",
@@ -4330,6 +4420,8 @@
       "pattern": "There is no + V-ing",
       "formula": "There is no + V-ing",
       "category": "動名詞",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "表示「不可能做某事」，與 It is impossible to V... 意思相同。",
       "examples": [
         {
@@ -4354,6 +4446,8 @@
       "pattern": "go + V-ing",
       "formula": "go + V-ing",
       "category": "動名詞",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "一種常用的動名詞片語，通常指從事某項休閒、娛樂或運動。",
       "examples": [
         {
@@ -4469,6 +4563,8 @@
         "為了保護眼睛，她每小時會停下來休息五分鐘。(To protect her eyes, she _______ for five minutes every hour.)",
         "你不能指望事情會改變，除非你停止抱怨並開始行動。(You can't expect things to change unless you _______ and start acting.)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "stop + V-ing / stop + to + V",
       "original_explanation": "stop + V-ing 指「停止正在做的事」；stop to V 則指「停下原來的事，去做另一件事」。",
       "enriched_at": "2025-08-11T00:40:38.799802",
@@ -4479,6 +4575,8 @@
       "pattern": "On/In + V-ing",
       "formula": "On/In + V-ing",
       "category": "動名詞",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "On + V-ing 表示「一...就...」；In + V-ing 表示「在做...的時候」。",
       "examples": [
         {
@@ -4503,6 +4601,8 @@
       "pattern": "Despite/In spite of + N/V-ing",
       "formula": "Despite/In spite of + N/V-ing",
       "category": "介系詞",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "表示「儘管、雖然」，為介系詞片語，後面只能接名詞或動名詞。",
       "examples": [
         {
@@ -4606,6 +4706,8 @@
         "她建議我們使用可重複利用的袋子，而不是塑膠袋。",
         "為了改善健康，他開始跑步而不是整天看電視。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Instead of + N/V-ing",
       "original_explanation": "表示「代替；而不是...」。",
       "enriched_at": "2025-08-11T00:39:20.472245",
@@ -4700,6 +4802,8 @@
         "除了照顧好自己，我們也應該關心周圍的人。(Translate: In addition to taking good care of ourselves, we should also care about the people around us.)",
         "除了寫報告，你今天還需要完成什麼？(Translate: Besides writing reports, what else do you need to complete today?)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Besides/In addition to + N/V-ing",
       "original_explanation": "表示「除了...之外（還）」，有「包含在內、累加」的意味。",
       "enriched_at": "2025-08-11T00:38:03.690762",
@@ -4794,6 +4898,8 @@
         "The success of the project was largely due to the team's hard work. (這個專案的成功很大程度上歸因於團隊的努力。)",
         "Due to unexpected circumstances, we had to postpone our trip, but we are still looking forward to it. (由於突發狀況，我們不得不延後旅行，但我們仍然很期待。)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "because of/due to/owing to + N",
       "original_explanation": "表示「因為、由於」，後面接名詞或名詞片語來表達原因。",
       "enriched_at": "2025-08-11T00:38:19.131437",
@@ -4893,6 +4999,8 @@
         "科學家正在研究哪些因素會導致全球氣候變化。 (疑問句，使用 lead to)",
         "過度依賴社交媒體可能導致青少年產生孤獨感和焦慮。 (使用 lead to)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "(因) + result in/lead to + (果)",
       "original_explanation": "用來表達「因果關係」，主詞為「原因」，介系詞後的受詞為「結果」。",
       "enriched_at": "2025-08-11T00:38:41.851042",
@@ -4986,6 +5094,8 @@
         "令她們欣慰的是，所有孩子都安全回家了。",
         "儘管天氣惡劣，令他們高興的是，演唱會並沒有取消。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "To one's + 情緒名詞, S + V",
       "original_explanation": "置於句首，用來表達某人對某件事的情緒反應。",
       "enriched_at": "2025-08-11T00:38:09.574105",
@@ -5086,6 +5196,8 @@
         "4. 她的演講技巧展現出極大的自信。 (使用with + 抽象名詞)",
         "5. 儘管時間有限，她還是輕鬆地完成了這項任務，證明了她高效的工作能力。 (綜合運用)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "of + 抽象名詞 = adj. / with + 抽象名詞 = adv.",
       "original_explanation": "介系詞加上抽象名詞，可以分別形成具有形容詞或副詞功能的片語。",
       "enriched_at": "2025-08-11T00:39:44.217762",
@@ -5180,6 +5292,8 @@
         "請用 \"with a view to\" 說明你學習英文的目的。（例如：為了出國留學）",
         "請翻譯：政府推行了環保措施，目的是減少空氣污染，並促進永續發展。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "with a view to + N/V-ing",
       "original_explanation": "表示「為了、目的在於」，此處的 to 是介系詞，因此後面需接名詞或動名詞。",
       "enriched_at": "2025-08-11T00:39:53.436729",
@@ -5190,6 +5304,8 @@
       "pattern": "nothing but / anything but / all but",
       "formula": "nothing but / anything but / all but",
       "category": "介系詞",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "nothing but 意為「僅僅是」；anything but 意為「一點也不」；all but 意為「幾乎」。",
       "examples": [
         {
@@ -5297,6 +5413,8 @@
         "（應用） 對於希望減輕壓力的專業人士來說，定期運動被認為是極其有益的。",
         "（綜合） 對於每個公民來說，遵守交通規則以確保道路安全是我們的共同責任。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is + adj. + for sb. + to V",
       "original_explanation": "It 作為虛主詞，代替後面的 to V 不定詞片語。for sb. 則是不定詞的邏輯主語。",
       "enriched_at": "2025-08-11T00:39:50.601807",
@@ -5390,6 +5508,8 @@
         "如果你能主動提供幫助，那真是太樂於助人了。",
         "即使在極度困難的情況下，她還能保持幽默感，真是太了不起了。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is + adj. + of sb. + to V",
       "original_explanation": "當形容詞是用來描述「人的特質或個性」（如 kind, polite, selfish）時，不定詞的邏輯主語用 of sb. 表示。",
       "enriched_at": "2025-08-11T00:39:39.124197",
@@ -5490,6 +5610,8 @@
         "有傳聞說這家老工廠將在年底關閉。",
         "雖然普遍認為這項計畫太過雄心勃勃，但據說政府仍然會推進它。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is said/believed/reported that...",
       "original_explanation": "It 作為虛主詞，用來引導一個由 that 帶領的名詞子句，常表示客觀的陳述、普遍看法或傳聞。",
       "enriched_at": "2025-08-11T00:40:12.054725",
@@ -5584,6 +5706,8 @@
         "我們能夠幫助有需要的人是一種榮幸。(It is a privilege for us to be able to help those in need.)",
         "科技正在快速發展是一個眾所周知的事實。(It is a well-known fact that technology is developing rapidly.)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is a/the/one's + N + to V/that ~",
       "original_explanation": "It 作為虛主詞，代替後面的 to V 或 that 子句，而中間的名詞用來表達對這件事的看法或描述。",
       "enriched_at": "2025-08-11T00:40:10.439929",
@@ -5594,6 +5718,8 @@
       "pattern": "find/make + it + adj. + to V",
       "formula": "find/make + it + adj. + to V",
       "category": "It 的用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "It 作為虛受詞，代替後面真正的受詞 to V 不定詞片語，以保持句子結構的平衡。",
       "examples": [
         {
@@ -5618,6 +5744,8 @@
       "pattern": "take it for granted that...",
       "formula": "take it for granted that...",
       "category": "It 的用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "一個固定片語，表示「認為...是理所當然的」，其中 it 是虛受詞，代替後面的 that 子句。",
       "examples": [
         {
@@ -5725,6 +5853,8 @@
         "如果你不改變策略，再多的努力都是白費力氣。(應用)",
         "在這種情況下，堅持己見是沒有意義的。(綜合)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It is no use + V-ing",
       "original_explanation": "It 作為虛主詞，表示「做某事是沒有用的、徒勞的」。",
       "enriched_at": "2025-08-11T00:40:15.381573",
@@ -5735,6 +5865,8 @@
       "pattern": "It occurs to/hits/strikes sb. that...",
       "formula": "It occurs to/hits/strikes sb. that...",
       "category": "It 的用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "表示「某人突然想到某事」，It 是虛主詞，真正的主詞是後面的 that 子句。",
       "examples": [
         {
@@ -5759,6 +5891,8 @@
       "pattern": "It takes (sb.) time to V / It costs (sb.) money to V",
       "formula": "It takes (sb.) time to V / It costs (sb.) money to V",
       "category": "It 的用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "It 作為虛主詞，用來表達「做某事花了某人多少時間或金錢」。",
       "examples": [
         {
@@ -5866,6 +6000,8 @@
         "儘管需要投入，投資於優質教育絕對是值得的。",
         "當你處理人際關係時，展現同理心永遠是值得的。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "It pays to V",
       "original_explanation": "It 作為虛主詞，表示「做某事是值得的、有好處的」。",
       "enriched_at": "2025-08-11T00:40:39.408342",
@@ -5876,6 +6012,8 @@
       "pattern": "One..., another..., the other...",
       "formula": "One..., another..., the other...",
       "category": "名詞與代名詞",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "用於指稱「（三個中的）一個...，另一個...，還有一個...」。若是兩個，則用 One..., the other....",
       "examples": [
         {
@@ -5989,6 +6127,8 @@
         "政府需要制定政策，確保資源能夠有效地從一個行業分配到另一個行業，以促進經濟平衡發展。",
         "他的音樂風格隨著時間從古典樂發展到搖滾樂，再到電子樂，反映了他不斷探索的精神。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "from one... to another",
       "original_explanation": "表示在不同事物或地點之間轉移或變動。",
       "enriched_at": "2025-08-11T00:40:40.862460",
@@ -6088,6 +6228,8 @@
         "儘管身邊沒有朋友，他還是獨自堅持完成了馬拉松。(by oneself / on one's own)",
         "當我看到那隻小貓獨自待在雨中時，我感到很心疼。(by oneself)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "by oneself / on one's own",
       "original_explanation": "均表示「獨自地、獨立地」。by oneself 強調獨處；on one's own 強調不依賴他人、靠自己。",
       "enriched_at": "2025-08-11T00:41:58.018461",
@@ -6182,6 +6324,8 @@
         "我們面臨兩個挑戰：資源短缺和團隊士氣低落。如果你只能解決一個，你會先處理 ______ 嗎？(填入 'the former' 或 'the latter')",
         "一位是經驗豐富的老師，另一位是充滿熱情的年輕導師。______ 擅長傳授知識，而 ______ 則更善於激發學生的興趣。我認為他們兩者都很棒。(依序填入 'the former', 'the latter')"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "the former... the latter...",
       "original_explanation": "the former 指「前者」（提及兩者中的第一個），the latter 指「後者」（提及兩者中的第二個）。",
       "enriched_at": "2025-08-11T00:42:24.252110",
@@ -6281,6 +6425,8 @@
         "作為公民，我們有責任去提升__________ (unemployed) 的就業率，並為__________ (disadvantaged) 提供更多支持。",
         "這本書講述了二戰期間__________ (courageous) 的故事，他們如何在逆境中幫助了__________ (persecuted)。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "the + adjective",
       "original_explanation": "the 加上形容詞，用來指稱「某一類的人」，為複數概念。",
       "enriched_at": "2025-08-11T00:41:48.450904",
@@ -6374,6 +6520,8 @@
         "政府正在推動多項政策，例如___和___，以改善環境。",
         "在許多文化中，有些節日，例如___，具有重要的歷史或宗教意義。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "N(s) such as...",
       "original_explanation": "用來「舉例說明」，such as 後面接名詞或名詞片語作為例子。",
       "enriched_at": "2025-08-11T00:43:05.621612",
@@ -6473,6 +6621,8 @@
         "在這次會議中，提出了一些關於永續發展的建議。(Use: a number of)",
         "儘管許多困難擺在我們面前，但少量的堅持就能帶來大量的成功。(Use: a great number of / a small amount of / a large amount of)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "a number of (+可數N) / an amount of (+不可數N)",
       "original_explanation": "a number of 修飾複數可數名詞，視為複數；an amount of 修飾不可數名詞，視為單數。",
       "enriched_at": "2025-08-11T00:42:04.285852",
@@ -6566,6 +6716,8 @@
         "哪些人適合這份工作？那些（有相關經驗）的人。",
         "談談你的看法：那些（只抱怨不行動）的人，真的能改變什麼嗎？"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "those who + V...",
       "original_explanation": "用來指稱「那些...的人」，those 為先行詞，who 引導形容詞子句修飾 those。",
       "enriched_at": "2025-08-11T00:43:20.868767",
@@ -6660,6 +6812,8 @@
         "（應用）在緊急情況下，任何在場的人都應盡力提供協助。",
         "（綜合）你不必告訴我誰給你這個建議，但它確實非常有幫助。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "whoever + V...",
       "original_explanation": "複合關係代名詞，意為「任何...的人」(anyone who)，本身已包含先行詞，用來引導一個名詞子句。",
       "enriched_at": "2025-08-11T00:43:31.164218",
@@ -6748,6 +6902,8 @@
         "無論他做什麼，他總是全力以赴。 (________ he does, he always gives his best.)",
         "你必須為生活中可能出現的任何困難做好準備。 (You must prepare for ________ difficulties come in life.)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "whatever + S + V...",
       "original_explanation": "複合關係代名詞，意為「任何...的事物」(anything that)，本身已包含先行詞，用來引導名詞子句。",
       "enriched_at": "2025-08-11T00:43:24.764812",
@@ -6841,6 +6997,8 @@
         "我永遠不會忘記你為我做的一切。",
         "他對我說的與他對你說的完全不同。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "what (= the thing that)",
       "original_explanation": "複合關係代名詞，意為「...的事物」(the thing which)，本身已包含先行詞，引導名詞子句。",
       "enriched_at": "2025-08-11T00:43:44.116700",
@@ -6941,6 +7099,8 @@
         "學生們唯一要做的就是努力學習，不要放棄。",
         "這項計畫唯一要做的就是證明其可行性。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "All S have to do is (to) V...",
       "original_explanation": "用來強調「唯一需要做的事就是...」，is 後面作為補語的不定詞 to 通常可以省略。",
       "enriched_at": "2025-08-11T00:43:30.495377",
@@ -7035,6 +7195,8 @@
         "將以下句子改寫為更正式的版本：The method he came up with was very innovative.",
         "綜合應用：請描述一個你喜歡的博物館，並用「介系詞 + which」描述其特色。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "介系詞 + which",
       "original_explanation": "在關係子句中，可將介系詞移至關係代名詞 which 或 whom 之前，形成較正式的書面語體。",
       "enriched_at": "2025-08-11T00:44:05.416144",
@@ -7129,6 +7291,8 @@
         "這座城市有許多歷史建築，其中一些已被修復並開放給大眾。",
         "我們訪問了幾個偏遠村莊，其中兩個面臨嚴重的缺水問題。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "..., some of whom/which + V ~",
       "original_explanation": "在非限定用法的關係子句中，可使用「數量詞/代名詞 + of whom/which」來補充說明先行詞。",
       "enriched_at": "2025-08-11T00:44:02.642421",
@@ -7229,6 +7393,8 @@
         "請你回想一下，你最後一次見到她的確切時間。",
         "告訴我那個你感到最自在的地方，以及你總是感到快樂的原因。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "... the place where / the time when / the reason why ...",
       "original_explanation": "where, when, why 作為關係副詞，分別用來修飾表示地方、時間、原因的先行詞。",
       "enriched_at": "2025-08-11T00:44:21.697393",
@@ -7323,6 +7489,8 @@
         "沒有一個學生會不期待暑假。",
         "在逆境中，沒有一次失敗是沒有教會我們寶貴一課的。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "There is no... but...",
       "original_explanation": "雙重否定句型，but 在此作關係代名詞，意為 that...not，整句表示「沒有...而不...」的肯定意思。",
       "enriched_at": "2025-08-11T00:44:09.611333",
@@ -7410,6 +7578,8 @@
         "這座城市現在有比十年前更多的外國遊客。(This city now has _____ _____ _____ it had ten years ago.)",
         "如果你希望在事業上取得成功，你需要投入比別人更多的努力。(If you want to succeed in your career, you need to put in _____ _____ _____ others do.)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "... more + N ... than + S + V",
       "original_explanation": "一種結合比較級的關係子句結構，than 在此引導子句，表示「多於...的數量」。",
       "enriched_at": "2025-08-11T00:44:08.386074",
@@ -7420,6 +7590,8 @@
       "pattern": "As is known to all, ...",
       "formula": "As is known to all, ...",
       "category": "As 的句型",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "as 在此引導一個關係子句，其先行詞是後面的整個主要子句，為固定用法，意為「眾所周知」。",
       "examples": [
         {
@@ -7444,6 +7616,8 @@
       "pattern": "As a saying goes, ...",
       "formula": "As a saying goes, ...",
       "category": "As 的句型",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "用來引述諺語或俗語的固定開頭句型。",
       "examples": [
         {
@@ -7468,6 +7642,8 @@
       "pattern": "As for + N/V-ing, ...",
       "formula": "As for + N/V-ing, ...",
       "category": "As 的句型",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "用作轉承詞，以引導出一個新的話題，表示「關於、至於」。",
       "examples": [
         {
@@ -7492,6 +7668,8 @@
       "pattern": "S + V + as + adj./adv. + as ...",
       "formula": "S + V + as + adj./adv. + as ...",
       "category": "As 的句型",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "原級比較句型，用於表達兩者在某方面的程度相同。",
       "examples": [
         {
@@ -7516,6 +7694,8 @@
       "pattern": "as soon as / as long as / as far as ...",
       "formula": "as soon as / as long as / as far as ...",
       "category": "As 的句型",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "由 as...as... 構成的常見連接詞片語：as soon as (一...就...)；as long as (只要)；as far as (就...而言)。",
       "examples": [
         {
@@ -7625,6 +7805,8 @@
         "（被動語態）這座橋梁______長期以來______城鎮的象徵。(be viewed as)",
         "你將如何______這段經歷______你未來發展的一部分？(view)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "regard/view/see/think of A as B",
       "original_explanation": "表示「將A視為B；把A看作B」，as 在此為介系詞。",
       "enriched_at": "2025-08-11T00:42:20.570521",
@@ -7717,6 +7899,8 @@
         "請將以下句子改寫為使用「S + be known as」的句型：這位科學家被認為是諾貝爾獎得主。",
         "她是一位才華洋溢的歌手，被她的粉絲們稱為「音樂女神」。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "S + be known as ...",
       "original_explanation": "表示「以...的身分或名稱而聞名」。另有 be known for (因...特色而聞名)；be known to (為...所熟知)。",
       "enriched_at": "2025-08-11T00:42:12.884114",
@@ -7812,6 +7996,8 @@
         "請用此句型翻譯：儘管這份工作困難重重，他們仍堅持不懈。",
         "請用此句型翻譯：他儘管是一個有經驗的司機，在雪地裡開車時還是很小心。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "Adj./N + as + S + V, ...",
       "original_explanation": "由 as 引導的讓步子句倒裝用法，相當於 Although/Though...，但語氣更強。",
       "enriched_at": "2025-08-11T00:42:10.429205",
@@ -7905,6 +8091,8 @@
         "文化之於社會，猶如根之於樹。",
         "解決方案之於問題，猶如鑰匙之於鎖。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "A is to B as C is to D",
       "original_explanation": "一個對稱的比喻句型，用來表示「A之於B，猶如C之於D」，說明兩組事物間的關係相似。",
       "enriched_at": "2025-08-11T00:43:18.966497",
@@ -7998,6 +8186,8 @@
         "與傳統筆記型電腦相比，輕薄筆電的重量通常較輕。(提示：The weight of ultrabooks is usually...)",
         "你認為這所大學的教學品質比那所大學的教學品質更好嗎？"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "... -er than that/those of ...",
       "original_explanation": "在比較句中，為避免重複，用 that (單數) 或 those (複數) 來代替前面已提過的被比較名詞。",
       "enriched_at": "2025-08-11T00:42:45.432408",
@@ -8092,6 +8282,8 @@
         "這家公司的市值在過去五年內增長了三倍。",
         "與十年前相比，現在的網路速度快了五倍。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "倍數 + as ... as / 倍數 + -er than",
       "original_explanation": "用來表達倍數差異的兩種常見方式。",
       "enriched_at": "2025-08-11T00:43:44.116476",
@@ -8185,6 +8377,8 @@
         "我們的舊設備在效率方面遠不如新購入的。(inferior)",
         "身為團隊中最年輕的成員，他的創新思維卻優於許多經驗豐富的同事。(superior)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "... superior/inferior/senior/junior to ...",
       "original_explanation": "源自拉丁文的比較級形容詞，其後需搭配介系詞 to，而不是 than。",
       "enriched_at": "2025-08-11T00:43:38.382966",
@@ -8195,6 +8389,8 @@
       "pattern": "The + -er..., the + -er...",
       "formula": "The + -er..., the + -er...",
       "category": "比較級",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "表示「越...，就越...」，一方的程度會隨著另一方的程度而相應改變。",
       "examples": [
         {
@@ -8302,6 +8498,8 @@
         "為了環保，城市寧願投資大眾運輸也不願擴建高速公路。",
         "在面臨不確定性時，他寧願保持沉默也不願發表輕率的言論。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "would rather V₁ than V₂",
       "original_explanation": "表示「寧願（做V₁）...也不願（做V₂）...」，在兩者之間做出選擇。",
       "enriched_at": "2025-08-11T00:43:42.169248",
@@ -8402,6 +8600,8 @@
         "這款新手機與其說是創新，不如說只是現有技術的改良。",
         "他被解僱的原因與其說是能力不足，不如說是與團隊價值觀不合。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "not so much A as B",
       "original_explanation": "表示「與其說是A，不如說是B」，用來修正語意，強調B比A更貼切。",
       "enriched_at": "2025-08-11T00:43:41.004680",
@@ -8577,6 +8777,8 @@
         "你確定你已經通知了她所有航班延誤的變更嗎？(inform)",
         "這本書不僅讓我想起我的童年，也提醒了我堅持夢想的重要性。(remind)"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "rob/inform/remind + sb + of + sth",
       "original_explanation": "某些動詞的受詞結構是「動詞 + 人 + of + 事物」，of 後面接與動詞相關的內容。",
       "enriched_at": "2025-08-11T00:44:04.045156",
@@ -8676,6 +8878,8 @@
         "歹徒重擊了他腹部一拳。",
         "為了讓他安靜下來，我輕捏了他的耳朵。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "V + sb. + on/in/by the + body part",
       "original_explanation": "描述「觸及或打到身體某部位」的動作時，介系詞後的身體部位前要用定冠詞 the，而非所有格。",
       "enriched_at": "2025-08-11T00:44:10.226527",
@@ -8775,6 +8979,8 @@
         "我們需要採取措施（measures）來防止（prevent）這種錯誤再次發生。",
         "是什麼（What）阻止了（keep）你加入（join）這個團隊？"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "prevent/stop/keep + O + from + V-ing",
       "original_explanation": "表示「阻止、防止某人或某物做某事」。",
       "enriched_at": "2025-08-11T00:44:01.935864",
@@ -8874,6 +9080,8 @@
         "請用 'accustomed to' 造句，描述一個你最近適應的新習慣。",
         "思考一個你或你認識的人曾經為之付出巨大努力的目標，並用 'be devoted to' 或 'be dedicated to' 描述它。"
       ],
+      "difficulty": 3,
+      "frequency": "medium",
       "original_pattern": "be devoted/dedicated/accustomed to + N/V-ing",
       "original_explanation": "表示「致力於、獻身於、習慣於...」，此處的 to 為介系詞，後面需接名詞或動名詞。",
       "enriched_at": "2025-08-11T00:44:02.141319",
@@ -8884,6 +9092,8 @@
       "pattern": "persuade sb. into V-ing / dissuade sb. from V-ing",
       "formula": "persuade sb. into V-ing / dissuade sb. from V-ing",
       "category": "特殊動詞用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "persuade...into... 指「說服某人去做某事」；dissuade...from... 指「勸阻某人不要做某事」。",
       "examples": [
         {
@@ -8908,6 +9118,8 @@
       "pattern": "put/lay/place emphasis/stress on ...",
       "formula": "put/lay/place emphasis/stress on ...",
       "category": "特殊動詞用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "將動詞（如 emphasize）轉換成名詞（emphasis），並搭配其他動詞（如 put）來表達相同意思，以變化句型。",
       "examples": [
         {
@@ -8932,6 +9144,8 @@
       "pattern": "V-sense + O + V/V-ing/p.p.",
       "formula": "V-sense + O + V/V-ing/p.p.",
       "category": "特殊動詞用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "感官動詞（see, hear, feel...）後接原形動詞(V)表示看到/聽到動作的全程；接現在分詞(V-ing)表示動作正在進行；接過去分詞(p.p.)表示受詞被...。",
       "examples": [
         {
@@ -8956,6 +9170,8 @@
       "pattern": "make/have/let + O + V / get + O + to V",
       "formula": "make/have/let + O + V / get + O + to V",
       "category": "特殊動詞用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "使役動詞表示「使、讓、叫某人做某事」。make/have/let 後的受詞補語用原形動詞；get 後用不定詞。",
       "examples": [
         {
@@ -8980,6 +9196,8 @@
       "pattern": "consist of / be composed of / be made up of",
       "formula": "consist of / be composed of / be made up of",
       "category": "特殊動詞用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "均表示「由...所組成」。consist of 為主動語態；be composed of 和 be made up of 為被動語態。",
       "examples": [
         {
@@ -9004,6 +9222,8 @@
       "pattern": "date back to... / can be traced back to...",
       "formula": "date back to... / can be traced back to...",
       "category": "特殊動詞用法",
+      "difficulty": 3,
+      "frequency": "medium",
       "explanation": "用來表示某事物的起源或歷史可以追溯到某個特定的時間點。",
       "examples": [
         {

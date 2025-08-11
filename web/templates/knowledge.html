@@ -245,14 +245,20 @@ function applyFilters() {
     if (show) hasResults = true;
   });
   
-  document.querySelector('.no-results').style.display = hasResults ? 'none' : 'flex';
+  const noResultsEl = document.querySelector('.no-results');
+  if (noResultsEl) {
+    noResultsEl.style.display = hasResults ? 'none' : 'flex';
+  }
 }
 
 // 更新搜尋功能
-document.getElementById('knowledge-search').addEventListener('input', function(e) {
-  activeFilters.search = e.target.value.toLowerCase();
-  applyFilters();
-});
+const searchInput = document.getElementById('knowledge-search');
+if (searchInput) {
+  searchInput.addEventListener('input', function(e) {
+    activeFilters.search = e.target.value.toLowerCase();
+    applyFilters();
+  });
+}
 
 // 更新篩選按鈕功能
 document.querySelectorAll('.filter-tab, .filter-pill').forEach(btn => {

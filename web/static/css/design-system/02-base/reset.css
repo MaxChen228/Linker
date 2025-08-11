@@ -27,7 +27,7 @@ body {
   background: var(--color-background);
   color: var(--text-primary);
   font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
+  font-size: var(--text-base);
   line-height: var(--line-height-base);
   min-height: 100vh;
   display: flex;

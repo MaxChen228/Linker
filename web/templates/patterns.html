@@ -57,31 +57,6 @@
         {% endfor %}
       </div>
     </div>
-    
-    <!-- 難度篩選 -->
-    <div class="filter-section">
-      <h3 class="filter-title">難度等級</h3>
-      <div class="filter-pills">
-        <button class="btn filter-pill active" data-variant="pill" data-filter-type="difficulty" data-filter-value="">
-          全部
-        </button>
-        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="1">
-          ⭐ 基礎
-        </button>
-        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="2">
-          ⭐⭐ 初級
-        </button>
-        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="3">
-          ⭐⭐⭐ 中級
-        </button>
-        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="4">
-          ⭐⭐⭐⭐ 進階
-        </button>
-        <button class="btn filter-pill" data-variant="pill" data-filter-type="difficulty" data-filter-value="5">
-          ⭐⭐⭐⭐⭐ 專業
-        </button>
-      </div>
-    </div>
   </div>
   
   <!-- 句型列表網格 -->
@@ -89,7 +64,6 @@
     {% for pattern in patterns %}
     <div class="pattern-card-compact" 
          data-category="{{ pattern.category or '' }}" 
-         data-difficulty="{{ pattern.difficulty or 3 }}"
          data-search-text="{{ (pattern.pattern|lower) ~ ' ' ~ (pattern.formula|default('')|lower) ~ ' ' ~ (pattern.category|default('')|lower) }}">
       
       <a href="/patterns/{{ pattern.id }}" class="pattern-link">
@@ -98,14 +72,6 @@
           <div class="pattern-badges">
             {% if pattern.category %}
               <span class="badge category-badge" data-variant="primary">{{ pattern.category }}</span>
-            {% endif %}
-            <span class="badge difficulty-badge" data-level="{{ pattern.difficulty or 3 }}">
-              {% if pattern.difficulty == 1 %}⭐{% elif pattern.difficulty == 2 %}⭐⭐{% elif pattern.difficulty == 3 %}⭐⭐⭐{% elif pattern.difficulty == 4 %}⭐⭐⭐⭐{% else %}⭐⭐⭐⭐⭐{% endif %}
-            </span>
-            {% if pattern.frequency %}
-              <span class="badge frequency-badge" data-freq="{{ pattern.frequency }}">
-                {% if pattern.frequency == 'high' %}高頻{% elif pattern.frequency == 'medium' %}中頻{% else %}低頻{% endif %}
-              </span>
             {% endif %}
           </div>
         </div>
@@ -179,7 +145,6 @@
 // 篩選功能
 let activeFilters = {
   category: '{{ category }}',
-  difficulty: '',
   search: '{{ q }}'
 };
 
@@ -195,11 +160,6 @@ function applyFilters() {
       show = show && item.dataset.category === activeFilters.category;
     }
     
-    // 檢查難度篩選
-    if (activeFilters.difficulty) {
-      show = show && item.dataset.difficulty === activeFilters.difficulty;
-    }
-    
     // 檢查搜尋條件
     if (activeFilters.search) {
       const searchText = item.dataset.searchText || '';
@@ -210,23 +170,29 @@ function applyFilters() {
     if (show) hasResults = true;
   });
   
-  document.querySelector('.no-results').style.display = hasResults ? 'none' : 'flex';
+  const noResultsEl = document.querySelector('.no-results');
+  if (noResultsEl) {
+    noResultsEl.style.display = hasResults ? 'none' : 'flex';
+  }
 }
 
 // 搜尋功能
-document.getElementById('pattern-search').addEventListener('input', function(e) {
-  activeFilters.search = e.target.value;
-  applyFilters();
-  
-  // 更新 URL 參數
-  const url = new URL(window.location);
-  if (e.target.value) {
-    url.searchParams.set('q', e.target.value);
-  } else {
-    url.searchParams.delete('q');
-  }
-  window.history.replaceState({}, '', url);
-});
+const searchInput = document.getElementById('pattern-search');
+if (searchInput) {
+  searchInput.addEventListener('input', function(e) {
+    activeFilters.search = e.target.value;
+    applyFilters();
+    
+    // 更新 URL 參數
+    const url = new URL(window.location);
+    if (e.target.value) {
+      url.searchParams.set('q', e.target.value);
+    } else {
+      url.searchParams.delete('q');
+    }
+    window.history.replaceState({}, '', url);
+  });
+}
 
 // 分類篩選
 document.querySelectorAll('[data-filter-type="category"]').forEach(btn => {
@@ -251,23 +217,6 @@ document.querySelectorAll('[data-filter-type="category"]').forEach(btn => {
       url.searchParams.delete('category');
     }
     window.history.replaceState({}, '', url);
-  });
-});
-
-// 難度篩選
-document.querySelectorAll('[data-filter-type="difficulty"]').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const value = this.dataset.filterValue;
-    
-    // 更新按鈕狀態
-    document.querySelectorAll('[data-filter-type="difficulty"]').forEach(b => {
-      b.classList.remove('active');
-    });
-    this.classList.add('active');
-    
-    // 更新篩選
-    activeFilters.difficulty = value;
-    applyFilters();
   });
 });
 

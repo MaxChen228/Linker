@@ -29,7 +29,6 @@ class LinkerCLI:
     def run(self):
         """主循環"""
         self.print_welcome()
-        self.check_migration()
 
         while True:
             try:
@@ -71,17 +70,6 @@ class LinkerCLI:
         display.info("⚙️  系統性錯誤 → 📌 單一性錯誤 → ✨ 可以更好 → ❓ 其他")
         print("=" * 60)
 
-    def check_migration(self):
-        """檢查是否需要遷移舊數據"""
-        old_file = Path("data/knowledge_old.json")
-        new_file = Path("data/knowledge.json")
-
-        if old_file.exists() and not new_file.exists():
-            print("\n🔄 發現舊版數據，是否要遷移到新系統？")
-            choice = input("輸入 Y 進行遷移，N 跳過: ").strip().upper()
-            if choice == "Y":
-                if self.knowledge.migrate_from_v1(old_file):
-                    print("✅ 數據遷移完成！")
 
     def show_menu(self):
         """顯示主選單"""
