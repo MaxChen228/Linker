@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+{% block title %}知識點 - Linker{% endblock %}
+
+{% block styles %}
+<!-- 知識點頁面專屬樣式 - 使用新設計系統 -->
+<link rel="stylesheet" href="/static/css/pages/knowledge.css" />
+{% endblock %}
+
+{% block content %}
+  <!-- 頁面標題與統計 -->
+  <div class="knowledge-header">
+    <div class="header-top">
+      <h2 class="page-title">我的知識點庫</h2>
+      <div class="quick-stats">
+        <div class="badge stat-badge" data-variant="primary" data-size="xl">
+          <span class="badge-label">總知識點</span>
+          <span class="badge-value">{{ points|length }}</span>
+        </div>
+        <div class="badge stat-badge" data-variant="warning" data-size="xl">
+          <span class="badge-label">待複習</span>
+          <span class="badge-value">{{ due_points|length }}</span>
+        </div>
+        <div class="badge stat-badge" data-variant="success" data-size="xl">
+          <span class="badge-label">平均掌握度</span>
+          <span class="badge-value">{{ "%.0f"|format(stats.avg_mastery * 100) }}%</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 搜尋欄 -->
+    <div class="search-bar">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input type="text" 
+             id="knowledgeSearch" 
+             placeholder="搜尋知識點..." 
+             autocomplete="off" />
+      <span class="search-hint">即時搜尋</span>
+    </div>
+  </div>
+  
+  <!-- 改進的篩選區域 -->
+  <div class="filter-container">
+    <!-- 錯誤類別篩選 -->
+    <div class="filter-section">
+      <h3 class="filter-title">錯誤類別</h3>
+      <div class="filter-tabs">
+        <button class="btn filter-tab active" data-variant="tab" data-filter-type="category" data-filter-value="">
+          全部
+          <span class="btn-count">{{ points|length }}</span>
+        </button>
+        {% for cat in categories %}
+          <button class="btn filter-tab" data-variant="tab" data-filter-type="category" data-filter-value="{{ cat }}">
+            {{ cat }}
+            <span class="btn-count">{{ category_counts[cat] }}</span>
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- 掌握度篩選 -->
+    <div class="filter-section">
+      <h3 class="filter-title">掌握程度</h3>
+      <div class="filter-pills">
+        <button class="btn filter-pill active" data-variant="pill" data-filter-type="mastery" data-filter-value="">
+          全部
+        </button>
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="low">
+          <span class="mastery-dot low"></span>
+          低 (&lt;30%)
+        </button>
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="medium">
+          <span class="mastery-dot medium"></span>
+          中 (30-70%)
+        </button>
+        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="high">
+          <span class="mastery-dot high"></span>
+          高 (&gt;70%)
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 知識點網格 - 緊湊卡片佈局 -->
+  <div class="knowledge-grid">
+    <!-- 系統性錯誤群組 -->
+    {% for group in knowledge_groups %}
+    <div class="knowledge-group-compact" data-category="系統性錯誤" data-mastery-level="{{ group.avg_mastery }}" data-search-text="{{ group.name|lower }}">
+      <div class="group-header-compact">
+        <h3 class="group-title-compact">{{ group.name }}</h3>
+        <div class="group-badges">
+          <span class="badge" data-variant="error">系統性</span>
+          <span class="badge" data-variant="neutral">{{ group.count }}個</span>
+        </div>
+      </div>
+      <div class="group-points-compact">
+        {% for point in group.points[:3] %}
+        <a href="/knowledge/{{ point.id }}" class="point-item-compact" data-mastery-level="{{ point.mastery_level }}">
+          <span class="point-title-compact">{{ point.key_point[:30] }}{% if point.key_point|length > 30 %}...{% endif %}</span>
+          <div class="point-stats-compact">
+            <span class="mastery-indicator" style="width: {{ (point.mastery_level * 100)|int }}%"></span>
+            <span class="mistake-count">{{ point.mistake_count }}</span>
+          </div>
+        </a>
+        {% endfor %}
+        {% if group.points|length > 3 %}
+        <div class="group-more">還有 {{ group.points|length - 3 }} 個知識點...</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    
+    <!-- 單一性錯誤 -->
+    {% for point in isolated_points %}
+    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+       data-category="單一性錯誤" 
+       data-mastery-level="{{ point.mastery_level }}"
+       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+      <div class="card-header-compact">
+        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <span class="badge" data-variant="warning">單一</span>
+      </div>
+      <div class="card-body-compact">
+        <div class="mastery-bar-compact">
+          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+        </div>
+        <div class="card-stats-compact">
+          <span class="stat">錯誤 {{ point.mistake_count }}</span>
+          <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+    
+    <!-- 可以更好 -->
+    {% for point in enhancement_points %}
+    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+       data-category="可以更好" 
+       data-mastery-level="{{ point.mastery_level }}"
+       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+      <div class="card-header-compact">
+        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <span class="badge" data-variant="info">改進</span>
+      </div>
+      <div class="card-body-compact">
+        <div class="mastery-bar-compact">
+          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+        </div>
+        <div class="card-stats-compact">
+          <span class="stat">錯誤 {{ point.mistake_count }}</span>
+          <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+    
+    <!-- 其他錯誤 -->
+    {% for point in other_points %}
+    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+       data-category="其他錯誤" 
+       data-mastery-level="{{ point.mastery_level }}"
+       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+      <div class="card-header-compact">
+        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <span class="badge" data-variant="neutral">其他</span>
+      </div>
+      <div class="card-body-compact">
+        <div class="mastery-bar-compact">
+          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+        </div>
+        <div class="card-stats-compact">
+          <span class="stat">錯誤 {{ point.mistake_count }}</span>
+          <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  
+  <!-- 無結果提示 -->
+  <div class="no-results" style="display: none;">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+      <path d="M11 8v3m0 4h.01"></path>
+    </svg>
+    <p>沒有找到符合條件的知識點</p>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 篩選功能 - 支援組合篩選
+let activeFilters = {
+  category: '',
+  mastery: '',
+  search: ''
+};
+
+function applyFilters() {
+  const items = document.querySelectorAll('.knowledge-card-compact, .knowledge-group-compact');
+  let hasResults = false;
+  
+  items.forEach(item => {
+    let show = true;
+    
+    // 檢查類別篩選
+    if (activeFilters.category) {
+      show = show && item.dataset.category === activeFilters.category;
+    }
+    
+    // 檢查掌握度篩選
+    if (activeFilters.mastery) {
+      const mastery = parseFloat(item.dataset.masteryLevel || 0);
+      if (activeFilters.mastery === 'low') {
+        show = show && mastery < 0.3;
+      } else if (activeFilters.mastery === 'medium') {
+        show = show && mastery >= 0.3 && mastery < 0.7;
+      } else if (activeFilters.mastery === 'high') {
+        show = show && mastery >= 0.7;
+      }
+    }
+    
+    // 檢查搜尋條件
+    if (activeFilters.search) {
+      const searchText = item.dataset.searchText || '';
+      show = show && searchText.includes(activeFilters.search);
+    }
+    
+    item.style.display = show ? '' : 'none';
+    if (show) hasResults = true;
+  });
+  
+  document.querySelector('.no-results').style.display = hasResults ? 'none' : 'flex';
+}
+
+// 更新搜尋功能
+document.getElementById('knowledgeSearch').addEventListener('input', function(e) {
+  activeFilters.search = e.target.value.toLowerCase();
+  applyFilters();
+});
+
+// 更新篩選按鈕功能
+document.querySelectorAll('.filter-tab, .filter-pill').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const filterType = this.dataset.filterType;
+    const filterValue = this.dataset.filterValue;
+    
+    // 更新按鈕狀態
+    document.querySelectorAll(`[data-filter-type="${filterType}"]`).forEach(b => {
+      b.classList.remove('active');
+    });
+    this.classList.add('active');
+    
+    // 更新活躍篩選條件
+    activeFilters[filterType] = filterValue;
+    
+    // 應用所有篩選條件
+    applyFilters();
+  });
+});
+</script>
+{% endblock %}

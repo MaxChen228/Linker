@@ -103,42 +103,6 @@ def home(request: Request):
     )
 
 
-@app.get("/test-buttons", response_class=HTMLResponse)
-def test_buttons(request: Request):
-    return templates.TemplateResponse("test_buttons.html", {"request": request})
-
-
-@app.get("/patterns/old", response_class=HTMLResponse)
-def patterns_old(request: Request, category: Optional[str] = None, q: Optional[str] = None):
-    all_patterns = assets.get_grammar_patterns()
-    categories = sorted({p.category for p in all_patterns if p.category})
-
-    data = all_patterns
-    if category:
-        data = [p for p in data if p.category == category]
-    if q:
-        query = q.strip().lower()
-        data = [
-            p
-            for p in data
-            if (query in (p.pattern or "").lower())
-            or (query in (p.explanation or "").lower())
-            or (query in (p.example_en or "").lower())
-            or (query in (p.example_zh or "").lower())
-        ]
-
-    data = data[:200]
-    return templates.TemplateResponse(
-        "patterns.html",
-        {
-            "request": request,
-            "patterns": data,
-            "category": category or "",
-            "categories": categories,
-            "q": q or "",
-            "active": "patterns",
-        },
-    )
 
 
 @app.get("/patterns", response_class=HTMLResponse)
@@ -190,7 +154,7 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
         ]
     
     return templates.TemplateResponse(
-        "patterns_new.html",
+        "patterns.html",
         {
             "request": request,
             "patterns": filtered_patterns[:200],
@@ -202,17 +166,6 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
     )
 
 
-# 重定向舊的 v2 路徑到新路徑
-@app.get("/patterns/v2")
-def redirect_patterns_v2():
-    """重定向舊的 v2 列表頁到新路徑"""
-    return RedirectResponse(url="/patterns", status_code=301)
-
-
-@app.get("/patterns/v2/{pattern_id}")
-def redirect_pattern_v2_detail(pattern_id: str):
-    """重定向舊的 v2 詳情頁到新路徑"""
-    return RedirectResponse(url=f"/patterns/{pattern_id}", status_code=301)
 
 
 @app.get("/patterns/{pattern_id}", response_class=HTMLResponse)
@@ -242,7 +195,7 @@ def pattern_detail(request: Request, pattern_id: str):
         return RedirectResponse(url="/patterns", status_code=302)
     
     return templates.TemplateResponse(
-        "pattern_detail.html",
+        "pattern-detail.html",
         {
             "request": request,
             "pattern": pattern,
@@ -584,7 +537,7 @@ def knowledge_detail(request: Request, point_id: str):
     }
     
     return templates.TemplateResponse(
-        "knowledge_detail.html",
+        "knowledge-detail.html",
         {
             "request": request,
             "point": point_dict,
@@ -596,34 +549,6 @@ def knowledge_detail(request: Request, point_id: str):
     )
 
 
-@app.get("/test-buttons")
-def test_buttons(request: Request):
-    return templates.TemplateResponse("test_buttons.html", {"request": request})
-
-
-@app.get("/test-cards")
-def test_cards(request: Request):
-    return templates.TemplateResponse("test_cards.html", {"request": request})
-
-
-@app.get("/test-badges")
-def test_badges(request: Request):
-    return templates.TemplateResponse("test_badges.html", {"request": request})
-
-
-@app.get("/test-forms")
-def test_forms(request: Request):
-    return templates.TemplateResponse("test_forms.html", {"request": request})
-
-
-@app.get("/test-loading")
-def test_loading(request: Request):
-    return templates.TemplateResponse("test_loading.html", {"request": request})
-
-
-@app.get("/test-modals")
-def test_modals(request: Request):
-    return templates.TemplateResponse("test_modals.html", {"request": request})
 
 
 @app.get("/healthz")

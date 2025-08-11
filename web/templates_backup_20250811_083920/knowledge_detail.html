@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}{{ point.title }} - 知識點詳情{% endblock %}
+
+{% block content %}
+<div class="knowledge-detail-container">
+    <!-- 頂部導航 -->
+    <div class="breadcrumb">
+        <a href="/knowledge" class="breadcrumb-link">← 返回知識點列表</a>
+    </div>
+
+    <!-- 知識點標題卡片 -->
+    <div class="detail-header-card">
+        <!-- 標題與徽章 -->
+        <div class="detail-header-top">
+            <div class="detail-badges">
+                <span class="category-badge category-{{ point.category.value }}">
+                    {{ point.category.chinese_name }}
+                </span>
+                {% if point.subtype %}
+                <span class="subtype-badge">{{ subtype_display }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <h1 class="detail-title">{{ point.title }}</h1>
+        
+        <!-- 統計資訊 -->
+        <div class="detail-stats">
+            <div class="stat-item">
+                <span class="stat-label">掌握度</span>
+                <div class="mastery-display">
+                    <div class="mastery-bar">
+                        <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+                    </div>
+                    <span class="mastery-text">{{ (point.mastery_level * 100)|int }}%</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">錯誤次數</span>
+                <span class="stat-value">{{ point.mistake_count }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">正確次數</span>
+                <span class="stat-value">{{ point.correct_count }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">下次複習</span>
+                <span class="stat-value">{{ next_review_display or "未安排" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 知識點內容 -->
+    <div class="detail-content-card">
+        <h2 class="section-title">知識點說明</h2>
+        <div class="knowledge-description">
+            <div class="description-content">
+                {{ point.description }}
+            </div>
+        </div>
+        
+        <!-- 原始句子和修改版本 -->
+        <div class="correction-section">
+            <h3 class="subsection-title">句子對照</h3>
+            <div class="sentence-comparison">
+                <div class="original-sentence">
+                    <span class="sentence-label">❌ 原始錯誤：</span>
+                    <span class="sentence-text">{{ point.original_phrase }}</span>
+                </div>
+                <div class="corrected-sentence">
+                    <span class="sentence-label">✓ 正確版本：</span>
+                    <span class="sentence-text">{{ point.correction }}</span>
+                </div>
+            </div>
+        </div>
+        
+        {% if point.improvement_suggestion %}
+        <div class="improvement-section">
+            <h3 class="subsection-title">改進建議</h3>
+            <div class="improvement-text">
+                {{ point.improvement_suggestion }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 相關錯誤記錄 -->
+    {% if related_mistakes %}
+    <div class="mistakes-section">
+        <h2 class="section-title">相關練習記錄</h2>
+        <div class="mistakes-list">
+            {% for mistake in related_mistakes %}
+            <div class="mistake-card">
+                <div class="mistake-header">
+                    <span class="mistake-date">{{ mistake.timestamp[:10] if mistake.timestamp else "未知日期" }}</span>
+                    <span class="mistake-status {% if mistake.is_correct %}correct{% else %}incorrect{% endif %}">
+                        {% if mistake.is_correct %}✓ 已掌握{% else %}✗ 需加強{% endif %}
+                    </span>
+                </div>
+                <div class="mistake-content">
+                    <div class="sentence-pair">
+                        <div class="chinese-sentence">
+                            <span class="sentence-label">中文：</span>
+                            {{ mistake.chinese_sentence }}
+                        </div>
+                        <div class="user-answer {% if not mistake.is_correct %}error{% endif %}">
+                            <span class="sentence-label">你的答案：</span>
+                            {{ mistake.user_answer }}
+                        </div>
+                        {% if mistake.correct_answer and not mistake.is_correct %}
+                        <div class="correct-answer">
+                            <span class="sentence-label">參考答案：</span>
+                            {{ mistake.correct_answer }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if mistake.explanation %}
+                    <div class="mistake-explanation">
+                        <span class="explanation-label">說明：</span>
+                        {{ mistake.explanation }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="no-mistakes">
+        <p>暫無相關練習記錄</p>
+    </div>
+    {% endif %}
+
+    <!-- 操作按鈕 -->
+    <div class="detail-actions">
+        <a href="/practice?mode=review&point_id={{ point.id }}" class="btn btn-primary">
+            開始複習此知識點
+        </a>
+        <button onclick="window.history.back()" class="btn btn-secondary">
+            返回
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/css/pages/knowledge-detail.css">
+{% endblock %}

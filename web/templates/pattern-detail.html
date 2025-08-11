@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}{{ pattern.pattern }} - 句型學習 - Linker{% endblock %}
+
+{% block styles %}
+<!-- 重新設計的句型詳情頁面樣式 -->
+<link rel="stylesheet" href="/static/css/pages/pattern-detail.css" />
+{% endblock %}
+
+{% block content %}
+<div class="pattern-detail-container">
+  <!-- 返回按鈕 -->
+  <a href="/patterns" class="back-link">← 返回列表</a>
+
+  <!-- 第一層：核心認識 -->
+  <div class="core-section">
+    <h1 class="pattern-title">{{ pattern.pattern }}</h1>
+    
+    {% if pattern.formula %}
+    <div class="pattern-formula">
+      {{ pattern.formula }}
+    </div>
+    {% endif %}
+    
+    <div class="pattern-essence">
+      {% if pattern.core_concept %}
+      <p class="concept">{{ pattern.core_concept }}</p>
+      {% endif %}
+      {% if pattern.when_to_use %}
+      <p class="usage">{{ pattern.when_to_use }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 第二層：關鍵重點 -->
+  {% if pattern.key_points %}
+  <div class="key-points-section">
+    <h2>記住這幾點</h2>
+    <ul class="key-points">
+      {% for point in pattern.key_points %}
+      <li>{{ point }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- 第三層：例句學習 -->
+  {% if pattern.examples %}
+  <div class="examples-section">
+    <h2>從例句理解</h2>
+    <div class="examples-container">
+      {% for example in pattern.examples %}
+      <div class="example-card" data-difficulty="{{ example.difficulty }}">
+        <div class="example-content">
+          <p class="zh">{{ example.zh }}</p>
+          <p class="en">{{ example.en }}</p>
+        </div>
+        {% if example.highlight %}
+        <div class="example-note">
+          {{ example.highlight }}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 第四層：常見錯誤 -->
+  {% if pattern.common_mistakes %}
+  <div class="mistakes-section">
+    <h2>避免這些錯誤</h2>
+    <div class="mistakes-container">
+      {% for mistake in pattern.common_mistakes %}
+      <div class="mistake-card">
+        <div class="mistake-comparison">
+          <div class="wrong">
+            <span class="label">✗</span>
+            <span class="text">{{ mistake.wrong }}</span>
+          </div>
+          <div class="correct">
+            <span class="label">✓</span>
+            <span class="text">{{ mistake.correct }}</span>
+          </div>
+        </div>
+        <p class="explanation">{{ mistake.explanation }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 第五層：變化形式 -->
+  {% if pattern.variations %}
+  <div class="variations-section">
+    <h2>各種變化</h2>
+    <div class="variations-grid">
+      {% if pattern.variations.present %}
+      <div class="variation-item">
+        <span class="label">現在式</span>
+        <span class="example">{{ pattern.variations.present }}</span>
+      </div>
+      {% endif %}
+      {% if pattern.variations.past %}
+      <div class="variation-item">
+        <span class="label">過去式</span>
+        <span class="example">{{ pattern.variations.past }}</span>
+      </div>
+      {% endif %}
+      {% if pattern.variations.future %}
+      <div class="variation-item">
+        <span class="label">未來式</span>
+        <span class="example">{{ pattern.variations.future }}</span>
+      </div>
+      {% endif %}
+      {% if pattern.variations.negative %}
+      <div class="variation-item">
+        <span class="label">否定句</span>
+        <span class="example">{{ pattern.variations.negative }}</span>
+      </div>
+      {% endif %}
+      {% if pattern.variations.question %}
+      <div class="variation-item">
+        <span class="label">疑問句</span>
+        <span class="example">{{ pattern.variations.question }}</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 第六層：練習 -->
+  {% if pattern.practice_sentences %}
+  <div class="practice-section">
+    <h2>練習時間</h2>
+    <div class="practice-list">
+      {% for sentence in pattern.practice_sentences %}
+      <div class="practice-item">
+        <span class="number">{{ loop.index }}</span>
+        <span class="sentence">{{ sentence }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="btn-practice">開始練習</button>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 練習按鈕
+document.querySelector('.btn-practice')?.addEventListener('click', () => {
+  // 跳轉到練習頁面
+  window.location.href = '/practice?mode=pattern&id={{ pattern.id }}';
+});
+</script>
+{% endblock %}

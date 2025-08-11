@@ -1,0 +1,558 @@
+{% extends "base.html" %}
+{% block title %}翻譯練習 - Linker{% endblock %}
+
+{% block styles %}
+<!-- 練習頁面專屬樣式 - 使用新設計系統 -->
+<link rel="stylesheet" href="/static/css/pages/practice.css" />
+<link rel="stylesheet" href="/static/css/features/review.css" />
+<link rel="stylesheet" href="/static/css/features/llm-debug.css" />
+{% endblock %}
+
+{% block content %}
+  <div class="practice-container">
+    <!-- 頁面標題 -->
+    <div class="practice-header">
+      <h2>翻譯練習</h2>
+      <p class="practice-subtitle">選擇練習模式，開始提升你的英文能力</p>
+    </div>
+    
+    <!-- 模式選擇 -->
+    <div class="mode-selection">
+      <button type="button" 
+              class="btn mode-btn" 
+              data-variant="card"
+              data-mode="new"
+              {% if mode == 'new' or not mode %}data-active="true"{% endif %}
+              onclick="selectMode('new')">
+        <span class="btn-title">新題目</span>
+        <span class="btn-desc">練習新句子</span>
+      </button>
+      <button type="button" 
+              class="btn mode-btn" 
+              data-variant="card"
+              data-mode="review"
+              {% if mode == 'review' %}data-active="true"{% endif %}
+              onclick="selectMode('review')">
+        <span class="btn-title">複習題</span>
+        <span class="btn-desc">鞏固已學知識</span>
+      </button>
+    </div>
+    
+    <form method="post" class="stack" id="practiceForm">
+      <!-- 參數設定 -->
+      <div class="params-row">
+        <div class="param-group">
+          <label>長度</label>
+          <select name="length" id="lengthSelect">
+            <option value="short" {% if length == 'short' %}selected{% endif %}>短句</option>
+            <option value="medium" {% if length == 'medium' %}selected{% endif %}>中句</option>
+            <option value="long" {% if length == 'long' %}selected{% endif %}>長句</option>
+          </select>
+        </div>
+        <div class="param-group">
+          <label>難度</label>
+          <select name="level" id="levelSelect">
+            {% for lv in [1,2,3,4,5] %}
+            <option value="{{ lv }}" {% if level == lv %}selected{% endif %}>Level {{ lv }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="button" class="btn" data-variant="primary" data-size="lg" id="shuffleBtn">
+          <span class="btn-text">
+            {% if chinese %}
+              換一句
+            {% elif mode == 'review' %}
+              開始複習
+            {% else %}
+              開始出題
+            {% endif %}
+          </span>
+        </button>
+        {% if llm_debug_data and llm_debug_data.status != 'no_data' %}
+        <button type="button" class="btn" data-variant="secondary" data-size="sm" id="debugBtn" onclick="showDebugModal()">
+          <span class="btn-text">🔍</span>
+        </button>
+        {% endif %}
+      </div>
+      
+      <!-- 隱藏的mode input -->
+      {% set actual_mode = request.query_params.get('mode', mode or 'new') %}
+      <input type="hidden" name="mode" id="modeInput" value="{{ actual_mode }}">
+
+    {% if review_empty_message %}
+    <!-- 複習佇列為空的提示 -->
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"></path>
+      </svg>
+      <h3>暫無複習項目</h3>
+      <p>{{ review_empty_message }}</p>
+      <p class="muted">建議切換到「新題目」模式開始練習</p>
+    </div>
+    {% elif chinese %}
+    <!-- 題目展示區 -->
+    <div class="question-section">
+      <div class="card" data-type="question">
+        <div class="question-label">
+          <span class="label-text">中文句子</span>
+          {% if mode == 'review' %}
+          <span class="mode-indicator review">複習模式</span>
+          {% endif %}
+        </div>
+        <div class="question-content">
+          {{ chinese }}
+        </div>
+        <textarea name="chinese" style="display: none;" readonly>{{ chinese }}</textarea>
+        
+        {% if hint %}
+        <div class="question-hint">
+          <svg class="hint-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+          </svg>
+          <span>提示：{{ hint }}</span>
+        </div>
+        {% endif %}
+        
+        {% if mode == 'review' and target_points_description %}
+        <div class="review-focus">
+          <span class="focus-label">複習重點：</span>
+          <span class="focus-content">{{ target_points_description }}</span>
+        </div>
+        {% endif %}
+      </div>
+      
+      {% if target_points %}
+      <div class="knowledge-links">
+        <span class="muted">相關知識點：</span>
+        {% for point in target_points %}
+        <a href="/knowledge#point-{{ point.id }}" 
+           target="_blank" 
+           class="point-link">
+          {{ point.key_point }} 
+          <small>(掌握度: {{ (point.mastery_level * 100)|int }}%)</small>
+        </a>
+        {% if not loop.last %} | {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    
+    <!-- 答案輸入區 -->
+    <div class="answer-section">
+      <div class="answer-label">你的英文翻譯</div>
+      <textarea name="english" 
+                rows="4" 
+                class="answer-input" 
+                placeholder="請輸入你的英文翻譯..."
+                autofocus>{{ english or '' }}</textarea>
+    </div>
+    {% else %}
+    <div class="practice-ready">
+      <p>點擊「開始出題」按鈕開始練習</p>
+    </div>
+    {% endif %}
+    <input type="hidden" name="target_point_ids" value="{{ target_point_ids | tojson if target_point_ids else '[]' }}">
+    {% if chinese %}
+    <div class="submit-section">
+      <button class="btn" data-variant="primary" data-size="lg" type="submit" id="submitBtn">
+        <span class="btn-text">提交答案</span>
+      </button>
+    </div>
+    {% endif %}
+  </form>
+  </div>
+  
+  <!-- Loading Overlay - 使用新設計系統 -->
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="loading-modal" data-glass="true">
+      <div class="spinner-container">
+        <div class="spinner" data-type="multi-ring">
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+        </div>
+      </div>
+      <h3 class="loading-title" id="loadingTitle">AI 正在批改中</h3>
+      <p class="loading-message" id="loadingMessage">
+        正在分析你的翻譯，請稍候片刻...
+      </p>
+      <div class="loading-tips">
+        <div class="loading-tip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>檢查文法結構</span>
+        </div>
+        <div class="loading-tip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>分析詞彙使用</span>
+        </div>
+        <div class="loading-tip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>生成改進建議</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if result %}
+  <section class="card result-section" data-type="result" data-glass="true">
+    <h2>批改結果</h2>
+    <div class="stack">
+      <div>
+        <div class="muted">建議：</div>
+        <div>{{ result.overall_suggestion }}</div>
+      </div>
+      {% if result.error_analysis %}
+      <div>
+        <div class="muted">錯誤分析：</div>
+        <ul class="list">
+          {% for e in result.error_analysis %}
+          <li class="item">
+            <div class="error-header">
+              <div class="title">{{ e.key_point_summary }}</div>
+              {% set cat = e.category or '' %}
+              {% set nature = e.error_nature or '' %}
+              {% if cat or nature %}
+                {% if cat %}
+                  <span class="badge error-category-badge" data-category="{{ cat }}" data-size="sm">
+                    {% if cat == 'systematic' %}系統性錯誤
+                    {% elif cat == 'isolated' %}單一性錯誤
+                    {% elif cat == 'enhancement' %}可以更好
+                    {% else %}其他錯誤{% endif %}
+                  </span>
+                {% elif nature %}
+                  {% set nature_map = {'系統性錯誤': 'systematic', '單一性錯誤': 'isolated', '可以更好': 'enhancement', '其他錯誤': 'other'} %}
+                  {% set cat_class = nature_map.get(nature, 'other') %}
+                  <span class="badge error-category-badge" data-category="{{ cat_class }}" data-size="sm">
+                    {{ nature }}
+                  </span>
+                {% endif %}
+              {% endif %}
+            </div>
+            {% if e.explanation %}<p class="muted">{{ e.explanation }}</p>{% endif %}
+            {% if e.original_phrase or e.correction %}
+            <div class="examples">
+              {% if e.original_phrase %}<div class="zh">原：{{ e.original_phrase }}</div>{% endif %}
+              {% if e.correction %}<div class="en">正：{{ e.correction }}</div>{% endif %}
+            </div>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+  
+  <!-- LLM 調試模態窗口 -->
+  {% if llm_debug_data and llm_debug_data.status != 'no_data' %}
+  <div id="debugModal" class="debug-modal" style="display: none;">
+    <div class="debug-modal-content">
+      <div class="debug-modal-header">
+        <h2>🤖 AI 對話調試資訊</h2>
+        <button class="btn close-btn" data-variant="icon" onclick="closeDebugModal()">&times;</button>
+      </div>
+      <div class="debug-modal-body">
+        <!-- 基本資訊 -->
+        <div class="debug-section">
+          <h3>📊 基本資訊</h3>
+          <div class="debug-info">
+            <div class="info-row">
+              <span class="info-label">時間戳記：</span>
+              <span class="info-value">{{ llm_debug_data.timestamp }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">執行耗時：</span>
+              <span class="info-value">{{ llm_debug_data.duration_ms }} ms</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">狀態：</span>
+              <span class="info-value {% if llm_debug_data.status == 'success' %}success{% else %}error{% endif %}">
+                {{ llm_debug_data.status }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 模型配置 -->
+        <div class="debug-section">
+          <h3>⚙️ 模型配置</h3>
+          <pre class="debug-json">{{ llm_debug_data.model_config | tojson(indent=2) }}</pre>
+        </div>
+        
+        <!-- 輸入 -->
+        <div class="debug-section">
+          <h3>📥 輸入 (Prompt)</h3>
+          <div class="prompt-container">
+            <div class="prompt-stats">
+              <span>總長度：{{ llm_debug_data.input.prompt_length }} 字符</span>
+              <button class="btn copy-btn" data-variant="gradient" data-size="sm" onclick="copyToClipboard('full-prompt')">📋 複製</button>
+            </div>
+            <pre id="full-prompt" class="debug-prompt">{{ llm_debug_data.input.full_prompt }}</pre>
+          </div>
+        </div>
+        
+        <!-- 輸出 -->
+        <div class="debug-section">
+          <h3>📤 輸出 (Response)</h3>
+          <div class="response-container">
+            <div class="prompt-stats">
+              <span>回應長度：{{ llm_debug_data.output.response_length }} 字符</span>
+              <button class="btn copy-btn" data-variant="gradient" data-size="sm" onclick="copyToClipboard('raw-response')">📋 複製原始回應</button>
+            </div>
+            
+            <h4>原始回應：</h4>
+            <pre id="raw-response" class="debug-json">{{ llm_debug_data.output.raw_response }}</pre>
+            
+            <h4>解析結果：</h4>
+            <pre class="debug-json">{{ llm_debug_data.output.parsed_result | tojson(indent=2) }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  
+  <script>
+    // 模式選擇函數 - 改為直接刷新頁面以確保狀態一致
+    function selectMode(mode) {
+      try {
+        console.log('[selectMode] Switching to mode:', mode);
+        
+        // 獲取當前參數
+        const lengthSelect = document.getElementById('lengthSelect');
+        const levelSelect = document.getElementById('levelSelect');
+        
+        if (!lengthSelect || !levelSelect) {
+          console.error('[selectMode] Cannot find select elements');
+          return;
+        }
+        
+        const length = lengthSelect.value;
+        const level = levelSelect.value;
+        
+        // 直接導航到新URL，確保前後端狀態同步
+        const url = `/practice?mode=${mode}&length=${length}&level=${level}`;
+        console.log('[selectMode] Navigating to:', url);
+        window.location.href = url;
+      } catch (error) {
+        console.error('[selectMode] Error:', error);
+        alert('切換模式時發生錯誤，請重新整理頁面');
+      }
+    }
+    
+    // 確保 DOM 載入完成後再綁定事件
+    document.addEventListener('DOMContentLoaded', function() {
+      // 出題按鈕 - 使用當前選擇的值
+      const shuffleBtn = document.getElementById('shuffleBtn');
+      if (shuffleBtn) {
+        shuffleBtn.addEventListener('click', function() {
+          try {
+            console.error('[shuffleBtn] ===== CRITICAL DEBUG START =====');
+            console.error('[shuffleBtn] Button clicked at', new Date().toISOString());
+            
+            // 檢查是否有多個 shuffleBtn
+            const allShuffleBtns = document.querySelectorAll('#shuffleBtn');
+            console.error('[shuffleBtn] Number of shuffleBtn elements:', allShuffleBtns.length);
+            
+            const modeInput = document.getElementById('modeInput');
+            const lengthSelect = document.getElementById('lengthSelect');
+            const levelSelect = document.getElementById('levelSelect');
+            
+            // 檢查是否有多個 modeInput
+            const allModeInputs = document.querySelectorAll('#modeInput');
+            console.error('[shuffleBtn] Number of modeInput elements:', allModeInputs.length);
+            if (allModeInputs.length > 1) {
+              console.error('[shuffleBtn] WARNING: Multiple modeInput elements found!');
+              allModeInputs.forEach((input, index) => {
+                console.error(`  modeInput[${index}].value:`, input.value);
+              });
+            }
+            
+            if (!modeInput || !lengthSelect || !levelSelect) {
+              console.error('[shuffleBtn] Cannot find required elements');
+              alert('無法找到必要的元素，請重新整理頁面');
+              return;
+            }
+            
+            // 優先從 URL 獲取 mode，確保狀態一致
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlMode = urlParams.get('mode');
+            
+            console.error('[shuffleBtn] RAW VALUES:');
+            console.error('  window.location.search:', window.location.search);
+            console.error('  urlParams:', Object.fromEntries(urlParams));
+            console.error('  urlMode:', urlMode);
+            console.error('  modeInput.value BEFORE:', modeInput.value);
+            console.error('  modeInput.getAttribute("value"):', modeInput.getAttribute('value'));
+            
+            // 強制同步 modeInput 到 URL 的值
+            if (urlMode && urlMode !== modeInput.value) {
+              console.error('[shuffleBtn] Fixing mode mismatch: Input was', modeInput.value, 'but URL is', urlMode);
+              modeInput.value = urlMode;
+              console.error('  modeInput.value AFTER fix:', modeInput.value);
+            }
+            
+            const mode = urlMode || modeInput.value || 'new';
+            const length = lengthSelect.value;
+            const level = levelSelect.value;
+            
+            console.error('[shuffleBtn] FINAL VALUES:');
+            console.error('  mode:', mode);
+            console.error('  length:', length);
+            console.error('  level:', level);
+            
+            const url = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
+            console.error('[shuffleBtn] NAVIGATING TO:', url);
+            console.error('[shuffleBtn] ===== CRITICAL DEBUG END =====');
+            
+            // 添加一個短暫延遲以確保日誌能被看到
+            setTimeout(() => {
+              window.location.href = url;
+            }, 100);
+          } catch (error) {
+            console.error('[shuffleBtn] Error:', error);
+            alert('出題時發生錯誤，請重新整理頁面');
+          }
+        });
+      }
+      
+      // 顯示當前狀態（調試用）
+      const modeInput = document.getElementById('modeInput');
+      const debugMode = document.querySelector('[data-debug-mode]');
+      if (modeInput) {
+        console.log('[Initial] Current mode from modeInput:', modeInput.value);
+        console.log('[Initial] Current URL:', window.location.href);
+        if (debugMode) {
+          console.log('[Initial] Server-side mode value:', debugMode.dataset.debugMode);
+        }
+        
+        // 檢查是否有不一致
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlMode = urlParams.get('mode') || 'new';
+        if (urlMode !== modeInput.value) {
+          console.warn('[WARNING] Mode mismatch! URL mode:', urlMode, 'vs Input mode:', modeInput.value);
+          // 強制同步到URL的值
+          modeInput.value = urlMode;
+          console.log('[FIX] Updated modeInput to match URL:', urlMode);
+        }
+      }
+      
+      // 長度或難度切換時也重新載入
+      const lengthSelect = document.getElementById('lengthSelect');
+      if (lengthSelect) {
+        lengthSelect.addEventListener('change', function() {
+          try {
+            const modeInput = document.getElementById('modeInput');  // 修正：使用 modeInput 而非 modeSelect
+            const length = this.value;
+            const level = document.getElementById('levelSelect').value;
+            
+            if (!modeInput) {
+              console.error('[lengthSelect] Cannot find modeInput');
+              return;
+            }
+            
+            const mode = modeInput.value;
+            console.log('[lengthSelect] Changed to:', { mode, length, level });
+            
+            window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
+          } catch (error) {
+            console.error('[lengthSelect] Error:', error);
+          }
+        });
+      }
+      
+      const levelSelect = document.getElementById('levelSelect');
+      if (levelSelect) {
+        levelSelect.addEventListener('change', function() {
+          try {
+            const modeInput = document.getElementById('modeInput');  // 修正：使用 modeInput 而非 modeSelect
+            const length = document.getElementById('lengthSelect').value;
+            const level = this.value;
+            
+            if (!modeInput) {
+              console.error('[levelSelect] Cannot find modeInput');
+              return;
+            }
+            
+            const mode = modeInput.value;
+            console.log('[levelSelect] Changed to:', { mode, length, level });
+            
+            window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
+          } catch (error) {
+            console.error('[levelSelect] Error:', error);
+          }
+        });
+      }
+      
+      // 處理表單提交時顯示載入覆蓋層
+      const form = document.getElementById('practiceForm');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          const loadingOverlay = document.getElementById('loadingOverlay');
+          if (loadingOverlay) {
+            loadingOverlay.style.display = 'block';
+            setTimeout(() => {
+              loadingOverlay.classList.add('show');
+            }, 10);
+          }
+        });
+      }
+    });
+    
+    // 調試模態窗口函數
+    function showDebugModal() {
+      const modal = document.getElementById('debugModal');
+      if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // 防止背景滾動
+      }
+    }
+    
+    function closeDebugModal() {
+      const modal = document.getElementById('debugModal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // 恢復滾動
+      }
+    }
+    
+    // 點擊模態窗口外部關閉
+    window.onclick = function(event) {
+      const modal = document.getElementById('debugModal');
+      if (event.target === modal) {
+        closeDebugModal();
+      }
+    }
+    
+    // 複製到剪貼板
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      
+      const text = element.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        // 顯示複製成功提示
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = '✅ 已複製';
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 2000);
+      }).catch(err => {
+        console.error('複製失敗:', err);
+        alert('複製失敗，請手動選擇複製');
+      });
+    }
+  </script>
+{% endblock %}
+
+
