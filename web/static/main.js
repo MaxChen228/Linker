@@ -3,6 +3,82 @@
  * 功能：自動儲存草稿
  */
 
+/**
+ * EventManager - 統一管理事件監聽器，防止記憶體洩漏
+ */
+class EventManager {
+  constructor() {
+    this.listeners = new Map();
+    this.listenerIdCounter = 0;
+  }
+
+  /**
+   * 添加可追蹤的事件監聽器
+   * @param {Element} element - DOM 元素
+   * @param {string} event - 事件類型
+   * @param {Function} handler - 事件處理函數
+   * @param {Object} options - 事件選項
+   * @returns {number|null} 監聽器 ID
+   */
+  add(element, event, handler, options) {
+    if (!element) return null;
+    
+    const id = ++this.listenerIdCounter;
+    const wrappedHandler = (e) => handler(e);
+    
+    element.addEventListener(event, wrappedHandler, options);
+    
+    this.listeners.set(id, {
+      element,
+      event,
+      handler: wrappedHandler,
+      options
+    });
+    
+    return id;
+  }
+
+  /**
+   * 移除特定事件監聽器
+   * @param {number} id - 監聽器 ID
+   */
+  remove(id) {
+    const listener = this.listeners.get(id);
+    if (listener) {
+      listener.element.removeEventListener(
+        listener.event,
+        listener.handler,
+        listener.options
+      );
+      this.listeners.delete(id);
+    }
+  }
+
+  /**
+   * 移除元素的所有事件監聽器
+   * @param {Element} element - DOM 元素
+   */
+  removeAll(element) {
+    for (const [id, listener] of this.listeners) {
+      if (listener.element === element) {
+        this.remove(id);
+      }
+    }
+  }
+
+  /**
+   * 清理所有事件監聽器
+   */
+  cleanup() {
+    for (const [id] of this.listeners) {
+      this.remove(id);
+    }
+  }
+}
+
+// 全域事件管理器實例
+const globalEventManager = new EventManager();
+
 class DraftManager {
   constructor() {
     this.STORAGE_KEY = 'linker_practice_draft';
@@ -10,6 +86,7 @@ class DraftManager {
     this.autosaveTimer = null;
     this.lastSavedContent = '';
     this.isDraftRestored = false;
+    this.eventIds = []; // 儲存所有事件監聽器 ID
   }
 
   /**
@@ -28,10 +105,11 @@ class DraftManager {
     // 監聽表單提交，成功後清除草稿
     const form = englishInput.closest('form');
     if (form) {
-      form.addEventListener('submit', () => {
+      const id = globalEventManager.add(form, 'submit', () => {
         // 提交時先儲存最新內容（以防提交失敗）
         this.saveDraft(this.collectDraftData());
       });
+      if (id) this.eventIds.push(id);
     }
 
     // 如果有批改結果顯示，說明提交成功，清除草稿
@@ -166,7 +244,7 @@ class DraftManager {
    * 設置自動儲存
    */
   setupAutosave(inputElement) {
-    inputElement.addEventListener('input', () => {
+    const inputId = globalEventManager.add(inputElement, 'input', () => {
       // 清除之前的計時器
       clearTimeout(this.autosaveTimer);
       
@@ -185,14 +263,30 @@ class DraftManager {
         }
       }, this.AUTOSAVE_INTERVAL);
     });
+    if (inputId) this.eventIds.push(inputId);
 
     // 頁面關閉前儲存
-    window.addEventListener('beforeunload', () => {
+    const beforeUnloadId = globalEventManager.add(window, 'beforeunload', () => {
       const data = this.collectDraftData();
       if (data.english && data.english !== this.lastSavedContent) {
         this.saveDraft(data);
       }
     });
+    if (beforeUnloadId) this.eventIds.push(beforeUnloadId);
+  }
+
+  /**
+   * 清理所有事件監聽器
+   */
+  destroy() {
+    // 清理所有這個類別的事件監聽器
+    this.eventIds.forEach(id => globalEventManager.remove(id));
+    this.eventIds = [];
+    
+    // 清理計時器
+    if (this.autosaveTimer) {
+      clearTimeout(this.autosaveTimer);
+    }
   }
 
   /**
@@ -899,9 +993,37 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // 頁面載入完成時，確保隱藏載入畫面
-  window.addEventListener('load', () => {
+  const loadId = globalEventManager.add(window, 'load', () => {
     setTimeout(() => {
       loadingManager.hide();
     }, 300);
   });
+});
+
+/**
+ * 頁面卸載時清理所有事件監聽器
+ */
+window.addEventListener('unload', () => {
+  // 清理全域事件管理器中的所有事件
+  globalEventManager.cleanup();
+  
+  // 清理各個管理器實例
+  if (window.draftManager && typeof window.draftManager.destroy === 'function') {
+    window.draftManager.destroy();
+  }
+  if (window.practiceSync && typeof window.practiceSync.destroy === 'function') {
+    window.practiceSync.destroy();
+  }
+  if (window.patternsManager && typeof window.patternsManager.destroy === 'function') {
+    window.patternsManager.destroy();
+  }
+  if (window.knowledgeManager && typeof window.knowledgeManager.destroy === 'function') {
+    window.knowledgeManager.destroy();
+  }
+  
+  // 清理所有計時器
+  const highestTimeoutId = setTimeout(() => {}, 0);
+  for (let i = 0; i < highestTimeoutId; i++) {
+    clearTimeout(i);
+  }
 });
