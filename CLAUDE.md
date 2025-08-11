@@ -3,7 +3,7 @@
 ## 專案概述
 Linker 是一個英文翻譯練習系統，使用 Gemini API 進行智能出題和批改。系統採用 FastAPI + Jinja2 模板的 SSR 架構。
 
-> **完整交接文檔**: 請參閱 [PROJECT_HANDOVER.md](PROJECT_HANDOVER.md) 獲取詳細的專案交接資訊  
+> **完整交接文檔**: 請參閱 [docs/archive/PROJECT_HANDOVER.md](docs/archive/PROJECT_HANDOVER.md) 獲取詳細的專案交接資訊  
 > **設計系統文檔**: 請參閱 [docs/DESIGN-SYSTEM-COMPLETE.md](docs/DESIGN-SYSTEM-COMPLETE.md) 了解 UI 設計規範
 
 ## 系統架構

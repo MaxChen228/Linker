@@ -30,6 +30,10 @@ class AIService:
     def _init_gemini(self):
         """初始化 Gemini"""
         try:
+            if not self.api_key:
+                self.logger.warning("GEMINI_API_KEY 環境變數未設置，AI 服務將使用 fallback 模式")
+                return
+            
             import google.generativeai as genai
 
             genai.configure(api_key=self.api_key)
@@ -378,11 +382,11 @@ class AIService:
         points_info = []
         for point in selected_points:
             points_info.append({
-                "id": point.id,
-                "key_point": point.key_point,
-                "explanation": point.explanation,
-                "original_phrase": point.original_phrase,
-                "correction": point.correction,
+                "id": getattr(point, 'id', point.get('id') if isinstance(point, dict) else None),
+                "key_point": getattr(point, 'key_point', point.get('key_point') if isinstance(point, dict) else ''),
+                "explanation": getattr(point, 'explanation', point.get('explanation') if isinstance(point, dict) else ''),
+                "original_phrase": getattr(point, 'original_phrase', point.get('original_phrase') if isinstance(point, dict) else ''),
+                "correction": getattr(point, 'correction', point.get('correction') if isinstance(point, dict) else ''),
             })
 
         # 記錄選中的知識點
@@ -431,17 +435,29 @@ class AIService:
         # 使用已選中的知識點信息（不需要再從 AI 回應中找）
         target_points = []
         for point in selected_points:
+            # 安全地獲取屬性
+            point_id = getattr(point, 'id', point.get('id') if isinstance(point, dict) else None)
+            key_point = getattr(point, 'key_point', point.get('key_point') if isinstance(point, dict) else '')
+            mastery_level = getattr(point, 'mastery_level', point.get('mastery_level') if isinstance(point, dict) else 0.0)
+            
+            # 處理 category 屬性（可能是枚舉或字串）
+            category = getattr(point, 'category', point.get('category') if isinstance(point, dict) else 'other')
+            if hasattr(category, 'value'):
+                category = category.value
+            else:
+                category = str(category)
+            
             target_points.append({
-                "id": point.id,
-                "key_point": point.key_point,
-                "category": point.category.value,
-                "mastery_level": round(point.mastery_level, 2)
+                "id": point_id,
+                "key_point": key_point,
+                "category": category,
+                "mastery_level": round(mastery_level, 2)
             })
 
         return {
             "sentence": result.get("sentence", "今天天氣很好。"),
             "hint": result.get("hint", "注意之前的錯誤"),
-            "target_point_ids": [p.id for p in selected_points],  # 使用實際選中的點
+            "target_point_ids": [getattr(p, 'id', p.get('id') if isinstance(p, dict) else None) for p in selected_points],  # 使用實際選中的點
             "target_points": target_points,  # 完整知識點信息
             "target_points_description": result.get("target_points_description", ""),
             "difficulty_level": result.get("difficulty_level", level),

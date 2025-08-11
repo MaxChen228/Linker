@@ -6,7 +6,7 @@ from typing import Optional
 from uuid import uuid4
 
 from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -562,9 +562,17 @@ def knowledge_detail(request: Request, point_id: str):
             pass
 
     # 為模板準備point對象，添加缺少的屬性
+    # 從 examples 中取得完整的句子（如果有的話）
+    full_user_answer = ""
+    full_correct_answer = ""
+    if point.examples and len(point.examples) > 0:
+        first_example = point.examples[0]
+        full_user_answer = first_example.get("user_answer", "")
+        full_correct_answer = first_example.get("correct", "")
+    
     point_dict = {
         "id": point.id,
-        "title": point.key_point,  # 使用 key_point 作為 title
+        "title": point.key_point,  # 保留 key_point 作為描述性標題
         "key_point": point.key_point,
         "category": {
             "value": point.category.value,
@@ -572,8 +580,10 @@ def knowledge_detail(request: Request, point_id: str):
         },
         "subtype": point.subtype,
         "description": point.explanation,  # 使用 explanation 作為 description
-        "original_phrase": point.original_phrase,  # 原始錯誤句子
-        "correction": point.correction,  # 修正後的句子
+        "original_phrase": point.original_phrase,  # 錯誤片段
+        "correction": point.correction,  # 修正片段
+        "full_user_answer": full_user_answer,  # 完整的用戶答案
+        "full_correct_answer": full_correct_answer,  # 完整的正確答案
         "mastery_level": point.mastery_level,
         "mistake_count": point.mistake_count,
         "correct_count": point.correct_count,
@@ -594,6 +604,152 @@ def knowledge_detail(request: Request, point_id: str):
     )
 
 
+
+
+@app.post("/api/grade-answer", response_class=JSONResponse)
+async def grade_answer_api(request: Request):
+    """API 端點：批改答案"""
+    try:
+        data = await request.json()
+        chinese = data.get("chinese", "")
+        english = data.get("english", "")
+        mode = data.get("mode", "new")
+        target_point_ids = data.get("target_point_ids", [])
+        
+        if not chinese or not english:
+            return JSONResponse({
+                "success": False,
+                "error": "缺少必要參數"
+            })
+        
+        # 使用 AI 進行批改
+        result = ai.grade_translation(chinese=chinese, english=english)
+        
+        # 如果是複習模式，更新知識點
+        if mode == "review" and target_point_ids:
+            is_correct = result.get("is_generally_correct", False)
+            for point_id in target_point_ids:
+                knowledge.update_knowledge_point(point_id, is_correct)
+        
+        # 保存錯誤到知識庫（如果有錯誤）
+        if not result.get("is_generally_correct", False):
+            knowledge.save_mistake(
+                chinese_sentence=chinese,
+                user_answer=english,
+                feedback=result
+            )
+        
+        # 計算分數
+        score = 100
+        errors = result.get("error_analysis", [])
+        for error in errors:
+            category = error.get("category", "other")
+            if category == "systematic":
+                score -= 15
+            elif category == "isolated":
+                score -= 10
+            elif category == "enhancement":
+                score -= 5
+            else:
+                score -= 8
+        score = max(0, min(100, score))
+        
+        return JSONResponse({
+            "success": True,
+            "score": score,
+            "is_generally_correct": result.get("is_generally_correct", False),
+            "feedback": result.get("overall_suggestion", ""),
+            "error_analysis": result.get("error_analysis", []),
+            "detailed_feedback": result.get("detailed_feedback", "")
+        })
+        
+    except Exception as e:
+        logger.error(f"Error grading answer: {e}")
+        
+        # 提供更具體的錯誤訊息
+        error_message = str(e)
+        if "GEMINI_API_KEY" in error_message:
+            error_message = "AI 服務未正確配置，請檢查 GEMINI_API_KEY 環境變數設置"
+        elif "ImportError" in error_message:
+            error_message = "AI 服務依賴未安裝，請執行 pip install google-generativeai"
+        elif "NetworkError" in error_message:
+            error_message = "網路連線失敗，請檢查網路連線"
+        
+        return JSONResponse({
+            "success": False,
+            "error": error_message
+        }, status_code=500)
+
+
+@app.post("/api/generate-question", response_class=JSONResponse)
+async def generate_question_api(request: Request):
+    """API 端點：生成單個題目（支援並行調用）"""
+    try:
+        # 從 request body 讀取參數
+        data = await request.json()
+        mode = data.get("mode", "new")
+        length = data.get("length", "short")
+        level = data.get("level", 1)
+        
+        logger.info(f"Generate question API: mode={mode}, length={length}, level={level}")
+        
+        if mode == "review":
+            # 複習模式：從知識點生成題目
+            review_points = knowledge.get_review_candidates(max_points=5)
+            if not review_points:
+                return JSONResponse({
+                    "success": False,
+                    "error": "沒有待複習的知識點"
+                })
+            
+            payload = ai.generate_review_sentence(
+                knowledge_points=review_points,
+                level=level,
+                length=length
+            )
+            
+            return JSONResponse({
+                "success": True,
+                "chinese": payload.get("sentence", ""),
+                "hint": payload.get("hint", ""),
+                "target_point_ids": payload.get("target_point_ids", []),
+                "target_points": payload.get("target_points", []),
+                "target_points_description": payload.get("target_points_description", "")
+            })
+        else:
+            # 新題模式
+            bank = assets.get_example_bank(length=length, difficulty=level)
+            payload = ai.generate_practice_sentence(
+                level=level,
+                length=length,
+                examples=bank[:5] if bank else None,
+                shuffle=True
+            )
+            
+            return JSONResponse({
+                "success": True,
+                "chinese": payload.get("sentence", ""),
+                "hint": payload.get("hint", ""),
+                "target_point_ids": [],
+                "target_points": [],
+                "target_points_description": ""
+            })
+    except Exception as e:
+        logger.error(f"Error generating question: {e}")
+        
+        # 提供更具體的錯誤訊息
+        error_message = str(e)
+        if "GEMINI_API_KEY" in error_message:
+            error_message = "AI 服務未正確配置，請檢查 GEMINI_API_KEY 環境變數設置"
+        elif "ImportError" in error_message:
+            error_message = "AI 服務依賴未安裝，請執行 pip install google-generativeai"
+        elif "NetworkError" in error_message:
+            error_message = "網路連線失敗，請檢查網路連線"
+        
+        return JSONResponse({
+            "success": False,
+            "error": error_message
+        }, status_code=500)
 
 
 @app.get("/healthz")

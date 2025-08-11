@@ -1023,6 +1023,14 @@
   transform: translateY(-2px);
 }
 
+.knowledge-card-compact:hover .error-text {
+  opacity: 0.6;
+}
+
+.knowledge-card-compact:hover .correct-text {
+  color: var(--success-600);
+}
+
 .card-header-compact {
   display: flex;
   justify-content: space-between;
@@ -1032,16 +1040,39 @@
 }
 
 .card-title-compact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
-  color: var(--text-primary);
   line-height: 1.4;
   flex: 1;
   overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+/* 錯誤→正確 標題樣式 */
+.card-title-compact .error-text {
+  color: var(--gray-500);
+  text-decoration: line-through;
+  text-decoration-color: var(--error-400);
+  opacity: 0.8;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: var(--text-xs);
+}
+
+.card-title-compact .arrow {
+  color: var(--gray-400);
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+}
+
+.card-title-compact .correct-text {
+  color: var(--success-700);
+  font-weight: var(--font-semibold);
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: var(--text-sm);
 }
 
 .card-body-compact {

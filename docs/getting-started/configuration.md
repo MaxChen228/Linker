@@ -1,147 +1,111 @@
-# 配置指南
+# 快速配置指南
 
-## 配置概述
+## 快速開始
 
-Linker 使用分層配置系統，優先級從高到低：
-1. 環境變數
-2. `.env` 檔案
-3. `settings.py` 預設值
+### 1. 設置 API Key（必需）
 
-## 環境變數配置
+```bash
+# 方法一：使用環境變數
+export GEMINI_API_KEY="your_api_key_here"
 
-### 必需配置
+# 方法二：創建 .env 檔案
+echo 'GEMINI_API_KEY=your_api_key_here' > .env
+```
 
-| 變數名 | 說明 | 範例 |
-|--------|------|------|
-| `GEMINI_API_KEY` | Google Gemini API 金鑰 | `AIza...` |
+### 2. 基本配置範例
 
-### 可選配置
-
-#### AI 模型設定
-| 變數名 | 預設值 | 說明 |
-|--------|--------|------|
-| `GEMINI_GENERATE_MODEL` | `gemini-2.5-flash` | 生成模型 |
-| `GEMINI_GRADE_MODEL` | `gemini-2.5-pro` | 批改模型 |
-| `MAX_OUTPUT_TOKENS` | `3000` | 最大輸出 token 數 |
-| `TEMPERATURE` | `0.7` | 生成溫度 (0-1) |
-
-#### 日誌設定
-| 變數名 | 預設值 | 說明 |
-|--------|--------|------|
-| `LOG_LEVEL` | `INFO` | 日誌級別 (DEBUG/INFO/WARNING/ERROR) |
-| `LOG_DIR` | `logs` | 日誌目錄 |
-| `LOG_TO_CONSOLE` | `true` | 是否輸出到控制台 |
-| `LOG_TO_FILE` | `false` | 是否輸出到檔案 |
-| `LOG_FORMAT` | `text` | 日誌格式 (text/json) |
-
-#### 應用設定
-| 變數名 | 預設值 | 說明 |
-|--------|--------|------|
-| `ENV` | `development` | 環境 (development/production) |
-| `PORT` | `8000` | Web 服務端口 |
-| `HOST` | `127.0.0.1` | 綁定地址 |
-
-## 配置檔案
-
-### .env 檔案範例
+創建 `.env` 檔案：
 
 ```env
-# API Keys
+# 必需：API 金鑰
 GEMINI_API_KEY=your_key_here
 
-# Environment
+# 可選：環境設定
 ENV=development
 PORT=8000
 
-# Logging
-LOG_LEVEL=DEBUG
-LOG_TO_FILE=true
-
-# AI Models
-GEMINI_GENERATE_MODEL=gemini-2.5-flash
-TEMPERATURE=0.8
+# 可選：日誌設定
+LOG_LEVEL=INFO
+LOG_TO_CONSOLE=true
 ```
 
-### settings.py 結構
+### 3. 驗證配置
 
-```python
-settings/
-├── learning:      # 學習相關配置
-│   ├── DIFFICULTY_LEVELS
-│   ├── MASTERY_THRESHOLDS
-│   └── REVIEW_INTERVALS
-├── display:       # 顯示相關配置
-│   ├── MAX_EXAMPLES_PER_POINT
-│   └── SEPARATOR_LINE
-└── api:          # API 相關配置
-    ├── DEFAULT_TIMEOUT
-    └── RETRY_COUNT
+```bash
+# 測試配置是否正確
+python -c "from settings import settings; print('配置載入成功')"
+
+# 測試 API 連接
+python -c "from core.ai_service import AIService; print('API 連接成功')"
 ```
 
-## 進階配置
+## 常用環境變數
 
-### 生產環境配置
+| 變數名 | 必需 | 預設值 | 說明 |
+|--------|------|--------|------|
+| `GEMINI_API_KEY` | ✅ | - | Google Gemini API 金鑰 |
+| `GEMINI_GENERATE_MODEL` | ❌ | `gemini-2.5-flash` | 生成模型 |
+| `GEMINI_GRADE_MODEL` | ❌ | `gemini-2.5-pro` | 批改模型 |
+| `PORT` | ❌ | `8000` | Web 服務端口 |
+| `LOG_LEVEL` | ❌ | `INFO` | 日誌級別 |
 
-```env
-ENV=production
-LOG_LEVEL=WARNING
-LOG_TO_FILE=true
-LOG_TO_CONSOLE=false
-LOG_FORMAT=json
-```
+## 不同環境的配置
 
-### 開發環境配置
-
+### 開發環境
 ```env
 ENV=development
 LOG_LEVEL=DEBUG
 LOG_TO_CONSOLE=true
-LOG_FORMAT=text
 ```
 
-### Docker 配置
-
-```dockerfile
-ENV GEMINI_API_KEY=${GEMINI_API_KEY}
-ENV ENV=production
-ENV PORT=8000
+### 生產環境
+```env
+ENV=production
+LOG_LEVEL=WARNING
+LOG_TO_FILE=true
+LOG_FORMAT=json
 ```
 
-## 配置驗證
-
-執行以下命令驗證配置：
-
-```bash
-# 檢查環境變數
-python -c "from settings import settings; print(settings)"
-
-# 測試 API 連接
-python -c "from core.ai_service import AIService; AIService()"
+### Docker 部署
+```env
+GEMINI_API_KEY=${GEMINI_API_KEY}
+ENV=production
+PORT=8000
+HOST=0.0.0.0
 ```
 
 ## 故障排除
 
-### 問題：API Key 無效
+### API Key 無效
 ```bash
-export GEMINI_API_KEY="your_actual_key"  # 確保沒有多餘空格
+# 確保沒有多餘空格
+export GEMINI_API_KEY="your_actual_key"
 ```
 
-### 問題：日誌不顯示
+### Port 已被佔用
+```bash
+# 使用其他端口
+export PORT=8001
+```
+
+### 日誌不顯示
 ```bash
 export LOG_LEVEL=DEBUG
 export LOG_TO_CONSOLE=true
 ```
 
-### 問題：Port 已被佔用
-```bash
-export PORT=8001  # 使用其他端口
-```
+## 詳細配置文檔
+
+需要更詳細的配置說明？請參閱：
+- 📖 **[完整配置指南](../CONFIGURATION.md)** - 所有配置項的詳細說明
+- 🔧 **[settings.py 結構](../CONFIGURATION.md#配置結構)** - 配置類別詳解
+- 🎯 **[進階配置](../CONFIGURATION.md#配置最佳實踐)** - 最佳實踐與技巧
 
 ## 相關文檔
 
 - [安裝指南](installation.md)
-- [日誌系統](../reference/logging.md)
-- [API 參考](../reference/api.md)
+- [快速上手](quick-start.md)
+- [部署指南](../DEPLOYMENT.md)
 
 ---
 

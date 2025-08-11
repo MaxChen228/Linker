@@ -367,7 +367,7 @@ pip install -r requirements.txt
 - [配置指南](CONFIGURATION.md)
 - [開發文檔](DEVELOPMENT.md)
 - [API 文檔](API.md)
-- [快速開始](QUICK_START.md)
+- [快速開始](getting-started/quick-start.md)
 
 ### 獲取幫助
 - 提交 [GitHub Issue](https://github.com/your-repo/issues)

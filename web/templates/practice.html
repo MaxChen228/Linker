@@ -4,6 +4,8 @@
 {% block styles %}
 <!-- 練習頁面專屬樣式 - 使用新設計系統 -->
 <link rel="stylesheet" href="/static/css/pages/practice.css" />
+<!-- 題目佇列系統樣式 -->
+<link rel="stylesheet" href="/static/css/pages/practice-queue.css" />
 {% endblock %}
 
 {% block content %}
@@ -12,6 +14,25 @@
     <div class="practice-header">
       <h2>翻譯練習</h2>
       <p class="practice-subtitle">選擇練習模式，開始提升你的英文能力</p>
+    </div>
+    
+    <!-- 題目佇列（移到 form 外的獨立區域） -->
+    <div class="question-queue" id="question-queue">
+      <div class="queue-header">
+        <h3 class="queue-title">題目儲備池</h3>
+        <span class="queue-count" id="queue-count">0 題就緒</span>
+      </div>
+      <div class="queue-items" id="queue-items">
+        <!-- 題目卡片將動態插入這裡 -->
+        <!-- 使用 div 包裝按鈕，確保不會影響 form -->
+        <div class="queue-item add-new" id="add-question-btn" onclick="addNewQuestion()" role="button" tabindex="0">
+          <svg class="add-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>新增題目</span>
+        </div>
+      </div>
     </div>
     
     <!-- 模式選擇 -->
@@ -36,7 +57,8 @@
       </button>
     </div>
     
-    <form method="post" class="stack" id="practice-form">
+    <!-- 改為純 div 容器，完全避免表單行為 -->
+    <div class="stack" id="practice-container" data-form="practice">
       <!-- 參數設定 -->
       <div class="params-row">
         <div class="param-group">
@@ -55,111 +77,77 @@
             {% endfor %}
           </select>
         </div>
-        <button type="button" class="btn" data-variant="primary" data-size="lg" id="shuffle-btn">
-          <span class="btn-text">
-            {% if chinese %}
-              換一句
-            {% elif mode == 'review' %}
-              開始複習
-            {% else %}
-              開始出題
-            {% endif %}
-          </span>
-        </button>
-        {% if llm_debug_data and llm_debug_data.status != 'no_data' %}
-        <button type="button" class="btn" data-variant="secondary" data-size="sm" id="debugBtn" onclick="showDebugModal()">
-          <span class="btn-text">🔍</span>
-        </button>
-        {% endif %}
       </div>
       
       <!-- 隱藏的mode input -->
       {% set actual_mode = request.query_params.get('mode', mode or 'new') %}
       <input type="hidden" name="mode" id="mode-input" value="{{ actual_mode }}">
 
-    {% if review_empty_message %}
-    <!-- 複習佇列為空的提示 -->
-    <div class="empty-state">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"></path>
-      </svg>
-      <h3>暫無複習項目</h3>
-      <p>{{ review_empty_message }}</p>
-      <p class="muted">建議切換到「新題目」模式開始練習</p>
-    </div>
-    {% elif chinese %}
-    <!-- 題目展示區 -->
-    <div class="question-section">
+    <!-- 題目展示區（使用佇列系統後將動態顯示） -->
+    <div class="question-section" id="question-section" style="display: none;">
       <div class="card" data-type="question">
         <div class="question-label">
           <span class="label-text">中文句子</span>
-          {% if mode == 'review' %}
-          <span class="mode-indicator review">複習模式</span>
-          {% endif %}
+          <span class="mode-indicator review" id="mode-indicator" style="display: none;">複習模式</span>
         </div>
-        <div class="question-content">
-          {{ chinese }}
+        <div class="question-content" id="question-content">
+          <!-- 將由 JavaScript 動態填充 -->
         </div>
-        <textarea name="chinese" style="display: none;" readonly>{{ chinese }}</textarea>
+        <textarea name="chinese" id="chinese-input" style="display: none;" readonly></textarea>
         
-        {% if hint %}
-        <div class="question-hint">
+        <div class="question-hint" id="question-hint" style="display: none;">
           <svg class="hint-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 16v-4"></path>
             <path d="M12 8h.01"></path>
           </svg>
-          <span>提示：{{ hint }}</span>
+          <span id="hint-text">提示：</span>
         </div>
-        {% endif %}
         
-        {% if mode == 'review' and target_points_description %}
-        <div class="review-focus">
+        <div class="review-focus" id="review-focus" style="display: none;">
           <span class="focus-label">複習重點：</span>
-          <span class="focus-content">{{ target_points_description }}</span>
+          <span class="focus-content" id="focus-content"></span>
         </div>
-        {% endif %}
       </div>
       
-      {% if target_points %}
-      <div class="knowledge-links">
-        <span class="muted">相關知識點：</span>
-        {% for point in target_points %}
-        <a href="/knowledge#point-{{ point.id }}" 
-           target="_blank" 
-           class="point-link">
-          {{ point.key_point }} 
-          <small>(掌握度: {{ (point.mastery_level * 100)|int }}%)</small>
-        </a>
-        {% if not loop.last %} | {% endif %}
-        {% endfor %}
+      <div class="knowledge-links" id="knowledge-links" style="display: none;">
+        <!-- 將由 JavaScript 動態填充 -->
       </div>
-      {% endif %}
     </div>
     
     <!-- 答案輸入區 -->
-    <div class="answer-section">
+    <div class="answer-section" id="answer-section" style="display: none;">
       <div class="answer-label">你的英文翻譯</div>
       <textarea name="english" 
+                id="english-input"
                 rows="4" 
                 class="answer-input" 
                 placeholder="請輸入你的英文翻譯..."
-                autofocus>{{ english or '' }}</textarea>
+                autofocus></textarea>
     </div>
-    {% else %}
-    <div class="practice-ready">
-      <p>點擊「開始出題」按鈕開始練習</p>
+    
+    <!-- 空狀態提示 -->
+    <div class="practice-ready" id="practice-ready">
+      <p>點擊上方「新增題目」按鈕加入題目到佇列，然後選擇題目開始練習</p>
     </div>
-    {% endif %}
-    <input type="hidden" name="target_point_ids" value="{{ target_point_ids | tojson if target_point_ids else '[]' }}">
-    {% if chinese %}
-    <div class="submit-section">
-      <button class="btn" data-variant="primary" data-size="lg" type="submit" id="submit-btn">
+    <input type="hidden" name="target_point_ids" id="target-point-ids" value="[]">
+    
+    <!-- 提交按鈕 -->
+    <div class="submit-section" id="submit-section" style="display: none;">
+      <!-- 改為純按鈕，避免任何表單提交 -->
+      <button class="btn" data-variant="primary" data-size="lg" type="button" id="submit-btn">
         <span class="btn-text">提交答案</span>
       </button>
     </div>
-    {% endif %}
-  </form>
+  </div> <!-- End of practice-container -->
+  </div>
+  
+  <!-- 題目生成中提示 -->
+  <div class="generating-toast" id="generating-toast" style="display: none;">
+    <div class="toast-content">
+      <div class="spinner" data-type="simple"></div>
+      <span>正在生成題目...</span>
+    </div>
   </div>
   
   <!-- Loading Overlay - 使用新設計系統 -->
@@ -320,191 +308,1001 @@
   {% endif %}
   
   <script>
-    // 模式選擇函數 - 改為直接刷新頁面以確保狀態一致
+    'use strict';
+    
+    // HTML 轉義函數 - 防止 XSS 攻擊
+    function escapeHtml(unsafe) {
+      if (!unsafe) return '';
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+    
+    // 題目佇列管理
+    let questionQueue = [];
+    let currentQuestionId = null;
+    let generatingCount = 0;  // 改為計數器，支援並行生成
+    
+    // 題目狀態列舉
+    const QuestionStatus = {
+      GENERATING: 'generating',   // 生成中
+      READY: 'ready',             // 就緒/未答題
+      ACTIVE: 'active',           // 作答中
+      GRADING: 'grading',         // 批改中
+      COMPLETED: 'completed'      // 已完成
+    };
+    
+    // 初始化佇列顯示
+    function initQueue() {
+      updateQueueDisplay();
+    }
+    
+    // 新增題目到佇列
+    async function addNewQuestion() {
+      // 防止過多並行請求（最多同時生成 5 個）
+      if (generatingCount >= 5) {
+        alert('請等待目前的題目生成完成');
+        return;
+      }
+      
+      // 先獲取當前參數
+      const mode = document.getElementById('mode-input').value;
+      const length = document.getElementById('lengthSelect').value;
+      const level = document.getElementById('levelSelect').value;
+      
+      generatingCount++;  // 增加計數器
+      const questionId = 'q_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);  // 確保唯一ID
+      
+      // 先將題目加入佇列（生成中狀態）
+      const placeholderQuestion = {
+        id: questionId,
+        status: QuestionStatus.GENERATING,
+        mode: mode,  // 重要：記錄題目模式（new 或 review）
+        chinese: '',
+        hint: '',
+        length: length,
+        level: level,
+        target_point_ids: [],
+        target_points: [],
+        target_points_description: '',
+        english_answer: '',
+        grade_result: null
+      };
+      questionQueue.push(placeholderQuestion);
+      
+      // 創建生成中的卡片
+      const newCard = createQuestionCard(placeholderQuestion);
+      
+      // 插入到新增按鈕前
+      const addBtn = document.getElementById('add-question-btn');
+      if (addBtn && addBtn.parentNode) {
+        addBtn.parentNode.insertBefore(newCard, addBtn);
+      }
+      
+      // 顯示生成提示
+      showGeneratingToast();
+      
+      try {
+        
+        // 調用後端 API 生成題目
+        const response = await fetch('/api/generate-question', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mode: mode,
+            length: length,
+            level: parseInt(level)
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // 找到佇列中的占位符題目並更新
+          const questionIndex = questionQueue.findIndex(q => q.id === questionId);
+          if (questionIndex !== -1) {
+            // 更新現有題目資訊
+            questionQueue[questionIndex] = {
+              id: questionId,
+              status: QuestionStatus.READY,
+              mode: mode,  // 保留模式資訊
+              chinese: data.chinese,
+              hint: data.hint,
+              length: length,
+              level: level,
+              target_point_ids: data.target_point_ids || [],
+              target_points: data.target_points || [],
+              target_points_description: data.target_points_description || '',
+              english_answer: '',
+              grade_result: null
+            };
+            
+            // 直接更新卡片而不是重新渲染整個佇列
+            const existingCard = document.getElementById(questionId);
+            if (existingCard) {
+              const newCard = createQuestionCard(questionQueue[questionIndex]);
+              existingCard.parentNode.replaceChild(newCard, existingCard);
+            }
+          }
+          updateQueueCount();
+        } else {
+          // 生成失敗，從佇列和 DOM 中移除
+          const questionIndex = questionQueue.findIndex(q => q.id === questionId);
+          if (questionIndex !== -1) {
+            questionQueue.splice(questionIndex, 1);
+          }
+          const card = document.getElementById(questionId);
+          if (card) card.remove();
+          alert('題目生成失敗：' + (data.error || '未知錯誤'));
+        }
+      } catch (error) {
+        console.error('生成題目失敗:', error);
+        // 從佇列和 DOM 中移除
+        const questionIndex = questionQueue.findIndex(q => q.id === questionId);
+        if (questionIndex !== -1) {
+          questionQueue.splice(questionIndex, 1);
+        }
+        const card = document.getElementById(questionId);
+        if (card) card.remove();
+        alert('題目生成失敗，請重試');
+      } finally {
+        generatingCount--;  // 減少計數器
+        if (generatingCount === 0) {
+          hideGeneratingToast();  // 只有當所有生成完成才隱藏 toast
+        }
+        updateQueueCount();
+      }
+    }
+    
+    // 創建題目卡片
+    function createQuestionCard(question) {
+      const card = document.createElement('div');
+      card.className = 'queue-item';
+      card.id = question.id;
+      card.dataset.status = question.status;
+      card.dataset.mode = question.mode || 'new';  // 加入模式資料屬性
+      
+      // 長度、難度和模式標籤
+      const lengthMap = { short: '短句', medium: '中句', long: '長句' };
+      const lengthLabel = lengthMap[question.length] || '';
+      const levelLabel = question.level ? `Lv${question.level}` : '';
+      const modeIcon = question.mode === 'review' ? '🔄' : '✨';  // 複習：🔄 新題：✨
+      const modeLabel = question.mode === 'review' ? '複習' : '新題';
+      
+      if (question.status === QuestionStatus.GENERATING) {
+        card.innerHTML = `
+          <div class="queue-item-header">
+            <span class="queue-item-meta">${modeIcon} ${lengthLabel} · ${levelLabel}</span>
+          </div>
+          <div class="queue-item-body">
+            <div class="queue-item-spinner">
+              <div class="spinner" data-type="simple"></div>
+            </div>
+            <span class="queue-item-text">生成中...</span>
+          </div>
+          <div class="queue-item-progress">
+            <div class="progress-bar" style="width: 0%"></div>
+          </div>
+        `;
+        animateProgress(card);
+      } else if (question.status === QuestionStatus.READY) {
+        const preview = question.chinese.substring(0, 12) + (question.chinese.length > 12 ? '...' : '');
+        card.innerHTML = `
+          <div class="queue-item-header">
+            <span class="queue-item-meta">${modeIcon} ${lengthLabel} · ${levelLabel}</span>
+          </div>
+          <div class="queue-item-body">
+            <span class="queue-item-text" title="${escapeHtml(question.chinese)}">${escapeHtml(preview)}</span>
+          </div>
+          <div class="queue-item-footer">
+            <span class="queue-item-badge ready ${question.mode}">${question.mode === 'review' ? '🔄 複習題' : '📥 新題目'}</span>
+          </div>
+        `;
+        // 使用 addEventListener 避免覆蓋
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          selectQuestion(question.id);
+        });
+      } else if (question.status === QuestionStatus.ACTIVE) {
+        card.innerHTML = `
+          <div class="queue-item-header">
+            <span class="queue-item-meta">${lengthLabel} · ${levelLabel}</span>
+          </div>
+          <div class="queue-item-body">
+            <span class="queue-item-text">作答中...</span>
+          </div>
+          <div class="queue-item-footer">
+            <span class="queue-item-badge active">✏️ 作答中</span>
+          </div>
+        `;
+      } else if (question.status === QuestionStatus.GRADING) {
+        card.innerHTML = `
+          <div class="queue-item-header">
+            <span class="queue-item-meta">${lengthLabel} · ${levelLabel}</span>
+          </div>
+          <div class="queue-item-body">
+            <div class="queue-item-spinner">
+              <div class="spinner" data-type="simple"></div>
+            </div>
+            <span class="queue-item-text">批改中...</span>
+          </div>
+          <div class="queue-item-footer">
+            <span class="queue-item-badge grading">🤖 批改中</span>
+          </div>
+        `;
+      } else if (question.status === QuestionStatus.COMPLETED) {
+        const score = question.grade_result?.score || 0;
+        const scoreClass = score >= 80 ? 'high' : score >= 60 ? 'medium' : 'low';
+        card.innerHTML = `
+          <div class="queue-item-header">
+            <span class="queue-item-meta">${lengthLabel} · ${levelLabel}</span>
+          </div>
+          <div class="queue-item-body">
+            <span class="queue-item-text">已完成</span>
+            <span class="score-display ${scoreClass}">${score}%</span>
+          </div>
+          <div class="queue-item-footer">
+            <span class="queue-item-badge completed">✅ 已完成</span>
+          </div>
+        `;
+        // 使用 addEventListener 避免覆蓋
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          viewResult(question.id);
+        });
+      }
+      
+      return card;
+    }
+    
+    // 更新題目卡片
+    function updateQuestionCard(questionId, status, chinese) {
+      const card = document.getElementById(questionId);
+      if (!card) return;
+      
+      const question = questionQueue.find(q => q.id === questionId);
+      if (question) {
+        question.status = status;
+      }
+      
+      card.dataset.status = status;
+      
+      if (status === 'ready') {
+        const preview = chinese.substring(0, 15) + (chinese.length > 15 ? '...' : '');
+        card.innerHTML = `
+          <span class="queue-item-text">${preview}</span>
+          <span class="queue-item-badge">就緒</span>
+        `;
+        // 使用 addEventListener 避免覆蓋
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          selectQuestion(questionId);
+        });
+      }
+    }
+    
+    // 選擇題目
+    function selectQuestion(questionId) {
+      const question = questionQueue.find(q => q.id === questionId);
+      if (!question || question.status !== QuestionStatus.READY) return;
+      
+      // 如果有其他題目正在作答中，先恢復為就緒
+      if (currentQuestionId && currentQuestionId !== questionId) {
+        const prevQuestion = questionQueue.find(q => q.id === currentQuestionId);
+        if (prevQuestion && prevQuestion.status === QuestionStatus.ACTIVE) {
+          prevQuestion.status = QuestionStatus.READY;
+        }
+      }
+      
+      // 設置新的當前題目
+      currentQuestionId = questionId;
+      question.status = QuestionStatus.ACTIVE;
+      updateQueueDisplay();
+      
+      // 載入題目到練習區
+      loadQuestionToForm(question);
+    }
+    
+    // 載入題目到表單
+    function loadQuestionToForm(question) {
+      // 儲存當前答案到之前的題目（如果有的話）
+      saveDraftForCurrentQuestion();
+      
+      // 更新中文句子
+      const chineseInput = document.getElementById('chinese-input');
+      const chineseDisplay = document.getElementById('question-content');
+      if (chineseInput) chineseInput.value = question.chinese;
+      if (chineseDisplay) chineseDisplay.textContent = question.chinese;
+      
+      // 更新提示
+      const hintSection = document.getElementById('question-hint');
+      const hintText = document.getElementById('hint-text');
+      if (question.hint) {
+        if (hintText) hintText.textContent = '提示：' + question.hint;
+        if (hintSection) hintSection.style.display = 'flex';
+      } else {
+        if (hintSection) hintSection.style.display = 'none';
+      }
+      
+      // 更新複習模式指示器
+      const modeIndicator = document.getElementById('mode-indicator');
+      const mode = document.getElementById('mode-input').value;
+      if (modeIndicator) {
+        modeIndicator.style.display = mode === 'review' ? 'inline-block' : 'none';
+      }
+      
+      // 更新複習重點
+      const reviewFocus = document.getElementById('review-focus');
+      const focusContent = document.getElementById('focus-content');
+      if (mode === 'review' && question.target_points_description) {
+        if (focusContent) focusContent.textContent = question.target_points_description;
+        if (reviewFocus) reviewFocus.style.display = 'block';
+      } else {
+        if (reviewFocus) reviewFocus.style.display = 'none';
+      }
+      
+      // 更新知識點連結
+      const knowledgeLinks = document.getElementById('knowledge-links');
+      if (question.target_points && question.target_points.length > 0) {
+        let linksHTML = '<span class="muted">相關知識點：</span>';
+        question.target_points.forEach((point, index) => {
+          // 修復：字典訪問方式
+          const pointId = point.id || point['id'];
+          const keyPoint = point.key_point || point['key_point'];
+          const masteryLevel = point.mastery_level || point['mastery_level'] || 0;
+          const masteryPercent = Math.round(masteryLevel * 100);
+          linksHTML += `
+            <a href="/knowledge#point-${pointId}" target="_blank" class="point-link">
+              ${keyPoint} <small>(掌握度: ${masteryPercent}%)</small>
+            </a>
+          `;
+          if (index < question.target_points.length - 1) {
+            linksHTML += ' | ';
+          }
+        });
+        if (knowledgeLinks) {
+          knowledgeLinks.innerHTML = linksHTML;
+          knowledgeLinks.style.display = 'block';
+        }
+      } else {
+        if (knowledgeLinks) knowledgeLinks.style.display = 'none';
+      }
+      
+      // 更新隱藏欄位
+      const targetPointIds = document.getElementById('target-point-ids');
+      if (targetPointIds) {
+        targetPointIds.value = JSON.stringify(question.target_point_ids || []);
+      }
+      
+      // 顯示題目區域
+      const questionSection = document.getElementById('question-section');
+      const answerSection = document.getElementById('answer-section');
+      const submitSection = document.getElementById('submit-section');
+      const practiceReady = document.getElementById('practice-ready');
+      
+      if (questionSection) questionSection.style.display = 'block';
+      if (answerSection) answerSection.style.display = 'block';
+      if (submitSection) submitSection.style.display = 'block';
+      if (practiceReady) practiceReady.style.display = 'none';
+      
+      // 載入此題目的草稿答案並聚焦
+      const englishInput = document.getElementById('english-input');
+      if (englishInput) {
+        // 載入草稿答案，如果沒有草稿則為空
+        englishInput.value = question.english_answer || '';
+        englishInput.focus();
+        
+        // 設置自動保存監聽器（避免重複設置）
+        setupAutoSave();
+      }
+      
+      // 如果題目已完成，顯示批改結果
+      if (question.status === QuestionStatus.COMPLETED && question.grade_result) {
+        console.log('[loadQuestionToForm] Question is completed, showing grade result');
+        displayGradeResult(question);
+      } else {
+        // 如果題目未完成，清除可能存在的舊批改結果
+        const existingResult = document.querySelector('.result-section');
+        if (existingResult) {
+          existingResult.remove();
+        }
+      }
+    }
+    
+    // 儲存當前題目的草稿答案
+    function saveDraftForCurrentQuestion() {
+      if (!currentQuestionId) return;
+      
+      const englishInput = document.getElementById('english-input');
+      if (!englishInput) return;
+      
+      const currentQuestion = questionQueue.find(q => q.id === currentQuestionId);
+      if (currentQuestion) {
+        // 保存草稿答案到題目物件中
+        currentQuestion.english_answer = englishInput.value;
+        console.log(`[saveDraft] Saved draft for question ${currentQuestionId}: "${englishInput.value}"`);
+      }
+    }
+    
+    // 設置自動保存功能
+    let autoSaveSetup = false;  // 防止重複設置
+    function setupAutoSave() {
+      if (autoSaveSetup) return;
+      autoSaveSetup = true;
+      
+      const englishInput = document.getElementById('english-input');
+      if (!englishInput) return;
+      
+      // 防抖函數，避免頻繁保存
+      let saveTimeout;
+      const debouncedSave = function() {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          saveDraftForCurrentQuestion();
+        }, 500); // 500ms 後保存
+      };
+      
+      // 監聽輸入事件
+      englishInput.addEventListener('input', debouncedSave);
+      englishInput.addEventListener('keyup', debouncedSave);
+      
+      console.log('[setupAutoSave] Auto-save functionality initialized');
+    }
+    
+    // 進度動畫（改進版，防止記憶體洩漏）
+    function animateProgress(card) {
+      const progressBar = card.querySelector('.progress-bar');
+      if (!progressBar) return;
+      
+      // 清理之前的動畫（如果存在）
+      if (card.dataset.intervalId) {
+        clearInterval(parseInt(card.dataset.intervalId));
+      }
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        // 檢查卡片是否還在 DOM 中
+        if (!document.contains(card)) {
+          clearInterval(interval);
+          return;
+        }
+        
+        progress += Math.random() * 15;
+        if (progress > 90) {
+          progress = 90;
+          clearInterval(interval);
+          delete card.dataset.intervalId;
+        }
+        progressBar.style.width = progress + '%';
+      }, 500);
+      
+      // 保存 interval ID 以便清理
+      card.dataset.intervalId = interval.toString();
+      
+      // 確保卡片移除時清理 interval
+      const observer = new MutationObserver(() => {
+        if (!document.contains(card) && card.dataset.intervalId) {
+          clearInterval(parseInt(card.dataset.intervalId));
+          observer.disconnect();
+        }
+      });
+      observer.observe(card.parentNode || document.body, { childList: true });
+    }
+    
+    // 顯示生成提示
+    function showGeneratingToast() {
+      const toast = document.getElementById('generating-toast');
+      if (toast) {
+        // 更新提示文字顯示生成數量
+        const toastText = toast.querySelector('.toast-content span');
+        if (toastText) {
+          if (generatingCount > 1) {
+            toastText.textContent = `正在生成 ${generatingCount} 個題目...`;
+          } else {
+            toastText.textContent = '正在生成題目...';
+          }
+        }
+        toast.style.display = 'flex';
+        setTimeout(() => toast.classList.add('show'), 10);
+      }
+    }
+    
+    // 隱藏生成提示
+    function hideGeneratingToast() {
+      const toast = document.getElementById('generating-toast');
+      if (toast) {
+        toast.classList.remove('show');
+        setTimeout(() => toast.style.display = 'none', 300);
+      }
+    }
+    
+    // 更新佇列計數
+    function updateQueueCount() {
+      const readyCount = questionQueue.filter(q => q.status === 'ready').length;
+      const countElement = document.getElementById('queue-count');
+      if (countElement) {
+        countElement.textContent = readyCount > 0 ? `${readyCount} 題就緒` : '0 題就緒';
+      }
+    }
+    
+    // 更新佇列顯示
+    function updateQueueDisplay() {
+      const container = document.getElementById('queue-items');
+      if (!container) return;
+      
+      // 清空容器
+      container.innerHTML = '';
+      
+      // 添加所有題目卡片
+      questionQueue.forEach(question => {
+        container.appendChild(createQuestionCard(question));
+      });
+      
+      // 添加新增按鈕（使用 div 而非 button）
+      const addBtn = document.createElement('div');
+      addBtn.className = 'queue-item add-new';
+      addBtn.id = 'add-question-btn';
+      addBtn.onclick = addNewQuestion;
+      addBtn.setAttribute('role', 'button');
+      addBtn.setAttribute('tabindex', '0');
+      addBtn.innerHTML = `
+        <svg class="add-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>新增題目</span>
+      `;
+      container.appendChild(addBtn);
+      
+      updateQueueCount();
+    }
+    
+    // 模式選擇函數 - 改為 JavaScript 狀態管理，不重載頁面
     function selectMode(mode) {
       try {
         console.log('[selectMode] Switching to mode:', mode);
         
-        // 獲取當前參數
-        const lengthSelect = document.getElementById('lengthSelect');
-        const levelSelect = document.getElementById('levelSelect');
-        
-        if (!lengthSelect || !levelSelect) {
-          console.error('[selectMode] Cannot find select elements');
+        // 防止意外調用
+        if (!mode) {
+          console.error('[selectMode] Mode is undefined');
           return;
         }
         
-        const length = lengthSelect.value;
-        const level = levelSelect.value;
+        // 更新 hidden input 的值
+        const modeInput = document.getElementById('mode-input');
+        if (modeInput) {
+          modeInput.value = mode;
+        }
         
-        // 直接導航到新URL，確保前後端狀態同步
-        const url = `/practice?mode=${mode}&length=${length}&level=${level}`;
-        console.log('[selectMode] Navigating to:', url);
-        window.location.href = url;
+        // 更新按鈕狀態
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+          if (btn.dataset.mode === mode) {
+            btn.setAttribute('data-active', 'true');
+          } else {
+            btn.removeAttribute('data-active');
+          }
+        });
+        
+        // 重要：不要清空佇列！只更新模式
+        // 保留現有的題目，使用者可以繼續使用
+        // questionQueue = [];  // 移除這行
+        // currentQuestionId = null;  // 移除這行
+        
+        // 只更新顯示，不清空數據
+        // initQueue();  // 不需要重置
+        
+        console.log('[selectMode] Mode changed to:', mode, 'Queue preserved with', questionQueue.length, 'questions');
       } catch (error) {
         console.error('[selectMode] Error:', error);
-        alert('切換模式時發生錯誤，請重新整理頁面');
+        alert('切換模式時發生錯誤');
       }
     }
     
     // 確保 DOM 載入完成後再綁定事件
     document.addEventListener('DOMContentLoaded', function() {
-      // 出題按鈕 - 使用當前選擇的值
-      const shuffleBtn = document.getElementById('shuffle-btn');
-      if (shuffleBtn) {
-        shuffleBtn.addEventListener('click', function() {
-          try {
-            console.error('[shuffle-btn] ===== CRITICAL DEBUG START =====');
-            console.error('[shuffle-btn] Button clicked at', new Date().toISOString());
-            
-            // 檢查是否有多個 shuffle-btn
-            const allShuffleBtns = document.querySelectorAll('#shuffle-btn');
-            console.error('[shuffle-btn] Number of shuffle-btn elements:', allShuffleBtns.length);
-            
-            const modeInput = document.getElementById('mode-input');
-            const lengthSelect = document.getElementById('lengthSelect');
-            const levelSelect = document.getElementById('levelSelect');
-            
-            // 檢查是否有多個 mode-input
-            const allModeInputs = document.querySelectorAll('#mode-input');
-            console.error('[shuffle-btn] Number of mode-input elements:', allModeInputs.length);
-            if (allModeInputs.length > 1) {
-              console.error('[shuffle-btn] WARNING: Multiple mode-input elements found!');
-              allModeInputs.forEach((input, index) => {
-                console.error(`  mode-input[${index}].value:`, input.value);
-              });
-            }
-            
-            if (!modeInput || !lengthSelect || !levelSelect) {
-              console.error('[shuffle-btn] Cannot find required elements');
-              alert('無法找到必要的元素，請重新整理頁面');
-              return;
-            }
-            
-            // 優先從 URL 獲取 mode，確保狀態一致
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlMode = urlParams.get('mode');
-            
-            console.error('[shuffle-btn] RAW VALUES:');
-            console.error('  window.location.search:', window.location.search);
-            console.error('  urlParams:', Object.fromEntries(urlParams));
-            console.error('  urlMode:', urlMode);
-            console.error('  mode-input.value BEFORE:', modeInput.value);
-            console.error('  mode-input.getAttribute("value"):', modeInput.getAttribute('value'));
-            
-            // 強制同步 mode-input 到 URL 的值
-            if (urlMode && urlMode !== modeInput.value) {
-              console.error('[shuffle-btn] Fixing mode mismatch: Input was', modeInput.value, 'but URL is', urlMode);
-              modeInput.value = urlMode;
-              console.error('  mode-input.value AFTER fix:', modeInput.value);
-            }
-            
-            const mode = urlMode || modeInput.value || 'new';
-            const length = lengthSelect.value;
-            const level = levelSelect.value;
-            
-            console.error('[shuffle-btn] FINAL VALUES:');
-            console.error('  mode:', mode);
-            console.error('  length:', length);
-            console.error('  level:', level);
-            
-            const url = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
-            console.error('[shuffle-btn] NAVIGATING TO:', url);
-            console.error('[shuffle-btn] ===== CRITICAL DEBUG END =====');
-            
-            // 添加一個短暫延遲以確保日誌能被看到
-            setTimeout(() => {
-              window.location.href = url;
-            }, 100);
-          } catch (error) {
-            console.error('[shuffle-btn] Error:', error);
-            alert('出題時發生錯誤，請重新整理頁面');
-          }
-        });
-      }
+      // 初始化佇列
+      initQueue();
       
-      // 顯示當前狀態（調試用）
-      const modeInput = document.getElementById('mode-input');
-      const debugMode = document.querySelector('[data-debug-mode]');
-      if (modeInput) {
-        console.log('[Initial] Current mode from mode-input:', modeInput.value);
-        console.log('[Initial] Current URL:', window.location.href);
-        if (debugMode) {
-          console.log('[Initial] Server-side mode value:', debugMode.dataset.debugMode);
-        }
-        
-        // 檢查是否有不一致
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlMode = urlParams.get('mode') || 'new';
-        if (urlMode !== modeInput.value) {
-          console.warn('[WARNING] Mode mismatch! URL mode:', urlMode, 'vs Input mode:', modeInput.value);
-          // 強制同步到URL的值
-          modeInput.value = urlMode;
-          console.log('[FIX] Updated mode-input to match URL:', urlMode);
-        }
-      }
-      
-      // 長度或難度切換時也重新載入
+      // 移除自動重載，改為僅記錄狀態
       const lengthSelect = document.getElementById('lengthSelect');
       if (lengthSelect) {
-        lengthSelect.addEventListener('change', function() {
-          try {
-            const modeInput = document.getElementById('mode-input');  // 修正：使用 mode-input 而非 modeSelect
-            const length = this.value;
-            const level = document.getElementById('levelSelect').value;
-            
-            if (!modeInput) {
-              console.error('[lengthSelect] Cannot find mode-input');
-              return;
-            }
-            
-            const mode = modeInput.value;
-            console.log('[lengthSelect] Changed to:', { mode, length, level });
-            
-            window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
-          } catch (error) {
-            console.error('[lengthSelect] Error:', error);
-          }
+        lengthSelect.addEventListener('change', function(e) {
+          // 防止事件冒泡
+          e.stopPropagation();
+          console.log('[lengthSelect] Changed to:', this.value);
+          // 僅記錄改變，不重載頁面
+          // 新題目會使用新的設定
         });
       }
       
       const levelSelect = document.getElementById('levelSelect');
       if (levelSelect) {
-        levelSelect.addEventListener('change', function() {
-          try {
-            const modeInput = document.getElementById('mode-input');  // 修正：使用 mode-input 而非 modeSelect
-            const length = document.getElementById('lengthSelect').value;
-            const level = this.value;
-            
-            if (!modeInput) {
-              console.error('[levelSelect] Cannot find mode-input');
-              return;
-            }
-            
-            const mode = modeInput.value;
-            console.log('[levelSelect] Changed to:', { mode, length, level });
-            
-            window.location.href = `/practice?mode=${mode}&length=${length}&level=${level}`;
-          } catch (error) {
-            console.error('[levelSelect] Error:', error);
-          }
+        levelSelect.addEventListener('change', function(e) {
+          // 防止事件冒泡
+          e.stopPropagation();
+          console.log('[levelSelect] Changed to:', this.value);
+          // 僅記錄改變，不重載頁面
+          // 新題目會使用新的設定
         });
       }
       
-      // 處理表單提交時顯示載入覆蓋層
-      const form = document.getElementById('practice-form');
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          const loadingOverlay = document.getElementById('loading-overlay');
-          if (loadingOverlay) {
-            loadingOverlay.style.display = 'block';
-            setTimeout(() => {
-              loadingOverlay.classList.add('show');
-            }, 10);
+      // 防止任何意外的表單提交行為
+      document.addEventListener('submit', function(e) {
+        console.warn('[Global] Prevented form submission:', e.target);
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, true);
+      
+      // 防止 Enter 鍵意外提交
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+          console.log('[Global] Prevented Enter key submission');
+          e.preventDefault();
+          return false;
+        }
+      });
+      
+      // 處理提交按鈕點擊時進行批改
+      const submitBtn = document.getElementById('submit-btn');
+      let isSubmitting = false;  // 防止重複提交
+      
+      if (submitBtn) {
+        submitBtn.addEventListener('click', async function(e) {
+          e.preventDefault();  // 阻止任何預設行為
+          e.stopPropagation(); // 阻止事件冒泡
+          
+          // 防止重複提交
+          if (isSubmitting) {
+            console.log('正在批改中，請稍候...');
+            return;
+          }
+          
+          // 獲取當前題目
+          if (!currentQuestionId) {
+            alert('請先選擇一個題目');
+            return;
+          }
+          
+          const question = questionQueue.find(q => q.id === currentQuestionId);
+          if (!question) return;
+          
+          // 獲取用戶答案
+          const englishInput = document.getElementById('english-input');
+          const userAnswer = englishInput.value.trim();
+          
+          if (!userAnswer) {
+            alert('請輸入你的英文翻譯');
+            return;
+          }
+          
+          // 設置提交狀態
+          isSubmitting = true;
+          
+          // 禁用提交按鈕
+          const submitBtnElement = document.getElementById('submit-btn');
+          if (submitBtnElement) {
+            submitBtnElement.disabled = true;
+            submitBtnElement.querySelector('.btn-text').textContent = '批改中...';
+          }
+          
+          // 保存答案並更新狀態為批改中
+          question.english_answer = userAnswer;
+          question.status = QuestionStatus.GRADING;
+          
+          // 只更新單個卡片而不是整個佇列
+          const card = document.getElementById(question.id);
+          if (card) {
+            const newCard = createQuestionCard(question);
+            card.parentNode.replaceChild(newCard, card);
+          }
+          
+          // 保存當前狀態以便錯誤恢復
+          const previousQuestionId = currentQuestionId;
+          
+          // 清空當前題目區域
+          document.getElementById('question-section').style.display = 'none';
+          document.getElementById('answer-section').style.display = 'none';
+          document.getElementById('submit-section').style.display = 'none';
+          document.getElementById('practice-ready').style.display = 'block';
+          currentQuestionId = null;
+          
+          // 呼叫批改 API（加入超時控制）
+          try {
+            // 創建超時控制（檢查相容性）
+            let controller, timeoutId;
+            if (typeof AbortController !== 'undefined') {
+              controller = new AbortController();
+              timeoutId = setTimeout(() => controller.abort(), 30000); // 30秒超時
+            }
+            
+            const response = await fetch('/api/grade-answer', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                chinese: question.chinese,
+                english: userAnswer,
+                mode: document.getElementById('mode-input').value,
+                target_point_ids: question.target_point_ids
+              }),
+              signal: controller ? controller.signal : undefined
+            });
+            
+            if (timeoutId) clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.success) {
+              // 更新題目狀態為已完成
+              question.status = QuestionStatus.COMPLETED;
+              question.grade_result = {
+                score: result.score || calculateScore(result),
+                feedback: result.feedback,
+                errors: result.error_analysis,
+                detailed_feedback: result.detailed_feedback,
+                is_generally_correct: result.is_generally_correct
+              };
+              
+              // 清空該題目的草稿（已完成不需要保留）
+              question.english_answer = '';
+              
+              // 只有當這是當前活躍題目時才顯示批改結果
+              if (currentQuestionId === question.id) {
+                displayGradeResult(question);
+              } else {
+                // 如果不是當前題目，提供通知但不顯示詳細結果
+                showNotification(`題目「${question.chinese?.substring(0, 15)}...」批改完成`, 'success');
+              }
+              
+              // 如果是複習模式，更新知識點
+              if (question.target_point_ids && question.target_point_ids.length > 0) {
+                // 知識點更新邏輯已在後端處理
+              }
+            } else {
+              // 批改失敗，恢復狀態和UI
+              question.status = QuestionStatus.ACTIVE;
+              currentQuestionId = previousQuestionId;
+              
+              // 恢復答題區域
+              loadQuestionToForm(question);
+              
+              alert('批改失敗：' + (result.error || '未知錯誤'));
+            }
+          } catch (error) {
+            console.error('批改失敗:', error);
+            
+            // 恢復狀態和UI
+            question.status = QuestionStatus.ACTIVE;
+            currentQuestionId = previousQuestionId;
+            
+            // 恢復答題區域並保留用戶答案
+            loadQuestionToForm(question);
+            const englishInput = document.getElementById('english-input');
+            if (englishInput) {
+              englishInput.value = userAnswer;  // 恢復用戶答案
+            }
+            
+            // 根據錯誤類型提供更詳細的資訊
+            if (error.name === 'NetworkError' || !navigator.onLine) {
+              alert('網路連線失敗，請檢查網路連線後重試');
+            } else if (error.name === 'TimeoutError') {
+              alert('批改超時，請稍後重試');
+            } else {
+              alert('批改失敗，請重試');
+            }
+          } finally {
+            // 重置提交狀態
+            isSubmitting = false;
+            
+            // 恢復提交按鈕
+            const submitBtnElement = document.getElementById('submit-btn');
+            if (submitBtnElement) {
+              submitBtnElement.disabled = false;
+              submitBtnElement.querySelector('.btn-text').textContent = '提交答案';
+            }
+            
+            // 更新單個卡片
+            const finalCard = document.getElementById(question.id);
+            if (finalCard) {
+              const newCard = createQuestionCard(question);
+              finalCard.parentNode.replaceChild(newCard, finalCard);
+            }
+            updateQueueCount();
           }
         });
       }
     });
+    
+    // 計算分數函數
+    function calculateScore(result) {
+      // 根據批改結果計算分數（0-100）
+      if (result.is_generally_correct === false) {
+        return 40;  // 基礎分
+      }
+      
+      let score = 100;
+      const errors = result.error_analysis || [];
+      
+      // 根據錯誤數量和類型扣分
+      errors.forEach(error => {
+        if (error.category === 'systematic') {
+          score -= 15;  // 系統性錯誤扣分較多
+        } else if (error.category === 'isolated') {
+          score -= 10;  // 單一性錯誤
+        } else if (error.category === 'enhancement') {
+          score -= 5;   // 可以更好
+        } else {
+          score -= 8;   // 其他錯誤
+        }
+      });
+      
+      return Math.max(0, Math.min(100, score));
+    }
+    
+    // 顯示詳細批改結果
+    function displayGradeResult(question) {
+      const result = question.grade_result;
+      if (!result) return;
+      
+      console.log('[displayGradeResult] Showing result for:', question.id);
+      console.log('[displayGradeResult] Question grade_result:', result);
+      console.log('[displayGradeResult] Errors array:', result.errors);
+      
+      // 創建結果區域 HTML
+      const resultHTML = `
+        <div class="result-section" data-type="result" style="margin-top: 24px; padding: 24px; background: white; border-radius: 12px; border: 1px solid #e3e3e3;">
+          <h3 style="margin: 0 0 16px 0; color: #2d3748;">批改結果</h3>
+          
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 14px; color: #718096; margin-bottom: 4px;">整體評價：</div>
+            <div style="font-size: 16px; color: #2d3748;">${result.feedback || '無建議'}</div>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 14px; color: #718096; margin-bottom: 4px;">得分：</div>
+            <div style="font-size: 24px; font-weight: bold; color: ${result.score >= 80 ? '#48bb78' : result.score >= 60 ? '#ed8936' : '#f56565'};">  
+              ${result.score}%
+            </div>
+          </div>
+          
+          ${result.errors && result.errors.length > 0 ? `
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 14px; color: #718096; margin-bottom: 8px;">錯誤分析：</div>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                ${result.errors.map(error => `
+                  <div style="padding: 12px; background: #f7fafc; border-left: 4px solid #4299e1; border-radius: 4px;">
+                    <div style="font-weight: 600; color: #2d3748; margin-bottom: 4px;">
+                      ${error.key_point_summary || '錯誤點'}
+                    </div>
+                    ${error.explanation ? `
+                      <div style="font-size: 14px; color: #4a5568; margin-bottom: 8px;">
+                        ${error.explanation}
+                      </div>
+                    ` : ''}
+                    ${(error.original_phrase || error.correction) ? `
+                      <div style="display: flex; flex-direction: column; gap: 4px; font-family: monospace; font-size: 14px;">
+                        ${error.original_phrase ? `
+                          <div style="color: #e53e3e; text-decoration: line-through;">原：${error.original_phrase}</div>
+                        ` : ''}
+                        ${error.correction ? `
+                          <div style="color: #38a169;">改：${error.correction}</div>
+                        ` : ''}
+                      </div>
+                    ` : ''}
+                    ${error.category ? `
+                      <div style="margin-top: 8px;">
+                        <span style="display: inline-block; padding: 2px 8px; background: #bee3f8; color: #2b6cb0; border-radius: 12px; font-size: 12px;">
+                          ${error.category === 'systematic' ? '系統性錯誤' : 
+                            error.category === 'isolated' ? '單一性錯誤' : 
+                            error.category === 'enhancement' ? '可以更好' : '其他錯誤'}
+                        </span>
+                      </div>
+                    ` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : result.is_generally_correct === false && result.detailed_feedback ? `
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 14px; color: #718096; margin-bottom: 8px;">詳細分析：</div>
+              <div style="padding: 12px; background: #fff8e1; border-left: 4px solid #ffc107; border-radius: 4px; line-height: 1.6;">
+                ${result.detailed_feedback}
+              </div>
+            </div>
+          ` : result.is_generally_correct !== false ? `
+            <div style="margin-bottom: 16px;">
+              <div style="padding: 12px; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 4px; text-align: center;">
+                <div style="color: #2e7d32; font-weight: 600; margin-bottom: 4px;">✓ 翻譯正確</div>
+                <div style="color: #4a5568; font-size: 14px;">你的翻譯非常精確，繼續保持！</div>
+              </div>
+            </div>
+          ` : ''}
+          
+          <div style="margin-top: 20px; text-align: center;">
+            <button onclick="hideGradeResult()" style="padding: 8px 20px; background: #4299e1; color: white; border: none; border-radius: 6px; cursor: pointer;">確定</button>
+          </div>
+        </div>
+      `;
+      
+      // 插入到題目區域下方
+      const practiceContainer = document.getElementById('practice-container');
+      
+      // 移除之前的結果（如果有）
+      const existingResult = practiceContainer.querySelector('.result-section');
+      if (existingResult) {
+        existingResult.remove();
+      }
+      
+      // 插入新結果
+      practiceContainer.insertAdjacentHTML('beforeend', resultHTML);
+      
+      // 滾動到結果區域
+      const resultSection = practiceContainer.querySelector('.result-section');
+      if (resultSection) {
+        resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+    
+    // 顯示通知
+    function showNotification(message, type = 'info') {
+      // 創建通知元素
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed; 
+        top: 20px; 
+        right: 20px; 
+        padding: 12px 20px; 
+        background: ${type === 'success' ? '#48bb78' : type === 'error' ? '#f56565' : '#4299e1'}; 
+        color: white; 
+        border-radius: 6px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+        z-index: 1000; 
+        font-weight: 500;
+        max-width: 300px;
+        word-wrap: break-word;
+      `;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      // 3秒後自動移除
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 3000);
+    }
+    
+    // 隱藏批改結果
+    function hideGradeResult() {
+      const resultSection = document.querySelector('.result-section');
+      if (resultSection) {
+        resultSection.remove();
+      }
+    }
+    
+    // 查看結果函數（點擊已完成卡片）
+    function viewResult(questionId) {
+      const question = questionQueue.find(q => q.id === questionId);
+      if (!question || !question.grade_result) return;
+      
+      // 重新顯示詳細結果
+      displayGradeResult(question);
+    }
     
     // 調試模態窗口函數
     function showDebugModal() {

@@ -22,7 +22,16 @@
                 {% endif %}
             </div>
         </div>
-        <h1 class="detail-title">{{ point.title }}</h1>
+        <!-- 視覺化的錯誤對比標題 -->
+        <div class="error-comparison-wrapper">
+            <div class="error-comparison-title">
+                <span class="error-phrase">{{ point.original_phrase }}</span>
+                <span class="arrow-icon"></span>
+                <span class="correct-phrase">{{ point.correction }}</span>
+            </div>
+            <!-- 知識點描述 -->
+            <div class="knowledge-point-desc">{{ point.key_point }}</div>
+        </div>
         
         <!-- 統計資訊 -->
         <div class="detail-stats">
@@ -59,20 +68,37 @@
             </div>
         </div>
         
-        <!-- 原始句子和修改版本 -->
+        <!-- 完整句子對照 -->
+        {% if point.full_user_answer and point.full_correct_answer %}
         <div class="correction-section">
             <h3 class="subsection-title">句子對照</h3>
             <div class="sentence-comparison">
                 <div class="original-sentence">
-                    <span class="sentence-label">❌ 原始錯誤：</span>
+                    <span class="sentence-label">你的答案</span>
+                    <span class="sentence-text">{{ point.full_user_answer }}</span>
+                </div>
+                <div class="corrected-sentence">
+                    <span class="sentence-label">正確答案</span>
+                    <span class="sentence-text">{{ point.full_correct_answer }}</span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- 如果沒有完整句子，顯示片段對比 -->
+        <div class="correction-section">
+            <h3 class="subsection-title">錯誤片段對照</h3>
+            <div class="sentence-comparison">
+                <div class="original-sentence">
+                    <span class="sentence-label">錯誤片段</span>
                     <span class="sentence-text">{{ point.original_phrase }}</span>
                 </div>
                 <div class="corrected-sentence">
-                    <span class="sentence-label">✓ 正確版本：</span>
+                    <span class="sentence-label">正確片段</span>
                     <span class="sentence-text">{{ point.correction }}</span>
                 </div>
             </div>
         </div>
+        {% endif %}
         
         {% if point.improvement_suggestion %}
         <div class="improvement-section">

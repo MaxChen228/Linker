@@ -330,7 +330,7 @@ class KnowledgeManager:
                 if "feedback" in mistake and "error_analysis" in mistake["feedback"]:
                     knowledge_points = []
                     for error in mistake["feedback"]["error_analysis"]:
-                        key_point = error.get("key_point", "")
+                        key_point = error.get("key_point_summary", "")
                         point = self._find_knowledge_point(key_point)
                         if point:
                             knowledge_points.append({

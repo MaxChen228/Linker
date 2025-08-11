@@ -119,7 +119,11 @@
        data-mastery-level="{{ point.mastery_level }}"
        data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
       <div class="card-header-compact">
-        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <div class="card-title-compact">
+          <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
+          <span class="arrow">→</span>
+          <span class="correct-text">{{ point.correction[:20] }}{% if point.correction|length > 20 %}...{% endif %}</span>
+        </div>
         <span class="badge" data-variant="warning">單一</span>
       </div>
       <div class="card-body-compact">
@@ -141,7 +145,11 @@
        data-mastery-level="{{ point.mastery_level }}"
        data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
       <div class="card-header-compact">
-        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <div class="card-title-compact">
+          <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
+          <span class="arrow">→</span>
+          <span class="correct-text">{{ point.correction[:20] }}{% if point.correction|length > 20 %}...{% endif %}</span>
+        </div>
         <span class="badge" data-variant="info">改進</span>
       </div>
       <div class="card-body-compact">
@@ -163,7 +171,11 @@
        data-mastery-level="{{ point.mastery_level }}"
        data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
       <div class="card-header-compact">
-        <span class="card-title-compact">{{ point.key_point[:40] }}{% if point.key_point|length > 40 %}...{% endif %}</span>
+        <div class="card-title-compact">
+          <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
+          <span class="arrow">→</span>
+          <span class="correct-text">{{ point.correction[:20] }}{% if point.correction|length > 20 %}...{% endif %}</span>
+        </div>
         <span class="badge" data-variant="neutral">其他</span>
       </div>
       <div class="card-body-compact">

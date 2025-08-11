@@ -22,15 +22,10 @@
   
   /* ========== 間距系統兼容性映射 ========== */
   /* 
-   * 保留舊的間距變數名稱
-   * 新系統使用點符號，舊系統使用數字
+   * [已移除] 舊的 --spacing-* 變數已完全棄用
+   * 所有代碼已成功遷移至新系統 (--space-*)
+   * 映射已於 2025-08-11 移除
    */
-  --spacing-xs: var(--space-1);
-  --spacing-sm: var(--space-2);
-  --spacing-md: var(--space-3);
-  --spacing-lg: var(--space-4);
-  --spacing-xl: var(--space-6);
-  --spacing-2xl: var(--space-8);
   
   /* ========== 按鈕兼容性映射 ========== */
   /* 
