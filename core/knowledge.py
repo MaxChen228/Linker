@@ -145,7 +145,18 @@ class KnowledgeManager:
             try:
                 with open(self.knowledge_file, encoding="utf-8") as f:
                     data = json.load(f)
-                    points = [KnowledgePoint.from_dict(item) for item in data]
+                    
+                    # 支援新版本格式（含 version 和 data 欄位）
+                    if isinstance(data, dict) and 'data' in data:
+                        knowledge_data = data['data']
+                    elif isinstance(data, dict) and 'knowledge_points' in data:
+                        knowledge_data = data['knowledge_points']
+                    elif isinstance(data, list):
+                        knowledge_data = data
+                    else:
+                        knowledge_data = []
+                    
+                    points = [KnowledgePoint.from_dict(item) for item in knowledge_data]
                     self.logger.info(f"載入 {len(points)} 個知識點")
                     return points
             except json.JSONDecodeError as e:
@@ -161,10 +172,29 @@ class KnowledgeManager:
     def _save_knowledge(self):
         """儲存知識點"""
         try:
-            data = [point.to_dict() for point in self.knowledge_points]
+            # 檢查是否有版本格式（讀取現有檔案以保持格式一致）
+            if self.knowledge_file.exists():
+                with open(self.knowledge_file, encoding="utf-8") as f:
+                    existing_data = json.load(f)
+                    if isinstance(existing_data, dict) and 'version' in existing_data:
+                        # 保持新版本格式
+                        data = {
+                            'version': existing_data.get('version', '2.0'),
+                            'data': [point.to_dict() for point in self.knowledge_points]
+                        }
+                    else:
+                        # 舊格式
+                        data = [point.to_dict() for point in self.knowledge_points]
+            else:
+                # 預設使用新格式
+                data = {
+                    'version': '2.0',
+                    'data': [point.to_dict() for point in self.knowledge_points]
+                }
+            
             with open(self.knowledge_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
-            self.logger.debug(f"儲存 {len(data)} 個知識點")
+            self.logger.debug(f"儲存 {len(self.knowledge_points)} 個知識點")
         except Exception as e:
             self.logger.error(f"儲存知識點失敗: {e}", exc_info=True)
             raise
