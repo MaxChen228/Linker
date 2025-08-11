@@ -209,14 +209,15 @@
 
 /* Filter Tab - 篩選標籤（如錯誤類別、句型分類） */
 .btn[data-variant="filter-tab"] {
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-light);
+  background: #ffffff;
+  color: #6b7280;  /* gray-500 */
+  border: 1px solid #e5e7eb;  /* gray-200 */
   border-radius: var(--radius-lg);
-  font-weight: var(--font-medium);
-  transition: all var(--duration-fast);
+  font-weight: 500;
+  transition: all 0.2s ease;
   padding: var(--space-2) var(--space-4);
   min-width: auto;
+  cursor: pointer;
 }
 
 .btn[data-variant="filter-tab"]:hover:not(:disabled) {
@@ -228,24 +229,26 @@
 
 .btn[data-variant="filter-tab"].active,
 .btn[data-variant="filter-tab"][data-active="true"] {
-  background: var(--text-primary);
-  color: var(--text-inverse);
-  border-color: var(--text-primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--gray-900) !important;
+  color: #ffffff !important;
+  border-color: var(--gray-900) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+  font-weight: 600 !important;
 }
 
 /* Filter Pill - 篩選藥丸（如掌握度、難度） */
 .btn[data-variant="filter-pill"] {
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-full);
+  background: #ffffff;
+  color: #6b7280;  /* gray-500 */
+  border: 1px solid #e5e7eb;  /* gray-200 */
+  border-radius: 9999px;  /* full */
   padding: var(--space-2) var(--space-4);
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  transition: all var(--duration-fast);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
   min-width: auto;
   height: auto;
+  cursor: pointer;
 }
 
 .btn[data-variant="filter-pill"]:hover:not(:disabled) {
@@ -257,10 +260,11 @@
 
 .btn[data-variant="filter-pill"].active,
 .btn[data-variant="filter-pill"][data-active="true"] {
-  background: var(--accent-600);
-  color: var(--text-inverse);
-  border-color: var(--accent-600);
-  box-shadow: 0 1px 3px rgba(99, 102, 241, 0.2);
+  background: #4f46e5 !important;  /* Indigo-600 */
+  color: #ffffff !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3) !important;
+  font-weight: 600 !important;
 }
 
 /* 篩選按鈕內的計數標籤 */

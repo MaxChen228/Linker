@@ -64,29 +64,40 @@ async def access_log_middleware(request: Request, call_next):
     request_id = request.headers.get("X-Request-ID", str(uuid4()))
     request.state.request_id = request_id
     response = None
+    
+    # 過濾 Chrome DevTools 和其他開發工具的探測請求
+    skip_logging = any([
+        "/.well-known/appspecific" in str(request.url.path),
+        "/favicon.ico" in str(request.url.path),
+        "/__vite_" in str(request.url.path),
+    ])
+    
     try:
         response = await call_next(request)
         return response
     except Exception as e:
-        logger.log_exception(e, context={
-            "request_id": request_id,
-            "path": request.url.path,
-            "method": request.method,
-        })
+        if not skip_logging:
+            logger.log_exception(e, context={
+                "request_id": request_id,
+                "path": request.url.path,
+                "method": request.method,
+            })
         raise
     finally:
         duration = time.time() - start
-        logger.info(
-            "http_access",
-            request_id=request_id,
-            method=request.method,
-            path=str(request.url.path),
-            query=str(request.url.query)[:200],
-            status_code=getattr(response, "status_code", 0),
-            duration_ms=int(duration * 1000),
-            client_ip=request.client.host if request.client else None,
-            user_agent=request.headers.get("user-agent", "")[:200],
-        )
+        # 只記錄非探測請求的日誌
+        if not skip_logging:
+            logger.info(
+                "http_access",
+                request_id=request_id,
+                method=request.method,
+                path=str(request.url.path),
+                query=str(request.url.query)[:200],
+                status_code=getattr(response, "status_code", 0),
+                duration_ms=int(duration * 1000),
+                client_ip=request.client.host if request.client else None,
+                user_agent=request.headers.get("user-agent", "")[:200],
+            )
 
 
 @app.get("/", response_class=HTMLResponse)
