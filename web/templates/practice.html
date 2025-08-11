@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="/static/css/pages/practice.css" />
 <!-- 題目佇列系統樣式 -->
 <link rel="stylesheet" href="/static/css/pages/practice-queue.css" />
+<!-- 標籤系統樣式 -->
+<link rel="stylesheet" href="/static/css/pages/practice-tags.css" />
 {% endblock %}
 
 {% block content %}
@@ -55,6 +57,33 @@
         <span class="btn-title">複習題</span>
         <span class="btn-desc">鞏固已學知識</span>
       </button>
+      <button type="button" 
+              class="btn mode-btn" 
+              data-variant="card"
+              data-mode="tagged"
+              {% if mode == 'tagged' %}data-active="true"{% endif %}
+              onclick="selectMode('tagged')">
+        <span class="btn-title">標籤練習</span>
+        <span class="btn-desc">針對特定句型</span>
+      </button>
+    </div>
+    
+    <!-- 標籤選擇器（標籤模式時顯示） -->
+    <div class="tag-selector" id="tag-selector" style="display: {% if mode == 'tagged' %}block{% else %}none{% endif %};">
+      <div class="tag-selector-header">
+        <h3 class="tag-selector-title">選擇練習標籤</h3>
+        <div class="tag-mode-toggle">
+          <button class="btn" data-variant="tab" data-tag-mode="single" data-active="true">
+            快速練習
+          </button>
+          <button class="btn" data-variant="tab" data-tag-mode="combo">
+            組合練習
+          </button>
+        </div>
+      </div>
+      <div id="tag-selector-content">
+        <!-- 動態載入標籤介面 -->
+      </div>
     </div>
     
     <!-- 改為純 div 容器，完全避免表單行為 -->
@@ -306,6 +335,9 @@
     </div>
   </div>
   {% endif %}
+  
+  <!-- 標籤系統腳本 -->
+  <script src="/static/js/practice-tags.js"></script>
   
   <script>
     'use strict';
@@ -891,13 +923,32 @@
           }
         });
         
+        // 顯示/隱藏標籤選擇器
+        const tagSelector = document.getElementById('tag-selector');
+        const practiceContainer = document.getElementById('practice-container');
+        
+        if (mode === 'tagged') {
+          // 顯示標籤選擇器
+          if (tagSelector) {
+            tagSelector.style.display = 'block';
+          }
+          // 隱藏練習區域直到選擇標籤
+          if (practiceContainer) {
+            practiceContainer.style.display = 'none';
+          }
+        } else {
+          // 隱藏標籤選擇器
+          if (tagSelector) {
+            tagSelector.style.display = 'none';
+          }
+          // 顯示練習區域
+          if (practiceContainer) {
+            practiceContainer.style.display = 'block';
+          }
+        }
+        
         // 重要：不要清空佇列！只更新模式
         // 保留現有的題目，使用者可以繼續使用
-        // questionQueue = [];  // 移除這行
-        // currentQuestionId = null;  // 移除這行
-        
-        // 只更新顯示，不清空數據
-        // initQueue();  // 不需要重置
         
         console.log('[selectMode] Mode changed to:', mode, 'Queue preserved with', questionQueue.length, 'questions');
       } catch (error) {
@@ -905,6 +956,93 @@
         alert('切換模式時發生錯誤');
       }
     }
+    
+    // 生成標籤題目
+    async function generateTaggedQuestion(tags, combinationMode) {
+      console.log('[generateTaggedQuestion] Generating with tags:', tags, 'mode:', combinationMode);
+      
+      const mode = 'tagged';
+      const length = document.getElementById('lengthSelect')?.value || 'medium';
+      const level = document.getElementById('levelSelect')?.value || '2';
+      const questionId = `q_${Date.now()}`;
+      
+      // 創建占位符題目
+      const placeholderQuestion = {
+        id: questionId,
+        status: QuestionStatus.GENERATING,
+        mode: mode,
+        tags: tags,
+        combinationMode: combinationMode,
+        chinese: '生成中...',
+        hint: '',
+        length: length,
+        level: level,
+        english_answer: '',
+        grade_result: null
+      };
+      questionQueue.push(placeholderQuestion);
+      
+      // 創建生成中的卡片
+      const newCard = createQuestionCard(placeholderQuestion);
+      
+      // 插入到新增按鈕前
+      const addBtn = document.getElementById('add-question-btn');
+      if (addBtn && addBtn.parentNode) {
+        addBtn.parentNode.insertBefore(newCard, addBtn);
+      }
+      
+      // 顯示生成提示
+      showGeneratingToast();
+      
+      try {
+        // 調用後端 API 生成標籤題目
+        const response = await fetch('/api/generate-tagged-question', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tags: tags.map(id => ({ type: 'grammar', id: id })),
+            combinationMode: combinationMode,
+            length: length,
+            level: parseInt(level)
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // 更新題目
+          const questionIndex = questionQueue.findIndex(q => q.id === questionId);
+          if (questionIndex !== -1) {
+            questionQueue[questionIndex] = {
+              ...placeholderQuestion,
+              status: QuestionStatus.READY,
+              chinese: data.chinese,
+              hint: data.hint,
+              covered_points: data.covered_points || [],
+              expected_patterns: data.expected_patterns || []
+            };
+            
+            // 更新卡片
+            updateQuestionCard(questionId, questionQueue[questionIndex]);
+          }
+        }
+      } catch (error) {
+        console.error('[generateTaggedQuestion] Error:', error);
+        // 更新為錯誤狀態
+        const questionIndex = questionQueue.findIndex(q => q.id === questionId);
+        if (questionIndex !== -1) {
+          questionQueue[questionIndex].status = QuestionStatus.ERROR;
+          updateQuestionCard(questionId, questionQueue[questionIndex]);
+        }
+      }
+      
+      updateQueueCount();
+    }
+    
+    // 暴露給全局使用
+    window.generateTaggedQuestion = generateTaggedQuestion;
     
     // 確保 DOM 載入完成後再綁定事件
     document.addEventListener('DOMContentLoaded', function() {

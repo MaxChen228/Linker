@@ -464,6 +464,149 @@ class AIService:
             "is_review": True  # 標記為複習題
         }
 
+    def generate_tagged_sentence(
+        self,
+        tags: List[Dict[str, str]],
+        level: int = 2,
+        length: str = "medium",
+        combination_mode: str = "all"
+    ) -> dict[str, Any]:
+        """基於標籤生成題目
+        
+        Args:
+            tags: 標籤列表 [{"type": "grammar", "id": "GP001", "name": "強調句"}]
+            level: 難度等級
+            length: 句子長度
+            combination_mode: 組合模式 (all/any/focus)
+            
+        Returns:
+            包含句子、提示、覆蓋點等信息
+        """
+        import json
+        from core.tag_system import tag_manager
+        
+        if not tags:
+            return self.generate_practice_sentence(level=level, length=length)
+        
+        # 載入標籤詳細信息
+        tag_details = []
+        for tag_info in tags:
+            tag_id = tag_info.get("id")
+            tag = tag_manager.get_tag(tag_id)
+            if tag and tag_id in tag_manager.patterns_data:
+                pattern = tag_manager.patterns_data[tag_id]
+                tag_details.append({
+                    "id": tag_id,
+                    "pattern": pattern.get("pattern", ""),
+                    "formula": pattern.get("formula", ""),
+                    "core_concept": pattern.get("core_concept", ""),
+                    "examples": pattern.get("examples", [])[:2]  # 只取前2個例句
+                })
+        
+        if not tag_details:
+            return self.generate_practice_sentence(level=level, length=length)
+        
+        # 根據句子長度調整
+        length_hint = {
+            "short": "簡短句子（10-20字）",
+            "medium": "中等長度（20-35字）",
+            "long": "較長句子（35-60字）"
+        }.get(length, "中等長度")
+        
+        # 構建智能 Prompt
+        mode_instruction = {
+            "all": "必須同時包含並正確展示所有列出的文法句型",
+            "any": "選擇其中一個或多個文法句型來構建句子",
+            "focus": "以第一個文法句型為主，其他可選擇性加入"
+        }.get(combination_mode, "包含所有文法句型")
+        
+        system_prompt = f"""
+        你是專業的英文教師，請設計一個翻譯練習題目。
+        
+        要求使用的文法句型：
+        {json.dumps(tag_details, ensure_ascii=False, indent=2)}
+        
+        組合要求：{mode_instruction}
+        
+        題目要求：
+        1. 設計一個{length_hint}的中文句子
+        2. 難度等級：{level}/5
+        3. 必須自然地融入指定的文法句型
+        4. 句子要實用、貼近生活或工作場景
+        5. 避免生硬堆砌，確保語意流暢
+        
+        請以 JSON 格式回覆：
+        {{
+            "sentence": "要翻譯的中文句子",
+            "hint": "給學生的提示（簡潔指出要注意的文法重點）",
+            "covered_points": ["實際使用的文法點1", "實際使用的文法點2"],
+            "expected_patterns": ["預期使用的句型結構"],
+            "difficulty_level": {level}
+        }}
+        """
+        
+        user_prompt = "請設計一個包含指定文法句型的練習題目。"
+        
+        if not self.generate_model:
+            return {
+                "sentence": "今天天氣很好。",
+                "hint": "注意句型結構",
+                "covered_points": [],
+                "difficulty_level": level
+            }
+        
+        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
+        
+        # 處理結果
+        if isinstance(result, list) and len(result) > 0:
+            result = result[0]
+        elif not isinstance(result, dict):
+            result = {}
+        
+        return {
+            "sentence": result.get("sentence", "今天天氣很好。"),
+            "hint": result.get("hint", "注意文法句型的正確使用"),
+            "covered_points": result.get("covered_points", []),
+            "expected_patterns": result.get("expected_patterns", []),
+            "tags": tags,
+            "combination_mode": combination_mode,
+            "difficulty_level": result.get("difficulty_level", level),
+            "is_tagged": True
+        }
+    
+    def generate_tagged_preview(
+        self,
+        tags: List[str],
+        combination_mode: str = "all"
+    ) -> dict[str, Any]:
+        """生成標籤組合的預覽題目"""
+        # 轉換標籤格式
+        tag_list = [{"type": "grammar", "id": tag_id} for tag_id in tags]
+        
+        # 生成一個範例題目
+        result = self.generate_tagged_sentence(
+            tags=tag_list,
+            level=2,
+            length="medium",
+            combination_mode=combination_mode
+        )
+        
+        # 計算難度和變化性
+        from core.tag_system import tag_manager
+        complexity_scores = []
+        for tag_id in tags:
+            tag = tag_manager.get_tag(tag_id)
+            if tag:
+                complexity_scores.append(tag.complexity)
+        
+        avg_complexity = sum(complexity_scores) / len(complexity_scores) if complexity_scores else 2
+        variety_score = min(100, len(tags) * 30)  # 每個標籤增加30%變化性
+        
+        result["difficulty"] = min(5, max(1, round(avg_complexity)))
+        result["variety_score"] = variety_score
+        
+        return result
+
     def get_last_interaction(self) -> dict[str, Any]:
         """獲取最近一次的 LLM 互動記錄"""
         return self.last_llm_interaction if self.last_llm_interaction else {
