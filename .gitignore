@@ -56,4 +56,10 @@ temp_*.json
 
 # 系統文件
 Thumbs.db
-desktop.ininode_modules/
+desktop.ini
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

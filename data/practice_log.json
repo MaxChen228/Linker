@@ -34,5 +34,57 @@
         }
       ]
     }
+  },
+  {
+    "timestamp": "2025-08-11T00:23:50.120635",
+    "chinese_sentence": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
+    "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "條件句否定用法錯誤",
+          "original_phrase": "keep don't take",
+          "correction": "does not take / fails to take",
+          "explanation": "在 if 引導的條件句中，當主詞是第三人稱單數（the government）時，其否定形式應使用 `does not + 原形動詞`。`keep don't take` 是不正確的文法結構，混合了兩種不同的概念。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "單字拼寫錯誤",
+          "original_phrase": "irrevertable",
+          "correction": "irreversible",
+          "explanation": "「無法挽回的」正確的英文單字是 `irreversible`。`irrevertable` 是不存在的單字，可能是由 `revert` 和 `-able` 錯誤組合而成。另一個相似的詞是 `irreparable`（無法修復的）。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "不定冠詞 a/an 使用錯誤",
+          "original_phrase": "a irrevertable",
+          "correction": "an irreversible",
+          "explanation": "不定冠詞的選擇取決於其後單字的「發音」而非「字母」。`irreversible` 的開頭是母音發音 /ɪ/，因此前面應該使用 `an` 而不是 `a`。",
+          "severity": "major"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "詞語搭配不夠道地",
+          "original_phrase": "the pollution of environment",
+          "correction": "environmental pollution",
+          "explanation": "雖然 `the pollution of environment` 文法上可以理解，但 `environmental pollution` 是更常用、更自然的標準說法，其中 `environmental` 作為形容詞修飾 `pollution`。",
+          "severity": "minor"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "詞彙選擇可以更精準",
+          "original_phrase": "people's health",
+          "correction": "public health",
+          "explanation": "「公眾健康」在英文中有對應的專有名詞 `public health`，這個詞彙更精準地表達了原文中涉及整個社會群體的健康議題。`people's health` 雖然意思相近，但較不正式。",
+          "severity": "minor"
+        }
+      ]
+    }
   }
 ]

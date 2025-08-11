@@ -200,7 +200,7 @@ class PatternEnrichmentService:
     
     def get_enrichment_prompt(self, pattern: Dict) -> str:
         """生成擴充 prompt"""
-        prompt = f"""你是專業的英語語法專家，精通語言學理論與實際應用。請為以下句型生成完整、精準的語法資料。
+        prompt = f"""你是一位經驗豐富的英文老師，擅長有系統地教授句型。請為以下句型生成完整但井然有序的學習內容。
 
 【輸入句型】
 Pattern: {pattern.get('pattern', '')}
@@ -214,99 +214,61 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
 {{
   "id": "{pattern.get('id', pattern.get('pattern', ''))}",
   "pattern": "{pattern.get('pattern', '')}",
-  "formula": "完整句法公式（使用標準語法符號：S, V, O, C, to-V, V-ing, that-clause等）",
+  "formula": "句型公式（清楚標示各成分，如：It + be動詞 + 強調部分 + that/who + 句子剩餘部分）",
   "category": "{pattern.get('category', '')}",
-  "difficulty": "1-5的整數（1=國中基礎, 2=高中核心, 3=大學入門, 4=進階應用, 5=專業學術）",
-  "frequency": "high/medium/low（基於語料庫使用頻率）",
-  
-  "structure_analysis": {{
-    "components": "詳細說明每個成分的語法角色與功能",
-    "word_order": "語序規則與變化可能",
-    "required_elements": ["列出所有必要成分"],
-    "optional_elements": ["列出所有可選成分"],
-    "grammatical_features": "特殊語法特徵（如虛擬語氣、倒裝等）"
-  }},
-  
-  "usage_context": {{
-    "primary_function": "主要語言功能（表達目的、建議、強調等）",
-    "register": "formal/neutral/informal",
-    "domain": ["適用領域：academic/business/daily/literary"],
-    "pragmatic_effect": "語用效果說明"
-  }},
+  "core_concept": "這個句型的核心概念（一句話）",
+  "when_to_use": "什麼時候用這個句型（具體情境）",
   
   "examples": [
     {{
-      "zh": "中文句子（自然流暢的中文）",
-      "en": "English sentence (natural and idiomatic)",
-      "level": "basic/intermediate/advanced",
-      "focus": "此例句重點展示的語法特徵",
-      "vocabulary_level": "A1-C2",
-      "context_note": "使用情境說明"
+      "zh": "中文句子",
+      "en": "English sentence",
+      "highlight": "這個例句展示的重點（如：強調時間）",
+      "difficulty": "basic/intermediate/advanced"
     }}
-    // 請提供10個例句，難度遞增，涵蓋不同時態和語境
+    // 提供6-8個例句，從簡單到複雜，涵蓋不同用法
+  ],
+  
+  "key_points": [
+    "關鍵重點1（如：It 永遠用單數動詞）",
+    "關鍵重點2（如：強調人物時用 who）",
+    "關鍵重點3（如：that 可以省略的情況）"
+  ],
+  
+  "common_mistakes": [
+    {{
+      "wrong": "錯誤寫法",
+      "correct": "正確寫法",
+      "explanation": "為什麼會錯（簡明扼要）"
+    }}
+    // 提供2-3個最常見錯誤
   ],
   
   "variations": {{
-    "tense_forms": {{
-      "simple_present": "完整例句",
-      "simple_past": "完整例句",
-      "simple_future": "完整例句",
-      "present_perfect": "完整例句（如適用）",
-      "past_perfect": "完整例句（如適用）"
-    }},
-    "voice": {{
-      "active": "主動語態例句",
-      "passive": "被動語態例句（如適用）"
-    }},
-    "polarity": {{
-      "affirmative": "肯定句",
-      "negative": "否定句",
-      "interrogative": "疑問句"
-    }}
+    "present": "現在式例句",
+    "past": "過去式例句",
+    "future": "未來式例句",
+    "negative": "否定句例句",
+    "question": "疑問句例句"
   }},
-  
-  "collocations": {{
-    "high_frequency": {{
-      "verbs": ["最常用的5個動詞"],
-      "nouns": ["最常用的5個名詞"],
-      "adjectives": ["最常用的5個形容詞（如適用）"]
-    }},
-    "fixed_phrases": [
-      {{
-        "phrase": "固定搭配",
-        "meaning": "意思",
-        "example": "例句"
-      }}
-    ]
-  }},
-  
-  "common_errors": [
-    {{
-      "error_pattern": "錯誤形式",
-      "correction": "正確形式",
-      "error_type": "grammar/word_order/agreement/tense",
-      "explanation": "詳細解釋為什麼是錯誤",
-      "frequency": "very_common/common/occasional"
-    }}
-    // 提供3-5個最常見的錯誤
-  ],
   
   "practice_sentences": [
-    "請將這個句子翻譯成英文：（提供適合練習此句型的中文句子1）",
-    "請將這個句子翻譯成英文：（提供適合練習此句型的中文句子2）",
-    "請將這個句子翻譯成英文：（提供適合練習此句型的中文句子3）"
+    "練習句1（基礎）",
+    "練習句2（中等）",
+    "練習句3（進階）",
+    "練習句4（應用）",
+    "練習句5（綜合）"
   ]
 }}
 
 【生成原則】
-1. 所有例句必須自然、地道、符合該句型的典型用法
-2. 例句難度要循序漸進，從簡單日常到複雜學術
-3. 搭配詞必須按實際使用頻率排序（高頻優先）
-4. 錯誤分析要基於實際的學習者常見錯誤
-5. 變化形式要完整且實用
-6. 確保JSON格式正確，可直接解析
+1. 內容要完整但有組織，不要雜亂無章
+2. 例句從易到難，展示句型的不同面向
+3. 重點明確，讓學習者知道什麼最重要
+4. 錯誤分析基於真實常見錯誤
+5. 確保JSON格式正確
 
-請直接返回JSON資料，不需要額外說明。"""
+請直接返回JSON資料。"""
         
         return prompt
     
@@ -379,7 +341,14 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
                 logger.warning("Example missing zh or en field")
                 return None
         
-        return response
+        # 清理不需要的空欄位
+        cleaned_response = {}
+        for key, value in response.items():
+            # 只保留非空的欄位
+            if value and value != {} and value != []:
+                cleaned_response[key] = value
+        
+        return cleaned_response
     
     async def enrich_patterns_batch(self, patterns: List[Dict]) -> List[Dict]:
         """批量擴充句型"""

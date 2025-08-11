@@ -108,8 +108,8 @@ def test_buttons(request: Request):
     return templates.TemplateResponse("test_buttons.html", {"request": request})
 
 
-@app.get("/patterns", response_class=HTMLResponse)
-def patterns(request: Request, category: Optional[str] = None, q: Optional[str] = None):
+@app.get("/patterns/old", response_class=HTMLResponse)
+def patterns_old(request: Request, category: Optional[str] = None, q: Optional[str] = None):
     all_patterns = assets.get_grammar_patterns()
     categories = sorted({p.category for p in all_patterns if p.category})
 
@@ -141,14 +141,14 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
     )
 
 
-@app.get("/patterns/v2", response_class=HTMLResponse)
-def patterns_v2(request: Request, category: Optional[str] = None, q: Optional[str] = None):
-    """擴充版句型列表頁面"""
+@app.get("/patterns", response_class=HTMLResponse)
+def patterns(request: Request, category: Optional[str] = None, q: Optional[str] = None):
+    """文法句型列表頁面（預設版本）"""
     import json
     from pathlib import Path
     
-    # 暫時使用測試資料，之後改為完整資料
-    enriched_file = Path("data/test_patterns_enriched.json")
+    # 載入所有擴充的句型資料
+    enriched_file = Path("data/patterns_enriched_complete.json")
     if enriched_file.exists():
         with open(enriched_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -190,7 +190,7 @@ def patterns_v2(request: Request, category: Optional[str] = None, q: Optional[st
         ]
     
     return templates.TemplateResponse(
-        "patterns_v2_list.html",
+        "patterns_new.html",
         {
             "request": request,
             "patterns": filtered_patterns[:200],
@@ -202,14 +202,27 @@ def patterns_v2(request: Request, category: Optional[str] = None, q: Optional[st
     )
 
 
-@app.get("/patterns/v2/{pattern_id}", response_class=HTMLResponse)
+# 重定向舊的 v2 路徑到新路徑
+@app.get("/patterns/v2")
+def redirect_patterns_v2():
+    """重定向舊的 v2 列表頁到新路徑"""
+    return RedirectResponse(url="/patterns", status_code=301)
+
+
+@app.get("/patterns/v2/{pattern_id}")
+def redirect_pattern_v2_detail(pattern_id: str):
+    """重定向舊的 v2 詳情頁到新路徑"""
+    return RedirectResponse(url=f"/patterns/{pattern_id}", status_code=301)
+
+
+@app.get("/patterns/{pattern_id}", response_class=HTMLResponse)
 def pattern_detail(request: Request, pattern_id: str):
     """句型詳情頁面"""
     import json
     from pathlib import Path
     
     # 載入擴充資料
-    enriched_file = Path("data/test_patterns_enriched.json")
+    enriched_file = Path("data/patterns_enriched_complete.json")
     if enriched_file.exists():
         with open(enriched_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -226,10 +239,10 @@ def pattern_detail(request: Request, pattern_id: str):
     
     if not pattern:
         # 如果找不到，返回列表頁
-        return RedirectResponse(url="/patterns/v2", status_code=302)
+        return RedirectResponse(url="/patterns", status_code=302)
     
     return templates.TemplateResponse(
-        "patterns_v2_detail.html",
+        "pattern_detail.html",
         {
             "request": request,
             "pattern": pattern,

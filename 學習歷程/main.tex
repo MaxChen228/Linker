@@ -1,0 +1,332 @@
+% =========================================
+% Linker 學習歷程檔案 · XeLaTeX（Overleaf 直接可編）
+% =========================================
+\documentclass[12pt,a4paper]{article}
+
+% ---------- 版面與文字 ----------
+\usepackage{geometry}
+\geometry{margin=25mm}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{microtype}
+\usepackage{graphicx}
+\graphicspath{{figs/}} % 將圖片放在 figs/ 底下（可自行調整）
+\xeCJKsetup{CJKglue=\hspace{0.08em}} % 中英間距微調
+
+% 西文字體 + 等寬字體
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{Inconsolata}
+
+% 中文字體（Overleaf 常見 Noto；若無則退到 Fandol）
+\IfFontExistsTF{Noto Serif CJK TC}{
+  \setCJKmainfont{Noto Serif CJK TC}
+  \setCJKsansfont{Noto Sans CJK TC}
+}{
+  \setCJKmainfont{FandolSong}
+  \setCJKsansfont{FandolHei}
+}
+
+% ---------- 顏色 / 風格 ----------
+\usepackage{xcolor}
+\definecolor{Brand}{HTML}{0F766E}
+\definecolor{Accent}{HTML}{2563EB}
+\definecolor{SoftGray}{HTML}{64748B}
+\definecolor{LightBg}{HTML}{F1F5F9}
+
+% 品牌宏：統一名字大小寫
+\newcommand{\Product}{\textsc{Linker}}
+
+% ---------- 標題、頁首頁尾 ----------
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{Brand}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\Product{} 學習歷程檔案}
+\rhead{\thepage}
+
+% ---------- 交叉引用 / 連結 ----------
+\usepackage[hidelinks,unicode]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=Brand, urlcolor=Accent, citecolor=Brand}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\crefname{figure}{圖}{圖}
+\crefname{table}{表}{表}
+\crefname{listing}{程式碼}{程式碼}
+
+% ---------- 清單 / 表格 / 數學 ----------
+\usepackage{enumitem}
+\setlist{nosep}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}} % 不自動連字、左對齊段落欄
+
+% ---------- 程式碼區塊（無需 shell-escape） ----------
+\usepackage{listings}
+\lstset{
+  language=,
+  basicstyle=\ttfamily\small,
+  numbers=left, numberstyle=\footnotesize\color{SoftGray},
+  showstringspaces=false, breaklines=true,
+  frame=single, framerule=0pt, rulecolor=\color{LightBg},
+  backgroundcolor=\color{LightBg},
+  columns=fullflexible, keepspaces=true, upquote=true,
+  keywordstyle=\bfseries\color{Accent},
+  commentstyle=\itshape\color{SoftGray},
+  stringstyle=\color{Brand},
+  % 避免 PDF 複製被插空格（常見的 - / : 等）
+  literate={-}{{-}}1 {/}{{/}}1 {:}{{:}}1 {_}{{\_}}1 {~}{{\textasciitilde}}1
+}
+\lstdefinestyle{py}{language=Python}
+\lstdefinestyle{bash}{language=bash}
+
+% ---------- tcolorbox 重點框 ----------
+\usepackage[most]{tcolorbox}
+\tcbset{colback=LightBg, colframe=Brand, arc=3mm, boxrule=.6pt}
+
+% ---------- TikZ 圖（無模糊陰影，避免列印糊） ----------
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\tikzset{
+  box/.style={
+    draw=SoftGray, rounded corners, fill=LightBg,
+    align=center, inner sep=6pt
+  },
+  pilarrow/.style={-Latex, thick, color=SoftGray}
+}
+
+% ---------- 本地化名稱 ----------
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\contentsname}{目錄}
+\renewcommand{\figurename}{圖}
+\renewcommand{\tablename}{表}
+\renewcommand{\lstlistingname}{程式碼}
+\date{\the\year 年\the\month 月\the\day 日}
+
+% ---------- 實用巨集 ----------
+% 有圖就插圖，沒圖就不顯示（避免佔位框）
+\newcommand{\MaybeFigure}[3][]{%
+  \IfFileExists{#2}{%
+    \begin{figure}[ht]
+      \centering
+      \includegraphics[width=\linewidth]{#2}
+      \caption{#3}
+    \end{figure}
+  }{}
+}
+
+% 內文行內純文字程式碼（避免破行）
+\newcommand{\code}[1]{\texttt{#1}}
+
+% ---------- 文件資訊 ----------
+\title{\textbf{從零到一：用 AI 協作打造智能英文學習平台}\\
+\large 以 \Product{} 為例（FastAPI + Gemini 雙模型 + 個人化複習）}
+\author{Max Chen \quad|\quad GitHub：\href{https://github.com/MaxChen228/Linker}{MaxChen228/Linker}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\Product{} 是一個為個人英文學習打造的智能系統：即時批改、錯誤分類、知識點追蹤與複習排程。
+本文件整合專案動機、設計決策與技術實作，並以圖解呈現「雙模型架構」與「知識管理」流程，
+同時附上部署與操作速查。全文可在 Overleaf 以 XeLaTeX 直接編譯。
+\end{abstract}
+
+\tableofcontents
+\bigskip
+
+% =========================================
+\section{為什麼做 \Product{}？（痛點與目標）}
+\begin{tcolorbox}
+\textbf{痛點}：寫句子缺乏道地度判斷、錯誤無即時與可追蹤回饋。\\
+\textbf{目標}：\emph{即時批改} + \emph{精準分析} + \emph{個人化追蹤}，不只標記對錯，更要說明「為什麼」和「如何更好」。
+\end{tcolorbox}
+
+\paragraph{設計原則}
+\begin{itemize}
+  \item \textbf{快速驗證}：先 CLI 後 Web，從最小可行功能起步（題目生成＋批改）。
+  \item \textbf{成本／品質兼顧}：採 \textbf{雙模型}——\emph{Flash} 出題、\emph{Pro} 批改，兼顧速度與準確。
+  \item \textbf{可維護的 UI}：以設計令牌（Design Tokens）統一色彩、間距與字級，支援響應式。
+\end{itemize}
+
+% =========================================
+\section{架構與流程（From CLI to Web）}
+\subsection{模組演進}
+\begin{itemize}
+  \item \textbf{CLI 验證}：\code{linker\_cli.py}
+  \item \textbf{Web 應用}：\code{web/main.py}（FastAPI + Jinja2）：練習、知識點、文法頁。
+  \item \textbf{核心模組}：\code{core/ai\_service.py}（雙模型）、\code{core/knowledge.py}（知識點管理）、\code{core/error\_types.py}（錯誤分類）、\code{core/logger.py}（集中日誌）。
+\end{itemize}
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[node distance=10mm and 13mm]
+    \node[box, fill=white, draw=Brand] (user) {使用者};
+    \node[box, right=of user, xshift=6mm, text width=28mm] (ui) {Web UI\\(FastAPI + Jinja2)};
+    \node[box, right=of ui, xshift=6mm, text width=28mm] (svc) {AI Service\\(\code{core/ai\_service.py})};
+    \node[box, below=of svc, xshift=-22mm, text width=30mm] (gen) {出題模型\\Gemini 2.5 Flash\\\small temperature=1.0};
+    \node[box, below=of svc, xshift=22mm, text width=30mm] (grade) {批改模型\\Gemini 2.5 Pro\\\small temperature=0.2};
+    \node[box, right=of svc, xshift=8mm, text width=30mm] (extract) {錯誤分析／\\知識點提取};
+    \node[box, right=of extract, xshift=8mm, text width=34mm] (km) {Knowledge Manager\\(\code{core/knowledge.py})};
+    \node[box, below=of km, align=left, text width=36mm] (store) {\textbf{data/}\\knowledge.json\\practice\_log.json};
+
+    \draw[pilarrow] (user) -- (ui);
+    \draw[pilarrow] (ui) -- (svc);
+    \draw[pilarrow] (svc) -- (gen);
+    \draw[pilarrow] (svc) -- (grade);
+    \draw[pilarrow] (gen) |- (extract);
+    \draw[pilarrow] (grade) |- (extract);
+    \draw[pilarrow] (extract) -- (km);
+    \draw[pilarrow] (km) -- (store);
+    \draw[pilarrow] (km.west) -- ++(-1.2,0) |- (ui.south);
+  \end{tikzpicture}
+  \caption{\Product{}：雙模型與知識管理資料流示意}
+\end{figure}
+
+% =========================================
+\section{AI 雙模型策略（成本 × 品質）}
+\begin{tcolorbox}
+\textbf{策略}：\emph{出題} 使用 \textbf{Gemini 2.5 Flash}（快、創意、低成本），\emph{批改} 使用 \textbf{Gemini 2.5 Pro}（準確、專業、高品質），並調整溫度與取樣參數以平衡多樣性與穩定性。
+\end{tcolorbox}
+
+\subsection{核心程式片段（AI Service）}
+\begin{lstlisting}[style=py, caption={雙模型初始化與參數（摘錄）}, label={lst:aisvc}]
+# 出題模型（快速）- 提高溫度以增加變化
+self.generate_model = genai.GenerativeModel(
+    self.generate_model_name,
+    generation_config=genai.GenerationConfig(
+        response_mime_type="application/json",
+        temperature=1.0,
+        top_p=0.95,
+        top_k=40,
+    ),
+)
+
+# 批改模型（高品質）
+self.grade_model = genai.GenerativeModel(
+    self.grade_model_name,
+    generation_config=genai.GenerationConfig(
+        response_mime_type="application/json",
+        temperature=0.2,
+        top_p=0.9,
+    ),
+)
+\end{lstlisting}
+
+% =========================================
+\section{知識點管理（錯誤類型 × 間隔重複）}
+\subsection{四級錯誤分類}
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{P{3cm}P{10cm}}
+    \toprule
+    \textbf{類別} & \textbf{說明與示例} \\
+    \midrule
+    系統性（Systematic） & 可規則化避免的錯誤：時態、主被動、片語動詞用法等。 \\
+    單一性（Isolated） & 需個別記憶：固定搭配、片語、慣用語。 \\
+    可以更好（Enhancement） & 文法正確但不地道：自然度、語域、用字更精準。 \\
+    其他（Other） & 漏譯、誤解、語意錯置等。 \\
+    \bottomrule
+  \end{tabular}
+  \caption{錯誤分類設計}
+\end{table}
+
+\subsection{複習排程（艾賓浩斯導向）}
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[node distance=6mm]
+    \foreach \i/\t in {0/Day 0,1/Day 1,2/Day 3,3/Day 7,4/Day 14,5/Day 30}{
+      \node[box, minimum width=2.6cm] (d\i) at (2.9*\i,0) {\t};
+      \ifnum\i>0 \draw[pilarrow] (d\the\numexpr\i-1\relax) -- (d\i); \fi
+    }
+  \end{tikzpicture}
+  \caption{知識點複習時間點（示意，實際依掌握度動態調整）}
+\end{figure}
+
+% =========================================
+\section{前端設計系統（Design Tokens）}
+以設計令牌統一色彩、間距與字級，讓樣式跨頁一致、易擴充且利於重構。響應式布局支援桌機與行動。
+\begin{tcolorbox}
+\textbf{好處}：一致性、可維護、可替換品牌色；\quad
+\textbf{做法}：集中於 \code{web/static/css/design-system/}，頁面僅引用語意化類別。
+\end{tcolorbox}
+
+% =========================================
+\section{成果與介面}
+\subsection{核心頁面}
+\begin{itemize}
+  \item 練習：新題／複習、即時批改與解說。
+  \item 知識點：卡片化瀏覽、依錯誤類型與掌握度篩選。
+  \item 文法句型：內建查詢與示例。
+\end{itemize}
+
+% 若放了 figs/ui_practice.png 就會出圖；沒放就略過不顯示
+\MaybeFigure[width=\linewidth]{ui_practice.png}{介面示例（練習頁）}
+
+% =========================================
+\section{部署與啟動（速查）}
+\subsection{本機 Web}
+\begin{lstlisting}[style=bash, caption={啟動服務（Linux/Mac）}]
+# 1) 設定 API Key
+export GEMINI_API_KEY="your-api-key"
+
+# 2) 啟動服務
+./run.sh
+
+# 3) 瀏覽器開啟
+# 注意：以下 URL 會正確顯示且可複製
+# http://localhost:8000
+\end{lstlisting}
+
+\subsection{Docker}
+\begin{lstlisting}[style=bash, caption={Docker 啟動}]
+docker-compose up -d
+# 之後訪問：
+# http://localhost:8000
+\end{lstlisting}
+
+\subsection{雲端部署（Render）}
+\begin{lstlisting}[style=bash, caption={Render 部署流程（摘要）}]
+# 1) Fork 專案並連接 GitHub 倉庫
+# 2) 在 Render 設定環境變數 GEMINI_API_KEY
+# 3) 觸發部署完成後，即可對外提供服務
+\end{lstlisting}
+
+% =========================================
+\section{反思與發展路線圖}
+\subsection{經驗}
+\begin{itemize}
+  \item 與 AI 協作要 \emph{明確需求、質疑並共創}：快速原型 → 針對性優化。
+  \item 設計系統讓前端在功能擴張時保持穩定與一致。
+  \item 後端以事件日誌與知識點資料結構貫穿學習閉環，可量化成效。
+\end{itemize}
+
+\subsection{Roadmap}
+\begin{itemize}
+  \item \textbf{短期}：帳號系統與跨裝置同步。
+  \item \textbf{中期}：JSON \textrightarrow{} SQLite 遷移，增強查詢與效能。
+  \item \textbf{長期}：社群共學、分享知識點與筆記。
+\end{itemize}
+
+% =========================================
+\section*{附錄 A：環境變數（示例）}
+\begin{lstlisting}[style=bash]
+# AI 模型設定
+GEMINI_API_KEY=your-api-key
+GEMINI_GENERATE_MODEL=gemini-2.5-flash
+GEMINI_GRADE_MODEL=gemini-2.5-pro
+# 日誌
+LOG_LEVEL=INFO
+LOG_TO_FILE=true
+\end{lstlisting}
+
+% ---- 備註：若想改用 minted（更漂亮的高亮） ----
+% 1) Overleaf 專案 Compiler: XeLaTeX；在 Menu 勾選 -shell-escape
+% 2) 把上方 listings 換成：
+% \usepackage{minted}
+% \setminted{fontsize=\small, breaklines, autogobble, frame=single, bgcolor=LightBg}
+% 3) 將 \begin{lstlisting} 換成 \begin{minted}{python/bash} 即可
+
+\end{document}

@@ -3,7 +3,7 @@
 
 {% block styles %}
 <!-- 句型列表頁面專屬樣式 - 使用新設計系統 -->
-<link rel="stylesheet" href="/static/css/pages/patterns_v2.css" />
+<link rel="stylesheet" href="/static/css/pages/patterns_new.css" />
 {% endblock %}
 
 {% block content %}
@@ -92,7 +92,7 @@
          data-difficulty="{{ pattern.difficulty or 3 }}"
          data-search-text="{{ (pattern.pattern|lower) ~ ' ' ~ (pattern.formula|default('')|lower) ~ ' ' ~ (pattern.category|default('')|lower) }}">
       
-      <a href="/patterns/v2/{{ pattern.id }}" class="pattern-link">
+      <a href="/patterns/{{ pattern.id }}" class="pattern-link">
         <div class="pattern-header-compact">
           <h3 class="pattern-formula">{{ pattern.pattern }}</h3>
           <div class="pattern-badges">
