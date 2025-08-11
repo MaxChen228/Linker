@@ -6,7 +6,7 @@ import asyncio
 import json
 import os
 import time
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from core.log_config import get_module_logger
 
