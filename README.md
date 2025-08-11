@@ -1,6 +1,9 @@
 # Linker - 智能英文翻譯學習系統
 
-基於 AI 的智能翻譯學習平台，提供即時批改、錯誤分析和個人化學習追蹤。
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+基於 AI 的智能翻譯學習平台，使用 Google Gemini AI 提供即時批改、錯誤分析和個人化學習追蹤。
 
 ## 核心特色
 
@@ -206,41 +209,40 @@ docker-compose up -d
 **Q**: 如何備份學習數據？  
 **A**: 複製 `data/` 目錄即可，包含所有知識點和練習記錄
 
-## 項目文檔
+## 📖 文檔
 
-### 核心文檔
-- **[專案指引](CLAUDE.md)** - 核心開發指引
-- **[專案交接文檔](PROJECT_HANDOVER.md)** - 完整的專案交接資訊（含快速上手）
-- **[快速參考指南](QUICK_REFERENCE.md)** - 常用命令和速查表
-- **[待辦事項](TODO.md)** - 開發任務清單
+完整文檔請訪問 [文檔中心](docs/index.md)：
 
-### 技術文檔
-- [系統架構](docs/ARCHITECTURE.md) - 詳細架構設計
-- [設計系統](docs/DESIGN-SYSTEM-COMPLETE.md) - UI/UX 設計規範
-- [API 文檔](docs/API.md) - 接口說明
-- [配置指南](docs/CONFIGURATION.md) - 配置詳解
-- [開發文檔](docs/DEVELOPMENT.md) - 開發指南
-- [部署文檔](docs/DEPLOYMENT.md) - 部署說明
+- [安裝指南](docs/getting-started/installation.md)
+- [配置指南](docs/getting-started/configuration.md)
+- [快速開始](docs/getting-started/quick-start.md)
+- [API 文檔](docs/API.md)
+- [架構設計](docs/ARCHITECTURE.md)
+- [開發指南](docs/DEVELOPMENT.md)
+- [部署指南](docs/DEPLOYMENT.md)
+- [設計系統](docs/DESIGN-SYSTEM-COMPLETE.md)
 
-### 其他資源
-- [MCP 測試設置](MCP_SETUP.md) - Playwright 測試配置
-- [變更日誌](CHANGELOG.md) - 版本歷史
+## 🤝 貢獻
 
-## 貢獻指南
+歡迎貢獻！請查看 [開發指南](docs/DEVELOPMENT.md) 了解詳情。
 
-歡迎貢獻！請查看 [開發文檔](docs/DEVELOPMENT.md) 了解詳情。
-
-### 快速開始
 1. Fork 專案
-2. 創建功能分支
-3. 提交變更
-4. 發起 Pull Request
+2. 創建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交變更 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 發起 Pull Request
 
-## 授權
+## 📄 授權
 
 MIT License - 詳見 [LICENSE](LICENSE) 文件
 
-## 致謝
+## 🔗 連結
+
+- [問題回報](https://github.com/yourusername/linker-cli/issues)
+- [討論區](https://github.com/yourusername/linker-cli/discussions)
+- [變更日誌](CHANGELOG.md)
+
+## 🙏 致謝
 
 - Google Gemini API - AI 能力支援
 - FastAPI - Web 框架
@@ -248,6 +250,9 @@ MIT License - 詳見 [LICENSE](LICENSE) 文件
 
 ---
 
-**版本**: 2.5.0  
-**最後更新**: 2025-08-08  
-**作者**: Linker Team
+<p align="center">
+  <strong>版本</strong>: 2.5.0 | 
+  <strong>最後更新</strong>: 2025-08-11 | 
+  <strong>作者</strong>: Linker Team
+</p>
+<p align="center">Made with ❤️ by Linker Team</p>

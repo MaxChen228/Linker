@@ -3,7 +3,7 @@
 
 集中載入並提供查詢：
 - data/grammar_patterns.json（文法句型主來源）
-- data/assets.py 內的 EXAMPLE_SENTENCE_BANK（分級例句庫主來源）
+- core/assets.py 內的 EXAMPLE_SENTENCE_BANK（分級例句庫主來源）
 
 此模組為新版本的統一入口，不再依賴舊的 examples.json 與 grammar.json。
 """
@@ -72,10 +72,10 @@ class ExampleRepository:
     """例句資源存取（僅使用新版來源）"""
 
     def load_bank_from_assets(self) -> dict[str, Any]:
-        """載入 data/assets.py 的 EXAMPLE_SENTENCE_BANK。"""
+        """載入 core/assets.py 的 EXAMPLE_SENTENCE_BANK。"""
         try:
             # 延遲匯入以避免啟動時不必要的成本
-            from data.assets import EXAMPLE_SENTENCE_BANK  # type: ignore
+            from core.assets import EXAMPLE_SENTENCE_BANK  # type: ignore
 
             if isinstance(EXAMPLE_SENTENCE_BANK, dict):
                 return EXAMPLE_SENTENCE_BANK
