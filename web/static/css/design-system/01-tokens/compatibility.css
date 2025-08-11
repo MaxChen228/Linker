@@ -34,13 +34,10 @@
   
   /* ========== 過渡效果兼容性映射 ========== */
   /* 
-   * 舊系統使用transition-*，新系統使用duration-*
+   * 映射到 effects.css 的標準定義，避免重複
+   * --transition-normal 映射到 --transition-base
    */
-  --transition-fast: 150ms ease-out;
-  --transition-base: 250ms ease-out;
-  --transition-normal: 250ms ease-out;
-  --transition-slow: 350ms ease-out;
-  --transition-slower: 500ms ease-out;
+  --transition-normal: var(--transition-base);  /* 250ms → 200ms，統一使用 base */
   
   /* ========== 陰影兼容性映射 ========== */
   /* 
