@@ -64,7 +64,7 @@
     {% for pattern in patterns %}
     <div class="pattern-card-compact" 
          data-category="{{ pattern.category or '' }}" 
-         data-search-text="{{ (pattern.pattern|lower) ~ ' ' ~ (pattern.formula|default('')|lower) ~ ' ' ~ (pattern.category|default('')|lower) }}">
+         data-search-text="{{ (pattern.pattern|default('')|lower) ~ ' ' ~ (pattern.formula|default('')|lower) ~ ' ' ~ (pattern.category|default('')|lower) }}">
       
       <a href="/patterns/{{ pattern.id }}" class="pattern-link">
         <div class="pattern-header-compact">
@@ -149,7 +149,9 @@ let activeFilters = {
 };
 
 function applyFilters() {
+  console.log('[句型篩選] 套用篩選條件:', activeFilters);
   const items = document.querySelectorAll('.pattern-card-compact');
+  console.log('[句型篩選] 找到', items.length, '個項目');
   let hasResults = false;
   
   items.forEach(item => {

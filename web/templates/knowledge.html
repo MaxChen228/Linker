@@ -87,7 +87,7 @@
   <div class="knowledge-grid">
     <!-- 系統性錯誤群組 -->
     {% for group in knowledge_groups %}
-    <div class="knowledge-group-compact" data-category="系統性錯誤" data-mastery-level="{{ group.avg_mastery }}" data-search-text="{{ group.name|lower }}">
+    <div class="knowledge-group-compact" data-category="系統性錯誤" data-mastery-level="{{ group.avg_mastery|default(0) }}" data-search-text="{{ (group.name|default(''))|lower }}">
       <div class="group-header-compact">
         <h3 class="group-title-compact">{{ group.name }}</h3>
         <div class="group-badges">
@@ -117,7 +117,7 @@
     <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
        data-category="單一性錯誤" 
        data-mastery-level="{{ point.mastery_level }}"
-       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}">
       <div class="card-header-compact">
         <div class="card-title-compact">
           <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
@@ -143,7 +143,7 @@
     <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
        data-category="可以更好" 
        data-mastery-level="{{ point.mastery_level }}"
-       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}">
       <div class="card-header-compact">
         <div class="card-title-compact">
           <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
@@ -169,7 +169,7 @@
     <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
        data-category="其他錯誤" 
        data-mastery-level="{{ point.mastery_level }}"
-       data-search-text="{{ point.key_point|lower }} {{ point.description|lower }}">
+       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}">
       <div class="card-header-compact">
         <div class="card-title-compact">
           <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
@@ -212,7 +212,9 @@ let activeFilters = {
 };
 
 function applyFilters() {
+  console.log('[知識點篩選] 套用篩選條件:', activeFilters);
   const items = document.querySelectorAll('.knowledge-card-compact, .knowledge-group-compact');
+  console.log('[知識點篩選] 找到', items.length, '個項目');
   let hasResults = false;
   
   items.forEach(item => {
@@ -237,8 +239,9 @@ function applyFilters() {
     
     // 檢查搜尋條件
     if (activeFilters.search) {
-      const searchText = item.dataset.searchText || '';
-      show = show && searchText.includes(activeFilters.search);
+      const searchText = (item.dataset.searchText || '').toLowerCase();
+      const searchTerm = activeFilters.search.toLowerCase();
+      show = show && searchText.includes(searchTerm);
     }
     
     item.style.display = show ? '' : 'none';
@@ -255,7 +258,7 @@ function applyFilters() {
 const searchInput = document.getElementById('knowledge-search');
 if (searchInput) {
   searchInput.addEventListener('input', function(e) {
-    activeFilters.search = e.target.value.toLowerCase();
+    activeFilters.search = e.target.value;
     applyFilters();
   });
 }
@@ -278,6 +281,11 @@ document.querySelectorAll('.filter-tab, .filter-pill').forEach(btn => {
     // 應用所有篩選條件
     applyFilters();
   });
+});
+
+// 頁面載入時初始化篩選
+document.addEventListener('DOMContentLoaded', function() {
+  applyFilters();
 });
 </script>
 {% endblock %}

@@ -20,15 +20,6 @@
   --brand-800: var(--primary-700);  /* 簡化後沒有800，使用700 */
   --brand-900: var(--primary-700);  /* 簡化後沒有900，使用700 */
   
-  
-  /* ========== 按鈕兼容性映射 ========== */
-  /* 
-   * 保留舊的按鈕padding格式
-   */
-  --btn-padding-sm: 0 var(--btn-padding-x-sm);
-  --btn-padding-md: 0 var(--btn-padding-x-md);
-  --btn-padding-lg: 0 var(--btn-padding-x-lg);
-  
   /* ========== 圓角兼容性映射 ========== */
   /* 
    * 圓角系統已移至effects.css但保留在spacing.css的引用
