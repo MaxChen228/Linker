@@ -1080,8 +1080,15 @@
               expected_patterns: data.expected_patterns || []
             };
             
-            // 更新卡片
-            updateQuestionCard(questionId, questionQueue[questionIndex]);
+            // 更新卡片 - 修正函數調用
+            updateQuestionCard(questionId, QuestionStatus.READY, data.chinese);
+          }
+        } else {
+          // API 失敗處理
+          const questionIndex = questionQueue.findIndex(q => q.id === questionId);
+          if (questionIndex !== -1) {
+            questionQueue[questionIndex].status = QuestionStatus.ERROR;
+            updateQuestionCard(questionId, QuestionStatus.ERROR, '生成失敗');
           }
         }
       } catch (error) {
@@ -1090,7 +1097,7 @@
         const questionIndex = questionQueue.findIndex(q => q.id === questionId);
         if (questionIndex !== -1) {
           questionQueue[questionIndex].status = QuestionStatus.ERROR;
-          updateQuestionCard(questionId, questionQueue[questionIndex]);
+          updateQuestionCard(questionId, QuestionStatus.ERROR, '網路錯誤');
         }
       }
       
