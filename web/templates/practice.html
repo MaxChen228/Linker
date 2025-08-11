@@ -1082,6 +1082,12 @@
             
             // 更新卡片 - 修正函數調用
             updateQuestionCard(questionId, QuestionStatus.READY, data.chinese);
+            
+            // 自動選擇並顯示題目
+            selectQuestion(questionId);
+            
+            // 隱藏生成提示
+            hideGeneratingToast();
           }
         } else {
           // API 失敗處理
@@ -1090,6 +1096,8 @@
             questionQueue[questionIndex].status = QuestionStatus.ERROR;
             updateQuestionCard(questionId, QuestionStatus.ERROR, '生成失敗');
           }
+          // 隱藏生成提示
+          hideGeneratingToast();
         }
       } catch (error) {
         console.error('[generateTaggedQuestion] Error:', error);
@@ -1099,6 +1107,8 @@
           questionQueue[questionIndex].status = QuestionStatus.ERROR;
           updateQuestionCard(questionId, QuestionStatus.ERROR, '網路錯誤');
         }
+        // 隱藏生成提示
+        hideGeneratingToast();
       }
       
       updateQueueCount();
