@@ -53,7 +53,7 @@
 ## 🔧 改善任務清單
 
 ### Phase 1: HTML ID 規範化 (15分鐘)
-- [ ] 將 `id="patternSearch"` 改為 `id="pattern-search"`
+- [x] 將 `id="patternSearch"` 改為 `id="pattern-search"`
 - [ ] 將 `id="knowledgeSearch"` 改為 `id="knowledge-search"` 
 - [ ] 將 `id="searchInput"` 改為 `id="search-input"`
 - [ ] 將 `id="categoryTabs"` 改為 `id="category-tabs"`

@@ -26,7 +26,7 @@
         <path d="m21 21-4.35-4.35"></path>
       </svg>
       <input type="text" 
-             id="patternSearch" 
+             id="pattern-search" 
              placeholder="搜尋句型、公式或例句..." 
              value="{{ q }}"
              autocomplete="off" />
@@ -214,7 +214,7 @@ function applyFilters() {
 }
 
 // 搜尋功能
-document.getElementById('patternSearch').addEventListener('input', function(e) {
+document.getElementById('pattern-search').addEventListener('input', function(e) {
   activeFilters.search = e.target.value;
   applyFilters();
   

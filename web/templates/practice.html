@@ -4,8 +4,6 @@
 {% block styles %}
 <!-- 練習頁面專屬樣式 - 使用新設計系統 -->
 <link rel="stylesheet" href="/static/css/pages/practice.css" />
-<link rel="stylesheet" href="/static/css/features/review.css" />
-<link rel="stylesheet" href="/static/css/features/llm-debug.css" />
 {% endblock %}
 
 {% block content %}
@@ -38,7 +36,7 @@
       </button>
     </div>
     
-    <form method="post" class="stack" id="practiceForm">
+    <form method="post" class="stack" id="practice-form">
       <!-- 參數設定 -->
       <div class="params-row">
         <div class="param-group">
@@ -57,7 +55,7 @@
             {% endfor %}
           </select>
         </div>
-        <button type="button" class="btn" data-variant="primary" data-size="lg" id="shuffleBtn">
+        <button type="button" class="btn" data-variant="primary" data-size="lg" id="shuffle-btn">
           <span class="btn-text">
             {% if chinese %}
               換一句
@@ -77,7 +75,7 @@
       
       <!-- 隱藏的mode input -->
       {% set actual_mode = request.query_params.get('mode', mode or 'new') %}
-      <input type="hidden" name="mode" id="modeInput" value="{{ actual_mode }}">
+      <input type="hidden" name="mode" id="mode-input" value="{{ actual_mode }}">
 
     {% if review_empty_message %}
     <!-- 複習佇列為空的提示 -->
@@ -156,7 +154,7 @@
     <input type="hidden" name="target_point_ids" value="{{ target_point_ids | tojson if target_point_ids else '[]' }}">
     {% if chinese %}
     <div class="submit-section">
-      <button class="btn" data-variant="primary" data-size="lg" type="submit" id="submitBtn">
+      <button class="btn" data-variant="primary" data-size="lg" type="submit" id="submit-btn">
         <span class="btn-text">提交答案</span>
       </button>
     </div>
@@ -165,7 +163,7 @@
   </div>
   
   <!-- Loading Overlay - 使用新設計系統 -->
-  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+  <div class="loading-overlay" id="loading-overlay" style="display: none;">
     <div class="loading-modal" data-glass="true">
       <div class="spinner-container">
         <div class="spinner" data-type="multi-ring">
@@ -174,8 +172,8 @@
           <div class="spinner-ring"></div>
         </div>
       </div>
-      <h3 class="loading-title" id="loadingTitle">AI 正在批改中</h3>
-      <p class="loading-message" id="loadingMessage">
+      <h3 class="loading-title" id="loading-title">AI 正在批改中</h3>
+      <p class="loading-message" id="loading-message">
         正在分析你的翻譯，請稍候片刻...
       </p>
       <div class="loading-tips">
@@ -352,33 +350,33 @@
     // 確保 DOM 載入完成後再綁定事件
     document.addEventListener('DOMContentLoaded', function() {
       // 出題按鈕 - 使用當前選擇的值
-      const shuffleBtn = document.getElementById('shuffleBtn');
+      const shuffleBtn = document.getElementById('shuffle-btn');
       if (shuffleBtn) {
         shuffleBtn.addEventListener('click', function() {
           try {
-            console.error('[shuffleBtn] ===== CRITICAL DEBUG START =====');
-            console.error('[shuffleBtn] Button clicked at', new Date().toISOString());
+            console.error('[shuffle-btn] ===== CRITICAL DEBUG START =====');
+            console.error('[shuffle-btn] Button clicked at', new Date().toISOString());
             
-            // 檢查是否有多個 shuffleBtn
-            const allShuffleBtns = document.querySelectorAll('#shuffleBtn');
-            console.error('[shuffleBtn] Number of shuffleBtn elements:', allShuffleBtns.length);
+            // 檢查是否有多個 shuffle-btn
+            const allShuffleBtns = document.querySelectorAll('#shuffle-btn');
+            console.error('[shuffle-btn] Number of shuffle-btn elements:', allShuffleBtns.length);
             
-            const modeInput = document.getElementById('modeInput');
+            const modeInput = document.getElementById('mode-input');
             const lengthSelect = document.getElementById('lengthSelect');
             const levelSelect = document.getElementById('levelSelect');
             
-            // 檢查是否有多個 modeInput
-            const allModeInputs = document.querySelectorAll('#modeInput');
-            console.error('[shuffleBtn] Number of modeInput elements:', allModeInputs.length);
+            // 檢查是否有多個 mode-input
+            const allModeInputs = document.querySelectorAll('#mode-input');
+            console.error('[shuffle-btn] Number of mode-input elements:', allModeInputs.length);
             if (allModeInputs.length > 1) {
-              console.error('[shuffleBtn] WARNING: Multiple modeInput elements found!');
+              console.error('[shuffle-btn] WARNING: Multiple mode-input elements found!');
               allModeInputs.forEach((input, index) => {
-                console.error(`  modeInput[${index}].value:`, input.value);
+                console.error(`  mode-input[${index}].value:`, input.value);
               });
             }
             
             if (!modeInput || !lengthSelect || !levelSelect) {
-              console.error('[shuffleBtn] Cannot find required elements');
+              console.error('[shuffle-btn] Cannot find required elements');
               alert('無法找到必要的元素，請重新整理頁面');
               return;
             }
@@ -387,49 +385,49 @@
             const urlParams = new URLSearchParams(window.location.search);
             const urlMode = urlParams.get('mode');
             
-            console.error('[shuffleBtn] RAW VALUES:');
+            console.error('[shuffle-btn] RAW VALUES:');
             console.error('  window.location.search:', window.location.search);
             console.error('  urlParams:', Object.fromEntries(urlParams));
             console.error('  urlMode:', urlMode);
-            console.error('  modeInput.value BEFORE:', modeInput.value);
-            console.error('  modeInput.getAttribute("value"):', modeInput.getAttribute('value'));
+            console.error('  mode-input.value BEFORE:', modeInput.value);
+            console.error('  mode-input.getAttribute("value"):', modeInput.getAttribute('value'));
             
-            // 強制同步 modeInput 到 URL 的值
+            // 強制同步 mode-input 到 URL 的值
             if (urlMode && urlMode !== modeInput.value) {
-              console.error('[shuffleBtn] Fixing mode mismatch: Input was', modeInput.value, 'but URL is', urlMode);
+              console.error('[shuffle-btn] Fixing mode mismatch: Input was', modeInput.value, 'but URL is', urlMode);
               modeInput.value = urlMode;
-              console.error('  modeInput.value AFTER fix:', modeInput.value);
+              console.error('  mode-input.value AFTER fix:', modeInput.value);
             }
             
             const mode = urlMode || modeInput.value || 'new';
             const length = lengthSelect.value;
             const level = levelSelect.value;
             
-            console.error('[shuffleBtn] FINAL VALUES:');
+            console.error('[shuffle-btn] FINAL VALUES:');
             console.error('  mode:', mode);
             console.error('  length:', length);
             console.error('  level:', level);
             
             const url = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
-            console.error('[shuffleBtn] NAVIGATING TO:', url);
-            console.error('[shuffleBtn] ===== CRITICAL DEBUG END =====');
+            console.error('[shuffle-btn] NAVIGATING TO:', url);
+            console.error('[shuffle-btn] ===== CRITICAL DEBUG END =====');
             
             // 添加一個短暫延遲以確保日誌能被看到
             setTimeout(() => {
               window.location.href = url;
             }, 100);
           } catch (error) {
-            console.error('[shuffleBtn] Error:', error);
+            console.error('[shuffle-btn] Error:', error);
             alert('出題時發生錯誤，請重新整理頁面');
           }
         });
       }
       
       // 顯示當前狀態（調試用）
-      const modeInput = document.getElementById('modeInput');
+      const modeInput = document.getElementById('mode-input');
       const debugMode = document.querySelector('[data-debug-mode]');
       if (modeInput) {
-        console.log('[Initial] Current mode from modeInput:', modeInput.value);
+        console.log('[Initial] Current mode from mode-input:', modeInput.value);
         console.log('[Initial] Current URL:', window.location.href);
         if (debugMode) {
           console.log('[Initial] Server-side mode value:', debugMode.dataset.debugMode);
@@ -442,7 +440,7 @@
           console.warn('[WARNING] Mode mismatch! URL mode:', urlMode, 'vs Input mode:', modeInput.value);
           // 強制同步到URL的值
           modeInput.value = urlMode;
-          console.log('[FIX] Updated modeInput to match URL:', urlMode);
+          console.log('[FIX] Updated mode-input to match URL:', urlMode);
         }
       }
       
@@ -451,12 +449,12 @@
       if (lengthSelect) {
         lengthSelect.addEventListener('change', function() {
           try {
-            const modeInput = document.getElementById('modeInput');  // 修正：使用 modeInput 而非 modeSelect
+            const modeInput = document.getElementById('mode-input');  // 修正：使用 mode-input 而非 modeSelect
             const length = this.value;
             const level = document.getElementById('levelSelect').value;
             
             if (!modeInput) {
-              console.error('[lengthSelect] Cannot find modeInput');
+              console.error('[lengthSelect] Cannot find mode-input');
               return;
             }
             
@@ -474,12 +472,12 @@
       if (levelSelect) {
         levelSelect.addEventListener('change', function() {
           try {
-            const modeInput = document.getElementById('modeInput');  // 修正：使用 modeInput 而非 modeSelect
+            const modeInput = document.getElementById('mode-input');  // 修正：使用 mode-input 而非 modeSelect
             const length = document.getElementById('lengthSelect').value;
             const level = this.value;
             
             if (!modeInput) {
-              console.error('[levelSelect] Cannot find modeInput');
+              console.error('[levelSelect] Cannot find mode-input');
               return;
             }
             
@@ -494,10 +492,10 @@
       }
       
       // 處理表單提交時顯示載入覆蓋層
-      const form = document.getElementById('practiceForm');
+      const form = document.getElementById('practice-form');
       if (form) {
         form.addEventListener('submit', function(e) {
-          const loadingOverlay = document.getElementById('loadingOverlay');
+          const loadingOverlay = document.getElementById('loading-overlay');
           if (loadingOverlay) {
             loadingOverlay.style.display = 'block';
             setTimeout(() => {

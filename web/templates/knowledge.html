@@ -34,7 +34,7 @@
         <path d="m21 21-4.35-4.35"></path>
       </svg>
       <input type="text" 
-             id="knowledgeSearch" 
+             id="knowledge-search" 
              placeholder="搜尋知識點..." 
              autocomplete="off" />
       <span class="search-hint">即時搜尋</span>
@@ -180,7 +180,7 @@
   </div>
   
   <!-- 無結果提示 -->
-  <div class="no-results" style="display: none;">
+  <div class="no-results" id="no-knowledge-results" style="display: none;">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="11" cy="11" r="8"></circle>
       <path d="m21 21-4.35-4.35"></path>
@@ -237,7 +237,7 @@ function applyFilters() {
 }
 
 // 更新搜尋功能
-document.getElementById('knowledgeSearch').addEventListener('input', function(e) {
+document.getElementById('knowledge-search').addEventListener('input', function(e) {
   activeFilters.search = e.target.value.toLowerCase();
   applyFilters();
 });

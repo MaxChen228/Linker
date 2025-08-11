@@ -1,7 +1,19 @@
 /**
  * Linker Web 前端互動增強
- * 功能：自動儲存草稿
+ * 功能：自動儲存草稿、統一日誌管理
  */
+
+// 初始化日誌系統
+const logger = window.getLogger ? window.getLogger('main') : {
+  debug: (...args) => console.log(...args),
+  info: (...args) => console.info(...args),
+  log: (...args) => console.log(...args),
+  warn: (...args) => console.warn(...args),
+  warning: (...args) => console.warn(...args),
+  error: (...args) => console.error(...args),
+  logUserAction: (action, details) => console.log(`[USER] ${action}:`, details),
+  logPerformance: (operation, duration) => console.log(`[PERF] ${operation}: ${duration}ms`)
+};
 
 /**
  * EventManager - 統一管理事件監聽器，防止記憶體洩漏
@@ -150,10 +162,10 @@ class DraftManager {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
         this.lastSavedContent = data.english;
         this.showSaveIndicator('saved');
-        console.log('草稿已儲存:', new Date().toLocaleTimeString());
+        logger.debug('草稿已儲存:', new Date().toLocaleTimeString());
       }
     } catch (e) {
-      console.error('儲存草稿失敗:', e);
+      logger.error('儲存草稿失敗:', e);
       this.showSaveIndicator('error');
     }
   }
@@ -177,7 +189,7 @@ class DraftManager {
 
       return draft;
     } catch (e) {
-      console.error('載入草稿失敗:', e);
+      logger.error('載入草稿失敗:', e);
       return null;
     }
   }
@@ -296,9 +308,9 @@ class DraftManager {
     try {
       localStorage.removeItem(this.STORAGE_KEY);
       this.lastSavedContent = '';
-      console.log('草稿已清除');
+      logger.debug('草稿已清除');
     } catch (e) {
-      console.error('清除草稿失敗:', e);
+      logger.error('清除草稿失敗:', e);
     }
   }
 
@@ -357,28 +369,28 @@ class PracticeSync {
   constructor() {
     this.lengthSelect = document.querySelector('select[name="length"]');
     this.levelSelect = document.querySelector('select[name="level"]');
-    this.shuffleButton = document.getElementById('shuffleBtn');
+    this.shuffleButton = document.getElementById('shuffle-btn');
     
     // 詳細調試信息
-    console.log('=== PracticeSync Debug ===');
-    console.log('Length select found:', !!this.lengthSelect, this.lengthSelect);
-    console.log('Level select found:', !!this.levelSelect, this.levelSelect);
-    console.log('Shuffle button found:', !!this.shuffleButton, this.shuffleButton);
+    logger.log('=== PracticeSync Debug ===');
+    logger.log('Length select found:', !!this.lengthSelect, this.lengthSelect);
+    logger.log('Level select found:', !!this.levelSelect, this.levelSelect);
+    logger.log('Shuffle button found:', !!this.shuffleButton, this.shuffleButton);
     
     if (this.lengthSelect) {
-      console.log('Current length value:', this.lengthSelect.value);
+      logger.log('Current length value:', this.lengthSelect.value);
     }
     if (this.levelSelect) {
-      console.log('Current level value:', this.levelSelect.value);
+      logger.log('Current level value:', this.levelSelect.value);
     }
     if (this.shuffleButton) {
-      console.log('Current button href:', this.shuffleButton.href);
+      logger.log('Current button href:', this.shuffleButton.href);
     }
     
     if (this.lengthSelect && this.levelSelect) {
       this.init();
     } else {
-      console.error('❌ Required elements not found!');
+      logger.error('❌ Required elements not found!');
     }
   }
   
@@ -392,12 +404,12 @@ class PracticeSync {
     // 監聽選項變更 - 只更新按鈕，不自動跳轉
     this.lengthSelect.addEventListener('change', () => {
       this.updateShuffleButton();
-      console.log('Length changed to:', this.lengthSelect.value);
+      logger.log('Length changed to:', this.lengthSelect.value);
     });
     
     this.levelSelect.addEventListener('change', () => {
       this.updateShuffleButton();
-      console.log('Level changed to:', this.levelSelect.value);
+      logger.log('Level changed to:', this.levelSelect.value);
     });
     
     // 攔截換一句按鈕點擊，確保使用最新的參數
@@ -405,7 +417,7 @@ class PracticeSync {
     // 這個代碼會覆蓋 practice.html 中的事件處理器，導致複習模式無法正常工作
     /*
     if (this.shuffleButton) {
-      console.log('✅ Setting up click handler for shuffle button');
+      logger.log('✅ Setting up click handler for shuffle button');
       
       // 移除可能存在的舊事件監聽器
       const newButton = this.shuffleButton.cloneNode(true);
@@ -417,8 +429,8 @@ class PracticeSync {
         e.stopPropagation();
         
         // 讀取當前選擇器的值，包括模式
-        // 修正：使用正確的 ID 'modeInput' 而不是 'modeSelect'
-        const modeInput = document.getElementById('modeInput');
+        // 修正：使用正確的 ID 'mode-input' 而不是 'modeSelect'
+        const modeInput = document.getElementById('mode-input');
         const urlParams = new URLSearchParams(window.location.search);
         const urlMode = urlParams.get('mode');
         const mode = urlMode || (modeInput ? modeInput.value : 'new');
@@ -426,22 +438,22 @@ class PracticeSync {
         const level = this.levelSelect.value;
         const newUrl = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
         
-        console.log('🎲 Shuffle button clicked!');
-        console.log('Current mode select value:', mode);
-        console.log('Current length select value:', length);
-        console.log('Current level select value:', level);
-        console.log('Will navigate to:', newUrl);
+        logger.log('🎲 Shuffle button clicked!');
+        logger.log('Current mode select value:', mode);
+        logger.log('Current length select value:', length);
+        logger.log('Current level select value:', level);
+        logger.log('Will navigate to:', newUrl);
         
         // 確保跳轉
         window.location.href = newUrl;
       });
       
-      console.log('✅ Click handler attached');
+      logger.log('✅ Click handler attached');
     } else {
-      console.error('❌ Shuffle button not found, cannot attach handler');
+      logger.error('❌ Shuffle button not found, cannot attach handler');
     }
     */
-    console.log('[PracticeSync] Skipping shuffle button handler - handled in practice.html');
+    logger.log('[PracticeSync] Skipping shuffle button handler - handled in practice.html');
   }
   
   syncFromURL() {
@@ -465,13 +477,13 @@ class PracticeSync {
       // 重要：包含 mode 參數！
       const newHref = `/practice?mode=${mode}&length=${length}&level=${level}&shuffle=1`;
       this.shuffleButton.href = newHref;
-      console.log('📝 Updated button href');
-      console.log('  Mode:', mode);
-      console.log('  Length:', length);
-      console.log('  Level:', level);
-      console.log('  New href:', newHref);
+      logger.log('📝 Updated button href');
+      logger.log('  Mode:', mode);
+      logger.log('  Length:', length);
+      logger.log('  Level:', level);
+      logger.log('  New href:', newHref);
     } else {
-      console.error('❌ Cannot update button - button not found');
+      logger.error('❌ Cannot update button - button not found');
     }
   }
 }
@@ -481,13 +493,13 @@ class PracticeSync {
  */
 class PatternsManager {
   constructor() {
-    this.searchInput = document.getElementById('searchInput');
+    this.searchInput = document.getElementById('search-input');
     this.categoryTabs = document.querySelectorAll('.category-tab');
     this.patternCards = document.querySelectorAll('.pattern-card');
-    this.noResults = document.getElementById('noResults');
-    this.totalCount = document.getElementById('totalCount');
-    this.visibleCount = document.getElementById('visibleCount');
-    this.copyToast = document.getElementById('copyToast');
+    this.noResults = document.getElementById('no-results');
+    this.totalCount = document.getElementById('total-count');
+    this.visibleCount = document.getElementById('visible-count');
+    this.copyToast = document.getElementById('copy-toast');
     this.favorites = this.loadFavorites();
     
     this.currentCategory = '';
@@ -648,7 +660,7 @@ class PatternsManager {
         }, 2000);
       }
     }).catch(err => {
-      console.error('複製失敗:', err);
+      logger.error('複製失敗:', err);
     });
   }
   
@@ -682,14 +694,14 @@ class PatternsManager {
     try {
       localStorage.setItem('linker_pattern_favorites', JSON.stringify(this.favorites));
     } catch (e) {
-      console.error('儲存收藏失敗:', e);
+      logger.error('儲存收藏失敗:', e);
     }
   }
 }
 
 // 全域函數供 HTML 使用
 function clearSearch() {
-  const searchInput = document.getElementById('searchInput');
+  const searchInput = document.getElementById('search-input');
   if (searchInput) {
     searchInput.value = '';
     searchInput.dispatchEvent(new Event('input'));
@@ -701,12 +713,12 @@ function clearSearch() {
  */
 class KnowledgeManager {
   constructor() {
-    this.searchInput = document.getElementById('knowledgeSearch');
+    this.searchInput = document.getElementById('knowledge-search');
     this.filterTabs = document.querySelectorAll('.filter-tab');
     // 改為同時選擇群組卡片和單一卡片
     this.knowledgeGroups = document.querySelectorAll('.knowledge-group-card');
     this.singleCards = document.querySelectorAll('.knowledge-single-card');
-    this.noResults = document.getElementById('noKnowledgeResults');
+    this.noResults = document.getElementById('no-knowledge-results');
     
     this.currentCategory = '';
     this.currentMastery = '';
@@ -755,8 +767,8 @@ class KnowledgeManager {
   updateCategoryStats() {
     // 統計計數由後端提供，這裡不需要重新計算
     // 如果需要動態更新，可以透過 data attributes 取得
-    console.log('Knowledge groups:', this.knowledgeGroups.length);
-    console.log('Single cards:', this.singleCards.length);
+    logger.log('Knowledge groups:', this.knowledgeGroups.length);
+    logger.log('Single cards:', this.singleCards.length);
   }
   
   filterKnowledge() {
@@ -855,9 +867,9 @@ class KnowledgeManager {
  */
 class LoadingManager {
   constructor() {
-    this.overlay = document.getElementById('loadingOverlay');
-    this.title = document.getElementById('loadingTitle');
-    this.message = document.getElementById('loadingMessage');
+    this.overlay = document.getElementById('loading-overlay');
+    this.title = document.getElementById('loading-title');
+    this.message = document.getElementById('loading-message');
   }
   
   show(title = 'AI 正在處理中', message = '請稍候片刻...') {
@@ -916,8 +928,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const practiceSync = new PracticeSync();
     
     // 處理表單提交載入狀態
-    const practiceForm = document.getElementById('practiceForm');
-    const submitBtn = document.getElementById('submitBtn');
+    const practiceForm = document.getElementById('practice-form');
+    const submitBtn = document.getElementById('submit-btn');
     
     if (practiceForm) {
       practiceForm.addEventListener('submit', (e) => {
@@ -940,7 +952,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2024-12-10: 暫時禁用，因為會干擾 practice.html 中的事件處理
     // 這會導致複習模式無法正常工作
     /*
-    const shuffleBtn = document.getElementById('shuffleBtn');
+    const shuffleBtn = document.getElementById('shuffle-btn');
     if (shuffleBtn) {
       // 修改原有的點擊事件處理
       const originalHandler = shuffleBtn.onclick;
@@ -967,7 +979,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
     */
-    console.log('[LoadingManager] Skipping shuffle button loading handler - handled in practice.html');
+    logger.log('[LoadingManager] Skipping shuffle button loading handler - handled in practice.html');
     
     // 掛載到全域以便調試
     window.draftManager = draftManager;
