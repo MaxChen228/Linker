@@ -39,16 +39,16 @@
     <div class="filter-section">
       <h3 class="filter-title">句型分類</h3>
       <div class="filter-tabs">
-        <button class="btn filter-tab {% if not category %}active{% endif %}" 
-                data-variant="tab" 
+        <button class="btn {% if not category %}active{% endif %}" 
+                data-variant="filter-tab" 
                 data-filter-type="category" 
                 data-filter-value="">
           全部
           <span class="btn-count">{{ patterns|length }}</span>
         </button>
         {% for cat in categories %}
-          <button class="btn filter-tab {% if cat == category %}active{% endif %}" 
-                  data-variant="tab" 
+          <button class="btn {% if cat == category %}active{% endif %}" 
+                  data-variant="filter-tab" 
                   data-filter-type="category" 
                   data-filter-value="{{ cat }}">
             {{ cat }}

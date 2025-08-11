@@ -282,35 +282,9 @@
   flex-wrap: wrap;
 }
 
-.filter-tab {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-full);
-  background: var(--surface-base);
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  transition: var(--transition-base);
-  cursor: pointer;
-}
-
-.filter-tab:hover {
-  background: var(--surface-elevated);
-  border-color: var(--border-dark);
-}
-
-.filter-tab.active {
-  background: var(--color-primary);
-  color: var(--text-inverse);
-  border-color: var(--color-primary);
-}
-
-.filter-tab .btn-count {
-  margin-left: var(--space-1);
-  padding: 0 var(--space-1-5);
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-full);
-  font-weight: var(--font-semibold);
-}
+/* 舊的 .filter-tab 樣式已移至設計系統 buttons.css
+ * 使用 .btn[data-variant="filter-tab"] 和 .btn[data-variant="filter-pill"]
+ */
 
 .mastery-dot {
   display: inline-block;

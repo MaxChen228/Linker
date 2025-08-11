@@ -121,41 +121,13 @@
   gap: 0.5rem;
 }
 
-.filter-tab,
-.filter-pill {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  border: 1px solid var(--border-default);
-  border-radius: 8px;
-  background: var(--surface-base);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-}
+/* 舊的 .filter-tab 和 .filter-pill 樣式已移至設計系統 */
 
-.filter-tab:hover,
-.filter-pill:hover {
-  background: var(--surface-dark);
-  border-color: var(--border-dark);
-  color: var(--text-primary);
-}
+/* Hover 樣式已整合到設計系統 */
 
-.filter-tab.active,
-.filter-pill.active {
-  background: var(--accent-500);
-  border-color: var(--accent-500);
-  color: white;
-}
+/* Active 樣式已整合到設計系統 */
 
-.filter-tab .btn-count {
-  display: inline-block;
-  margin-left: 0.5rem;
-  padding: 0.125rem 0.375rem;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
+/* 計數標籤樣式已整合到設計系統 */
 
 /* ========== 句型卡片網格 ========== */
 .patterns-grid {

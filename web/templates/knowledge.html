@@ -47,12 +47,12 @@
     <div class="filter-section">
       <h3 class="filter-title">錯誤類別</h3>
       <div class="filter-tabs">
-        <button class="btn filter-tab active" data-variant="tab" data-filter-type="category" data-filter-value="">
+        <button class="btn active" data-variant="filter-tab" data-filter-type="category" data-filter-value="">
           全部
           <span class="btn-count">{{ points|length }}</span>
         </button>
         {% for cat in categories %}
-          <button class="btn filter-tab" data-variant="tab" data-filter-type="category" data-filter-value="{{ cat }}">
+          <button class="btn" data-variant="filter-tab" data-filter-type="category" data-filter-value="{{ cat }}">
             {{ cat }}
             <span class="btn-count">{{ category_counts[cat] }}</span>
           </button>
@@ -64,18 +64,18 @@
     <div class="filter-section">
       <h3 class="filter-title">掌握程度</h3>
       <div class="filter-pills">
-        <button class="btn filter-pill active" data-variant="pill" data-filter-type="mastery" data-filter-value="">
+        <button class="btn active" data-variant="filter-pill" data-filter-type="mastery" data-filter-value="">
           全部
         </button>
-        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="low">
+        <button class="btn" data-variant="filter-pill" data-filter-type="mastery" data-filter-value="low">
           <span class="mastery-dot low"></span>
           低 (&lt;30%)
         </button>
-        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="medium">
+        <button class="btn" data-variant="filter-pill" data-filter-type="mastery" data-filter-value="medium">
           <span class="mastery-dot medium"></span>
           中 (30-70%)
         </button>
-        <button class="btn filter-pill" data-variant="pill" data-filter-type="mastery" data-filter-value="high">
+        <button class="btn" data-variant="filter-pill" data-filter-type="mastery" data-filter-value="high">
           <span class="mastery-dot high"></span>
           高 (&gt;70%)
         </button>
@@ -263,8 +263,8 @@ if (searchInput) {
   });
 }
 
-// 更新篩選按鈕功能
-document.querySelectorAll('.filter-tab, .filter-pill').forEach(btn => {
+// 更新篩選按鈕功能 - 使用統一的屬性選擇器
+document.querySelectorAll('[data-filter-type]').forEach(btn => {
   btn.addEventListener('click', function() {
     const filterType = this.dataset.filterType;
     const filterValue = this.dataset.filterValue;
