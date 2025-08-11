@@ -1,178 +1,181 @@
-[
-  {
-    "id": 1,
-    "key_point": "主詞動詞不一致",
-    "category": "systematic",
-    "subtype": "verb_conjugation",
-    "explanation": "當主詞是第三人稱單數時（如 he, she, it），助動詞 'have' 應使用 'has'。這是一個基礎的文法規則，稱為主詞與動詞的一致性（Subject-Verb Agreement）。",
-    "original_phrase": "she have to",
-    "correction": "she has to",
-    "mastery_level": 0.0,
-    "mistake_count": 1,
-    "correct_count": 0,
-    "created_at": "2025-08-10T18:54:10.353806",
-    "last_seen": "2025-08-10T18:54:10.353809",
-    "next_review": "2025-08-11T18:54:10.353832",
-    "examples": [
-      {
-        "chinese": "為了實現目標，她必須全力以赴。",
-        "user_answer": "In order to achieve her goal, she have to do her best.",
-        "correct": "To achieve her goal, she has to give it her all."
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "key_point": "詞語可以更道地",
-    "category": "enhancement",
-    "subtype": "naturalness",
-    "explanation": "雖然 'do her best'（盡力而為）是正確的，但中文的「全力以赴」帶有更強烈的「毫無保留、用盡一切努力」的意味。使用 'give it her all' 或 'go all out' 這樣的片語能更生動地傳達這種感覺，讓表達更貼近母語人士的用法。",
-    "original_phrase": "do her best",
-    "correction": "give it her all / go all out",
-    "mastery_level": 0.0,
-    "mistake_count": 1,
-    "correct_count": 0,
-    "created_at": "2025-08-10T18:54:10.354320",
-    "last_seen": "2025-08-10T18:54:10.354324",
-    "next_review": "2025-08-11T18:54:10.354329",
-    "examples": [
-      {
-        "chinese": "為了實現目標，她必須全力以赴。",
-        "user_answer": "In order to achieve her goal, she have to do her best.",
-        "correct": "To achieve her goal, she has to give it her all."
-      }
-    ]
-  },
-  {
-    "id": 3,
-    "key_point": "表達可以更簡潔",
-    "category": "enhancement",
-    "subtype": "style",
-    "explanation": "'In order to' 是正確的，但在多數情況下，尤其是在句首，可以直接使用 'To' 來表達目的，這樣會讓句子更簡潔有力。",
-    "original_phrase": "In order to",
-    "correction": "To",
-    "mastery_level": 0.0,
-    "mistake_count": 1,
-    "correct_count": 0,
-    "created_at": "2025-08-10T18:54:10.354496",
-    "last_seen": "2025-08-10T18:54:10.354498",
-    "next_review": "2025-08-11T18:54:10.354502",
-    "examples": [
-      {
-        "chinese": "為了實現目標，她必須全力以赴。",
-        "user_answer": "In order to achieve her goal, she have to do her best.",
-        "correct": "To achieve her goal, she has to give it her all."
-      }
-    ]
-  },
-  {
-    "id": 4,
-    "key_point": "條件句否定用法錯誤",
-    "category": "systematic",
-    "subtype": "verb_conjugation",
-    "explanation": "在 if 引導的條件句中，當主詞是第三人稱單數（the government）時，其否定形式應使用 `does not + 原形動詞`。`keep don't take` 是不正確的文法結構，混合了兩種不同的概念。",
-    "original_phrase": "keep don't take",
-    "correction": "does not take / fails to take",
-    "mastery_level": 0.0,
-    "mistake_count": 1,
-    "correct_count": 0,
-    "created_at": "2025-08-11T00:23:50.121364",
-    "last_seen": "2025-08-11T00:23:50.121366",
-    "next_review": "2025-08-12T00:23:50.121383",
-    "examples": [
-      {
-        "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
-        "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
-        "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
-      }
-    ]
-  },
-  {
-    "id": 5,
-    "key_point": "單字拼寫錯誤",
-    "category": "isolated",
-    "subtype": "vocabulary",
-    "explanation": "「無法挽回的」正確的英文單字是 `irreversible`。`irrevertable` 是不存在的單字，可能是由 `revert` 和 `-able` 錯誤組合而成。另一個相似的詞是 `irreparable`（無法修復的）。",
-    "original_phrase": "irrevertable",
-    "correction": "irreversible",
-    "mastery_level": 0.0,
-    "mistake_count": 1,
-    "correct_count": 0,
-    "created_at": "2025-08-11T00:23:50.121626",
-    "last_seen": "2025-08-11T00:23:50.121628",
-    "next_review": "2025-08-12T00:23:50.121632",
-    "examples": [
-      {
-        "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
-        "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
-        "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
-      }
-    ]
-  },
-  {
-    "id": 6,
-    "key_point": "不定冠詞 a/an 使用錯誤",
-    "category": "systematic",
-    "subtype": "vocabulary",
-    "explanation": "不定冠詞的選擇取決於其後單字的「發音」而非「字母」。`irreversible` 的開頭是母音發音 /ɪ/，因此前面應該使用 `an` 而不是 `a`。",
-    "original_phrase": "a irrevertable",
-    "correction": "an irreversible",
-    "mastery_level": 0.0,
-    "mistake_count": 1,
-    "correct_count": 0,
-    "created_at": "2025-08-11T00:23:50.121836",
-    "last_seen": "2025-08-11T00:23:50.121837",
-    "next_review": "2025-08-12T00:23:50.121841",
-    "examples": [
-      {
-        "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
-        "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
-        "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
-      }
-    ]
-  },
-  {
-    "id": 7,
-    "key_point": "詞語搭配不夠道地",
-    "category": "enhancement",
-    "subtype": "naturalness",
-    "explanation": "雖然 `the pollution of environment` 文法上可以理解，但 `environmental pollution` 是更常用、更自然的標準說法，其中 `environmental` 作為形容詞修飾 `pollution`。",
-    "original_phrase": "the pollution of environment",
-    "correction": "environmental pollution",
-    "mastery_level": 0.0,
-    "mistake_count": 1,
-    "correct_count": 0,
-    "created_at": "2025-08-11T00:23:50.122046",
-    "last_seen": "2025-08-11T00:23:50.122048",
-    "next_review": "2025-08-12T00:23:50.122051",
-    "examples": [
-      {
-        "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
-        "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
-        "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
-      }
-    ]
-  },
-  {
-    "id": 8,
-    "key_point": "詞彙選擇可以更精準",
-    "category": "enhancement",
-    "subtype": "style",
-    "explanation": "「公眾健康」在英文中有對應的專有名詞 `public health`，這個詞彙更精準地表達了原文中涉及整個社會群體的健康議題。`people's health` 雖然意思相近，但較不正式。",
-    "original_phrase": "people's health",
-    "correction": "public health",
-    "mastery_level": 0.0,
-    "mistake_count": 1,
-    "correct_count": 0,
-    "created_at": "2025-08-11T00:23:50.122481",
-    "last_seen": "2025-08-11T00:23:50.122483",
-    "next_review": "2025-08-12T00:23:50.122486",
-    "examples": [
-      {
-        "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
-        "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
-        "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
-      }
-    ]
-  }
-]
+{
+  "version": "2.0",
+  "data": [
+    {
+      "id": 1,
+      "key_point": "主詞動詞不一致",
+      "category": "systematic",
+      "subtype": "verb_conjugation",
+      "explanation": "當主詞是第三人稱單數時（如 he, she, it），助動詞 'have' 應使用 'has'。這是一個基礎的文法規則，稱為主詞與動詞的一致性（Subject-Verb Agreement）。",
+      "original_phrase": "she have to",
+      "correction": "she has to",
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-10T18:54:10.353806",
+      "last_seen": "2025-08-10T18:54:10.353809",
+      "next_review": "2025-08-11T18:54:10.353832",
+      "examples": [
+        {
+          "chinese": "為了實現目標，她必須全力以赴。",
+          "user_answer": "In order to achieve her goal, she have to do her best.",
+          "correct": "To achieve her goal, she has to give it her all."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "key_point": "詞語可以更道地",
+      "category": "enhancement",
+      "subtype": "naturalness",
+      "explanation": "雖然 'do her best'（盡力而為）是正確的，但中文的「全力以赴」帶有更強烈的「毫無保留、用盡一切努力」的意味。使用 'give it her all' 或 'go all out' 這樣的片語能更生動地傳達這種感覺，讓表達更貼近母語人士的用法。",
+      "original_phrase": "do her best",
+      "correction": "give it her all / go all out",
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-10T18:54:10.354320",
+      "last_seen": "2025-08-10T18:54:10.354324",
+      "next_review": "2025-08-11T18:54:10.354329",
+      "examples": [
+        {
+          "chinese": "為了實現目標，她必須全力以赴。",
+          "user_answer": "In order to achieve her goal, she have to do her best.",
+          "correct": "To achieve her goal, she has to give it her all."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "key_point": "表達可以更簡潔",
+      "category": "enhancement",
+      "subtype": "style",
+      "explanation": "'In order to' 是正確的，但在多數情況下，尤其是在句首，可以直接使用 'To' 來表達目的，這樣會讓句子更簡潔有力。",
+      "original_phrase": "In order to",
+      "correction": "To",
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-10T18:54:10.354496",
+      "last_seen": "2025-08-10T18:54:10.354498",
+      "next_review": "2025-08-11T18:54:10.354502",
+      "examples": [
+        {
+          "chinese": "為了實現目標，她必須全力以赴。",
+          "user_answer": "In order to achieve her goal, she have to do her best.",
+          "correct": "To achieve her goal, she has to give it her all."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "key_point": "條件句否定用法錯誤",
+      "category": "systematic",
+      "subtype": "verb_conjugation",
+      "explanation": "在 if 引導的條件句中，當主詞是第三人稱單數（the government）時，其否定形式應使用 `does not + 原形動詞`。`keep don't take` 是不正確的文法結構，混合了兩種不同的概念。",
+      "original_phrase": "keep don't take",
+      "correction": "does not take / fails to take",
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-11T00:23:50.121364",
+      "last_seen": "2025-08-11T00:23:50.121366",
+      "next_review": "2025-08-12T00:23:50.121383",
+      "examples": [
+        {
+          "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
+          "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
+          "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "key_point": "單字拼寫錯誤",
+      "category": "isolated",
+      "subtype": "vocabulary",
+      "explanation": "「無法挽回的」正確的英文單字是 `irreversible`。`irrevertable` 是不存在的單字，可能是由 `revert` 和 `-able` 錯誤組合而成。另一個相似的詞是 `irreparable`（無法修復的）。",
+      "original_phrase": "irrevertable",
+      "correction": "irreversible",
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-11T00:23:50.121626",
+      "last_seen": "2025-08-11T00:23:50.121628",
+      "next_review": "2025-08-12T00:23:50.121632",
+      "examples": [
+        {
+          "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
+          "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
+          "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "key_point": "不定冠詞 a/an 使用錯誤",
+      "category": "systematic",
+      "subtype": "vocabulary",
+      "explanation": "不定冠詞的選擇取決於其後單字的「發音」而非「字母」。`irreversible` 的開頭是母音發音 /ɪ/，因此前面應該使用 `an` 而不是 `a`。",
+      "original_phrase": "a irrevertable",
+      "correction": "an irreversible",
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-11T00:23:50.121836",
+      "last_seen": "2025-08-11T00:23:50.121837",
+      "next_review": "2025-08-12T00:23:50.121841",
+      "examples": [
+        {
+          "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
+          "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
+          "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "key_point": "詞語搭配不夠道地",
+      "category": "enhancement",
+      "subtype": "naturalness",
+      "explanation": "雖然 `the pollution of environment` 文法上可以理解，但 `environmental pollution` 是更常用、更自然的標準說法，其中 `environmental` 作為形容詞修飾 `pollution`。",
+      "original_phrase": "the pollution of environment",
+      "correction": "environmental pollution",
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-11T00:23:50.122046",
+      "last_seen": "2025-08-11T00:23:50.122048",
+      "next_review": "2025-08-12T00:23:50.122051",
+      "examples": [
+        {
+          "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
+          "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
+          "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "key_point": "詞彙選擇可以更精準",
+      "category": "enhancement",
+      "subtype": "style",
+      "explanation": "「公眾健康」在英文中有對應的專有名詞 `public health`，這個詞彙更精準地表達了原文中涉及整個社會群體的健康議題。`people's health` 雖然意思相近，但較不正式。",
+      "original_phrase": "people's health",
+      "correction": "public health",
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-11T00:23:50.122481",
+      "last_seen": "2025-08-11T00:23:50.122483",
+      "next_review": "2025-08-12T00:23:50.122486",
+      "examples": [
+        {
+          "chinese": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
+          "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
+          "correct": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health."
+        }
+      ]
+    }
+  ]
+}

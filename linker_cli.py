@@ -11,9 +11,8 @@ from typing import Any, Optional
 from core.ai_service import AIService
 from core.display import display
 from core.error_types import ErrorCategory, ErrorTypeSystem
-from core.exceptions import validate_input
 from core.knowledge import KnowledgeManager
-from core.logger import get_logger
+from core.log_config import get_module_logger
 from settings import settings
 
 
@@ -24,7 +23,7 @@ class LinkerCLI:
         self.ai_service = AIService()
         self.knowledge = KnowledgeManager()
         self.type_system = ErrorTypeSystem()
-        self.logger = get_logger("linker_cli")
+        self.logger = get_module_logger(__name__)
         self.settings = settings
 
     def run(self):
@@ -87,7 +86,7 @@ class LinkerCLI:
     def show_menu(self):
         """顯示主選單"""
         display.section("主選單", "📚")
-        
+
         menu_items = [
             ("1", "開始翻譯練習", "GREEN"),
             ("2", "分類複習（按錯誤類型）", "YELLOW"),
@@ -96,7 +95,7 @@ class LinkerCLI:
             ("5", "獲取學習建議", "MAGENTA"),
             ("6", "退出程式", "RED")
         ]
-        
+
         for num, text, color in menu_items:
             color_code = getattr(display.colors, color)
             display.list_item(f"{color_code}{num}.{display.colors.RESET} {text}")
@@ -174,7 +173,7 @@ class LinkerCLI:
             [sentence],
             color="CYAN"
         )
-        
+
         if hint:
             display.blank_line()
             display.info(f"💡 提示: {hint}")
@@ -215,7 +214,7 @@ class LinkerCLI:
     def display_feedback(self, feedback: dict[str, Any]):
         """顯示批改結果 - 主函數"""
         display.separator("thick")
-        
+
         # 顯示總體結果
         self._display_overall_result(feedback)
 
@@ -263,14 +262,14 @@ class LinkerCLI:
                 category = self._parse_error_category(nature)
                 emoji = self._get_category_emoji(category)
                 stats.append([emoji, nature, str(len(group_errors))])
-        
+
         if stats:
             display.table(
                 ["類型", "分類", "數量"],
                 stats,
                 colors=["YELLOW", "WHITE", "RED"]
             )
-        
+
         # 顯示每組錯誤（折疊顯示）
         for nature, group_errors in error_groups.items():
             if group_errors:
@@ -307,12 +306,12 @@ class LinkerCLI:
         print(f"     錯誤: {error.get('original_phrase', 'N/A')}")
         print(f"     正確: {error.get('correction', 'N/A')}")
         print(f"     說明: {error.get('explanation', 'N/A')}")
-    
+
     def _display_error_group_compact(self, nature: str, errors: list):
         """顯示一組錯誤（精簡版）"""
         category = self._parse_error_category(nature)
         emoji = self._get_category_emoji(category)
-        
+
         display.blank_line()
         # 只顯示標題，詳細內容折疊
         content_lines = []
@@ -324,7 +323,7 @@ class LinkerCLI:
             content_lines.append(f"   正確: {error.get('correction', 'N/A')}")
             content_lines.append(f"   說明: {error.get('explanation', 'N/A')}")
             content_lines.append("")
-        
+
         # 使用折疊顯示
         display.collapsible(
             f"{emoji} {nature} ({len(errors)} 個)",

@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.error_types import ErrorCategory, ErrorTypeSystem
 from core.exceptions import DataException, handle_file_operation
-from core.logger import get_logger
+from core.log_config import get_module_logger
 from settings import settings
 
 
@@ -131,7 +131,7 @@ class KnowledgeManager:
         self.knowledge_file = self.data_dir / "knowledge.json"
         self.practice_log = self.data_dir / "practice_log.json"
 
-        self.logger = get_logger("knowledge_manager")
+        self.logger = get_module_logger(__name__)
         self.settings = settings
 
         self.knowledge_points: list[KnowledgePoint] = self._load_knowledge()
@@ -287,7 +287,7 @@ class KnowledgeManager:
     def get_points_by_category(self, category: ErrorCategory) -> list[KnowledgePoint]:
         """根據類別獲取知識點"""
         return [p for p in self.knowledge_points if p.category == category]
-    
+
     def get_all_mistakes(self) -> list[dict]:
         """獲取所有錯誤記錄"""
         # 返回練習歷史中的錯誤記錄，並為每個記錄添加知識點信息
@@ -316,7 +316,7 @@ class KnowledgeManager:
         """獲取需要複習的知識點"""
         now = datetime.now().isoformat()
         return [p for p in self.knowledge_points if p.next_review <= now]
-    
+
     def get_review_candidates(self, max_points: int = 5) -> list[KnowledgePoint]:
         """獲取適合複習的知識點（單一性錯誤和可以更好類別）
         
@@ -328,19 +328,19 @@ class KnowledgeManager:
         """
         # 篩選單一性錯誤和可以更好類別
         candidates = [
-            p for p in self.knowledge_points 
+            p for p in self.knowledge_points
             if p.category in [ErrorCategory.ISOLATED, ErrorCategory.ENHANCEMENT]
         ]
-        
+
         if not candidates:
             return []
-        
+
         # 按複習優先級排序：
         # 1. 已到期的（next_review <= now）
         # 2. 掌握度低的
         # 3. 錯誤次數多的
         now = datetime.now().isoformat()
-        
+
         def sort_key(point: KnowledgePoint) -> tuple:
             is_due = point.next_review <= now
             return (
@@ -348,12 +348,12 @@ class KnowledgeManager:
                 point.mastery_level,  # 掌握度低的排前面
                 -point.mistake_count  # 錯誤次數多的排前面
             )
-        
+
         candidates.sort(key=sort_key)
-        
+
         # 返回前max_points個最需要複習的
         return candidates[:max_points]
-    
+
     def update_knowledge_point(self, point_id: int, is_correct: bool) -> bool:
         """更新指定知識點的掌握狀態
         

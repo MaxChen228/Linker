@@ -10,6 +10,7 @@ exclude = [
     ".pytest_cache/",
 ]
 
+[tool.ruff.lint]
 # 選擇要啟用的規則
 select = [
     "E",    # pycodestyle 錯誤
@@ -28,7 +29,7 @@ ignore = [
     "B008",  # 函數調用中的默認參數
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 # import 排序設定
 known-first-party = ["core", "settings"]
 

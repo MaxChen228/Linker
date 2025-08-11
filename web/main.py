@@ -1,24 +1,26 @@
 from __future__ import annotations
 
+import time
 from pathlib import Path
 from typing import Optional
+from uuid import uuid4
 
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from core.knowledge_assets import KnowledgeAssets
-from core.knowledge import KnowledgeManager
 from core.ai_service import AIService
-from core.error_types import ErrorCategory
 from core.config import DATA_DIR
-import random
-import time
-from uuid import uuid4
-from core.logger import get_logger
-from datetime import datetime
+from core.error_types import ErrorCategory
+from core.knowledge import KnowledgeManager
+from core.knowledge_assets import KnowledgeAssets
+from core.log_config import get_module_logger
+from core.version_manager import VersionManager
 
+# 初始化模組 logger
+logger = get_module_logger(__name__)
+from datetime import datetime
 
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -29,11 +31,31 @@ app = FastAPI(title="Linker", docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
+# 版本檢查和遷移
+def check_and_migrate_versions():
+    """啟動時執行版本檢查和遷移"""
+    version_manager = VersionManager()
+    logger.info("檢查資料檔案版本...")
+    
+    try:
+        results = version_manager.check_and_migrate_all()
+        migrated = [f for f, status in results.items() if status is True]
+        if migrated:
+            logger.info(f"已自動遷移 {len(migrated)} 個檔案到最新版本")
+            for file in migrated:
+                logger.info(f"  - {Path(file).name}")
+    except Exception as e:
+        logger.warning(f"版本遷移警告: {e}")
+        logger.info("系統將繼續使用現有檔案")
 
+# 執行版本檢查
+check_and_migrate_versions()
+
+# 初始化服務
 assets = KnowledgeAssets()
 knowledge = KnowledgeManager(data_dir=str(DATA_DIR))
 ai = AIService()
-logger = get_logger("web")
+# logger 已經在上面初始化了
 
 
 @app.middleware("http")
@@ -71,13 +93,13 @@ async def access_log_middleware(request: Request, call_next):
 def home(request: Request):
     # 獲取複習列表（最多顯示10個）
     review_queue = knowledge.get_review_candidates(max_points=10)
-    
+
     # 修正統計資料，讓「待複習」顯示實際可複習的數量
     stats = knowledge.get_statistics()
     # 計算實際可複習的知識點數量（單一性錯誤和可以更好類別中已到期的）
     reviewable_points = knowledge.get_review_candidates(max_points=100)  # 獲取所有可複習的
     stats['due_reviews'] = len(reviewable_points)  # 覆蓋原本的統計
-    
+
     # 為每個知識點準備顯示資料
     review_items = []
     for point in review_queue:
@@ -91,12 +113,12 @@ def home(request: Request):
             "next_review": point.next_review,
             "is_due": point.next_review <= datetime.now().isoformat() if point.next_review else False
         })
-    
+
     return templates.TemplateResponse(
         "index.html",
         {
-            "request": request, 
-            "stats": stats, 
+            "request": request,
+            "stats": stats,
             "review_items": review_items,
             "active": "home"
         },
@@ -110,34 +132,46 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
     """文法句型列表頁面（預設版本）"""
     import json
     from pathlib import Path
-    
+
     # 載入所有擴充的句型資料
     enriched_file = Path("data/patterns_enriched_complete.json")
     if enriched_file.exists():
-        with open(enriched_file, 'r', encoding='utf-8') as f:
+        with open(enriched_file, encoding='utf-8') as f:
             data = json.load(f)
-            patterns = data.get('patterns', [])
+            # 支援新舊兩種格式
+            patterns = data.get('patterns', data.get('data', []))
     else:
         # 降級使用原始資料
-        all_patterns = assets.get_grammar_patterns()
-        patterns = [
-            {
-                'id': p.id or f"GP{i:03d}",
-                'pattern': p.pattern,
-                'category': p.category,
-                'explanation': p.explanation,
-                'difficulty': 3,  # 預設中等難度
-                'frequency': 'medium',
-                'examples': [
-                    {'zh': p.example_zh, 'en': p.example_en}
-                ] if p.example_zh or p.example_en else []
-            }
-            for i, p in enumerate(all_patterns, 1)
-        ]
-    
+        grammar_file = Path("data/grammar_patterns.json")
+        if grammar_file.exists():
+            with open(grammar_file, encoding='utf-8') as f:
+                data = json.load(f)
+                # 支援新舊兩種格式
+                if isinstance(data, dict):
+                    patterns = data.get('patterns', data.get('data', []))
+                else:
+                    patterns = data  # 舊格式純陣列
+        else:
+            # 使用 assets 作為最後的後備
+            all_patterns = assets.get_grammar_patterns()
+            patterns = [
+                {
+                    'id': p.id or f"GP{i:03d}",
+                    'pattern': p.pattern,
+                    'category': p.category,
+                    'explanation': p.explanation,
+                    'difficulty': 3,  # 預設中等難度
+                    'frequency': 'medium',
+                    'examples': [
+                        {'zh': p.example_zh, 'en': p.example_en}
+                    ] if p.example_zh or p.example_en else []
+                }
+                for i, p in enumerate(all_patterns, 1)
+            ]
+
     # 提取分類
     categories = sorted({p.get('category') for p in patterns if p.get('category')})
-    
+
     # 篩選
     filtered_patterns = patterns
     if category:
@@ -149,10 +183,10 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
             if (query in p.get('pattern', '').lower())
             or (query in p.get('formula', '').lower())
             or (query in p.get('explanation', '').lower())
-            or any(query in ex.get('zh', '').lower() or query in ex.get('en', '').lower() 
+            or any(query in ex.get('zh', '').lower() or query in ex.get('en', '').lower()
                    for ex in p.get('examples', []))
         ]
-    
+
     return templates.TemplateResponse(
         "patterns.html",
         {
@@ -173,27 +207,38 @@ def pattern_detail(request: Request, pattern_id: str):
     """句型詳情頁面"""
     import json
     from pathlib import Path
-    
+
     # 載入擴充資料
     enriched_file = Path("data/patterns_enriched_complete.json")
     if enriched_file.exists():
-        with open(enriched_file, 'r', encoding='utf-8') as f:
+        with open(enriched_file, encoding='utf-8') as f:
             data = json.load(f)
-            patterns = data.get('patterns', [])
+            # 支援新舊兩種格式
+            patterns = data.get('patterns', data.get('data', []))
     else:
-        patterns = []
-    
+        # 嘗試從 grammar_patterns.json 載入
+        grammar_file = Path("data/grammar_patterns.json")
+        if grammar_file.exists():
+            with open(grammar_file, encoding='utf-8') as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    patterns = data.get('patterns', data.get('data', []))
+                else:
+                    patterns = data
+        else:
+            patterns = []
+
     # 尋找指定句型
     pattern = None
     for p in patterns:
         if p.get('id') == pattern_id:
             pattern = p
             break
-    
+
     if not pattern:
         # 如果找不到，返回列表頁
         return RedirectResponse(url="/patterns", status_code=302)
-    
+
     return templates.TemplateResponse(
         "pattern-detail.html",
         {
@@ -210,16 +255,16 @@ def pattern_detail(request: Request, pattern_id: str):
 @app.get("/practice", response_class=HTMLResponse)
 def practice_get(request: Request, length: str = "short", level: int = 1, shuffle: int = 0, mode: str = "new"):
     # mode: "new" 為新題目，"review" 為複習題
-    
+
     # 初始化變數
     review_empty_message = None
     target_points = []  # 初始化 target_points
     llm_debug_data = None  # 初始化 LLM 調試資料
-    
+
     # 檢查是否要生成新題目（shuffle=1表示要出題）
     logger.info(f"Practice GET: mode={mode}, shuffle={shuffle}, length={length}, level={level}")
     logger.info(f"Practice GET: mode type={type(mode)}, mode value='{mode}'")
-    
+
     if shuffle:
         if mode == "review":
             # 複習模式：從知識點生成題目
@@ -237,11 +282,11 @@ def practice_get(request: Request, length: str = "short", level: int = 1, shuffl
                 sentence = payload.get("sentence", "今天天氣很好。")
                 hint = payload.get("hint")
                 target_points_description = payload.get("target_points_description", "")
-                
+
                 # 記錄複習題目生成狀態
                 if target_points:
                     logger.info(f"Review sentence generated with {len(target_points)} target points")
-                
+
                 # 獲取 LLM 調試資料
                 llm_debug_data = ai.get_last_interaction()
             else:
@@ -256,8 +301,8 @@ def practice_get(request: Request, length: str = "short", level: int = 1, shuffl
             # 新題模式：原有邏輯
             bank = assets.get_example_bank(length=length, difficulty=level)
             payload = ai.generate_practice_sentence(
-                level=level, 
-                length=length, 
+                level=level,
+                length=length,
                 examples=bank[:5] if bank else None,
                 shuffle=bool(shuffle)
             )
@@ -266,7 +311,7 @@ def practice_get(request: Request, length: str = "short", level: int = 1, shuffl
             sentence = payload.get("sentence", "今天天氣很好。")
             hint = payload.get("hint")
             target_points_description = payload.get("target_points_description", "")
-            
+
             # 獲取 LLM 調試資料
             llm_debug_data = ai.get_last_interaction()
     else:
@@ -308,18 +353,18 @@ def practice_post(
 ):
     # 使用 AI 進行批改
     result = ai.grade_translation(chinese=chinese, english=english)
-    
+
     # 如果是複習模式，更新相關知識點的掌握度
     if mode == "review" and target_point_ids:
         try:
             import json
             point_ids = json.loads(target_point_ids)
             is_correct = result.get("is_generally_correct", False)
-            
+
             # 更新每個相關知識點的掌握狀態
             for point_id in point_ids:
                 knowledge.update_knowledge_point(point_id, is_correct)
-                
+
             # 記錄複習結果到日誌
             logger.info(
                 "review_practice",
@@ -331,7 +376,7 @@ def practice_post(
             )
         except (json.JSONDecodeError, TypeError) as e:
             logger.error(f"Failed to parse target_point_ids: {e}")
-    
+
     # 保存錯誤到知識庫（新題和複習題都要保存）
     if not result.get("is_generally_correct", False):
         knowledge.save_mistake(chinese_sentence=chinese, user_answer=english, feedback=result)
@@ -356,18 +401,18 @@ def practice_post(
 def knowledge_points(request: Request, category: Optional[str] = None, mastery: Optional[str] = None):
     """知識點瀏覽頁面"""
     from collections import defaultdict
-    
+
     # 獲取所有知識點
     all_points = knowledge.knowledge_points
-    
+
     # 根據類別篩選
     if category:
         try:
             cat_enum = ErrorCategory.from_string(category)
             all_points = [p for p in all_points if p.category == cat_enum]
-        except:
+        except (ValueError, KeyError, AttributeError):
             pass
-    
+
     # 根據掌握度篩選
     if mastery:
         if mastery == "low":
@@ -376,16 +421,16 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
             all_points = [p for p in all_points if 0.3 <= p.mastery_level < 0.7]
         elif mastery == "high":
             all_points = [p for p in all_points if p.mastery_level >= 0.7]
-    
+
     # 分組處理知識點
     systematic_groups = defaultdict(list)  # 系統性錯誤按subtype分組
     isolated_points = []  # 單一性錯誤保持獨立
     enhancement_points = []  # 可以更好保持獨立
     other_points = []  # 其他錯誤保持獨立
-    
+
     from core.error_types import ErrorTypeSystem
     type_system = ErrorTypeSystem()
-    
+
     for point in all_points:
         if point.category.value == "systematic":
             # 系統性錯誤按subtype分組
@@ -398,10 +443,10 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
             enhancement_points.append(point)
         else:
             other_points.append(point)
-    
+
     # 構建知識群組數據
     knowledge_groups = []
-    
+
     # 處理系統性錯誤群組
     for group_name, points in systematic_groups.items():
         group = {
@@ -413,13 +458,13 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
             "total_mistakes": sum(p.mistake_count for p in points),
         }
         knowledge_groups.append(group)
-    
+
     # 排序群組（按錯誤次數降序）
     knowledge_groups.sort(key=lambda x: x["total_mistakes"], reverse=True)
-    
+
     # 獲取統計資料
     stats = knowledge.get_statistics()
-    
+
     # 計算各類別統計
     category_counts = {
         "系統性錯誤": len(systematic_groups),  # 群組數量，不是點數量
@@ -427,18 +472,18 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
         "可以更好": len(enhancement_points),
         "其他錯誤": len(other_points)
     }
-    
+
     # 獲取所有分類
     categories = ["系統性錯誤", "單一性錯誤", "可以更好", "其他錯誤"]
-    
+
     # 獲取複習佇列（可以複習的知識點）
     review_queue = knowledge.get_review_candidates(max_points=20)
     due_points = knowledge.get_due_points()  # 已到期的知識點
-    
+
     # 獲取當前時間供模板使用
     from datetime import datetime
     now = datetime.now().isoformat()
-    
+
     return templates.TemplateResponse(
         "knowledge.html",
         {
@@ -470,11 +515,11 @@ def knowledge_detail(request: Request, point_id: str):
     """知識點詳情頁面"""
     # 獲取指定的知識點
     point = knowledge.get_knowledge_point(point_id)
-    
+
     if not point:
         # 如果找不到知識點，重定向到知識點列表頁
         return RedirectResponse(url="/knowledge", status_code=303)
-    
+
     # 獲取相關的錯誤記錄（最近的10個）
     related_mistakes = []
     all_mistakes = knowledge.get_all_mistakes()
@@ -490,12 +535,12 @@ def knowledge_detail(request: Request, point_id: str):
                     break
         if len(related_mistakes) >= 10:
             break
-    
+
     # 獲取錯誤類型系統，以顯示子類型的中文名稱
     from core.error_types import ErrorTypeSystem
     type_system = ErrorTypeSystem()
     subtype_obj = type_system.get_subtype_by_name(point.subtype) if point.subtype else None
-    
+
     # 計算下次複習時間
     from datetime import datetime
     next_review_display = None
@@ -513,9 +558,9 @@ def knowledge_detail(request: Request, point_id: str):
                     next_review_display = f"{days_until} 天後"
             else:
                 next_review_display = "已到期"
-        except:
+        except (ValueError, TypeError, AttributeError):
             pass
-    
+
     # 為模板準備point對象，添加缺少的屬性
     point_dict = {
         "id": point.id,
@@ -535,7 +580,7 @@ def knowledge_detail(request: Request, point_id: str):
         "next_review": point.next_review,
         "improvement_suggestion": "",  # 保留為空或其他用途
     }
-    
+
     return templates.TemplateResponse(
         "knowledge-detail.html",
         {

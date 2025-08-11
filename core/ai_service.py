@@ -6,14 +6,16 @@ import asyncio
 import json
 import os
 import time
-from typing import Any, Optional, List
-from core.logger import get_logger
+from typing import Any, List, Optional
+
+from core.log_config import get_module_logger
 
 
 class AIService:
     """AI 服務類 - 封裝 Gemini API 調用"""
 
     def __init__(self):
+        self.logger = get_module_logger(__name__)  # 先初始化 logger
         self.api_key = os.getenv("GEMINI_API_KEY")
         # 模型名稱可由環境變數覆蓋
         self.generate_model_name = os.getenv("GEMINI_GENERATE_MODEL", "gemini-2.5-flash")
@@ -22,7 +24,6 @@ class AIService:
         self.grade_model = None
         # self.cache = {}  # 完全禁用快取
         self._init_gemini()
-        self.logger = get_logger("ai")
         # 儲存最近的 LLM 互動記錄（用於調試）
         self.last_llm_interaction = None
 
@@ -51,23 +52,22 @@ class AIService:
                     top_p=0.9,
                 ),
             )
-            print("✅ Gemini API 初始化成功")
+            self.logger.info("Gemini API 初始化成功")
         except ImportError:
-            print("❌ 請安裝 google-generativeai: pip install google-generativeai")
+            self.logger.error("請安裝 google-generativeai: pip install google-generativeai")
             raise
         except Exception as e:
-            print(f"❌ Gemini 初始化失敗: {e}")
+            self.logger.error(f"Gemini 初始化失敗: {e}")
             raise
 
     def _call_model(self, model, system_prompt: str, user_prompt: str, use_cache: bool = True) -> dict[str, Any]:
         """調用指定模型的 LLM API"""
-        import time
         start_time = time.time()
-        
+
         try:
             # 組合提示詞
             full_prompt = f"{system_prompt}\n\n{user_prompt}"
-            
+
             # 取得模型配置
             model_config = {
                 "model_name": model.model_name if hasattr(model, 'model_name') else str(model),
@@ -78,13 +78,13 @@ class AIService:
 
             # 調用 API
             response = model.generate_content(full_prompt)
-            
+
             # 計算耗時
             duration_ms = int((time.time() - start_time) * 1000)
 
             # 解析 JSON 回應
             result = self._parse_response(response.text)
-            
+
             # 儲存調試資料
             self.last_llm_interaction = {
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -138,7 +138,7 @@ class AIService:
                 },
                 "status": "error"
             }
-            
+
             self.logger.log_api_call(
                 api_name="gemini",
                 method="generate_content",
@@ -167,7 +167,7 @@ class AIService:
             "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
             "error_analysis": [],
         }
-    
+
     async def generate_async(
         self,
         prompt: str,
@@ -178,14 +178,14 @@ class AIService:
         """異步生成內容"""
         # 使用 asyncio 在後台執行同步方法
         loop = asyncio.get_event_loop()
-        
+
         # 準備完整的 prompt
         full_prompt = prompt
-        
+
         # 使用指定的模型或預設生成模型
         if model is None:
             model = self.generate_model
-            
+
         # 在執行緒池中執行同步方法
         def _generate():
             try:
@@ -198,13 +198,13 @@ class AIService:
                     top_p=0.95,
                     top_k=40,
                 )
-                
+
                 response = model.generate_content(full_prompt)
                 return response.text
             except Exception as e:
                 self.logger.error(f"Async generation failed: {e}")
                 raise
-        
+
         # 在執行緒池中執行
         result = await loop.run_in_executor(None, _generate)
         return result
@@ -354,11 +354,11 @@ class AIService:
             包含句子、提示、考點ID等信息
         """
         import random
-        
+
         if not knowledge_points:
             # 如果沒有待複習知識點，回退到普通出題
             return self.generate_practice_sentence(level=level, length=length)
-        
+
         # 根據句子長度決定要選幾個知識點
         if length == "long":
             num_points = 2
@@ -366,14 +366,14 @@ class AIService:
         else:  # short 或 medium
             num_points = 1
             length_hint = "簡短句子（10-20字）" if length == "short" else "中等長度（20-35字）"
-        
+
         # 從候選知識點中隨機選擇
         candidates = knowledge_points[:5]  # 最多考慮前5個
         if len(candidates) <= num_points:
             selected_points = candidates
         else:
             selected_points = random.sample(candidates, num_points)
-        
+
         # 只準備被選中的知識點信息給 AI
         points_info = []
         for point in selected_points:
@@ -384,10 +384,10 @@ class AIService:
                 "original_phrase": point.original_phrase,
                 "correction": point.correction,
             })
-        
+
         # 記錄選中的知識點
         self.logger.info(f"Selected {len(selected_points)} knowledge points for review")
-        
+
         system_prompt = f"""
         你是一位專業的英文教師，正在幫助學生複習。
         
@@ -408,9 +408,9 @@ class AIService:
             "difficulty_level": {level}
         }}
         """
-        
+
         user_prompt = "請設計一個複習句子，要有創意且每次都不同。"
-        
+
         if not self.generate_model:
             # Fallback
             return {
@@ -419,15 +419,15 @@ class AIService:
                 "target_point_ids": [],
                 "difficulty_level": level
             }
-        
+
         result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
-        
+
         # 處理返回結果
         if isinstance(result, list) and len(result) > 0:
             result = result[0]
         elif not isinstance(result, dict):
             result = {}
-        
+
         # 使用已選中的知識點信息（不需要再從 AI 回應中找）
         target_points = []
         for point in selected_points:
@@ -437,7 +437,7 @@ class AIService:
                 "category": point.category.value,
                 "mastery_level": round(point.mastery_level, 2)
             })
-        
+
         return {
             "sentence": result.get("sentence", "今天天氣很好。"),
             "hint": result.get("hint", "注意之前的錯誤"),
@@ -447,14 +447,14 @@ class AIService:
             "difficulty_level": result.get("difficulty_level", level),
             "is_review": True  # 標記為複習題
         }
-    
+
     def get_last_interaction(self) -> dict[str, Any]:
         """獲取最近一次的 LLM 互動記錄"""
         return self.last_llm_interaction if self.last_llm_interaction else {
             "status": "no_data",
             "message": "尚無 LLM 互動記錄"
         }
-    
+
     def analyze_common_mistakes(self, practice_history: list) -> dict[str, Any]:
         """分析常見錯誤模式"""
         if not practice_history:
