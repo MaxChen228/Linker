@@ -22,7 +22,13 @@
     <div class="question-queue" id="question-queue">
       <div class="queue-header">
         <h3 class="queue-title">題目儲備池</h3>
-        <span class="queue-count" id="queue-count">0 題就緒</span>
+        <div class="queue-controls">
+          <span class="queue-count" id="queue-count">0 題就緒</span>
+          <button class="btn queue-clear-btn" data-variant="ghost" data-size="sm" 
+                  onclick="clearQueue()" title="清空佇列">
+            🗑️
+          </button>
+        </div>
       </div>
       <div class="queue-items" id="queue-items">
         <!-- 題目卡片將動態插入這裡 -->
@@ -338,6 +344,8 @@
   
   <!-- 標籤系統腳本 -->
   <script src="/static/js/practice-tags.js"></script>
+  <!-- 佇列持久化腳本 -->
+  <script src="/static/js/practice-queue-persistence.js"></script>
   
   <script>
     'use strict';
@@ -358,6 +366,32 @@
     let currentQuestionId = null;
     let generatingCount = 0;  // 改為計數器，支援並行生成
     
+    // 佇列操作包裝函數
+    function saveQueueState() {
+      if (window.queuePersistence) {
+        window.queuePersistence.saveQueue(questionQueue);
+        if (currentQuestionId) {
+          window.queuePersistence.saveCurrentQuestion(currentQuestionId);
+        }
+      }
+    }
+    
+    function loadQueueState() {
+      if (window.queuePersistence) {
+        const savedQueue = window.queuePersistence.loadQueue();
+        const savedCurrentId = window.queuePersistence.loadCurrentQuestion();
+        
+        if (savedQueue && savedQueue.length > 0) {
+          questionQueue = savedQueue;
+          currentQuestionId = savedCurrentId;
+          console.log('[loadQueueState] Restored', questionQueue.length, 'questions');
+          console.log('[loadQueueState] Current question:', currentQuestionId);
+          return true;
+        }
+      }
+      return false;
+    }
+    
     // 題目狀態列舉
     const QuestionStatus = {
       GENERATING: 'generating',   // 生成中
@@ -370,6 +404,25 @@
     // 初始化佇列顯示
     function initQueue() {
       updateQueueDisplay();
+    }
+    
+    // 清空佇列
+    function clearQueue() {
+      questionQueue = [];
+      currentQuestionId = null;
+      if (window.queuePersistence) {
+        window.queuePersistence.clearQueue();
+      }
+      updateQueueDisplay();
+      updateQueueCount();
+      
+      // 隱藏題目顯示區域
+      const questionSection = document.getElementById('question-section');
+      if (questionSection) {
+        questionSection.style.display = 'none';
+      }
+      
+      console.log('[clearQueue] Queue cleared');
     }
     
     // 新增題目到佇列
@@ -863,6 +916,9 @@
       if (countElement) {
         countElement.textContent = readyCount > 0 ? `${readyCount} 題就緒` : '0 題就緒';
       }
+      
+      // 自動保存狀態
+      saveQueueState();
     }
     
     // 更新佇列顯示
@@ -1046,8 +1102,28 @@
     
     // 確保 DOM 載入完成後再綁定事件
     document.addEventListener('DOMContentLoaded', function() {
-      // 初始化佇列
-      initQueue();
+      // 嘗試載入保存的佇列狀態
+      const hasRestoredQueue = loadQueueState();
+      
+      if (hasRestoredQueue) {
+        // 重建 UI
+        updateQueueDisplay();
+        updateQueueCount();
+        
+        // 如果有當前題目，顯示它
+        if (currentQuestionId) {
+          const currentQuestion = questionQueue.find(q => q.id === currentQuestionId);
+          if (currentQuestion) {
+            displayQuestion(currentQuestion);
+          }
+        }
+        
+        console.log('[DOMContentLoaded] Restored previous session');
+      } else {
+        // 初始化新佇列
+        initQueue();
+        console.log('[DOMContentLoaded] Started new session');
+      }
       
       // 移除自動重載，改為僅記錄狀態
       const lengthSelect = document.getElementById('lengthSelect');

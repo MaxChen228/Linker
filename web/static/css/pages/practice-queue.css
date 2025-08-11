@@ -19,6 +19,21 @@
   margin-bottom: 16px;
 }
 
+.queue-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.queue-clear-btn {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.queue-clear-btn:hover {
+  opacity: 1;
+}
+
 .queue-title {
   font-size: 18px;
   font-weight: 600;

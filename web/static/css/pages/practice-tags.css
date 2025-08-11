@@ -223,16 +223,19 @@
 
 /* 分類摺疊面板 */
 .category-section {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-4);
   border-bottom: 1px solid var(--border-light);
+  padding-bottom: var(--space-2);
 }
 
 .category-header {
   display: flex;
   align-items: center;
-  padding: var(--space-2) 0;
+  padding: var(--space-3) 0;
   cursor: pointer;
   user-select: none;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
 }
 
 .category-header:hover {
@@ -250,8 +253,9 @@
 
 .category-name {
   flex: 1;
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
 }
 
 .category-count {
@@ -263,10 +267,10 @@
 }
 
 .category-tags {
-  padding: var(--space-2) 0;
+  padding: var(--space-3) 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
 }
 
 .category-header.collapsed + .category-tags {
@@ -277,17 +281,21 @@
 .draggable-tag {
   display: flex;
   align-items: center;
-  padding: var(--space-2);
-  background: var(--gray-50);
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-base);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius);
-  cursor: move;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: var(--shadow-xs);
 }
 
 .draggable-tag:hover {
   background: var(--accent-50);
   border-color: var(--accent-300);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
 }
 
 .draggable-tag.dragging {
@@ -303,7 +311,9 @@
 
 .tag-text {
   flex: 1;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
 }
 
 .tag-indicator {
