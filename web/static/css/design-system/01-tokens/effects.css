@@ -31,6 +31,11 @@
   /* Button specific transition */
   --btn-transition: all var(--transition-base);
   
+  /* Special purpose transitions (缺失變數補充) */
+  --transition: var(--transition-base); /* 預設過渡 */
+  --transition-colors: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+  --transition-all: all var(--transition-base);
+  
   /* ========== Animations ========== */
   --animation-spin: spin 1s linear infinite;
   --animation-pulse: pulse 2s ease-in-out infinite;

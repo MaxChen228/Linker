@@ -178,51 +178,63 @@ function applyFilters() {
   }
 }
 
-// 搜尋功能
-const searchInput = document.getElementById('pattern-search');
-if (searchInput) {
-  searchInput.addEventListener('input', function(e) {
-    activeFilters.search = e.target.value;
-    applyFilters();
-    
-    // 更新 URL 參數
-    const url = new URL(window.location);
-    if (e.target.value) {
-      url.searchParams.set('q', e.target.value);
-    } else {
-      url.searchParams.delete('q');
-    }
-    window.history.replaceState({}, '', url);
-  });
-}
-
-// 分類篩選
-document.querySelectorAll('[data-filter-type="category"]').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const value = this.dataset.filterValue;
-    
-    // 更新按鈕狀態
-    document.querySelectorAll('[data-filter-type="category"]').forEach(b => {
-      b.classList.remove('active');
+// 頁面載入完成後初始化
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('[句型頁面] DOM 載入完成，初始化篩選功能');
+  
+  // 綁定搜尋功能
+  const searchInput = document.getElementById('pattern-search');
+  if (searchInput) {
+    console.log('[句型頁面] 綁定搜尋框事件');
+    searchInput.addEventListener('input', function(e) {
+      activeFilters.search = e.target.value;
+      applyFilters();
+      
+      // 更新 URL 參數
+      const url = new URL(window.location);
+      if (e.target.value) {
+        url.searchParams.set('q', e.target.value);
+      } else {
+        url.searchParams.delete('q');
+      }
+      window.history.replaceState({}, '', url);
     });
-    this.classList.add('active');
-    
-    // 更新篩選
-    activeFilters.category = value;
-    applyFilters();
-    
-    // 更新 URL
-    const url = new URL(window.location);
-    if (value) {
-      url.searchParams.set('category', value);
-    } else {
-      url.searchParams.delete('category');
-    }
-    window.history.replaceState({}, '', url);
-  });
-});
+  }
 
-// 初始化
-applyFilters();
+  // 綁定分類篩選
+  const categoryButtons = document.querySelectorAll('[data-filter-type="category"]');
+  console.log('[句型頁面] 找到分類按鈕:', categoryButtons.length);
+  
+  categoryButtons.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault(); // 防止按鈕預設行為
+      
+      const value = this.dataset.filterValue;
+      console.log('[句型頁面] 點擊分類:', value);
+      
+      // 更新按鈕狀態
+      document.querySelectorAll('[data-filter-type="category"]').forEach(b => {
+        b.classList.remove('active');
+      });
+      this.classList.add('active');
+      
+      // 更新篩選
+      activeFilters.category = value;
+      applyFilters();
+      
+      // 更新 URL
+      const url = new URL(window.location);
+      if (value) {
+        url.searchParams.set('category', value);
+      } else {
+        url.searchParams.delete('category');
+      }
+      window.history.replaceState({}, '', url);
+    });
+  });
+
+  // 初始化篩選
+  applyFilters();
+});
 </script>
 {% endblock %}

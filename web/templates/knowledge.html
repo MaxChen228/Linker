@@ -254,37 +254,48 @@ function applyFilters() {
   }
 }
 
-// 更新搜尋功能
-const searchInput = document.getElementById('knowledge-search');
-if (searchInput) {
-  searchInput.addEventListener('input', function(e) {
-    activeFilters.search = e.target.value;
-    applyFilters();
-  });
-}
-
-// 更新篩選按鈕功能 - 使用統一的屬性選擇器
-document.querySelectorAll('[data-filter-type]').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const filterType = this.dataset.filterType;
-    const filterValue = this.dataset.filterValue;
-    
-    // 更新按鈕狀態
-    document.querySelectorAll(`[data-filter-type="${filterType}"]`).forEach(b => {
-      b.classList.remove('active');
-    });
-    this.classList.add('active');
-    
-    // 更新活躍篩選條件
-    activeFilters[filterType] = filterValue;
-    
-    // 應用所有篩選條件
-    applyFilters();
-  });
-});
-
-// 頁面載入時初始化篩選
+// 頁面載入完成後初始化
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('[知識點頁面] DOM 載入完成，初始化篩選功能');
+  
+  // 綁定搜尋功能
+  const searchInput = document.getElementById('knowledge-search');
+  if (searchInput) {
+    console.log('[知識點頁面] 綁定搜尋框事件');
+    searchInput.addEventListener('input', function(e) {
+      activeFilters.search = e.target.value;
+      applyFilters();
+    });
+  }
+
+  // 綁定篩選按鈕功能
+  const filterButtons = document.querySelectorAll('[data-filter-type]');
+  console.log('[知識點頁面] 找到篩選按鈕:', filterButtons.length);
+  
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault(); // 防止按鈕預設行為
+      
+      const filterType = this.dataset.filterType;
+      const filterValue = this.dataset.filterValue;
+      
+      console.log('[知識點頁面] 點擊篩選:', filterType, '=', filterValue);
+      
+      // 更新按鈕狀態
+      document.querySelectorAll(`[data-filter-type="${filterType}"]`).forEach(b => {
+        b.classList.remove('active');
+      });
+      this.classList.add('active');
+      
+      // 更新活躍篩選條件
+      activeFilters[filterType] = filterValue;
+      
+      // 應用所有篩選條件
+      applyFilters();
+    });
+  });
+  
+  // 初始化篩選
   applyFilters();
 });
 </script>
