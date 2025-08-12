@@ -1,0 +1,212 @@
+"""
+Knowledge management routes for the Linker web application.
+"""
+from collections import defaultdict
+from datetime import datetime
+from typing import Optional
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
+from core.error_types import ErrorCategory, ErrorTypeSystem
+from web.dependencies import get_templates, get_knowledge_manager
+
+router = APIRouter()
+
+@router.get("/knowledge", response_class=HTMLResponse)
+def knowledge_points(request: Request, category: Optional[str] = None, mastery: Optional[str] = None):
+    """知識點瀏覽頁面"""
+    templates = get_templates()
+    knowledge = get_knowledge_manager()
+    
+    # 獲取所有知識點
+    all_points = knowledge.knowledge_points
+
+    # 根據類別篩選
+    if category:
+        try:
+            cat_enum = ErrorCategory.from_string(category)
+            all_points = [p for p in all_points if p.category == cat_enum]
+        except (ValueError, KeyError, AttributeError):
+            pass
+
+    # 根據掌握度篩選
+    if mastery:
+        if mastery == "low":
+            all_points = [p for p in all_points if p.mastery_level < 0.3]
+        elif mastery == "medium":
+            all_points = [p for p in all_points if 0.3 <= p.mastery_level < 0.7]
+        elif mastery == "high":
+            all_points = [p for p in all_points if p.mastery_level >= 0.7]
+
+    # 分組處理知識點
+    systematic_groups = defaultdict(list)  # 系統性錯誤按subtype分組
+    isolated_points = []  # 單一性錯誤保持獨立
+    enhancement_points = []  # 可以更好保持獨立
+    other_points = []  # 其他錯誤保持獨立
+
+    type_system = ErrorTypeSystem()
+
+    for point in all_points:
+        if point.category.value == "systematic":
+            # 系統性錯誤按subtype分組
+            subtype_obj = type_system.get_subtype_by_name(point.subtype)
+            group_name = subtype_obj.chinese_name if subtype_obj else point.subtype
+            systematic_groups[group_name].append(point)
+        elif point.category.value == "isolated":
+            isolated_points.append(point)
+        elif point.category.value == "enhancement":
+            enhancement_points.append(point)
+        else:
+            other_points.append(point)
+
+    # 構建知識群組數據
+    knowledge_groups = []
+
+    # 處理系統性錯誤群組
+    for group_name, points in systematic_groups.items():
+        group = {
+            "type": "systematic",
+            "name": group_name,
+            "points": sorted(points, key=lambda x: x.mastery_level),
+            "count": len(points),
+            "avg_mastery": sum(p.mastery_level for p in points) / len(points) if points else 0,
+            "total_mistakes": sum(p.mistake_count for p in points),
+        }
+        knowledge_groups.append(group)
+
+    # 排序群組（按錯誤次數降序）
+    knowledge_groups.sort(key=lambda x: x["total_mistakes"], reverse=True)
+
+    # 獲取統計資料
+    stats = knowledge.get_statistics()
+
+    # 計算各類別統計
+    category_counts = {
+        "系統性錯誤": len(systematic_groups),  # 群組數量，不是點數量
+        "單一性錯誤": len(isolated_points),
+        "可以更好": len(enhancement_points),
+        "其他錯誤": len(other_points)
+    }
+
+    # 獲取所有分類
+    categories = ["系統性錯誤", "單一性錯誤", "可以更好", "其他錯誤"]
+
+    # 獲取複習佇列（可以複習的知識點）
+    review_queue = knowledge.get_review_candidates(max_points=20)
+    due_points = knowledge.get_due_points()  # 已到期的知識點
+
+    # 獲取當前時間供模板使用
+    now = datetime.now().isoformat()
+
+    return templates.TemplateResponse(
+        "knowledge.html",
+        {
+            "request": request,
+            "knowledge_groups": knowledge_groups,
+            "isolated_points": isolated_points,
+            "enhancement_points": enhancement_points,
+            "other_points": other_points,
+            "points": all_points,  # 保留原始數據以兼容
+            "categories": categories,
+            "category_counts": category_counts,
+            "current_category": category,
+            "current_mastery": mastery,
+            "stats": stats,
+            "review_queue": review_queue,  # 複習佇列
+            "due_points": due_points,  # 已到期的知識點
+            "now": now,  # 當前時間
+            "active": "knowledge",
+        },
+    )
+
+@router.get("/knowledge/{point_id}", response_class=HTMLResponse)
+def knowledge_detail(request: Request, point_id: str):
+    """知識點詳情頁面"""
+    templates = get_templates()
+    knowledge = get_knowledge_manager()
+    
+    # 獲取指定的知識點
+    point = knowledge.get_knowledge_point(point_id)
+
+    if not point:
+        # 如果找不到知識點，重定向到知識點列表頁
+        return RedirectResponse(url="/knowledge", status_code=303)
+
+    # 獲取相關的錯誤記錄（最近的10個）
+    related_mistakes = []
+    all_mistakes = knowledge.get_all_mistakes()
+    for mistake in all_mistakes[-50:] if len(all_mistakes) > 50 else all_mistakes:  # 檢查最近50個錯誤
+        if mistake.get("knowledge_points"):
+            for kp in mistake["knowledge_points"]:
+                if kp.get("id") == point_id:
+                    # 添加必要的字段以兼容模板
+                    if "feedback" in mistake:
+                        mistake["correct_answer"] = mistake["feedback"].get("overall_suggestion", "")
+                        mistake["explanation"] = mistake["feedback"].get("detailed_feedback", "")
+                    related_mistakes.append(mistake)
+                    break
+        if len(related_mistakes) >= 10:
+            break
+
+    # 獲取錯誤類型系統，以顯示子類型的中文名稱
+    type_system = ErrorTypeSystem()
+    subtype_obj = type_system.get_subtype_by_name(point.subtype) if point.subtype else None
+
+    # 計算下次複習時間
+    next_review_display = None
+    if point.next_review:
+        try:
+            next_review_date = datetime.fromisoformat(point.next_review.replace("Z", "+00:00"))
+            now = datetime.now(next_review_date.tzinfo)
+            if next_review_date > now:
+                days_until = (next_review_date - now).days
+                if days_until == 0:
+                    next_review_display = "今天"
+                elif days_until == 1:
+                    next_review_display = "明天"
+                else:
+                    next_review_display = f"{days_until} 天後"
+            else:
+                next_review_display = "已到期"
+        except (ValueError, TypeError, AttributeError):
+            pass
+
+    # 為模板準備point對象，添加缺少的屬性
+    # 從 original_error 中取得完整的句子
+    full_user_answer = ""
+    full_correct_answer = ""
+    if hasattr(point, 'original_error') and point.original_error:
+        full_user_answer = point.original_error.user_answer
+        full_correct_answer = point.original_error.correct_answer
+    
+    point_dict = {
+        "id": point.id,
+        "title": point.key_point,  # 保留 key_point 作為描述性標題
+        "key_point": point.key_point,
+        "category": {
+            "value": point.category.value,
+            "chinese_name": point.category.to_chinese()
+        },
+        "subtype": point.subtype,
+        "description": point.explanation,  # 使用 explanation 作為 description
+        "original_phrase": point.original_phrase,  # 錯誤片段
+        "correction": point.correction,  # 修正片段
+        "full_user_answer": full_user_answer,  # 完整的用戶答案
+        "full_correct_answer": full_correct_answer,  # 完整的正確答案
+        "mastery_level": point.mastery_level,
+        "mistake_count": point.mistake_count,
+        "correct_count": point.correct_count,
+        "next_review": point.next_review,
+        "improvement_suggestion": "",  # 保留為空或其他用途
+    }
+
+    return templates.TemplateResponse(
+        "knowledge-detail.html",
+        {
+            "request": request,
+            "point": point_dict,
+            "subtype_display": subtype_obj.chinese_name if subtype_obj else point.subtype,
+            "related_mistakes": related_mistakes,
+            "next_review_display": next_review_display,
+            "active": "knowledge",
+        },
+    )

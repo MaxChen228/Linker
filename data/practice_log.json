@@ -377,5 +377,26 @@
         }
       ]
     }
+  },
+  {
+    "timestamp": "2025-08-12T17:35:13.728053",
+    "chinese_sentence": "公園裡有很多小朋友在玩。",
+    "user_answer": "This is a test answer",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "There are many children playing in the park.",
+      "error_analysis": [
+        {
+          "category": "other",
+          "key_point_summary": "語意錯誤: 完全偏離原句意思",
+          "original_phrase": "This is a test answer",
+          "correction": "There are many children playing in the park.",
+          "explanation": "學生的翻譯「This is a test answer」（這是一個測試答案）與中文原句「公園裡有很多小朋友在玩」的意思完全無關。這可能是對題意的誤解，或是未能嘗試翻譯原句。正確的翻譯需要表達「有很多小朋友」(There are many children) 和他們「在公園裡玩」(playing in the park) 的概念。",
+          "severity": "major"
+        }
+      ]
+    },
+    "practice_mode": "new"
   }
 ]

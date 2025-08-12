@@ -25,10 +25,16 @@ source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate  # Windows
 ```
 
-3. **安裝開發依賴**
+3. **安裝依賴**
 ```bash
+# 安裝專案依賴（推薦使用 pyproject.toml）
+pip install -e .
+
+# 安裝開發依賴
+pip install -e ".[dev]"
+
+# 或使用 requirements.txt（向後相容）
 pip install -r requirements.txt
-pip install -r requirements-dev.txt  # 開發工具（如果有）
 ```
 
 4. **設定環境變數**
@@ -164,6 +170,38 @@ class KnowledgeManager:
 ```
 
 ## 測試指南
+
+### 執行測試
+
+```bash
+# 執行所有測試
+python -m pytest
+
+# 執行特定測試檔案
+python -m pytest tests/test_logger.py
+
+# 執行並顯示覆蓋率
+python -m pytest --cov=core --cov=web --cov=services
+
+# 生成 HTML 覆蓋率報告
+python -m pytest --cov-report=html
+
+# 執行特定標記的測試
+python -m pytest -m "unit"  # 只執行單元測試
+python -m pytest -m "not slow"  # 跳過慢速測試
+```
+
+### 測試結構
+
+```
+tests/
+├── conftest.py           # 全局 fixtures
+├── factories/            # 測試資料工廠
+├── mocks/               # Mock 物件
+├── unit/                # 單元測試
+├── manual/              # 手動測試
+└── utils/               # 測試工具
+```
 
 ### 單元測試
 

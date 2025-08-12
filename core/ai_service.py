@@ -264,7 +264,19 @@ class AIService:
 
         if not self.grade_model:
             return self._get_fallback_response()
-        return self._call_model(self.grade_model, system_prompt, user_prompt)
+        
+        result = self._call_model(self.grade_model, system_prompt, user_prompt)
+        
+        # 統一的錯誤處理模式 - 確保 result 總是 dict
+        if isinstance(result, str):
+            # AI 返回字串而非 JSON，使用備用回應
+            return self._get_fallback_response()
+        elif isinstance(result, list) and len(result) > 0:
+            result = result[0] if isinstance(result[0], dict) else self._get_fallback_response()
+        elif not isinstance(result, dict):
+            return self._get_fallback_response()
+        
+        return result
 
     def generate_practice_sentence(
         self,
@@ -326,9 +338,12 @@ class AIService:
             # 永遠不使用快取，確保每次都獲得新結果
             result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
 
-        # 處理可能的列表返回（API 有時返回列表）
-        if isinstance(result, list) and len(result) > 0:
-            result = result[0]
+        # 統一的錯誤處理模式 - 確保 result 總是 dict
+        if isinstance(result, str):
+            # AI 返回字串而非 JSON，使用備用回應
+            result = {"sentence": "今天天氣很好。", "hint": "注意句型結構"}
+        elif isinstance(result, list) and len(result) > 0:
+            result = result[0] if isinstance(result[0], dict) else {}
         elif not isinstance(result, dict):
             result = {}
 
@@ -428,9 +443,12 @@ class AIService:
 
         result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
 
-        # 處理返回結果
-        if isinstance(result, list) and len(result) > 0:
-            result = result[0]
+        # 統一的錯誤處理模式 - 確保 result 總是 dict
+        if isinstance(result, str):
+            # AI 返回字串而非 JSON，使用備用回應
+            result = {"sentence": "今天天氣很好。", "hint": "注意之前的錯誤"}
+        elif isinstance(result, list) and len(result) > 0:
+            result = result[0] if isinstance(result[0], dict) else {}
         elif not isinstance(result, dict):
             result = {}
 
@@ -559,9 +577,12 @@ class AIService:
         
         result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
         
-        # 處理結果
-        if isinstance(result, list) and len(result) > 0:
-            result = result[0]
+        # 統一的錯誤處理模式 - 確保 result 總是 dict
+        if isinstance(result, str):
+            # AI 返回字串而非 JSON，使用備用回應
+            result = {"sentence": "今天天氣很好。", "hint": "注意句型結構"}
+        elif isinstance(result, list) and len(result) > 0:
+            result = result[0] if isinstance(result[0], dict) else {}
         elif not isinstance(result, dict):
             result = {}
         
@@ -604,6 +625,10 @@ class AIService:
         avg_complexity = sum(complexity_scores) / len(complexity_scores) if complexity_scores else 2
         variety_score = min(100, len(tags) * 30)  # 每個標籤增加30%變化性
         
+        # 確保 result 是字典類型
+        if not isinstance(result, dict):
+            result = {"sentence": "今天天氣很好。", "hint": "注意句型結構"}
+        
         result["difficulty"] = min(5, max(1, round(avg_complexity)))
         result["variety_score"] = variety_score
         
@@ -623,7 +648,9 @@ class AIService:
 
         # 準備最近的錯誤摘要
         recent_mistakes = []
-        for practice in practice_history[-self.settings.practice.RECENT_MISTAKES_COUNT :]:
+        # 取最近 10 個練習記錄進行分析
+        RECENT_MISTAKES_COUNT = 10
+        for practice in practice_history[-RECENT_MISTAKES_COUNT :]:
             if not practice.get("is_correct", True):
                 errors = practice.get("feedback", {}).get("error_analysis", [])
                 for error in errors:
@@ -663,4 +690,18 @@ class AIService:
 
         user_prompt = f"以下是學生最近的錯誤記錄：\n{json.dumps(recent_mistakes, ensure_ascii=False, indent=2)}"
 
-        return self.call_llm(system_prompt, user_prompt)
+        if not self.grade_model:
+            return {"patterns": [], "suggestions": []}
+        
+        result = self._call_model(self.grade_model, system_prompt, user_prompt)
+        
+        # 統一的錯誤處理模式 - 確保 result 總是 dict
+        if isinstance(result, str):
+            # AI 返回字串而非 JSON，使用備用回應
+            return {"patterns": [], "suggestions": []}
+        elif isinstance(result, list) and len(result) > 0:
+            result = result[0] if isinstance(result[0], dict) else {"patterns": [], "suggestions": []}
+        elif not isinstance(result, dict):
+            return {"patterns": [], "suggestions": []}
+        
+        return result
