@@ -43,7 +43,7 @@
 }
 
 .queue-items::-webkit-scrollbar {
-  height: 6px;
+  height: var(--scrollbar-thin);
 }
 
 .queue-items::-webkit-scrollbar-track {
@@ -58,8 +58,8 @@
 /* 題目卡片 */
 .queue-item {
   flex-shrink: 0;
-  width: 140px;
-  height: 100px;
+  width: var(--queue-item-width);
+  height: var(--queue-item-height);
   padding: var(--space-4);
   background: var(--surface-base);
   border: 2px solid var(--border-light);
@@ -120,8 +120,8 @@
 }
 
 .add-icon {
-  width: 24px;
-  height: 24px;
+  width: var(--icon-md);
+  height: var(--icon-md);
   stroke: currentColor;
 }
 
@@ -138,7 +138,7 @@
 
 .queue-item-badge {
   font-size: var(--text-xs);
-  padding: var(--space-0-25) 8px;
+  padding: var(--space-0-25) var(--space-2);
   border-radius: var(--radius-sm);
   background: var(--success-500);
   color: white;
@@ -155,13 +155,13 @@
 
 /* 生成中動畫 */
 .queue-item-spinner {
-  width: 32px;
-  height: 32px;
+  width: var(--spinner-size-md);
+  height: var(--spinner-size-md);
 }
 
 .queue-item-progress {
   width: 100%;
-  height: 4px;
+  height: var(--progress-height-md);
   background: var(--gray-200);
   border-radius: 2px;
   overflow: hidden;
@@ -207,8 +207,8 @@
 
 /* Spinner 樣式 */
 .spinner[data-type="simple"] {
-  width: 20px;
-  height: 20px;
+  width: var(--spinner-size-sm);
+  height: var(--spinner-size-sm);
   border: 2px solid var(--gray-300);
   border-top-color: var(--accent-500);
   border-radius: 50%;
@@ -240,7 +240,7 @@
   margin: 2% auto;
   padding: 0;
   width: 90%;
-  max-width: 1200px;
+  max-width: var(--container-max-width-lg);
   max-height: 90vh;
   border-radius: 12px;
   box-shadow: 0 20px 60px var(--shadow-color-dark);
@@ -338,7 +338,7 @@
   font-family: 'Courier New', Consolas, monospace;
   font-size: var(--text-sm);
   line-height: var(--leading-relaxed);
-  max-height: 400px;
+  max-height: var(--space-50);
   overflow-y: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -393,7 +393,7 @@
 
 /* ========== 容器與佈局 ========== */
 .practice-container {
-  max-width: 800px;
+  max-width: var(--container-max-width-md);
   margin: 0 auto;
   padding: var(--space-8) var(--space-4);
 }
@@ -419,7 +419,7 @@
   color: var(--text-muted);
   font-size: var(--text-base);
   line-height: var(--leading-relaxed);
-  max-width: 500px;
+  max-width: var(--container-max-width-sm);
   margin: 0 auto;
 }
 
@@ -496,7 +496,7 @@
   padding: var(--space-4);
   background: var(--surface-subtle);
   border-radius: var(--radius-xl);
-  max-width: 600px;
+  max-width: var(--container-max-width-sm);
   margin-left: auto;
   margin-right: auto;
 }
@@ -785,7 +785,7 @@
   background: var(--surface-subtle);
   transition: var(--transition-base);
   resize: vertical;
-  min-height: 120px;
+  min-height: var(--input-min-height-md);
 }
 
 .answer-input:hover {

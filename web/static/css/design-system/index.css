@@ -8,6 +8,7 @@
 /* 2. 核心設計令牌 (Core Design Tokens) */
 @import url('./01-tokens/colors.css');
 @import url('./01-tokens/spacing.css');
+@import url('./01-tokens/dimensions.css');
 @import url('./01-tokens/typography.css');
 @import url('./01-tokens/border-radius.css');
 

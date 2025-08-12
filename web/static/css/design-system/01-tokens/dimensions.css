@@ -1,0 +1,34 @@
+/* ================================================
+   設計令牌 - 尺寸系統
+   ================================================ */
+
+:root {
+  --icon-xs: 16px;
+  --icon-sm: 20px;
+  --icon-md: 24px;
+  --icon-lg: 32px;
+  --icon-xl: 40px;
+  --spinner-size-sm: 20px;
+  --spinner-size-md: 32px;
+  --spinner-size-lg: 40px;
+  --queue-item-width: 140px;
+  --queue-item-height: 100px;
+  --container-max-width-sm: 600px;
+  --container-max-width-md: 800px;
+  --container-max-width-lg: 1200px;
+  --input-min-height-sm: 80px;
+  --input-min-height-md: 120px;
+  --input-min-height-lg: 160px;
+  --scrollbar-thin: 6px;
+  --scrollbar-normal: 8px;
+  --scrollbar-thick: 12px;
+  --progress-height-sm: 2px;
+  --progress-height-md: 4px;
+  --progress-height-lg: 6px;
+  /* Based on common usage patterns */
+  --size-xs: var(--icon-xs);
+  --size-sm: var(--icon-sm);
+  --size-md: var(--icon-md);
+  --size-lg: var(--icon-lg);
+  --size-xl: var(--icon-xl);
+}

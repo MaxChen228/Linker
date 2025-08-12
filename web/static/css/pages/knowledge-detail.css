@@ -116,7 +116,6 @@
 
 .correct-phrase {
   flex: 1 1 auto;
-  position: relative;
   color: var(--gray-900);
   font-weight: var(--font-bold);
   padding: var(--space-5) var(--space-6);
@@ -534,11 +533,14 @@
   display: inline-block;
   font-weight: var(--font-semibold);
   color: var(--gray-600);
+  margin-bottom: var(--space-2);
+  opacity: 0.8;
+  font-weight: var(--font-medium);
+  color: var(--text-muted);
+  margin-right: var(--space-2);
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
-  margin-bottom: var(--space-2);
-  opacity: 0.8;
 }
 
 .sentence-text {
@@ -674,15 +676,6 @@
   border: 1px solid var(--border-light);
 }
 
-.sentence-label {
-  font-weight: var(--font-medium);
-  color: var(--text-muted);
-  margin-right: var(--space-2);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wide);
-}
-
 .user-answer.error {
   background: var(--gray-50);
   border-color: var(--gray-300);
@@ -786,10 +779,6 @@
   
   .detail-title {
     font-size: var(--text-lg);
-  }
-  
-  .detail-stats {
-    grid-template-columns: 1fr 1fr;
   }
   
   .detail-actions {

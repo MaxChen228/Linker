@@ -4,24 +4,17 @@
 
 /* 基礎徽章樣式 */
 .badge {
-  /* 結構 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  
-  /* 尺寸 - 預設 medium */
   height: var(--space-6);
   padding: 0 var(--space-3);
-  
-  /* 文字 */
   font-family: var(--font-sans);
   font-size: var(--text-xs);
   font-weight: var(--font-semibold);
   line-height: 1;
   white-space: nowrap;
-  
-  /* 視覺 */
   border-radius: var(--radius-full);
   border: 1px solid transparent;
   transition: all var(--duration-normal) ease;
@@ -227,7 +220,7 @@
 /* 帶圖標徽章 */
 .badge-icon {
   display: inline-flex;
-  width: 14px; /* 圖標固定尺寸 */
+  width: 14px;
   height: 14px; /* 圖標固定尺寸 */
   margin-right: var(--space-1);
 }
@@ -237,8 +230,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px; /* 計數徽章最小寬度 */
-  height: 18px; /* 計數徽章固定高度 */
+  min-width: 18px;
+  height: 18px;
   padding: 0 var(--space-1);
   margin-left: var(--space-1);
   background: rgba(255, 255, 255, 0.2);
@@ -401,7 +394,6 @@
 
 /* 保留舊類名的基本樣式 */
 .tag {
-  /* 繼承 badge 的所有樣式 */
   @extend .badge;
 }
 

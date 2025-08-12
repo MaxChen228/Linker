@@ -122,6 +122,9 @@
   background: var(--surface-elevated);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xs);
+  animation: var(--animation-fade-in);
+  animation-delay: var(--duration-normal);
+  animation-fill-mode: both;
 }
 
 .action-buttons {
@@ -153,12 +156,6 @@
 .stats-grid > *:nth-child(2) { animation-delay: 50ms; }
 .stats-grid > *:nth-child(3) { animation-delay: 100ms; }
 .stats-grid > *:nth-child(4) { animation-delay: var(--duration-fast); }
-
-.action-section {
-  animation: var(--animation-fade-in);
-  animation-delay: var(--duration-normal);
-  animation-fill-mode: both;
-}
 
 /* ========== 複習列表區塊 ========== */
 .review-section {

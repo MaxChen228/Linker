@@ -6,30 +6,21 @@
  */
 
 :root {
-  /* Base Levels (0-10) */
-  --z-base: 0;          /* Default base level */
-  --z-raised: 1;        /* Slightly raised elements */
-  --z-elevated: 2;      /* Elevated content */
-
-  /* Content Overlays (100-999) */
-  --z-dropdown: 100;    /* Dropdown menus and tooltips */
-  --z-sticky: 100;      /* Sticky navigation elements */
-  --z-overlay: 100;     /* General content overlays */
-
-  /* Modals and Dialogs (1000-9999) */
-  --z-modal-base: 1000;     /* Base modal level */
-  --z-modal-stack-1: 1001;  /* Modal stacking level 1 */
-  --z-modal-stack-2: 1002;  /* Modal stacking level 2 */
-  --z-modal-stack-3: 1003;  /* Modal stacking level 3 */
-  --z-drawer: 1000;         /* Side drawers */
-  --z-save-indicator: 1000; /* Save status indicators */
-
-  /* High-Level Overlays (2000-9999) */
-  --z-popover: 2000;        /* High-priority popovers */
-  --z-toast: 5000;          /* Toast notifications */
-
-  /* System Level (10000+) */
-  --z-loading: 9999;        /* Loading masks and overlays */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-elevated: 2;
+  --z-dropdown: 100;
+  --z-sticky: 100;
+  --z-overlay: 100;
+  --z-modal-base: 1000;
+  --z-modal-stack-1: 1001;
+  --z-modal-stack-2: 1002;
+  --z-modal-stack-3: 1003;
+  --z-drawer: 1000;
+  --z-save-indicator: 1000;
+  --z-popover: 2000;
+  --z-toast: 5000;
+  --z-loading: 9999;
   --z-debug: 10000;         /* Debug tools and dev overlays */
 }
 

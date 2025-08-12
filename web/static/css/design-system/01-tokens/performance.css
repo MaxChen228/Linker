@@ -4,15 +4,8 @@
  */
 
 :root {
-  /* Performance Settings */
-  --enable-backdrop-filter: 1; /* 1 = enabled, 0 = disabled */
-  --enable-animations: 1;
-  --enable-shadows: 1;
-  --enable-transitions: 1;
-  
-  /* Optimized Glass Effects */
-  --glass-blur-light: blur(8px); /* Reduced from 12px */
-  --glass-blur-heavy: blur(20px); /* Only for critical elements */
+  --glass-blur-light: blur(8px);
+  --glass-blur-heavy: blur(20px);
   
   /* Will-change Management */
   --will-change-transform: transform;
@@ -24,8 +17,6 @@
 /* Performance Profiles */
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --enable-animations: 0;
-    --enable-transitions: 0;
   }
 }
 
@@ -51,7 +42,6 @@
 /* Selective Backdrop Filter */
 @supports not (backdrop-filter: blur(1px)) {
   :root {
-    --enable-backdrop-filter: 0;
   }
   
   /* Fallback styles */

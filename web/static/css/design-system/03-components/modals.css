@@ -56,7 +56,7 @@
   box-shadow: var(--shadow-modal);
   width: 100%;
   max-width: var(--modal-width, 500px);
-  max-height: 90vh; /* 模態最大高度 */
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -229,7 +229,7 @@
 }
 
 .modal[data-type="alert"] .modal-icon {
-  width: 64px; /* 提示模態圖標尺寸 */
+  width: 64px;
   height: 64px; /* 提示模態圖標尺寸 */
   margin: 0 auto var(--space-4);
   display: flex;
@@ -281,7 +281,7 @@
 
 /* Image/Media Modal */
 .modal[data-type="media"] {
-  --modal-width: 90vw; /* 媒體模態響應式寬度 */
+  --modal-width: 90vw;
   max-width: 1200px; /* 媒體模態最大寬度 */
   background: rgba(0, 0, 0, 0.95);
 }
@@ -296,11 +296,7 @@
   z-index: var(--z-raised);
 }
 
-.modal[data-type="media"] .modal-title {
-  color: white;
-}
-
-.modal[data-type="media"] .modal-close {
+.modal[data-type="media"] .modal-title,.modal[data-type="media"] .modal-close {
   color: white;
 }
 
@@ -314,7 +310,7 @@
 
 .modal[data-type="media"] img,
 .modal[data-type="media"] video {
-  max-width: 100%; /* 媒體元素最大寬度 */
+  max-width: 100%;
   max-height: 100%; /* 媒體元素最大高度 */
   object-fit: contain;
 }
@@ -447,7 +443,7 @@
     top: var(--space-2);
     left: 50%;
     transform: translateX(-50%);
-    width: 36px; /* 手機 sheet 指示器寬度 */
+    width: 36px;
     height: var(--space-1); /* 手機 sheet 指示器高度 */
     background: var(--gray-300);
     border-radius: var(--radius-full);
@@ -510,11 +506,7 @@ body.modal-open {
     border-top-color: var(--gray-800);
   }
   
-  .modal-close:hover {
-    background: var(--gray-800);
-  }
-  
-  .modal[data-type="alert"] .modal-icon {
+  .modal-close:hover,.modal[data-type="alert"] .modal-icon {
     background: var(--gray-800);
   }
   

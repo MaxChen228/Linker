@@ -3,20 +3,12 @@
    ================================================ */
 
 :root {
-  /* ========== Transitions ========== */
   --transition-fast: var(--duration-fast) ease;
   --transition-base: var(--duration-normal) ease;
-  --transition-slow: var(--duration-normal) ease;
-  --transition-slower: var(--duration-slow) ease;
-  
-  /* Easing functions */
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  
-  
-  /* Special purpose transitions (缺失變數補充) */
-  --transition: var(--transition-base); /* 預設過渡 */
+  --transition: var(--transition-base);
   --transition-colors: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
   --transition-all: all var(--transition-base);
   

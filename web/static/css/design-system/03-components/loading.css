@@ -129,7 +129,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px); /* 載入蒙罩模糊 */
+  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -152,7 +152,7 @@
   border-radius: var(--radius-xl);
   padding: var(--space-10);
   text-align: center;
-  max-width: 360px; /* 載入模態最大寬度 */
+  max-width: 360px;
   width: 90%; /* 載入模態響應式寬度 */
   box-shadow: var(--shadow-modal);
   animation: var(--animation-scale-in);
@@ -190,18 +190,19 @@
 
 /* Loading Tips */
 .loading-tips {
-  display: flex;
   flex-direction: column;
-  gap: var(--space-2);
   margin-top: var(--space-6);
   padding-top: var(--space-6);
   border-top: 1px solid var(--border);
 }
 
-.loading-tip {
+.loading-tips,.loading-tip {
   display: flex;
-  align-items: center;
   gap: var(--space-2);
+}
+
+.loading-tip {
+  align-items: center;
   font-size: var(--text-xs);
   color: var(--text-muted);
   text-align: left;
@@ -345,13 +346,13 @@
 }
 
 .skeleton-button {
-  height: var(--space-10); /* skeleton 按鈕高度 */
+  height: var(--space-10);
   width: 120px; /* skeleton 按鈕寬度 */
   border-radius: var(--radius-lg);
 }
 
 .skeleton-avatar {
-  width: var(--space-10); /* skeleton 頭像尺寸 */
+  width: var(--space-10);
   height: var(--space-10); /* skeleton 頭像尺寸 */
   border-radius: 50%;
 }
@@ -368,15 +369,17 @@
   width: 100%;
   height: var(--space-2); /* 進度標高度 */
   background: var(--gray-200);
-  border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
+}
+
+.progress,.progress-bar {
+  border-radius: var(--radius-full);
 }
 
 .progress-bar {
   height: 100%;
   background: var(--primary);
-  border-radius: var(--radius-full);
   transition: width var(--duration-normal) var(--ease-out);
 }
 
@@ -447,8 +450,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: var(--space-8); /* 內容載入 spinner 尺寸 */
-  height: var(--space-8); /* 內容載入 spinner 尺寸 */
+  width: var(--space-8);
+  height: var(--space-8);
   border: 3px solid var(--gray-200); /* 簡單 spinner 邊框 */
   border-top-color: var(--primary);
   border-radius: 50%;
@@ -480,16 +483,9 @@
 }
 
 /* Hide on Loading */
-.hide-on-loading {
-  display: none;
-}
-
-.is-loading .hide-on-loading {
-  display: none;
-}
 
 /* Show on Loading */
-.show-on-loading {
+.hide-on-loading,.is-loading .hide-on-loading,.show-on-loading {
   display: none;
 }
 
@@ -502,7 +498,7 @@
 /* Screen Reader Text for Loading States */
 .sr-loading-text {
   position: absolute;
-  width: 1px; /* 螢幕閱讀器文本寬度 */
+  width: 1px;
   height: 1px; /* 螢幕閱讀器文本高度 */
   padding: 0;
   margin: -1px;

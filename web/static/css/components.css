@@ -28,16 +28,17 @@
 
 .item .title {
   font-weight: var(--font-semibold);
-  margin-bottom: var(--space-2);
   color: var(--text-primary);
 }
 
 /* Error Styles */
+.item .title,.error-header {
+  margin-bottom: var(--space-2);
+}
 .error-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-2);
 }
 
 .examples {

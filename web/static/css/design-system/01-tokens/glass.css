@@ -3,61 +3,33 @@
    ================================================ */
 
 :root {
-  /* ========== Glass Morphism - Performance Optimized ========== */
-  --glass-surface: rgba(255, 255, 255, 0.85); /* Simplified for performance */
-  --glass-surface-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%); /* Use only when needed */
-  --glass-surface-dark: rgba(24, 24, 27, 0.85); /* Simplified for performance */
-  --glass-surface-gradient-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.7) 100%); /* Use only when needed */
-  --glass-blur: blur(8px) saturate(120%); /* Reduced blur for better performance */
-  --glass-blur-sm: blur(4px); /* Light blur for minor elements */
-  --glass-blur-heavy: blur(20px) saturate(180%); /* Heavy blur for critical elements only */
+  --glass-surface: rgba(255, 255, 255, 0.85);
+  --glass-surface-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  --glass-surface-dark: rgba(24, 24, 27, 0.85);
+  --glass-surface-gradient-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.7) 100%);
+  --glass-blur: blur(8px) saturate(120%);
+  --glass-blur-sm: blur(4px);
+  --glass-blur-heavy: blur(20px) saturate(180%);
   --glass-border: rgba(255, 255, 255, 0.3);
   --glass-border-dark: rgba(255, 255, 255, 0.1);
-  
-  /* ========== Opacity Values ========== */
   --white-80: rgba(255, 255, 255, 0.8);
-  --white-60: rgba(255, 255, 255, 0.6);
-  --white-50: rgba(255, 255, 255, 0.5);
-  --white-40: rgba(255, 255, 255, 0.4);
-  --white-20: rgba(255, 255, 255, 0.2);
-  --white-10: rgba(255, 255, 255, 0.1);
-  --white-5: rgba(255, 255, 255, 0.05);
   
-  --black-80: rgba(0, 0, 0, 0.8);
-  --black-60: rgba(0, 0, 0, 0.6);
-  --black-50: rgba(0, 0, 0, 0.5);
-  --black-40: rgba(0, 0, 0, 0.4);
-  --black-20: rgba(0, 0, 0, 0.2);
-  --black-10: rgba(0, 0, 0, 0.1);
-  --black-5: rgba(0, 0, 0, 0.05);
-  
-  /* ========== Hover & Focus States ========== */
   --hover-bg: rgba(79, 70, 229, 0.05);
   --hover-bg-dark: rgba(255, 255, 255, 0.05);
   --focus-ring: 0 0 0 4px rgba(79, 70, 229, 0.1);
-  
-  /* ========== Accent Backgrounds ========== */
   --bg-accent-subtle: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
   --bg-accent-hover: rgba(79, 70, 229, 0.2);
   --border-accent: rgba(79, 70, 229, 0.2);
-  
-  /* ========== Gradients ========== */
   --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   --gradient-success: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);
   --gradient-error: linear-gradient(135deg, var(--error) 0%, var(--error-hover) 100%);
   --gradient-warning: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);
-  
-  /* ========== Input Styles ========== */
   --input-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
   --input-bg-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.8) 100%);
   --input-bg-focus: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
   --input-bg-focus-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(24, 24, 27, 0.9) 100%);
   --input-border: rgba(255, 255, 255, 0.3);
   --input-border-dark: rgba(255, 255, 255, 0.1);
-  
-  /* ========== NOTE: Gray Scale removed - use colors.css definitions ========== */
-  /* Gray scale is defined in colors.css as the single source of truth */
-  /* Do not redefine gray colors here to avoid conflicts */
   
   /* ========== Legacy Compatibility ========== */
   --accent: var(--primary);
@@ -71,17 +43,12 @@
 /* ========== Dark Mode Overrides ========== */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Adjust opacity values for dark mode */
     --hover-bg: rgba(255, 255, 255, 0.02);
     --hover-bg-dark: rgba(255, 255, 255, 0.05);
     --focus-ring: 0 0 0 4px rgba(129, 140, 248, 0.2);
-    
-    /* Adjust accent backgrounds */
     --bg-accent-subtle: linear-gradient(135deg, rgba(129, 140, 248, 0.1) 0%, rgba(165, 180, 252, 0.05) 100%);
     --bg-accent-hover: rgba(129, 140, 248, 0.2);
     --border-accent: rgba(129, 140, 248, 0.3);
-    
-    /* NOTE: Gray scale removed for dark mode - use colors.css definitions */
     /* Dark mode gray scale is defined in colors.css */
   }
 }

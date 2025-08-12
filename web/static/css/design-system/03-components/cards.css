@@ -4,16 +4,11 @@
 
 /* 基礎卡片樣式 */
 .card {
-  /* 結構 */
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  
-  /* 間距 */
   padding: var(--space-6);
-  
-  /* 視覺 */
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -76,12 +71,11 @@
 
 /* 知識點卡片 */
 .card[data-type="knowledge"] {
-  background: var(--surface);
   border: 1px solid var(--border);
 }
 
 /* 文法卡片 */
-.card[data-type="pattern"] {
+.card[data-type="knowledge"],.card[data-type="pattern"] {
   background: var(--surface);
 }
 
@@ -231,9 +225,7 @@
 
 /* 卡片對比區 */
 .card-comparison {
-  display: flex;
   flex-direction: column;
-  gap: var(--space-2);
   padding: var(--space-3);
   background: var(--bg);
   border-radius: var(--radius-sm);
@@ -241,10 +233,13 @@
   margin: var(--space-3) 0;
 }
 
-.compare-item {
+.card-comparison,.compare-item {
   display: flex;
-  align-items: flex-start;
   gap: var(--space-2);
+}
+
+.compare-item {
+  align-items: flex-start;
   line-height: var(--leading-normal);
 }
 
@@ -305,7 +300,7 @@
 /* 進度環 */
 .progress-ring {
   position: relative;
-  width: 60px; /* 進度環尺寸 */
+  width: 60px;
   height: 60px; /* 進度環尺寸 */
   flex-shrink: 0;
 }
@@ -331,7 +326,7 @@
 /* 掌握度指示器 */
 .mastery-indicator {
   position: relative;
-  width: 48px; /* 掌握度指示器尺寸 */
+  width: 48px;
   height: 48px; /* 掌握度指示器尺寸 */
   flex-shrink: 0;
 }
@@ -400,11 +395,10 @@
   }
   
   .card[data-type="question"] {
-    background: var(--surface-dark);
     border-color: rgba(255, 255, 255, 0.06);
   }
   
-  .card[data-type="group"] {
+  .card[data-type="question"],.card[data-type="group"] {
     background: var(--surface-dark);
   }
   

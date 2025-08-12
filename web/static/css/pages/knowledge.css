@@ -210,7 +210,7 @@
 
 .queue-item.due {
   border-left: 3px solid var(--warning);
-  background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);
+  background: linear-gradient(to right, var(--warning-subtle), transparent);
 }
 
 .queue-item-info {
@@ -237,15 +237,15 @@
 }
 
 .queue-item-badge .badge.isolated {
-  background: rgba(245, 158, 11, 0.1);
+  background: var(--warning-light);
   color: var(--warning);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: 1px solid var(--warning-muted);
 }
 
 .queue-item-badge .badge.enhancement {
-  background: rgba(16, 185, 129, 0.1);
+  background: var(--success-light);
   color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid var(--success-muted);
 }
 
 .queue-more {
@@ -548,7 +548,7 @@
   font-weight: var(--font-semibold);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-full);
-  background: rgba(99, 102, 241, 0.1);
+  background: var(--primary-light);
   color: var(--text-accent);
 }
 
@@ -613,12 +613,12 @@
 }
 
 .sentence-item.error {
-  background: rgba(239, 68, 68, 0.03);
+  background: var(--error-subtle);
   border-left: 2px solid var(--error);
 }
 
 .sentence-item.correct {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--success-subtle);
   border-left: 2px solid var(--success);
 }
 
@@ -630,13 +630,13 @@
 }
 
 .compare-item.error {
-  background: rgba(239, 68, 68, 0.03);
+  background: var(--error-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--error);
 }
 
 .compare-item.correct {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--success-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--success);
 }
@@ -648,7 +648,7 @@
 }
 
 .compare-item.improved {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--success-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--success);
 }
@@ -689,7 +689,7 @@
 .card.knowledge-single-card.enhancement,
 .card.knowledge-single-card[data-category="可以更好"] {
   border-left: 3px solid var(--success);
-  background: linear-gradient(to right, rgba(16, 185, 129, 0.02), transparent);
+  background: linear-gradient(to right, var(--success-subtle), transparent);
 }
 
 /* 其他錯誤樣式 */
@@ -760,13 +760,13 @@
 }
 
 .sentence-en.error {
-  background: rgba(239, 68, 68, 0.03);
+  background: var(--error-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--error);
 }
 
 .sentence-en.correct {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--success-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--success);
 }
@@ -778,7 +778,7 @@
 }
 
 .sentence-en.improved {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--success-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--success);
 }
@@ -793,21 +793,21 @@
 }
 
 .mastery-badge[data-mastery="low"] {
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--error-light);
   color: var(--error);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid var(--error-muted);
 }
 
 .mastery-badge[data-mastery="medium"] {
-  background: rgba(245, 158, 11, 0.1);
+  background: var(--warning-light);
   color: var(--warning);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: 1px solid var(--warning-muted);
 }
 
 .mastery-badge[data-mastery="high"] {
-  background: rgba(16, 185, 129, 0.1);
+  background: var(--success-light);
   color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid var(--success-muted);
 }
 
 /* ========== 無結果提示 ========== */
@@ -924,15 +924,15 @@
   }
   
   .queue-item-badge .badge.isolated {
-    background: rgba(245, 158, 11, 0.2);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #fbbf24;
+    background: var(--warning-muted);
+    border-color: var(--warning-active);
+    color: var(--warning-300);
   }
   
   .queue-item-badge .badge.enhancement {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #34d399;
+    background: var(--success-muted);
+    border-color: var(--success-active);
+    color: var(--success-300);
   }
   
   .filter-tab {

@@ -64,11 +64,8 @@
 }
 
 /* Glass Morphism Elements */
-header.container {
-  will-change: auto; /* Sticky header doesn't need will-change */
-}
 
-.modal[data-glass="true"] {
+header.container,.modal[data-glass="true"] {
   will-change: auto;
 }
 
@@ -118,11 +115,8 @@ select:focus {
 }
 
 /* JavaScript Hook Classes */
-.js-will-animate {
-  will-change: transform, opacity;
-}
 
-.js-animating {
+.js-will-animate,.js-animating {
   will-change: transform, opacity;
 }
 
@@ -133,7 +127,6 @@ select:focus {
 
 /* Critical Performance Areas */
 .perf-critical {
-  /* Elements that must perform well */
   transform: translateZ(0); /* Force GPU layer */
   backface-visibility: hidden;
   perspective: 1000px;
@@ -155,11 +148,8 @@ select:focus {
 }
 
 /* Page Transitions */
-.page-entering {
-  will-change: transform, opacity;
-}
 
-.page-leaving {
+.page-entering,.page-leaving {
   will-change: transform, opacity;
 }
 

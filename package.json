@@ -4,6 +4,8 @@
   "scripts": {
     "lint:css": "stylelint 'web/static/css/**/*.css' --fix",
     "lint:css:check": "stylelint 'web/static/css/**/*.css'",
+    "css:deduplicate": "node quick-deduplicate.js",
+    "css:backup": "mkdir -p css-backup && cp -r web/static/css/* css-backup/",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -11,6 +13,9 @@
     "husky": "^9.0.11",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
+    "postcss-combine-duplicated-selectors": "^10.0.3",
+    "postcss-discard-duplicates": "^7.0.2",
+    "postcss-merge-rules": "^7.0.6",
     "stylelint": "^16.9.0",
     "stylelint-config-standard": "^36.0.1"
   },

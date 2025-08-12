@@ -5,51 +5,32 @@
 
 /* ========== Layer 1: 原始值層 (Primitive Values) ========== */
 :root {
-  /* 字體族群 */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 
                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
   --font-chinese: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-  
-  /* 基礎字體大小刻度 (Type Scale) */
-  --text-scale-xs: 0.75rem;      /* 12px */
-  --text-scale-sm: 0.875rem;     /* 14px */
-  --text-scale-base: 1rem;       /* 16px */
-  --text-scale-lg: 1.125rem;     /* 18px */
-  --text-scale-xl: 1.25rem;      /* 20px */
-  --text-scale-2xl: 1.5rem;      /* 24px */
-  --text-scale-3xl: 1.875rem;    /* 30px */
-  --text-scale-4xl: 2.25rem;     /* 36px */
-  --text-scale-5xl: 3rem;        /* 48px */
-  
-  /* 字重刻度 (Font Weights) */
-  --weight-light: 300;
+  --text-scale-xs: 0.75rem;
+  --text-scale-sm: 0.875rem;
+  --text-scale-base: 1rem;
+  --text-scale-lg: 1.125rem;
+  --text-scale-xl: 1.25rem;
+  --text-scale-2xl: 1.5rem;
+  --text-scale-3xl: 1.875rem;
+  --text-scale-4xl: 2.25rem;
+  --text-scale-5xl: 3rem;
   --weight-normal: 400;
   --weight-medium: 500;
-  --weight-semibold: 600;
   --weight-bold: 700;
-  
-  /* 行高刻度 (Line Heights) */
   --height-none: 1;
   --height-tight: 1.2;
   --height-snug: 1.4;
   --height-normal: 1.5;
   --height-relaxed: 1.6;
-  --height-loose: 1.8;
-  --height-chinese: 1.7;         /* 中文專用 */
-  
-  /* 字距刻度 (Letter Spacing) */
-  --spacing-tighter: -0.05em;
+  --height-chinese: 1.7;
   --spacing-tight: -0.025em;
   --spacing-normal: 0;
   --spacing-wide: 0.025em;
   --spacing-wider: 0.05em;
-  --spacing-widest: 0.1em;
-}
-
-/* ========== Layer 2: 語義組合層 (Semantic Tokens) ========== */
-:root {
-  /* 標題組合 (Heading Combinations) */
   --heading-1-size: var(--text-scale-5xl);
   --heading-1-weight: var(--weight-bold);
   --heading-1-height: var(--height-tight);
@@ -65,22 +46,6 @@
   --heading-3-height: var(--height-snug);
   --heading-3-spacing: var(--spacing-normal);
   
-  --heading-4-size: var(--text-scale-2xl);
-  --heading-4-weight: var(--weight-semibold);
-  --heading-4-height: var(--height-snug);
-  --heading-4-spacing: var(--spacing-normal);
-  
-  --heading-5-size: var(--text-scale-xl);
-  --heading-5-weight: var(--weight-medium);
-  --heading-5-height: var(--height-normal);
-  --heading-5-spacing: var(--spacing-normal);
-  
-  --heading-6-size: var(--text-scale-lg);
-  --heading-6-weight: var(--weight-medium);
-  --heading-6-height: var(--height-normal);
-  --heading-6-spacing: var(--spacing-normal);
-  
-  /* 內容文字組合 (Body Text Combinations) */
   --body-size: var(--text-scale-base);
   --body-weight: var(--weight-normal);
   --body-height: var(--height-relaxed);
@@ -91,12 +56,6 @@
   --body-lg-height: var(--height-relaxed);
   --body-lg-spacing: var(--spacing-normal);
   
-  --body-sm-size: var(--text-scale-sm);
-  --body-sm-weight: var(--weight-normal);
-  --body-sm-height: var(--height-normal);
-  --body-sm-spacing: var(--spacing-normal);
-  
-  /* 特殊文字組合 (Special Text) */
   --caption-size: var(--text-scale-xs);
   --caption-weight: var(--weight-normal);
   --caption-height: var(--height-normal);
@@ -107,80 +66,6 @@
   --overline-height: var(--height-normal);
   --overline-spacing: var(--spacing-wider);
   
-  --subtitle-size: var(--text-scale-lg);
-  --subtitle-weight: var(--weight-normal);
-  --subtitle-height: var(--height-relaxed);
-  --subtitle-spacing: var(--spacing-normal);
-}
-
-/* ========== Layer 3: 組件應用層 (Component Tokens) ========== */
-:root {
-  /* 按鈕文字 (Button Typography) */
-  --btn-text-sm: var(--text-scale-xs);
-  --btn-text-md: var(--text-scale-sm);
-  --btn-text-lg: var(--text-scale-base);
-  --btn-weight: var(--weight-medium);
-  --btn-height: var(--height-none);
-  --btn-spacing: var(--spacing-wide);
-  
-  /* 表單文字 (Form Typography) */
-  --input-text: var(--text-scale-base);
-  --input-weight: var(--weight-normal);
-  --input-height: var(--height-normal);
-  
-  --label-text: var(--text-scale-sm);
-  --label-weight: var(--weight-medium);
-  --label-height: var(--height-normal);
-  
-  --helper-text: var(--text-scale-xs);
-  --helper-weight: var(--weight-normal);
-  --helper-height: var(--height-normal);
-  
-  --error-text: var(--text-scale-xs);
-  --error-weight: var(--weight-medium);
-  --error-height: var(--height-normal);
-  
-  /* 卡片文字 (Card Typography) */
-  --card-title-size: var(--text-scale-lg);
-  --card-title-weight: var(--weight-semibold);
-  --card-title-height: var(--height-snug);
-  
-  --card-subtitle-size: var(--text-scale-sm);
-  --card-subtitle-weight: var(--weight-normal);
-  --card-subtitle-height: var(--height-normal);
-  
-  --card-body-size: var(--text-scale-base);
-  --card-body-weight: var(--weight-normal);
-  --card-body-height: var(--height-relaxed);
-  
-  /* 導航文字 (Navigation Typography) */
-  --nav-text: var(--text-scale-sm);
-  --nav-weight: var(--weight-medium);
-  --nav-height: var(--height-normal);
-  --nav-spacing: var(--spacing-normal);
-  
-  /* 徽章文字 (Badge Typography) */
-  --badge-text: var(--text-scale-xs);
-  --badge-weight: var(--weight-semibold);
-  --badge-height: var(--height-none);
-  --badge-spacing: var(--spacing-wide);
-  
-  /* 選單文字 (Menu Typography) */
-  --menu-text: var(--text-scale-sm);
-  --menu-weight: var(--weight-normal);
-  --menu-height: var(--height-normal);
-  
-  /* 工具提示文字 (Tooltip Typography) */
-  --tooltip-text: var(--text-scale-xs);
-  --tooltip-weight: var(--weight-normal);
-  --tooltip-height: var(--height-tight);
-}
-
-/* ========== 響應式文字系統 (Responsive Typography) ========== */
-:root {
-  /* 流體文字大小 (Fluid Typography) */
-  --text-responsive-xs: clamp(0.625rem, 0.75rem, 0.875rem);
-  --text-responsive-sm: clamp(0.75rem, 0.875rem, 1rem);
   --text-responsive-base: clamp(0.875rem, 1rem, 1.125rem);
   --text-responsive-lg: clamp(1rem, 1.125rem + 0.5vw, 1.25rem);
   --text-responsive-xl: clamp(1.125rem, 1.25rem + 1vw, 1.5rem);
@@ -188,29 +73,23 @@
   --text-responsive-3xl: clamp(1.5rem, 1.875rem + 2vw, 2.5rem);
   --text-responsive-4xl: clamp(1.875rem, 2.25rem + 2.5vw, 3rem);
   --text-responsive-5xl: clamp(2.25rem, 3rem + 3vw, 4rem);
-  
-  /* 響應式標題組合 */
   --heading-responsive-1: var(--text-responsive-5xl);
   --heading-responsive-2: var(--text-responsive-4xl);
   --heading-responsive-3: var(--text-responsive-3xl);
-  --heading-responsive-4: var(--text-responsive-2xl);
-  --heading-responsive-5: var(--text-responsive-xl);
-  --heading-responsive-6: var(--text-responsive-lg);
-}
-
-/* ========== 中文優化系統 (Chinese Typography) ========== */
-:root {
-  /* 中文專用設定 */
-  --text-chinese-base: 1rem;
   --text-chinese-height: var(--height-chinese);
   --text-chinese-spacing: 0.05em;
-  
-  /* 中英混排優化 */
   --text-mixed-spacing: 0.1em;
   
   /* 中文標點優化 */
-  --text-punctuation-spacing: -0.3em;
 }
+
+/* ========== Layer 2: 語義組合層 (Semantic Tokens) ========== */
+
+/* ========== Layer 3: 組件應用層 (Component Tokens) ========== */
+
+/* ========== 響應式文字系統 (Responsive Typography) ========== */
+
+/* ========== 中文優化系統 (Chinese Typography) ========== */
 
 /* 中文字體類別 */
 .font-chinese {
@@ -227,7 +106,6 @@
 /* ========== 暗色模式優化 (Dark Mode) ========== */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* 暗色模式下字重調整 */
     --body-weight: 300;
     --heading-1-weight: 600;
     --heading-2-weight: 600;
