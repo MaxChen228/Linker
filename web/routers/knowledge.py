@@ -4,10 +4,12 @@ Knowledge management routes for the Linker web application.
 from collections import defaultdict
 from datetime import datetime
 from typing import Optional
+
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+
 from core.error_types import ErrorCategory, ErrorTypeSystem
-from web.dependencies import get_templates, get_knowledge_manager
+from web.dependencies import get_knowledge_manager, get_templates
 
 router = APIRouter()
 
@@ -16,7 +18,7 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
     """知識點瀏覽頁面"""
     templates = get_templates()
     knowledge = get_knowledge_manager()
-    
+
     # 獲取所有知識點
     all_points = knowledge.knowledge_points
 
@@ -123,7 +125,7 @@ def knowledge_detail(request: Request, point_id: str):
     """知識點詳情頁面"""
     templates = get_templates()
     knowledge = get_knowledge_manager()
-    
+
     # 獲取指定的知識點
     point = knowledge.get_knowledge_point(point_id)
 
@@ -177,7 +179,7 @@ def knowledge_detail(request: Request, point_id: str):
     if hasattr(point, 'original_error') and point.original_error:
         full_user_answer = point.original_error.user_answer
         full_correct_answer = point.original_error.correct_answer
-    
+
     point_dict = {
         "id": point.id,
         "title": point.key_point,  # 保留 key_point 作為描述性標題

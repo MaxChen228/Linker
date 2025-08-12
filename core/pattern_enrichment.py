@@ -122,9 +122,8 @@ class ResponsePostProcessor:
             data = self.standardize_fields(data)
 
             # 5. 補充缺失欄位
-            data = self.fill_missing_fields(data)
+            return self.fill_missing_fields(data)
 
-            return data
 
         except Exception as e:
             logger.error(f"Failed to clean response: {e}")
@@ -140,9 +139,8 @@ class ResponsePostProcessor:
         # 確保布林值小寫
         json_str = json_str.replace('True', 'true')
         json_str = json_str.replace('False', 'false')
-        json_str = json_str.replace('None', 'null')
+        return json_str.replace('None', 'null')
 
-        return json_str
 
     def standardize_fields(self, data: Dict) -> Dict:
         """標準化欄位名稱和格式"""
@@ -199,7 +197,7 @@ class PatternEnrichmentService:
 
     def get_enrichment_prompt(self, pattern: Dict) -> str:
         """生成擴充 prompt"""
-        prompt = f"""你是一位經驗豐富的英文老師，擅長有系統地教授句型。請為以下句型生成完整但井然有序的學習內容。
+        return f"""你是一位經驗豐富的英文老師，擅長有系統地教授句型。請為以下句型生成完整但井然有序的學習內容。
 
 【輸入句型】
 Pattern: {pattern.get('pattern', '')}
@@ -269,7 +267,6 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
 
 請直接返回JSON資料。"""
 
-        return prompt
 
     async def enrich_single_pattern(self, pattern: Dict) -> Dict:
         """擴充單個句型（含重試機制）"""
@@ -344,7 +341,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
         cleaned_response = {}
         for key, value in response.items():
             # 只保留非空的欄位
-            if value and value != {} and value != []:
+            if value and value not in ({}, []):
                 cleaned_response[key] = value
 
         return cleaned_response

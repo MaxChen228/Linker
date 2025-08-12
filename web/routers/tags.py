@@ -2,8 +2,10 @@
 Tag system routes for the Linker web application.
 """
 from typing import Optional
+
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
+
 from web.dependencies import get_ai_service, get_logger
 
 router = APIRouter()
@@ -13,16 +15,16 @@ logger = get_logger()
 async def generate_tagged_question_api(request: Request):
     """API 端點：生成標籤題目"""
     ai = get_ai_service()
-    
+
     try:
         data = await request.json()
         tags = data.get("tags", [])
         combination_mode = data.get("combinationMode", "all")
         length = data.get("length", "medium")
         level = data.get("level", 2)
-        
+
         logger.info(f"Generate tagged question: tags={tags}, mode={combination_mode}")
-        
+
         # 生成標籤題目
         result = ai.generate_tagged_sentence(
             tags=tags,
@@ -30,7 +32,7 @@ async def generate_tagged_question_api(request: Request):
             length=length,
             combination_mode=combination_mode
         )
-        
+
         return JSONResponse({
             "success": True,
             "chinese": result.get("sentence", ""),
@@ -40,7 +42,7 @@ async def generate_tagged_question_api(request: Request):
             "tags": result.get("tags", []),
             "combination_mode": result.get("combination_mode", "")
         })
-        
+
     except Exception as e:
         logger.error(f"Error generating tagged question: {e}")
         return JSONResponse({
@@ -52,18 +54,18 @@ async def generate_tagged_question_api(request: Request):
 async def preview_tagged_question(request: Request):
     """預覽標籤組合題目"""
     ai = get_ai_service()
-    
+
     try:
         data = await request.json()
         tags = data.get("tags", [])
         mode = data.get("mode", "all")
-        
+
         # 生成預覽題目
         preview = ai.generate_tagged_preview(
             tags=tags,
             combination_mode=mode
         )
-        
+
         return JSONResponse({
             "success": True,
             "chinese": preview.get("sentence", ""),
@@ -86,8 +88,8 @@ async def preview_tagged_question(request: Request):
 async def get_tags(request: Request, type: Optional[str] = None, category: Optional[str] = None):
     """獲取可用標籤列表"""
     try:
-        from core.tag_system import tag_manager, TagType
-        
+        from core.tag_system import TagType, tag_manager
+
         if type:
             try:
                 tag_type = TagType(type)
@@ -98,7 +100,7 @@ async def get_tags(request: Request, type: Optional[str] = None, category: Optio
             tags = tag_manager.get_tags_by_category(category)
         else:
             tags = list(tag_manager.tags.values())
-        
+
         # 轉換為可序列化格式
         tags_data = []
         for tag in tags:
@@ -112,7 +114,7 @@ async def get_tags(request: Request, type: Optional[str] = None, category: Optio
                 "usage_count": tag.usage_count,
                 "success_rate": round(tag.success_rate, 2)
             })
-        
+
         return JSONResponse({
             "success": True,
             "tags": tags_data
@@ -129,12 +131,12 @@ async def validate_tag_combination(request: Request):
     """驗證標籤組合的合理性"""
     try:
         from core.tag_system import tag_manager
-        
+
         data = await request.json()
         tag_ids = data.get("tags", [])
-        
+
         validation = tag_manager.validate_combination(tag_ids)
-        
+
         return JSONResponse({
             "success": True,
             "validation": validation
@@ -151,9 +153,9 @@ async def get_tag_templates(request: Request):
     """獲取標籤組合模板"""
     try:
         from core.tag_system import tag_manager
-        
+
         templates = tag_manager.get_all_templates()
-        
+
         # 轉換為可序列化格式
         templates_data = {}
         for name, template in templates.items():
@@ -163,7 +165,7 @@ async def get_tag_templates(request: Request):
                 "tags": [{"id": t.id, "name": t.name} for t in template.tags],
                 "mode": template.mode.value
             }
-        
+
         return JSONResponse({
             "success": True,
             "templates": templates_data

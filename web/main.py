@@ -2,12 +2,14 @@
 Linker Web Application - Main Entry Point
 """
 from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+
 from core.log_config import get_module_logger
 from core.version_manager import VersionManager
 from web.dependencies import STATIC_DIR
-from web.middleware import configure_logging, access_log_middleware
+from web.middleware import access_log_middleware, configure_logging
 
 # 初始化模組 logger
 logger = get_module_logger(__name__)
@@ -16,7 +18,7 @@ def check_and_migrate_versions():
     """啟動時執行版本檢查和遷移"""
     version_manager = VersionManager()
     logger.info("檢查資料檔案版本...")
-    
+
     try:
         results = version_manager.check_and_migrate_all()
         migrated = [f for f, status in results.items() if status is True]
@@ -32,31 +34,31 @@ def create_app() -> FastAPI:
     """建立並配置 FastAPI 應用"""
     # 執行版本檢查
     check_and_migrate_versions()
-    
+
     # 配置日誌
     configure_logging()
-    
+
     # 建立 FastAPI 應用
     app = FastAPI(title="Linker", docs_url=None, redoc_url=None)
-    
+
     # 掛載靜態檔案
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-    
+
     # 註冊中間件
     app.middleware("http")(access_log_middleware)
-    
+
     # 註冊路由
-    from web.routers import pages, practice, knowledge, patterns, tags, utils
-    
+    from web.routers import knowledge, pages, patterns, practice, tags, utils
+
     app.include_router(pages.router)
     app.include_router(practice.router)
     app.include_router(knowledge.router)
     app.include_router(patterns.router)
     app.include_router(tags.router)
     app.include_router(utils.router)
-    
+
     logger.info("Linker Web Application initialized successfully")
-    
+
     return app
 
 # 建立應用實例

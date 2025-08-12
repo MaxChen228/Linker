@@ -4,9 +4,11 @@ Grammar patterns routes for the Linker web application.
 import json
 from pathlib import Path
 from typing import Optional
+
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-from web.dependencies import get_templates, get_knowledge_assets
+
+from web.dependencies import get_knowledge_assets, get_templates
 
 router = APIRouter()
 
@@ -15,7 +17,7 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
     """文法句型列表頁面（預設版本）"""
     templates = get_templates()
     assets = get_knowledge_assets()
-    
+
     # 載入所有擴充的句型資料
     enriched_file = Path("data/patterns_enriched_complete.json")
     if enriched_file.exists():
@@ -84,7 +86,7 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
 def pattern_detail(request: Request, pattern_id: str):
     """句型詳情頁面"""
     templates = get_templates()
-    
+
     # 載入擴充資料
     enriched_file = Path("data/patterns_enriched_complete.json")
     if enriched_file.exists():

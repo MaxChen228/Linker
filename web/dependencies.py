@@ -2,7 +2,9 @@
 Dependency injection and shared services for the Linker web application.
 """
 from pathlib import Path
+
 from fastapi.templating import Jinja2Templates
+
 from core.ai_service import AIService
 from core.config import DATA_DIR
 from core.knowledge import KnowledgeManager

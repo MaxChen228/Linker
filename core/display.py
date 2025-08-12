@@ -198,7 +198,7 @@ class Display:
         box_color = getattr(self.colors, color.upper()) if color else self.colors.DIM
 
         # 計算最大寬度
-        max_width = max(len(title), max(len(line) for line in content)) + 4
+        max_width = max(len(title), *(len(line) for line in content)) + 4
 
         # 上邊框
         print(f"{box_color}{self.symbols.BOX_TOP_LEFT}{'─' * (max_width - 2)}{self.symbols.BOX_TOP_RIGHT}{self.colors.RESET}")

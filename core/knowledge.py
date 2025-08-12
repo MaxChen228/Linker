@@ -25,7 +25,7 @@ class OriginalError:
     user_answer: str
     correct_answer: str
     timestamp: str
-    
+
     def __post_init__(self):
         if not hasattr(self, 'timestamp') or not self.timestamp:
             self.timestamp = datetime.now().isoformat()
@@ -39,7 +39,7 @@ class ReviewExample:
     correct_answer: str
     timestamp: str
     is_correct: bool
-    
+
     def __post_init__(self):
         if not hasattr(self, 'timestamp') or not self.timestamp:
             self.timestamp = datetime.now().isoformat()
@@ -56,13 +56,13 @@ class KnowledgePoint:
     explanation: str
     original_phrase: str
     correction: str
-    
+
     # 原始錯誤（只有一個）
     original_error: OriginalError
-    
+
     # 複習例句（可以有多個）
     review_examples: list[ReviewExample] = None
-    
+
     # 掌握度相關
     mastery_level: float = 0.0
     mistake_count: int = 1
@@ -80,17 +80,17 @@ class KnowledgePoint:
             self.next_review = self._calculate_next_review()
         if self.review_examples is None:
             self.review_examples = []
-            
+
     @property
     def unique_identifier(self) -> str:
         """知識點的唯一標識符"""
         return f"{self.key_point}|{self.original_phrase}|{self.correction}"
-        
+
     @property
     def examples(self) -> list[dict]:
         """舊格式兼容屬性 - 將新格式轉換為舊格式"""
         examples_list = []
-        
+
         # 添加原始錯誤作為第一個例句
         if self.original_error:
             examples_list.append({
@@ -98,7 +98,7 @@ class KnowledgePoint:
                 "user_answer": self.original_error.user_answer,
                 "correct": self.original_error.correct_answer
             })
-        
+
         # 添加複習例句
         for review in self.review_examples:
             examples_list.append({
@@ -106,7 +106,7 @@ class KnowledgePoint:
                 "user_answer": review.user_answer,
                 "correct": review.correct_answer
             })
-        
+
         return examples_list
 
     def _calculate_next_review(self) -> str:
@@ -192,10 +192,10 @@ class KnowledgePoint:
     def from_dict(cls, data: dict) -> "KnowledgePoint":
         """從字典創建實例 - 支援新舊資料格式"""
         data = data.copy()
-        
+
         # 轉換category字符串為枚舉
         data["category"] = ErrorCategory.from_string(data.get("category", "other"))
-        
+
         # 處理新格式的 original_error
         if "original_error" in data:
             original_error_data = data["original_error"]
@@ -224,7 +224,7 @@ class KnowledgePoint:
                     correct_answer=data.get("correction", ""),
                     timestamp=data.get("created_at", datetime.now().isoformat())
                 )
-        
+
         # 處理新格式的 review_examples
         if "review_examples" in data:
             review_examples_data = data["review_examples"]
@@ -252,10 +252,10 @@ class KnowledgePoint:
                 ]
             else:
                 data["review_examples"] = []
-        
+
         # 移除舊格式的 examples 欄位
         data.pop("examples", None)
-        
+
         return cls(**data)
 
 
@@ -283,7 +283,7 @@ class KnowledgeManager:
             try:
                 with open(self.knowledge_file, encoding="utf-8") as f:
                     data = json.load(f)
-                    
+
                     # 支援新版本格式（含 version 和 data 欄位）
                     if isinstance(data, dict) and 'data' in data:
                         knowledge_data = data['data']
@@ -293,7 +293,7 @@ class KnowledgeManager:
                         knowledge_data = data
                     else:
                         knowledge_data = []
-                    
+
                     points = [KnowledgePoint.from_dict(item) for item in knowledge_data]
                     self.logger.info(f"載入 {len(points)} 個知識點")
                     return points
@@ -316,7 +316,7 @@ class KnowledgeManager:
                 'last_updated': datetime.now().isoformat(),
                 'data': [point.to_dict() for point in self.knowledge_points]
             }
-            
+
             with open(self.knowledge_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
             self.logger.debug(f"儲存 {len(self.knowledge_points)} 個知識點")
@@ -375,7 +375,7 @@ class KnowledgeManager:
         # 這裡可以根據題目內容推斷是在練習哪個知識點
         # 暫時先記錄，後續可以加入更智能的匹配邏輯
         self.logger.info(f"複習模式正確答案: {chinese_sentence}")
-        
+
     def add_review_success(self, knowledge_point_id: int, chinese_sentence: str, user_answer: str):
         """為知識點添加複習成功記錄"""
         point = self.get_knowledge_point(str(knowledge_point_id))
@@ -422,7 +422,7 @@ class KnowledgeManager:
         if existing:
             # 更新現有知識點的掌握度
             existing.update_mastery(is_correct=False)
-            
+
             if practice_mode == "review":
                 # 複習模式：添加到複習例句
                 review_example = ReviewExample(
@@ -444,7 +444,7 @@ class KnowledgeManager:
                 correct_answer=correct_answer,
                 timestamp=datetime.now().isoformat()
             )
-            
+
             new_point = KnowledgePoint(
                 id=self._get_next_id(),
                 key_point=specific_key_point,
@@ -464,12 +464,12 @@ class KnowledgeManager:
         """查找知識點 - 使用複合鍵確保唯一性"""
         for point in self.knowledge_points:
             # 使用複合鍵匹配：key_point + original_phrase + correction
-            if (point.key_point == key_point and 
-                point.original_phrase == original_phrase and 
+            if (point.key_point == key_point and
+                point.original_phrase == original_phrase and
                 point.correction == correction):
                 return point
         return None
-    
+
     def _find_knowledge_point_by_identifier(self, identifier: str) -> Optional[KnowledgePoint]:
         """通過唯一標識符查找知識點"""
         for point in self.knowledge_points:

@@ -13,9 +13,8 @@ def get_data_dir() -> Path:
         render_disk = Path("/data")
         if render_disk.exists() and os.access(render_disk, os.W_OK):
             return render_disk
-        else:
-            # Fall back to project directory
-            return Path("/opt/render/project/src/data")
+        # Fall back to project directory
+        return Path("/opt/render/project/src/data")
 
     # Check if custom data dir is specified
     if custom_dir := os.environ.get("DATA_DIR"):

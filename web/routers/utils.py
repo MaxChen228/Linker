@@ -2,7 +2,8 @@
 Utility routes for the Linker web application.
 """
 from fastapi import APIRouter
-from web.dependencies import TEMPLATES_DIR, STATIC_DIR
+
+from web.dependencies import STATIC_DIR, TEMPLATES_DIR
 
 router = APIRouter()
 

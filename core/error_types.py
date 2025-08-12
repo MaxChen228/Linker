@@ -303,11 +303,10 @@ class ErrorTypeSystem:
 
         if category == ErrorCategory.SYSTEMATIC:
             return f"建議系統性學習{subtype.chinese_name if subtype else '文法規則'}，掌握後可避免同類錯誤"
-        elif category == ErrorCategory.ISOLATED:
+        if category == ErrorCategory.ISOLATED:
             return (
                 f"需要個別記憶{subtype.chinese_name if subtype else '此知識點'}，建議製作記憶卡片"
             )
-        elif category == ErrorCategory.ENHANCEMENT:
+        if category == ErrorCategory.ENHANCEMENT:
             return "你的基礎不錯！多接觸原文材料可以讓表達更自然"
-        else:
-            return "注意理解題意，確保翻譯完整準確"
+        return "注意理解題意，確保翻譯完整準確"

@@ -2,9 +2,11 @@
 Basic page routes for the Linker web application.
 """
 from datetime import datetime
+
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
-from web.dependencies import get_templates, get_knowledge_manager
+
+from web.dependencies import get_knowledge_manager, get_templates
 
 router = APIRouter()
 
@@ -13,7 +15,7 @@ def home(request: Request):
     """主頁路由"""
     templates = get_templates()
     knowledge = get_knowledge_manager()
-    
+
     # 獲取複習列表（最多顯示10個）
     review_queue = knowledge.get_review_candidates(max_points=10)
 

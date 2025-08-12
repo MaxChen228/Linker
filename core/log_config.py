@@ -51,11 +51,11 @@ def get_module_logger(module_name: str) -> Logger:
     # 簡化模組名稱（去除 linker_cli. 前綴）
     if module_name.startswith("linker_cli."):
         module_name = module_name[11:]
-    
+
     # 如果是 __main__ 則使用更有意義的名稱
     if module_name == "__main__":
         module_name = "main"
-    
+
     # 直接調用 get_logger，它會自動從環境變數讀取配置
     # 不需要重複設置環境變數
     return get_logger(name=module_name)
