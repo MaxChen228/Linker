@@ -57,7 +57,6 @@
   align-items: stretch;
   justify-content: space-between;
   gap: 0;
-  margin: 0;
   padding: 0;
   position: relative;
   max-width: 1000px;
@@ -72,7 +71,7 @@
   background: white;
   border-radius: var(--radius-lg) 0 var(--radius-lg) var(--radius-lg);
   border: 2px solid var(--gray-200);
-  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
   font-size: var(--text-sm);
   letter-spacing: var(--tracking-tight);
   transition: all var(--duration-normal) ease;
@@ -121,7 +120,7 @@
   padding: var(--space-5) var(--space-6);
   background: white;
   border-radius: var(--radius-2xl);
-  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
   font-size: var(--text-xl);
   letter-spacing: var(--tracking-wide);
   box-shadow: var(--shadow-elevated-xl);
@@ -216,7 +215,7 @@
   align-items: stretch;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .detail-stats {
     grid-template-columns: 1fr 1fr;
   }
@@ -343,11 +342,8 @@
 .mastery-fill::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.3) 50%, transparent 100%);
   animation: shimmer 2s infinite;
 }
 
@@ -355,6 +351,7 @@
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -531,8 +528,6 @@
 
 .sentence-label {
   display: inline-block;
-  font-weight: var(--font-semibold);
-  color: var(--gray-600);
   margin-bottom: var(--space-2);
   opacity: 0.8;
   font-weight: var(--font-medium);
@@ -546,7 +541,7 @@
 .sentence-text {
   display: block;
   color: var(--gray-900);
-  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
   font-size: var(--text-base);
   letter-spacing: var(--tracking-wide);
   position: relative;
@@ -766,7 +761,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .knowledge-detail-container {
     padding: var(--space-4);
   }

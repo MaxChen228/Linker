@@ -383,6 +383,7 @@
     opacity: 0;
     transform: scale(0.8) translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -401,7 +402,7 @@
 
 .tag-complexity {
   padding: var(--space-0-25) var(--space-1-5);
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(255 255 255 / 0.2);
   border-radius: var(--radius);
   font-size: var(--text-xs);
 }
@@ -670,7 +671,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .tag-composer {
     grid-template-columns: 1fr;
   }
@@ -684,7 +685,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .quick-tag-cards {
     grid-template-columns: 1fr;
   }

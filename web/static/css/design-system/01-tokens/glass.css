@@ -37,7 +37,22 @@
   --text: var(--text-primary);
   --text-muted: var(--text-secondary);
   --border: var(--border-default);
+  --border-dark: var(--border-default);
   --surface: var(--surface-base);
+  --surface-dark: var(--surface-base);
+  --bg: var(--bg-secondary);
+  
+  /* Typography aliases */
+  --text-xs: var(--text-scale-xs);
+  --text-sm: var(--text-scale-sm);
+  --text-lg: var(--text-scale-lg);
+  --text-xl: var(--text-scale-xl);
+  --font-medium: var(--weight-medium);
+  --font-semibold: var(--weight-semibold);
+  --leading-normal: var(--height-normal);
+  --leading-relaxed: var(--height-relaxed);
+  --leading-snug: var(--height-snug);
+  --tracking-wider: var(--spacing-wider);
 }
 
 /* ========== Dark Mode Overrides ========== */
@@ -49,6 +64,11 @@
     --bg-accent-subtle: linear-gradient(135deg, rgba(129, 140, 248, 0.1) 0%, rgba(165, 180, 252, 0.05) 100%);
     --bg-accent-hover: rgba(129, 140, 248, 0.2);
     --border-accent: rgba(129, 140, 248, 0.3);
+    
+    /* Legacy compatibility - dark mode */
+    --border-dark: var(--border-emphasis);
+    --surface-dark: var(--surface-elevated);
+    
     /* Dark mode gray scale is defined in colors.css */
   }
 }

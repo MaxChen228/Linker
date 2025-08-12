@@ -36,7 +36,6 @@ header.container {
   /* Glass Morphism */
   background: var(--glass-surface);
   backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-xl);
 }
@@ -148,7 +147,7 @@ main {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   header.container {
     flex-direction: column;
     gap: var(--space-4);

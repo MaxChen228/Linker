@@ -1,0 +1,8 @@
+{
+  "success": true,
+  "timestamp": "2025-08-12T05:15:27.636Z",
+  "totalSavings": "109.41 KB",
+  "reductionPercentage": 45.46,
+  "filesProcessed": 33,
+  "outputDir": "./web/static/css/dist"
+}

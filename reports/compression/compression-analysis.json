@@ -1,0 +1,450 @@
+{
+  "files": [
+    {
+      "path": "web/static/css/components.css",
+      "originalSize": 3490,
+      "gzipSize": 1158,
+      "brotliSize": 1016,
+      "gzipRatio": "66.82",
+      "brotliRatio": "70.89",
+      "gzipSavings": 2332,
+      "brotliSavings": 2474,
+      "category": "other",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/pages/practice.css",
+      "originalSize": 20962,
+      "gzipSize": 4073,
+      "brotliSize": 3817,
+      "gzipRatio": "80.57",
+      "brotliRatio": "81.79",
+      "gzipSavings": 16889,
+      "brotliSavings": 17145,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/pages/practice-tags.css",
+      "originalSize": 14529,
+      "gzipSize": 2805,
+      "brotliSize": 2754,
+      "gzipRatio": "80.69",
+      "brotliRatio": "81.04",
+      "gzipSavings": 11724,
+      "brotliSavings": 11775,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/pages/practice-queue.css",
+      "originalSize": 7457,
+      "gzipSize": 1919,
+      "brotliSize": 1738,
+      "gzipRatio": "74.27",
+      "brotliRatio": "76.69",
+      "gzipSavings": 5538,
+      "brotliSavings": 5719,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/pages/patterns.css",
+      "originalSize": 7352,
+      "gzipSize": 1879,
+      "brotliSize": 1647,
+      "gzipRatio": "74.44",
+      "brotliRatio": "77.60",
+      "gzipSavings": 5473,
+      "brotliSavings": 5705,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/pages/pattern-detail.css",
+      "originalSize": 9649,
+      "gzipSize": 1972,
+      "brotliSize": 1749,
+      "gzipRatio": "79.56",
+      "brotliRatio": "81.87",
+      "gzipSavings": 7677,
+      "brotliSavings": 7900,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/pages/knowledge.css",
+      "originalSize": 24992,
+      "gzipSize": 4129,
+      "brotliSize": 4070,
+      "gzipRatio": "83.48",
+      "brotliRatio": "83.71",
+      "gzipSavings": 20863,
+      "brotliSavings": 20922,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/pages/knowledge-detail.css",
+      "originalSize": 17335,
+      "gzipSize": 3385,
+      "brotliSize": 3146,
+      "gzipRatio": "80.47",
+      "brotliRatio": "81.85",
+      "gzipSavings": 13950,
+      "brotliSavings": 14189,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/pages/index.css",
+      "originalSize": 10331,
+      "gzipSize": 2311,
+      "brotliSize": 2075,
+      "gzipRatio": "77.63",
+      "brotliRatio": "79.91",
+      "gzipSavings": 8020,
+      "brotliSavings": 8256,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/pages/examples.css",
+      "originalSize": 5544,
+      "gzipSize": 1264,
+      "brotliSize": 1161,
+      "gzipRatio": "77.20",
+      "brotliRatio": "79.06",
+      "gzipSavings": 4280,
+      "brotliSavings": 4383,
+      "category": "pages",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/index.css",
+      "originalSize": 1466,
+      "gzipSize": 578,
+      "brotliSize": 518,
+      "gzipRatio": "60.57",
+      "brotliRatio": "64.67",
+      "gzipSavings": 888,
+      "brotliSavings": 948,
+      "category": "index",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/04-layouts/layout.css",
+      "originalSize": 3138,
+      "gzipSize": 1047,
+      "brotliSize": 928,
+      "gzipRatio": "66.63",
+      "brotliRatio": "70.43",
+      "gzipSavings": 2091,
+      "brotliSavings": 2210,
+      "category": "layouts",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/04-layouts/grid.css",
+      "originalSize": 1880,
+      "gzipSize": 568,
+      "brotliSize": 474,
+      "gzipRatio": "69.79",
+      "brotliRatio": "74.79",
+      "gzipSavings": 1312,
+      "brotliSavings": 1406,
+      "category": "layouts",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/03-components/utilities.css",
+      "originalSize": 2735,
+      "gzipSize": 1011,
+      "brotliSize": 870,
+      "gzipRatio": "63.03",
+      "brotliRatio": "68.19",
+      "gzipSavings": 1724,
+      "brotliSavings": 1865,
+      "category": "components",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/03-components/modals.css",
+      "originalSize": 11228,
+      "gzipSize": 2830,
+      "brotliSize": 2602,
+      "gzipRatio": "74.80",
+      "brotliRatio": "76.83",
+      "gzipSavings": 8398,
+      "brotliSavings": 8626,
+      "category": "components",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/03-components/loading.css",
+      "originalSize": 11041,
+      "gzipSize": 2771,
+      "brotliSize": 2559,
+      "gzipRatio": "74.90",
+      "brotliRatio": "76.82",
+      "gzipSavings": 8270,
+      "brotliSavings": 8482,
+      "category": "components",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/03-components/forms.css",
+      "originalSize": 12039,
+      "gzipSize": 2847,
+      "brotliSize": 2590,
+      "gzipRatio": "76.35",
+      "brotliRatio": "78.49",
+      "gzipSavings": 9192,
+      "brotliSavings": 9449,
+      "category": "components",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/03-components/cards.css",
+      "originalSize": 9285,
+      "gzipSize": 2149,
+      "brotliSize": 1968,
+      "gzipRatio": "76.86",
+      "brotliRatio": "78.80",
+      "gzipSavings": 7136,
+      "brotliSavings": 7317,
+      "category": "components",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/03-components/buttons.css",
+      "originalSize": 12917,
+      "gzipSize": 2656,
+      "brotliSize": 2425,
+      "gzipRatio": "79.44",
+      "brotliRatio": "81.23",
+      "gzipSavings": 10261,
+      "brotliSavings": 10492,
+      "category": "components",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/03-components/badges.css",
+      "originalSize": 16448,
+      "gzipSize": 2906,
+      "brotliSize": 2601,
+      "gzipRatio": "82.33",
+      "brotliRatio": "84.19",
+      "gzipSavings": 13542,
+      "brotliSavings": 13847,
+      "category": "components",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/02-base/reset.css",
+      "originalSize": 3440,
+      "gzipSize": 1324,
+      "brotliSize": 1178,
+      "gzipRatio": "61.51",
+      "brotliRatio": "65.76",
+      "gzipSavings": 2116,
+      "brotliSavings": 2262,
+      "category": "base",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/z-index.css",
+      "originalSize": 1116,
+      "gzipSize": 443,
+      "brotliSize": 395,
+      "gzipRatio": "60.30",
+      "brotliRatio": "64.61",
+      "gzipSavings": 673,
+      "brotliSavings": 721,
+      "category": "tokens",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/will-change.css",
+      "originalSize": 2719,
+      "gzipSize": 995,
+      "brotliSize": 866,
+      "gzipRatio": "63.41",
+      "brotliRatio": "68.15",
+      "gzipSavings": 1724,
+      "brotliSavings": 1853,
+      "category": "tokens",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/typography.css",
+      "originalSize": 6265,
+      "gzipSize": 1654,
+      "brotliSize": 1544,
+      "gzipRatio": "73.60",
+      "brotliRatio": "75.36",
+      "gzipSavings": 4611,
+      "brotliSavings": 4721,
+      "category": "tokens",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/spacing.css",
+      "originalSize": 1116,
+      "gzipSize": 364,
+      "brotliSize": 338,
+      "gzipRatio": "67.38",
+      "brotliRatio": "69.71",
+      "gzipSavings": 752,
+      "brotliSavings": 778,
+      "category": "tokens",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/shadows.css",
+      "originalSize": 4091,
+      "gzipSize": 1392,
+      "brotliSize": 1260,
+      "gzipRatio": "65.97",
+      "brotliRatio": "69.20",
+      "gzipSavings": 2699,
+      "brotliSavings": 2831,
+      "category": "tokens",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/performance.css",
+      "originalSize": 2089,
+      "gzipSize": 825,
+      "brotliSize": 728,
+      "gzipRatio": "60.51",
+      "brotliRatio": "65.15",
+      "gzipSavings": 1264,
+      "brotliSavings": 1361,
+      "category": "tokens",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/glass.css",
+      "originalSize": 3371,
+      "gzipSize": 891,
+      "brotliSize": 834,
+      "gzipRatio": "73.57",
+      "brotliRatio": "75.26",
+      "gzipSavings": 2480,
+      "brotliSavings": 2537,
+      "category": "tokens",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/effects.css",
+      "originalSize": 830,
+      "gzipSize": 316,
+      "brotliSize": 289,
+      "gzipRatio": "61.93",
+      "brotliRatio": "65.18",
+      "gzipSavings": 514,
+      "brotliSavings": 541,
+      "category": "tokens",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/dimensions.css",
+      "originalSize": 1423,
+      "gzipSize": 538,
+      "brotliSize": 474,
+      "gzipRatio": "62.19",
+      "brotliRatio": "66.69",
+      "gzipSavings": 885,
+      "brotliSavings": 949,
+      "category": "tokens",
+      "recommendations": []
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/colors.css",
+      "originalSize": 9211,
+      "gzipSize": 2235,
+      "brotliSize": 1998,
+      "gzipRatio": "75.74",
+      "brotliRatio": "78.31",
+      "gzipSavings": 6976,
+      "brotliSavings": 7213,
+      "category": "tokens",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/border-radius.css",
+      "originalSize": 357,
+      "gzipSize": 157,
+      "brotliSize": 148,
+      "gzipRatio": "56.02",
+      "brotliRatio": "58.54",
+      "gzipSavings": 200,
+      "brotliSavings": 209,
+      "category": "tokens",
+      "recommendations": [
+        "Low compression ratio - check for repetitive code"
+      ]
+    },
+    {
+      "path": "web/static/css/design-system/01-tokens/animations.css",
+      "originalSize": 6591,
+      "gzipSize": 1482,
+      "brotliSize": 1397,
+      "gzipRatio": "77.51",
+      "brotliRatio": "78.80",
+      "gzipSavings": 5109,
+      "brotliSavings": 5194,
+      "category": "tokens",
+      "recommendations": [
+        "Excellent brotli compression - prioritize for production"
+      ]
+    }
+  ],
+  "summary": {
+    "totalFiles": 33,
+    "totalOriginalSize": 246437,
+    "totalGzipSize": 56874,
+    "totalBrotliSize": 52157,
+    "averageGzipRatio": "71.50",
+    "averageBrotliRatio": "74.23"
+  },
+  "timestamp": "2025-08-12T05:10:02.574Z",
+  "version": "1.0.0"
+}

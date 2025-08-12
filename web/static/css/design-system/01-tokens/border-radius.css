@@ -3,7 +3,10 @@
    ================================================ */
 
 :root {
+  --radius-xs: 2px;
+  --radius-2xs: 3px;
   --radius-sm: 4px;
+  --radius-base: 6px;
   --radius: 8px;
   --radius-md: 8px;
   --radius-lg: 12px;

@@ -1,6 +1,6 @@
 /* Examples Section */
 .examples {
-  background: linear-gradient(135deg, var(--bg) 0%, rgba(255, 255, 255, 0.5) 100%);
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg-white-50) 100%);
   border-radius: var(--radius);
   padding: var(--space-5);
   margin: var(--space-5) 0;
@@ -29,9 +29,6 @@
 }
 
 .examples-label {
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  letter-spacing: var(--tracking-wide);
   font-size: var(--text-xs);
   font-weight: var(--font-semibold);
   color: var(--text-muted);
@@ -58,7 +55,6 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: var(--space-2) 0;
   gap: var(--space-3);
   background: var(--bg);
   border-radius: var(--radius-sm);
@@ -143,7 +139,7 @@
   position: fixed;
   bottom: var(--space-8);
   left: 50%;
-  transform: translateX(-50%) translateY(100px);
+  transform: translateX(-50%) translateY(var(--space-25));
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
@@ -200,7 +196,7 @@
 }
 
 .examples-content.expanded {
-  max-height: 500px;
+  max-height: var(--space-125);
   margin-top: var(--space-3);
 }
 

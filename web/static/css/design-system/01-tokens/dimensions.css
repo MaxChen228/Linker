@@ -25,10 +25,30 @@
   --progress-height-sm: 2px;
   --progress-height-md: 4px;
   --progress-height-lg: 6px;
+  
+  /* Minimum widths for form elements and containers */
+  --min-width-sm: 100px;
+  --min-width-md: 200px;
+  
+  /* Responsive breakpoints */
+  --breakpoint-tablet: 768px;
+  
   /* Based on common usage patterns */
   --size-xs: var(--icon-xs);
   --size-sm: var(--icon-sm);
   --size-md: var(--icon-md);
   --size-lg: var(--icon-lg);
   --size-xl: var(--icon-xl);
+  
+  /* Card semantic dimensions */
+  --card-transform-hover: -3px;
+  --card-transform-small: -2px;
+  --card-decoration-height: 3px;
+  --card-stats-min-width: 100px;
+  --card-label-min-width: 60px;
+  --card-progress-size: 60px;
+  --card-mastery-size: 48px;
+  
+  /* Card blur effects */
+  --card-glass-blur: 12px;
 }

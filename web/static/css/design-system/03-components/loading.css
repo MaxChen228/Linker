@@ -128,9 +128,8 @@
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgb(0 0 0 / 0.4);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,16 +159,15 @@
 
 /* Glass Effect Loading Modal */
 .loading-modal[data-glass="true"] {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgb(255 255 255 / 0.92);
   backdrop-filter: blur(20px); /* 玻璃效果模糊 */
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgb(255 255 255 / 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
   .loading-modal[data-glass="true"] {
-    background: rgba(24, 24, 27, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgb(24 24 27 / 0.92);
+    border: 1px solid rgb(255 255 255 / 0.1);
   }
 }
 
@@ -238,7 +236,7 @@
   width: var(--space-4);
   height: var(--space-4);
   margin: calc(var(--space-2) * -1) 0 0 calc(var(--space-2) * -1);
-  border: var(--space-0-25) solid currentColor;
+  border: var(--space-0-25) solid currentcolor;
   border-top-color: transparent;
   border-radius: 50%;
   animation: var(--animation-spin);
@@ -255,7 +253,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgb(255 255 255 / 0.5);
   backdrop-filter: blur(2px); /* 表單載入模糊 */
   border-radius: var(--radius);
   z-index: var(--z-raised);
@@ -263,7 +261,7 @@
 
 @media (prefers-color-scheme: dark) {
   .form-loading::after {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0 0 0 / 0.5);
   }
 }
 
@@ -280,7 +278,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.2) 50%,
+    rgb(255 255 255 / 0.2) 50%,
     transparent 100%
   );
   animation: var(--animation-shimmer);
@@ -303,7 +301,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.5) 50%,
+    rgb(255 255 255 / 0.5) 50%,
     transparent 100%
   );
   animation: skeletonWave 2s ease-in-out infinite;
@@ -318,7 +316,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.1) 50%,
+      rgb(255 255 255 / 0.1) 50%,
       transparent 100%
     );
   }
@@ -393,6 +391,7 @@
   0% {
     left: -30%; /* 不定進度起始位置 */
   }
+
   100% {
     left: 100%; /* 不定進度結束位置 */
   }

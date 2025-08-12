@@ -1,5 +1,7 @@
 /* ============================================ */
+
 /* 網格佈局系統                                 */
+
 /* ============================================ */
 
 /* 基礎卡片網格 */
@@ -41,11 +43,13 @@
 }
 
 /* ============================================ */
+
 /* 響應式調整                                   */
+
 /* ============================================ */
 
 /* 平板尺寸 */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .cards-grid,
   .knowledge-cards,
   .patterns-grid {
@@ -64,7 +68,7 @@
 }
 
 /* 大螢幕優化 */
-@media (min-width: 1200px) {
+@media (width >= 1200px) {
   .cards-grid {
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   }
@@ -79,7 +83,7 @@
 }
 
 /* 超大螢幕優化 */
-@media (min-width: 1600px) {
+@media (width >= 1600px) {
   .cards-grid,
   .knowledge-cards {
     max-width: 1400px;

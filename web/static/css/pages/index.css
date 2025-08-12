@@ -33,7 +33,6 @@
 .stat-card[data-glass="true"] {
   background: var(--glass-surface);
   backdrop-filter: var(--glass-blur-sm);
-  -webkit-backdrop-filter: var(--glass-blur-sm);
   border: 1px solid var(--glass-border);
 }
 
@@ -395,7 +394,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-3);
@@ -443,7 +442,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -465,8 +464,8 @@
   
   .stat-card[data-glass="true"] {
     background: linear-gradient(135deg, 
-      rgba(24, 24, 27, 0.95) 0%, 
-      rgba(24, 24, 27, 0.85) 100%);
+      rgb(24 24 27 / 0.95) 0%, 
+      rgb(24 24 27 / 0.85) 100%);
   }
   
   .action-section {
@@ -474,6 +473,6 @@
   }
   
   .suggestion-text {
-    background: rgba(79, 70, 229, 0.1);
+    background: rgb(79 70 229 / 0.1);
   }
 }

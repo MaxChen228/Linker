@@ -1,6 +1,68 @@
 /* ============================================ */
+
 /* 統一徽章組件系統                              */
+
 /* ============================================ */
+
+/* Badge-specific design tokens */
+:root {
+  /* Badge spacing tokens */
+  --badge-border-width: var(--space-0-25); /* 1px equivalent */
+  --badge-height-lg: var(--space-7); /* 28px equivalent */
+  --badge-min-width-xl: var(--space-20); /* 80px */
+  --badge-min-width-xl-mobile: calc(var(--space-20) - var(--space-2-5)); /* 70px */
+  --badge-icon-size: calc(var(--space-2) + var(--space-1-5)); /* 14px */
+  --badge-count-size: calc(var(--space-4) + var(--space-0-25)); /* 18px */
+  
+  /* Badge transform tokens */
+  --badge-hover-transform: translateY(calc(-1 * var(--space-0-25)));
+  
+  /* Badge blur effects */
+  --badge-backdrop-blur: blur(2.5 * var(--space-1)); /* 10px equivalent */
+  
+  /* Badge opacity levels - organized by usage pattern */
+  --badge-opacity-low: 0.05;
+  --badge-opacity-medium: 0.1;
+  --badge-opacity-high: 0.15;
+  --badge-opacity-border: 0.2;
+  --badge-opacity-border-dark: 0.3;
+  --badge-opacity-hover: 0.2;
+  --badge-opacity-dark-low: 0.15;
+  --badge-opacity-dark-medium: 0.25;
+  --badge-opacity-dark-high: 0.3;
+  --badge-opacity-dark-border: 0.4;
+  --badge-opacity-dark-border-strong: 0.5;
+  --badge-opacity-count: 0.2;
+  --badge-opacity-count-dark: 0.1;
+  
+  /* Badge semantic colors - RGB values for opacity control */
+  --badge-primary-rgb: 99, 102, 241;   /* from --accent-500 */
+  --badge-success-rgb: 16, 185, 129;   /* from --success-500 */
+  --badge-warning-rgb: 245, 158, 11;   /* from --warning-500 */
+  --badge-error-rgb: 239, 68, 68;      /* from --error-500 */
+  --badge-info-rgb: 59, 130, 246;      /* custom info blue */
+  --badge-neutral-rgb: 107, 114, 128;  /* from --gray-500 */
+  --badge-white-rgb: 255, 255, 255;
+  
+  /* Badge semantic gradient backgrounds */
+  --badge-bg-primary: linear-gradient(135deg, rgba(var(--badge-primary-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-primary-rgb), var(--badge-opacity-low)) 100%);
+  --badge-bg-success: linear-gradient(135deg, rgba(var(--badge-success-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-success-rgb), var(--badge-opacity-low)) 100%);
+  --badge-bg-warning: linear-gradient(135deg, rgba(var(--badge-warning-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-warning-rgb), var(--badge-opacity-low)) 100%);
+  --badge-bg-error: linear-gradient(135deg, rgba(var(--badge-error-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-error-rgb), var(--badge-opacity-low)) 100%);
+  --badge-bg-info: linear-gradient(135deg, rgba(var(--badge-info-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-info-rgb), var(--badge-opacity-low)) 100%);
+  --badge-bg-neutral: linear-gradient(135deg, rgba(var(--badge-neutral-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-neutral-rgb), var(--badge-opacity-low)) 100%);
+  
+  /* Badge border colors */
+  --badge-border-primary: rgba(var(--badge-primary-rgb), var(--badge-opacity-border));
+  --badge-border-success: rgba(var(--badge-success-rgb), var(--badge-opacity-border));
+  --badge-border-warning: rgba(var(--badge-warning-rgb), var(--badge-opacity-border));
+  --badge-border-error: rgba(var(--badge-error-rgb), var(--badge-opacity-border));
+  --badge-border-info: rgba(var(--badge-info-rgb), var(--badge-opacity-border));
+  --badge-border-neutral: rgba(var(--badge-neutral-rgb), var(--badge-opacity-border));
+}
+
+/* Media query breakpoints */
+@custom-media --badge-mobile (max-width: 768px);
 
 /* 基礎徽章樣式 */
 .badge {
@@ -16,7 +78,7 @@
   line-height: 1;
   white-space: nowrap;
   border-radius: var(--radius-full);
-  border: 1px solid transparent;
+  border: var(--badge-border-width) solid transparent;
   transition: all var(--duration-normal) ease;
   
   /* 預設樣式 */
@@ -26,54 +88,56 @@
 }
 
 /* ============================================ */
+
 /* 徽章變體                                     */
+
 /* ============================================ */
 
 /* 主要變體 */
 .badge[data-variant="primary"] {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-primary-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-primary-rgb), var(--badge-opacity-low)) 100%);
   color: var(--accent);
-  border-color: rgba(99, 102, 241, 0.2);
+  border-color: rgba(var(--badge-primary-rgb), var(--badge-opacity-border));
 }
 
 .badge[data-variant="primary"]:hover {
-  background: rgba(99, 102, 241, 0.2);
-  transform: translateY(-1px);
+  background: rgba(var(--badge-primary-rgb), var(--badge-opacity-hover));
+  transform: var(--badge-hover-transform);
 }
 
 /* 成功變體 */
 .badge[data-variant="success"] {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-success-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-success-rgb), var(--badge-opacity-low)) 100%);
   color: var(--success);
-  border-color: rgba(16, 185, 129, 0.2);
+  border-color: rgba(var(--badge-success-rgb), var(--badge-opacity-border));
 }
 
 /* 警告變體 */
 .badge[data-variant="warning"] {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-warning-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-warning-rgb), var(--badge-opacity-low)) 100%);
   color: var(--warning);
-  border-color: rgba(245, 158, 11, 0.2);
+  border-color: rgba(var(--badge-warning-rgb), var(--badge-opacity-border));
 }
 
 /* 錯誤變體 */
 .badge[data-variant="error"] {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-error-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-error-rgb), var(--badge-opacity-low)) 100%);
   color: var(--error);
-  border-color: rgba(239, 68, 68, 0.2);
+  border-color: rgba(var(--badge-error-rgb), var(--badge-opacity-border));
 }
 
 /* 信息變體 */
 .badge[data-variant="info"] {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-info-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-info-rgb), var(--badge-opacity-low)) 100%);
   color: var(--info);
-  border-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(var(--badge-info-rgb), var(--badge-opacity-border));
 }
 
 /* 中性變體 */
 .badge[data-variant="neutral"] {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(107, 114, 128, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-neutral-rgb), var(--badge-opacity-medium)) 0%, rgba(var(--badge-neutral-rgb), var(--badge-opacity-low)) 100%);
   color: var(--text-muted);
-  border-color: rgba(107, 114, 128, 0.2);
+  border-color: rgba(var(--badge-neutral-rgb), var(--badge-opacity-border));
 }
 
 /* 實心變體 */
@@ -102,66 +166,70 @@
 }
 
 /* ============================================ */
+
 /* 特殊用途變體                                 */
+
 /* ============================================ */
 
 /* 錯誤分類徽章 */
 .badge[data-category="systematic"] {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-error-rgb), var(--badge-opacity-high)) 0%, rgba(var(--badge-error-rgb), var(--badge-opacity-medium)) 100%);
   color: var(--error);
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(var(--badge-error-rgb), var(--badge-opacity-border-dark));
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
 }
 
 .badge[data-category="isolated"] {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-warning-rgb), var(--badge-opacity-high)) 0%, rgba(var(--badge-warning-rgb), var(--badge-opacity-medium)) 100%);
   color: var(--warning);
-  border-color: rgba(245, 158, 11, 0.3);
+  border-color: rgba(var(--badge-warning-rgb), var(--badge-opacity-border-dark));
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
 }
 
 .badge[data-category="enhancement"] {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-success-rgb), var(--badge-opacity-high)) 0%, rgba(var(--badge-success-rgb), var(--badge-opacity-medium)) 100%);
   color: var(--success);
-  border-color: rgba(16, 185, 129, 0.3);
+  border-color: rgba(var(--badge-success-rgb), var(--badge-opacity-border-dark));
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
 }
 
 .badge[data-category="other"] {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.15) 0%, rgba(107, 114, 128, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(var(--badge-neutral-rgb), var(--badge-opacity-high)) 0%, rgba(var(--badge-neutral-rgb), var(--badge-opacity-medium)) 100%);
   color: var(--text-muted);
-  border-color: rgba(107, 114, 128, 0.3);
+  border-color: rgba(var(--badge-neutral-rgb), var(--badge-opacity-border-dark));
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
 }
 
 /* 掌握度徽章 */
 .badge[data-mastery="low"] {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(var(--badge-error-rgb), var(--badge-opacity-medium));
   color: var(--error);
   border-color: transparent;
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--badge-backdrop-blur);
 }
 
 .badge[data-mastery="medium"] {
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(var(--badge-warning-rgb), var(--badge-opacity-medium));
   color: var(--warning);
   border-color: transparent;
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--badge-backdrop-blur);
 }
 
 .badge[data-mastery="high"] {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(var(--badge-success-rgb), var(--badge-opacity-medium));
   color: var(--success);
   border-color: transparent;
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--badge-backdrop-blur);
 }
 
 /* ============================================ */
+
 /* 尺寸變體                                     */
+
 /* ============================================ */
 
 /* 小尺寸 */
@@ -173,7 +241,7 @@
 
 /* 大尺寸 */
 .badge[data-size="lg"] {
-  height: 28px; /* 7*4px, 自定義設計系統值 */
+  height: var(--badge-height-lg);
   padding: 0 var(--space-4);
   font-size: var(--text-sm);
 }
@@ -186,7 +254,7 @@
   flex-direction: column;
   gap: var(--space-2);
   border-radius: var(--radius-xl);
-  min-width: 80px; /* XL 徽章最小寬度 */
+  min-width: var(--badge-min-width-xl);
 }
 
 .badge[data-size="xl"] .badge-label {
@@ -204,7 +272,9 @@
 }
 
 /* ============================================ */
+
 /* 特殊樣式                                     */
+
 /* ============================================ */
 
 /* 可點擊徽章 */
@@ -213,15 +283,15 @@
 }
 
 .badge[data-clickable="true"]:hover {
-  transform: translateY(-1px);
+  transform: var(--badge-hover-transform);
   box-shadow: var(--shadow-xs);
 }
 
 /* 帶圖標徽章 */
 .badge-icon {
   display: inline-flex;
-  width: 14px;
-  height: 14px; /* 圖標固定尺寸 */
+  width: var(--badge-icon-size);
+  height: var(--badge-icon-size);
   margin-right: var(--space-1);
 }
 
@@ -230,11 +300,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
-  height: 18px;
+  min-width: var(--badge-count-size);
+  height: var(--badge-count-size);
   padding: 0 var(--space-1);
   margin-left: var(--space-1);
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--badge-white-rgb), var(--badge-opacity-count));
   border-radius: var(--radius-full);
   font-size: var(--text-xxs); /* 10px, 使用設計系統變數 */
   font-weight: var(--font-bold);
@@ -265,11 +335,13 @@
   width: var(--space-2);
   height: var(--space-2);
   border-radius: 50%;
-  background: currentColor;
+  background: currentcolor;
 }
 
 /* ============================================ */
+
 /* 動畫效果                                     */
+
 /* ============================================ */
 
 /* 脈動效果（用於重要徽章） */
@@ -281,6 +353,7 @@
   0%, 100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }
@@ -295,16 +368,19 @@
   0%, 100% {
     opacity: 1;
   }
+
   25%, 75% {
     opacity: 0.5;
   }
 }
 
 /* ============================================ */
+
 /* 響應式設計                                   */
+
 /* ============================================ */
 
-@media (max-width: 768px) {
+@media (--badge-mobile) {
   .badge {
     font-size: var(--text-xxs); /* 11px, 響應式使用設計系統變數 */
   }
@@ -314,7 +390,7 @@
   }
   
   .badge[data-size="xl"] {
-    min-width: 70px; /* 響應式 XL 徽章寬度 */
+    min-width: var(--badge-min-width-xl-mobile);
     padding: var(--space-3) var(--space-4);
   }
   
@@ -324,7 +400,9 @@
 }
 
 /* ============================================ */
+
 /* 暗色模式                                     */
+
 /* ============================================ */
 
 @media (prefers-color-scheme: dark) {
@@ -335,84 +413,184 @@
   }
   
   .badge[data-variant="primary"] {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0.15) 100%);
-    border-color: rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, rgba(var(--badge-primary-rgb), var(--badge-opacity-dark-medium)) 0%, rgba(var(--badge-primary-rgb), var(--badge-opacity-dark-low)) 100%);
+    border-color: rgba(var(--badge-primary-rgb), var(--badge-opacity-dark-border));
     color: var(--accent-200);
   }
   
   .badge[data-variant="success"] {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%);
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #34d399;
+    background: linear-gradient(135deg, rgba(var(--badge-success-rgb), var(--badge-opacity-dark-medium)) 0%, rgba(var(--badge-success-rgb), var(--badge-opacity-dark-low)) 100%);
+    border-color: rgba(var(--badge-success-rgb), var(--badge-opacity-dark-border));
+    color: var(--success-300);
   }
   
   .badge[data-variant="warning"] {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.15) 100%);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #fbbf24;
+    background: linear-gradient(135deg, rgba(var(--badge-warning-rgb), var(--badge-opacity-dark-medium)) 0%, rgba(var(--badge-warning-rgb), var(--badge-opacity-dark-low)) 100%);
+    border-color: rgba(var(--badge-warning-rgb), var(--badge-opacity-dark-border));
+    color: var(--warning-200);
   }
   
   .badge[data-variant="error"] {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.15) 100%);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #f87171;
+    background: linear-gradient(135deg, rgba(var(--badge-error-rgb), var(--badge-opacity-dark-medium)) 0%, rgba(var(--badge-error-rgb), var(--badge-opacity-dark-low)) 100%);
+    border-color: rgba(var(--badge-error-rgb), var(--badge-opacity-dark-border));
+    color: var(--error-300);
   }
   
   /* Enhanced dark mode for error categories */
   .badge[data-category="systematic"] {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(239, 68, 68, 0.2) 100%);
-    border-color: rgba(239, 68, 68, 0.5);
-    color: #f87171;
+    background: linear-gradient(135deg, rgba(var(--badge-error-rgb), var(--badge-opacity-dark-high)) 0%, rgba(var(--badge-error-rgb), var(--badge-opacity-hover)) 100%);
+    border-color: rgba(var(--badge-error-rgb), var(--badge-opacity-dark-border-strong));
+    color: var(--error-300);
   }
   
   .badge[data-category="isolated"] {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%);
-    border-color: rgba(245, 158, 11, 0.5);
-    color: #fbbf24;
+    background: linear-gradient(135deg, rgba(var(--badge-warning-rgb), var(--badge-opacity-dark-high)) 0%, rgba(var(--badge-warning-rgb), var(--badge-opacity-hover)) 100%);
+    border-color: rgba(var(--badge-warning-rgb), var(--badge-opacity-dark-border-strong));
+    color: var(--warning-200);
   }
   
   .badge[data-category="enhancement"] {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.2) 100%);
-    border-color: rgba(16, 185, 129, 0.5);
-    color: #34d399;
+    background: linear-gradient(135deg, rgba(var(--badge-success-rgb), var(--badge-opacity-dark-high)) 0%, rgba(var(--badge-success-rgb), var(--badge-opacity-hover)) 100%);
+    border-color: rgba(var(--badge-success-rgb), var(--badge-opacity-dark-border-strong));
+    color: var(--success-300);
   }
   
   .badge[data-category="other"] {
-    background: linear-gradient(135deg, rgba(107, 114, 128, 0.3) 0%, rgba(107, 114, 128, 0.2) 100%);
-    border-color: rgba(107, 114, 128, 0.5);
+    background: linear-gradient(135deg, rgba(var(--badge-neutral-rgb), var(--badge-opacity-dark-high)) 0%, rgba(var(--badge-neutral-rgb), var(--badge-opacity-hover)) 100%);
+    border-color: rgba(var(--badge-neutral-rgb), var(--badge-opacity-dark-border-strong));
     color: var(--text-secondary);
   }
   
   .badge-count {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(var(--badge-white-rgb), var(--badge-opacity-count-dark));
   }
 }
 
 /* ============================================ */
+
 /* 向後兼容（漸進式遷移）                        */
+
 /* ============================================ */
 
 /* 保留舊類名的基本樣式 */
 .tag {
-  @extend .badge;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--space-6);
+  padding: 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+  border: var(--badge-border-width) solid transparent;
+  transition: all var(--duration-normal) ease;
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border);
 }
 
 .category-badge {
-  @extend .badge;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--space-6);
+  padding: 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+  border: var(--badge-border-width) solid transparent;
+  transition: all var(--duration-normal) ease;
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border);
 }
 
 .stat-badge {
-  @extend .badge[data-size="xl"];
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  padding: var(--space-4) var(--space-6);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--radius-xl);
+  border: var(--badge-border-width) solid transparent;
+  transition: all var(--duration-normal) ease;
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border);
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: var(--badge-min-width-xl);
 }
 
 .mastery-badge {
-  @extend .badge;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--space-6);
+  padding: 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+  border: var(--badge-border-width) solid transparent;
+  transition: all var(--duration-normal) ease;
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border);
 }
 
 .error-category-badge {
-  @extend .badge;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--space-6);
+  padding: 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+  border: var(--badge-border-width) solid transparent;
+  transition: all var(--duration-normal) ease;
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border);
 }
 
 .subtype-badge {
-  @extend .badge[data-size="sm"];
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--space-5);
+  padding: 0 var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-xxs);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+  border: var(--badge-border-width) solid transparent;
+  transition: all var(--duration-normal) ease;
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border);
 }

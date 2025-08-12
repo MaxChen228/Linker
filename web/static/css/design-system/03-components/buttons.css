@@ -45,7 +45,6 @@
   cursor: pointer;
   transition: all var(--duration-fast) ease;
   user-select: none;
-  -webkit-user-select: none;
   outline: none;
   
   /* 防止按鈕內容換行 */
@@ -53,12 +52,12 @@
 }
 
 /* Hover 狀態 */
-.btn:hover:not(:disabled):not([data-loading="true"]) {
+.btn:hover:not(:disabled, [data-loading="true"]) {
   transform: translateY(-1px);
 }
 
 /* Active 狀態 */
-.btn:active:not(:disabled):not([data-loading="true"]) {
+.btn:active:not(:disabled, [data-loading="true"]) {
   transform: translateY(0);
 }
 
@@ -283,7 +282,7 @@
 .btn[data-variant="filter-pill"] .btn-count {
   margin-left: var(--space-2);
   padding: 0 var(--space-2);
-  background: rgba(0, 0, 0, 0.1);
+  background: rgb(0 0 0 / 0.1);
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
   font-weight: var(--font-semibold);
@@ -291,7 +290,7 @@
 
 .btn[data-variant="filter-tab"].active .btn-count,
 .btn[data-variant="filter-pill"].active .btn-count {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(255 255 255 / 0.2);
 }
 
 /* ========== 尺寸系統 ========== */
@@ -341,7 +340,7 @@
   top: 50%;
   left: 50%;
   margin: calc(var(--space-2) * -1) 0 0 calc(var(--space-2) * -1);
-  border: var(--space-0-25) solid currentColor; /* loading 指示器邊框 */
+  border: var(--space-0-25) solid currentcolor; /* loading 指示器邊框 */
   border-top-color: transparent;
   border-radius: 50%;
   animation: var(--animation-spin);
@@ -381,7 +380,7 @@
 /* 標籤按鈕的計數器 */
 .btn[data-variant="tab"] .btn-count,
 .btn[data-variant="tab"] .badge {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(255 255 255 / 0.2);
   padding: var(--space-0-25) var(--space-2);
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
@@ -393,13 +392,13 @@
 
 .btn[data-variant="tab"].active .btn-count,
 .btn[data-variant="tab"][data-active="true"] .badge {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgb(255 255 255 / 0.3);
 }
 
 /* ========== 動畫定義 ========== */
 
 /* ========== 響應式 ========== */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .btn {
     font-size: var(--text-sm);
   }
@@ -421,12 +420,13 @@
   
   .btn[data-loading="true"]::after {
     animation: none;
-    border: var(--space-0-25) solid currentColor; /* 無障礙模式 loading 指示器 */
+    border: var(--space-0-25) solid currentcolor; /* 無障礙模式 loading 指示器 */
     opacity: 0.5;
   }
 }
 
 /* ========== 兼容性處理 ========== */
+
 /* 保留舊類名的基本支援（過渡期） */
 .btn.primary {
   background: var(--primary);
@@ -460,7 +460,7 @@
     border-color: var(--border-dark);
   }
   
-  .btn:hover:not(:disabled):not([data-loading="true"]) {
+  .btn:hover:not(:disabled, [data-loading="true"]) {
     background: var(--surface-base);
     border-color: var(--border-focus);
   }

@@ -127,8 +127,18 @@
   --bg-secondary: var(--surface-elevated);
   --bg-tertiary: var(--surface-muted);
   --bg-overlay: rgba(0, 0, 0, 0.4);
+  --bg-overlay-strong: rgba(0, 0, 0, 0.5);
+  --bg-white-50: rgba(255, 255, 255, 0.5);
   --bg-accent-subtle: var(--primary-light);
   --bg-gray-subtle: var(--gray-50);
+  
+  /* Additional accent opacity variants */
+  --accent-medium: rgba(79, 70, 229, 0.2);
+  --accent-soft: rgba(79, 70, 229, 0.15);
+  
+  /* Surface overlay variants */
+  --surface-overlay-strong: rgba(24, 24, 27, 0.95);
+  --surface-overlay-medium: rgba(24, 24, 27, 0.85);
   
   /* 陰影顏色 */
   --shadow-color: rgba(0, 0, 0, 0.08);
@@ -140,6 +150,18 @@
   --success-600-rgb: 5, 150, 105;
   --warning-600-rgb: 217, 119, 6;
   --error-600-rgb: 220, 38, 38;
+  
+  /* Card semantic colors */
+  --card-border-light: rgba(0, 0, 0, 0.06);
+  --card-mastery-low-border: rgba(239, 68, 68, 0.2);
+  --card-mastery-medium-border: rgba(245, 158, 11, 0.2);
+  --card-mastery-high-border: rgba(16, 185, 129, 0.2);
+  --card-mastery-low-bg: linear-gradient(to bottom, rgba(254, 242, 242, 0.5), white);
+  --card-mastery-medium-bg: linear-gradient(to bottom, rgba(255, 251, 235, 0.5), white);
+  --card-mastery-high-bg: linear-gradient(to bottom, rgba(236, 253, 245, 0.5), white);
+  --card-group-bg: rgba(249, 250, 251, 0.5);
+  --card-group-header-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
+  --card-group-header-hover-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(139, 92, 246, 0.03) 100%);
 }
 
 /* ========== 暗色模式支援 ========== */
@@ -217,6 +239,12 @@
     --shadow-color: rgba(0, 0, 0, 0.3);
     --shadow-color-light: rgba(0, 0, 0, 0.2);
     --shadow-color-dark: rgba(0, 0, 0, 0.4);
+    
+    /* Card semantic colors - dark mode */
+    --card-border-light: rgba(255, 255, 255, 0.06);
+    --card-mastery-low-bg: linear-gradient(to bottom, rgba(239, 68, 68, 0.05), var(--surface-base));
+    --card-mastery-medium-bg: linear-gradient(to bottom, rgba(245, 158, 11, 0.05), var(--surface-base));
+    --card-mastery-high-bg: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), var(--surface-base));
   }
 }
 

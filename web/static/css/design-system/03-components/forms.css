@@ -24,13 +24,12 @@ textarea {
   line-height: var(--leading-normal);
   background: var(--form-bg, var(--surface));
   color: var(--form-text, var(--text));
-  border: 1px solid var(--form-border, var(--border));
+  border: var(--border-width-thin) solid var(--form-border, var(--border));
   border-radius: var(--form-radius, var(--radius));
   transition: all var(--duration-normal) ease;
   
   /* Reset */
   appearance: none;
-  -webkit-appearance: none;
   outline: none;
 }
 
@@ -65,15 +64,15 @@ textarea:focus {
   border-color: var(--border-accent);
   background: var(--form-focus-bg, var(--surface));
   box-shadow: 
-    0 0 0 3px rgba(var(--accent-600-rgb), 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.05); /* 焦點陰影 */
+    0 0 0 var(--border-width-focus) rgba(var(--accent-600-rgb), 0.1),
+    0 1px 2px rgb(0 0 0 / 0.05); /* 焦點陰影 */
 }
 
 /* Hover States */
-.form-control:hover:not(:focus):not(:disabled),
-input:hover:not(:focus):not(:disabled),
-select:hover:not(:focus):not(:disabled),
-textarea:hover:not(:focus):not(:disabled) {
+.form-control:hover:not(:focus, :disabled),
+input:hover:not(:focus, :disabled),
+select:hover:not(:focus, :disabled),
+textarea:hover:not(:focus, :disabled) {
   border-color: var(--border-hover, var(--gray-400));
 }
 
@@ -118,7 +117,7 @@ input[data-status="error"],
 select[data-status="error"],
 textarea[data-status="error"] {
   border-color: var(--error);
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(239, 68, 68, 0.02) 100%);
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(var(--error-600-rgb), 0.02) 100%);
 }
 
 .form-control[data-status="error"]:focus,
@@ -126,8 +125,8 @@ input[data-status="error"]:focus,
 select[data-status="error"]:focus,
 textarea[data-status="error"]:focus {
   box-shadow: 
-    0 0 0 3px rgba(239, 68, 68, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.05); /* 錯誤狀態陰影 */
+    0 0 0 var(--border-width-focus) rgba(var(--error-600-rgb), 0.1),
+    0 1px 2px rgb(0 0 0 / 0.05); /* 錯誤狀態陰影 */
 }
 
 .form-control[data-status="success"],
@@ -135,7 +134,7 @@ input[data-status="success"],
 select[data-status="success"],
 textarea[data-status="success"] {
   border-color: var(--success);
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(16, 185, 129, 0.02) 100%);
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(var(--success-600-rgb), 0.02) 100%);
 }
 
 .form-control[data-status="success"]:focus,
@@ -143,8 +142,8 @@ input[data-status="success"]:focus,
 select[data-status="success"]:focus,
 textarea[data-status="success"]:focus {
   box-shadow: 
-    0 0 0 3px rgba(16, 185, 129, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.05); /* 成功狀態陰影 */
+    0 0 0 var(--border-width-focus) rgba(var(--success-600-rgb), 0.1),
+    0 1px 2px rgb(0 0 0 / 0.05); /* 成功狀態陰影 */
 }
 
 .form-control[data-status="warning"],
@@ -152,7 +151,7 @@ input[data-status="warning"],
 select[data-status="warning"],
 textarea[data-status="warning"] {
   border-color: var(--warning);
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(245, 158, 11, 0.02) 100%);
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(var(--warning-600-rgb), 0.02) 100%);
 }
 
 /* Form Groups */
@@ -222,7 +221,7 @@ textarea[data-status="warning"] {
   align-items: center;
   padding: var(--space-3) var(--space-4);
   background: var(--gray-100);
-  border: 1px solid var(--border);
+  border: var(--border-width-thin) solid var(--border);
   border-radius: 0;
   font-size: var(--text-base); /* 輸入組文字大小 */
   color: var(--text-muted);
@@ -263,7 +262,6 @@ textarea[data-status="warning"] {
   cursor: pointer;
   transition: all var(--duration-normal) ease;
   appearance: none;
-  -webkit-appearance: none;
   position: relative;
 }
 
@@ -339,7 +337,6 @@ textarea[data-status="warning"] {
   cursor: pointer;
   transition: background var(--duration-normal) ease;
   appearance: none;
-  -webkit-appearance: none;
   margin-right: var(--space-2);
 }
 
@@ -388,7 +385,6 @@ textarea[data-status="warning"] {
   border-radius: var(--space-0-375); /* range slider 軌道圓角 - 3px */
   outline: none;
   appearance: none;
-  -webkit-appearance: none;
   cursor: pointer;
   margin: var(--space-3) 0;
 }
@@ -488,13 +484,32 @@ textarea[data-status="warning"] {
 }
 
 /* Backward Compatibility */
+
 /* 保留舊類名以支援漸進式遷移 */
 .answer-input {
-  @extend .form-control;
+  display: block;
+  width: 100%;
+  padding: var(--form-padding, var(--space-3) var(--space-4));
+  font-size: var(--form-font-size, var(--text-base));
+  line-height: var(--leading-normal);
+  background: var(--form-bg, var(--surface));
+  color: var(--form-text, var(--text));
+  border: var(--border-width-thin) solid var(--form-border, var(--border));
+  border-radius: var(--form-radius, var(--radius));
+  transition: all var(--form-transition, var(--transition-fast));
 }
 
 .param-group select {
-  @extend .form-control;
+  display: block;
+  width: 100%;
+  padding: var(--form-padding, var(--space-3) var(--space-4));
+  font-size: var(--form-font-size, var(--text-base));
+  line-height: var(--leading-normal);
+  background: var(--form-bg, var(--surface));
+  color: var(--form-text, var(--text));
+  border: var(--border-width-thin) solid var(--form-border, var(--border));
+  border-radius: var(--form-radius, var(--radius));
+  transition: all var(--form-transition, var(--transition-fast));
 }
 
 /* Animation */

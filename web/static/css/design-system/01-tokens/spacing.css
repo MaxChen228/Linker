@@ -4,6 +4,7 @@
 
 :root {
   --space-0: 0;
+  --space-0-125: 1px;
   --space-0-25: 2px;
   --space-0-375: 3px;
   
@@ -22,7 +23,11 @@
   --space-15: 60px;
   --space-16: 64px;
   --space-20: 80px;
+  --space-25: 100px;
   --space-50: 400px;
+  --space-70: 280px;
+  --space-85: 340px;
+  --space-125: 500px;
   --space-n2: -8px;
   
   /* ========== Semantic Spacing ========== */
@@ -32,4 +37,10 @@
   --spacing-lg: var(--space-6);
   --spacing-xl: var(--space-8);
   --spacing-2xl: var(--space-12);
+  
+  /* ========== Border Widths ========== */
+  --border-width-thin: var(--space-0-125);
+  --border-width-default: var(--space-0-25);
+  --border-width-thick: var(--space-0-375);
+  --border-width-focus: var(--space-0-375);
 }

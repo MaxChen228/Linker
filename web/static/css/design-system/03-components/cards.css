@@ -1,5 +1,7 @@
 /* ============================================ */
+
 /* 統一卡片組件系統                              */
+
 /* ============================================ */
 
 /* 基礎卡片樣式 */
@@ -19,7 +21,9 @@
 }
 
 /* ============================================ */
+
 /* 卡片變體                                     */
+
 /* ============================================ */
 
 /* 可互動卡片 */
@@ -28,17 +32,16 @@
 }
 
 .card[data-interactive="true"]:hover {
-  transform: translateY(-3px); /* 互動卡片惸停位移 */
+  transform: translateY(var(--card-transform-hover)); /* 互動卡片惸停位移 */
   box-shadow: var(--shadow-md);
-  border-color: rgba(var(--accent-rgb), 0.15);
+  border-color: var(--accent-soft);
 }
 
 /* Glass Morphism 卡片 */
 .card[data-glass="true"] {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--card-glass-blur));
+  border: 1px solid var(--glass-border);
 }
 
 /* 帶裝飾線卡片 */
@@ -48,7 +51,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px; /* 裝飾線高度 */
+  height: var(--card-decoration-height); /* 裝飾線高度 */
   background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
   opacity: 0;
   transition: opacity var(--duration-normal) ease;
@@ -59,13 +62,15 @@
 }
 
 /* ============================================ */
+
 /* 卡片類型變體                                 */
+
 /* ============================================ */
 
 /* 問題卡片 */
 .card[data-type="question"] {
   background: white;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--card-border-light);
   box-shadow: var(--shadow-sm);
 }
 
@@ -81,7 +86,7 @@
 
 .card[data-type="pattern"]:hover {
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px); /* 卡片惸停位移 */
+  transform: translateY(var(--card-transform-small)); /* 卡片惸停位移 */
 }
 
 /* 實例卡片 */
@@ -97,36 +102,40 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--card-border-light);
   padding: 0; /* 群組卡片特殊處理 */
 }
 
 .card[data-type="group"]:hover {
   box-shadow: var(--shadow-lg);
-  transform: translateY(-2px); /* 卡片惸停位移 */
+  transform: translateY(var(--card-transform-small)); /* 卡片惸停位移 */
 }
 
 /* ============================================ */
+
 /* 掌握度變體                                   */
+
 /* ============================================ */
 
 .card[data-mastery="low"] {
-  border-color: rgba(239, 68, 68, 0.2);
-  background: linear-gradient(to bottom, rgba(254, 242, 242, 0.5), white);
+  border-color: var(--card-mastery-low-border);
+  background: var(--card-mastery-low-bg);
 }
 
 .card[data-mastery="medium"] {
-  border-color: rgba(245, 158, 11, 0.2);
-  background: linear-gradient(to bottom, rgba(255, 251, 235, 0.5), white);
+  border-color: var(--card-mastery-medium-border);
+  background: var(--card-mastery-medium-bg);
 }
 
 .card[data-mastery="high"] {
-  border-color: rgba(16, 185, 129, 0.2);
-  background: linear-gradient(to bottom, rgba(236, 253, 245, 0.5), white);
+  border-color: var(--card-mastery-high-border);
+  background: var(--card-mastery-high-bg);
 }
 
 /* ============================================ */
+
 /* 尺寸變體                                     */
+
 /* ============================================ */
 
 .card[data-size="sm"] {
@@ -142,7 +151,9 @@
 }
 
 /* ============================================ */
+
 /* 卡片內部結構                                 */
+
 /* ============================================ */
 
 /* 卡片頭部 */
@@ -195,7 +206,7 @@
 /* 卡片統計區 */
 .card-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* 統計格子最小寬度 */
+  grid-template-columns: repeat(auto-fit, minmax(var(--card-stats-min-width), 1fr)); /* 統計格子最小寬度 */
   gap: var(--space-3);
   padding: var(--space-4);
   background: var(--bg);
@@ -245,7 +256,7 @@
 
 .compare-label {
   font-weight: var(--font-medium);
-  min-width: 60px; /* 比對標籤最小寬度 */
+  min-width: var(--card-label-min-width); /* 比對標籤最小寬度 */
   flex-shrink: 0;
 }
 
@@ -265,7 +276,9 @@
 }
 
 /* ============================================ */
+
 /* 特殊卡片組件                                 */
+
 /* ============================================ */
 
 /* 群組卡片特殊樣式 */
@@ -275,17 +288,17 @@
   justify-content: space-between;
   padding: var(--space-5) var(--space-6);
   cursor: pointer;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
+  background: var(--card-group-header-bg);
   position: relative;
   transition: background var(--duration-normal) ease;
 }
 
 .group-header:hover {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(139, 92, 246, 0.03) 100%);
+  background: var(--card-group-header-hover-bg);
 }
 
 .group-content {
-  background: rgba(249, 250, 251, 0.5);
+  background: var(--card-group-bg);
   border-top: 1px solid var(--border);
   padding: 0;
   display: none;
@@ -300,8 +313,8 @@
 /* 進度環 */
 .progress-ring {
   position: relative;
-  width: 60px;
-  height: 60px; /* 進度環尺寸 */
+  width: var(--card-progress-size);
+  height: var(--card-progress-size); /* 進度環尺寸 */
   flex-shrink: 0;
 }
 
@@ -326,8 +339,8 @@
 /* 掌握度指示器 */
 .mastery-indicator {
   position: relative;
-  width: 48px;
-  height: 48px; /* 掌握度指示器尺寸 */
+  width: var(--card-mastery-size);
+  height: var(--card-mastery-size); /* 掌握度指示器尺寸 */
   flex-shrink: 0;
 }
 
@@ -352,10 +365,12 @@
 }
 
 /* ============================================ */
+
 /* 響應式設計                                   */
+
 /* ============================================ */
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .card {
     padding: var(--space-4);
   }
@@ -380,7 +395,9 @@
 }
 
 /* ============================================ */
+
 /* 暗色模式                                     */
+
 /* ============================================ */
 
 @media (prefers-color-scheme: dark) {
@@ -390,12 +407,12 @@
   }
   
   .card[data-glass="true"] {
-    background: rgba(24, 24, 27, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--glass-surface-dark);
+    border: 1px solid var(--glass-border-dark);
   }
   
   .card[data-type="question"] {
-    border-color: rgba(255, 255, 255, 0.06);
+    border-color: var(--card-border-light);
   }
   
   .card[data-type="question"],.card[data-type="group"] {
@@ -403,14 +420,14 @@
   }
   
   .card[data-mastery="low"] {
-    background: linear-gradient(to bottom, rgba(239, 68, 68, 0.05), var(--surface-dark));
+    background: var(--card-mastery-low-bg);
   }
   
   .card[data-mastery="medium"] {
-    background: linear-gradient(to bottom, rgba(245, 158, 11, 0.05), var(--surface-dark));
+    background: var(--card-mastery-medium-bg);
   }
   
   .card[data-mastery="high"] {
-    background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), var(--surface-dark));
+    background: var(--card-mastery-high-bg);
   }
 }

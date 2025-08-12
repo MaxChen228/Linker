@@ -40,7 +40,7 @@
   border-radius: var(--radius-lg);
   transition: var(--transition-base);
   position: relative;
-  min-width: 100px;
+  min-width: var(--space-25);
 }
 
 .stat-badge:hover {
@@ -98,7 +98,7 @@
 .search-bar {
   position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: var(--space-125);
   animation: var(--animation-fade-in-up);
   animation-delay: 50ms;
 }
@@ -288,8 +288,8 @@
 
 .mastery-dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
   border-radius: 50%;
   margin-right: var(--space-1);
 }
@@ -359,7 +359,7 @@
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--space-85), 1fr));
   gap: var(--space-4);
 }
 
@@ -455,8 +455,8 @@
 
 .progress-ring {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: var(--space-12);
+  height: var(--space-12);
   flex-shrink: 0;
 }
 
@@ -844,7 +844,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .header-top {
     flex-direction: column;
     align-items: flex-start;
@@ -857,7 +857,7 @@
   
   .stat-badge {
     flex: 1;
-    min-width: 100px;
+    min-width: var(--space-25);
   }
   
   .search-bar {
@@ -974,7 +974,7 @@
 /* ========== 緊湊卡片佈局 ========== */
 .knowledge-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--space-70), 1fr));
   gap: var(--space-4);
   margin-top: var(--space-6);
 }
@@ -1032,7 +1032,7 @@
   text-decoration: line-through;
   text-decoration-color: var(--error-400);
   opacity: 0.8;
-  font-family: 'Monaco', 'Courier New', monospace;
+  font-family: Monaco, 'Courier New', monospace;
   font-size: var(--text-xs);
 }
 
@@ -1045,7 +1045,7 @@
 .card-title-compact .correct-text {
   color: var(--success-700);
   font-weight: var(--font-semibold);
-  font-family: 'Monaco', 'Courier New', monospace;
+  font-family: Monaco, 'Courier New', monospace;
   font-size: var(--text-sm);
 }
 
@@ -1156,8 +1156,8 @@
 
 .mastery-indicator {
   display: inline-block;
-  height: 16px;
-  width: 16px;
+  height: var(--space-4);
+  width: var(--space-4);
   border-radius: var(--radius-full);
   background: conic-gradient(
     var(--success-base) calc(var(--mastery, 0) * 360deg),

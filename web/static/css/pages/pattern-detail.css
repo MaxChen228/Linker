@@ -40,7 +40,7 @@
 }
 
 .pattern-formula {
-  font-family: 'Fira Code', 'Consolas', monospace;
+  font-family: 'Fira Code', Consolas, monospace;
   font-size: var(--text-base);
   background: var(--gray-50);
   color: var(--accent-700);
@@ -229,7 +229,7 @@
 .correct {
   padding: var(--space-3);
   border-radius: var(--radius);
-  font-family: 'Fira Code', 'Consolas', monospace;
+  font-family: 'Fira Code', Consolas, monospace;
   font-size: var(--text-sm);
 }
 
@@ -394,7 +394,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .pattern-detail-container {
     padding: var(--space-4);
   }
@@ -440,7 +440,7 @@
   }
   
   .mistakes-section {
-    background: rgba(245, 101, 101, 0.1);
+    background: rgb(245 101 101 / 0.1);
   }
   
   .mistake-card {
@@ -456,7 +456,7 @@
   }
   
   .practice-section {
-    background: linear-gradient(135deg, rgba(168, 237, 234, 0.1) 0%, rgba(254, 214, 227, 0.1) 100%);
+    background: linear-gradient(135deg, rgb(168 237 234 / 0.1) 0%, rgb(254 214 227 / 0.1) 100%);
   }
   
   .practice-item {

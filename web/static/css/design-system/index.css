@@ -3,37 +3,37 @@
    ================================================ */
 
 /* 1. 重置樣式 (Reset/Normalize) - 必須最先載入 */
-@import url('./02-base/reset.css');
+@import './02-base/reset.css';
 
 /* 2. 核心設計令牌 (Core Design Tokens) */
-@import url('./01-tokens/colors.css');
-@import url('./01-tokens/spacing.css');
-@import url('./01-tokens/dimensions.css');
-@import url('./01-tokens/typography.css');
-@import url('./01-tokens/border-radius.css');
+@import './01-tokens/colors.css';
+@import './01-tokens/spacing.css';
+@import './01-tokens/dimensions.css';
+@import './01-tokens/typography.css';
+@import './01-tokens/border-radius.css';
 
 /* 3. 衍生設計令牌 (Derived Design Tokens) */
-@import url('./01-tokens/shadows.css');
-@import url('./01-tokens/effects.css');
-@import url('./01-tokens/glass.css');
-@import url('./01-tokens/animations.css');
+@import './01-tokens/shadows.css';
+@import './01-tokens/effects.css';
+@import './01-tokens/glass.css';
+@import './01-tokens/animations.css';
 
 /* 4. 技術/效能令牌 (Technical/Performance Tokens) */
-@import url('./01-tokens/z-index.css');
-@import url('./01-tokens/will-change.css');
-@import url('./01-tokens/performance.css');
+@import './01-tokens/z-index.css';
+@import './01-tokens/will-change.css';
+@import './01-tokens/performance.css';
 
 /* 5. 組件樣式 (Components) - 按依賴關係排序 */
-@import url('./03-components/buttons.css');
-@import url('./03-components/badges.css');
-@import url('./03-components/forms.css');
-@import url('./03-components/cards.css');
-@import url('./03-components/loading.css');
-@import url('./03-components/modals.css');
+@import './03-components/buttons.css';
+@import './03-components/badges.css';
+@import './03-components/forms.css';
+@import './03-components/cards.css';
+@import './03-components/loading.css';
+@import './03-components/modals.css';
 
 /* 6. 佈局系統 (Layout System) */
-@import url('./04-layouts/grid.css');
-@import url('./04-layouts/layout.css');
+@import './04-layouts/grid.css';
+@import './04-layouts/layout.css';
 
 /* 7. 工具類別 (Utilities) - 最高優先級，最後載入 */
-@import url('./03-components/utilities.css');
+@import './03-components/utilities.css';

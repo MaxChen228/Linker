@@ -199,7 +199,7 @@
 }
 
 .pattern-formula-compact code {
-  font-family: 'Fira Code', 'Consolas', monospace;
+  font-family: 'Fira Code', Consolas, monospace;
   font-size: var(--text-sm);
   color: var(--text-secondary);
   white-space: nowrap;
@@ -297,7 +297,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .patterns-grid {
     grid-template-columns: 1fr;
   }

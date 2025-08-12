@@ -35,6 +35,7 @@
 .item .title,.error-header {
   margin-bottom: var(--space-2);
 }
+
 .error-header {
   display: flex;
   justify-content: space-between;
@@ -77,13 +78,13 @@
 }
 
 /* Responsive Helpers */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .hide-mobile {
     display: none;
   }
 }
 
-@media (min-width: 769px) {
+@media (width >= 769px) {
   .show-mobile {
     display: none;
   }
@@ -92,9 +93,9 @@
 /* Gradient Text */
 .gradient-text {
   background: var(--gradient-primary);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Section Styles */

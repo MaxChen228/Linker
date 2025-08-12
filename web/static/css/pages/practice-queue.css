@@ -139,7 +139,7 @@
 }
 
 /* 題目卡片懸停效果 */
-.queue-item:hover:not(.add-new):not([data-status="generating"]):not([data-status="used"]) {
+.queue-item:hover:not(.add-new, [data-status="generating"], [data-status="used"]) {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   border-color: var(--accent-500);
@@ -301,7 +301,7 @@
 .add-icon {
   width: 24px;
   height: 24px;
-  stroke: currentColor;
+  stroke: currentcolor;
 }
 
 /* 生成中 Spinner */
