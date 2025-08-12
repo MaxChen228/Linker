@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from config import Config
+from core.config import Config
 
 
 class TestConfig:
@@ -85,7 +85,7 @@ class TestConfig:
         # 重新導入Config以獲取新的環境變數
         import importlib
 
-        import config
+        from core import config
 
         importlib.reload(config)
 
@@ -124,7 +124,7 @@ class TestConfig:
             # 重新導入模組以獲取新的環境變數
             import importlib
 
-            import config
+            from core import config
 
             importlib.reload(config)
 
@@ -139,6 +139,6 @@ class TestConfig:
             # 重新導入以恢復原始狀態
             import importlib
 
-            import config
+            from core import config
 
             importlib.reload(config)
