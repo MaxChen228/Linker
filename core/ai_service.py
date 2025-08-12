@@ -3,13 +3,13 @@ AI 服務模組 - 處理與 Gemini API 的互動
 """
 
 import asyncio
+import contextlib
 import json
 import os
 import time
 from typing import Any, Dict, List, Optional
 
 from core.log_config import get_module_logger
-import contextlib
 
 
 class AIService:

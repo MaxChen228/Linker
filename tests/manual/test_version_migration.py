@@ -40,19 +40,19 @@ def test_migration():
 
     # v1 -> v2
     v2_data = manager.migrate_patterns_v1_to_v2(original_data)
-    print(f"   ✓ v1.0 -> v2.0: 添加版本標記和元數據")
+    print("   ✓ v1.0 -> v2.0: 添加版本標記和元數據")
     print(f"     - version: {v2_data.get('version')}")
     print(f"     - total_patterns: {v2_data.get('total_patterns')}")
 
     # v2 -> v3
     v3_data = manager.migrate_patterns_v2_to_v3(v2_data)
-    print(f"   ✓ v2.0 -> v3.0: 添加 enrichment_summary")
+    print("   ✓ v2.0 -> v3.0: 添加 enrichment_summary")
     print(f"     - version: {v3_data.get('version')}")
     print(f"     - enrichment_summary: {bool(v3_data.get('enrichment_summary'))}")
 
     # v3 -> v3.1
     v3_1_data = manager.migrate_patterns_v3_to_v3_1(v3_data)
-    print(f"   ✓ v3.0 -> v3.1: 標準化欄位")
+    print("   ✓ v3.0 -> v3.1: 標準化欄位")
     print(f"     - version: {v3_1_data.get('version')}")
     print(f"     - last_migration: {bool(v3_1_data.get('last_migration'))}")
 
@@ -64,7 +64,7 @@ def test_migration():
     # 檢查第一個句型的結構
     if v3_1_data.get('patterns'):
         first_pattern = v3_1_data['patterns'][0]
-        print(f"   第一個句型結構:")
+        print("   第一個句型結構:")
         print(f"     - id: {first_pattern.get('id')}")
         print(f"     - category: {first_pattern.get('category')}")
         print(f"     - difficulty: {first_pattern.get('difficulty')}")
