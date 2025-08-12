@@ -1,0 +1,34 @@
+/* ================================================
+   設計令牌 - 圓角系統
+   ================================================ */
+
+:root {
+  /* ========== Base Border Radius Scale ========== */
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius: 8px;     /* Default radius */
+  --radius-md: 8px;  /* Alias for consistency */
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  
+  /* ========== Component Specific ========== */
+  
+  /* Buttons */
+  --btn-radius: var(--radius-lg);
+  --btn-radius-full: var(--radius-full);
+  
+  /* Cards */
+  --card-radius: var(--radius-lg);
+  
+  /* Forms */
+  --input-radius: var(--radius);
+  --select-radius: var(--radius);
+  
+  /* Badges */
+  --badge-radius: var(--radius-full);
+  
+  /* Modals */
+  --modal-radius: var(--radius-xl);
+}

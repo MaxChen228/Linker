@@ -1,0 +1,393 @@
+[
+  {
+    "timestamp": "2025-08-10T18:54:10.353299",
+    "chinese_sentence": "為了實現目標，她必須全力以赴。",
+    "user_answer": "In order to achieve her goal, she have to do her best.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "To achieve her goal, she has to give it her all.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "主詞動詞不一致",
+          "original_phrase": "she have to",
+          "correction": "she has to",
+          "explanation": "當主詞是第三人稱單數時（如 he, she, it），助動詞 'have' 應使用 'has'。這是一個基礎的文法規則，稱為主詞與動詞的一致性（Subject-Verb Agreement）。",
+          "severity": "major"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "詞語可以更道地",
+          "original_phrase": "do her best",
+          "correction": "give it her all / go all out",
+          "explanation": "雖然 'do her best'（盡力而為）是正確的，但中文的「全力以赴」帶有更強烈的「毫無保留、用盡一切努力」的意味。使用 'give it her all' 或 'go all out' 這樣的片語能更生動地傳達這種感覺，讓表達更貼近母語人士的用法。",
+          "severity": "minor"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "表達可以更簡潔",
+          "original_phrase": "In order to",
+          "correction": "To",
+          "explanation": "'In order to' 是正確的，但在多數情況下，尤其是在句首，可以直接使用 'To' 來表達目的，這樣會讓句子更簡潔有力。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T00:23:50.120635",
+    "chinese_sentence": "若政府再不採取有效措施，環境污染恐將對公眾健康造成無法挽回的損害。",
+    "user_answer": "If the government keep don't take effective action, the pollution of environment might have a irrevertable impact on people's health.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "If the government does not take effective measures soon, environmental pollution will cause irreversible damage to public health.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "條件句否定用法錯誤",
+          "original_phrase": "keep don't take",
+          "correction": "does not take / fails to take",
+          "explanation": "在 if 引導的條件句中，當主詞是第三人稱單數（the government）時，其否定形式應使用 `does not + 原形動詞`。`keep don't take` 是不正確的文法結構，混合了兩種不同的概念。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "單字拼寫錯誤",
+          "original_phrase": "irrevertable",
+          "correction": "irreversible",
+          "explanation": "「無法挽回的」正確的英文單字是 `irreversible`。`irrevertable` 是不存在的單字，可能是由 `revert` 和 `-able` 錯誤組合而成。另一個相似的詞是 `irreparable`（無法修復的）。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "不定冠詞 a/an 使用錯誤",
+          "original_phrase": "a irrevertable",
+          "correction": "an irreversible",
+          "explanation": "不定冠詞的選擇取決於其後單字的「發音」而非「字母」。`irreversible` 的開頭是母音發音 /ɪ/，因此前面應該使用 `an` 而不是 `a`。",
+          "severity": "major"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "詞語搭配不夠道地",
+          "original_phrase": "the pollution of environment",
+          "correction": "environmental pollution",
+          "explanation": "雖然 `the pollution of environment` 文法上可以理解，但 `environmental pollution` 是更常用、更自然的標準說法，其中 `environmental` 作為形容詞修飾 `pollution`。",
+          "severity": "minor"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "詞彙選擇可以更精準",
+          "original_phrase": "people's health",
+          "correction": "public health",
+          "explanation": "「公眾健康」在英文中有對應的專有名詞 `public health`，這個詞彙更精準地表達了原文中涉及整個社會群體的健康議題。`people's health` 雖然意思相近，但較不正式。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T10:25:58.014690",
+    "chinese_sentence": "我哥哥週末常去圖書館看書。",
+    "user_answer": "My brother often goes to library to read books on weekend.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "My brother often goes to the library on weekends.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "冠詞遺漏",
+          "original_phrase": "to library",
+          "correction": "to the library",
+          "explanation": "在英文中，\"library\" (圖書館) 是一個可數名詞。當我們指稱一個大家通常會去的特定場所時，前面需要加上定冠詞 \"the\"。因此，「去圖書館」的正確說法是 \"go to the library\"。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "名詞單複數錯誤",
+          "original_phrase": "on weekend",
+          "correction": "on weekends",
+          "explanation": "中文的「週末」在這裡指的是一個常態性、重複性的習慣（每個週末都可能去）。在英文中，表達這種重複發生的時間，應該使用複數形式。因此，要用 \"on weekends\" 來表示「在週末期間」或「每逢週末」。",
+          "severity": "major"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "表達可以更簡潔自然",
+          "original_phrase": "to read books",
+          "correction": "(可以省略)",
+          "explanation": "雖然 \"to read books\" 文法上完全正確，但在 \"go to the library\" (去圖書館) 的語境下，「看書」這個活動是理所當然的。為了讓句子更簡潔、更道地，可以直接說 \"My brother often goes to the library on weekends.\"，聽者會自動理解他去那裡是為了閱讀。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T12:12:39.645607",
+    "chinese_sentence": "他們週末會去公園野餐。",
+    "user_answer": "They go picnicking in the park on weekend.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "They go for a picnic in the park on weekends.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "冠詞/複數用法錯誤",
+          "original_phrase": "on weekend",
+          "correction": "on weekends",
+          "explanation": "「Weekend」是可數名詞。當表示「在週末」這個時間點時，前面通常需要冠詞，例如「on the weekend」(美式) 或「at the weekend」(英式)。如果想表達「每逢週末」的習慣性動作，則應該使用複數形式「on weekends」。中文原句「會去」帶有習慣性的意味，因此使用複數「on weekends」更為貼切。",
+          "severity": "major"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "動詞片語可以更多元",
+          "original_phrase": "go picnicking",
+          "correction": "go for a picnic / have a picnic",
+          "explanation": "「go picnicking」的用法是正確的。不過，「去野餐」還有其他常見且自然的說法，例如「go for a picnic」或「have a picnic」。在句子中替換使用可以讓表達更豐富。例如：「They go for a picnic in the park on weekends.」",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T12:23:51.383876",
+    "chinese_sentence": "他上週買了一隻新手機。",
+    "user_answer": "He buy an new phonee last week.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "He bought a new phone last week.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "動詞時態錯誤",
+          "original_phrase": "buy",
+          "correction": "bought",
+          "explanation": "句中的時間副詞 'last week' (上週) 表示動作發生在過去，因此動詞 'buy' 應使用過去式 'bought'。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "不定冠詞使用錯誤",
+          "original_phrase": "an new",
+          "correction": "a new",
+          "explanation": "不定冠詞 'a' 用於子音發音開頭的單字前，而 'an' 用於母音發音開頭的單字前。'new' 的發音 /njuː/ 是以子音開頭，所以應該用 'a'。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "單字拼寫錯誤",
+          "original_phrase": "phonee",
+          "correction": "phone",
+          "explanation": "「手機」的正確英文拼寫是 'phone'，不是 'phonee'。",
+          "severity": "major"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T12:24:23.139448",
+    "chinese_sentence": "他上週買了一隻新手機。",
+    "user_answer": "He buy an new phonee last week.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "He bought a new phone last week.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "動詞時態錯誤",
+          "original_phrase": "buy",
+          "correction": "bought",
+          "explanation": "句中的時間副詞 'last week' (上週) 明確指出動作發生在過去，因此動詞 'buy' 必須使用其過去簡單式 'bought'。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "不定冠詞使用錯誤",
+          "original_phrase": "an new",
+          "correction": "a new",
+          "explanation": "不定冠詞 'a' 用於子音發音開頭的單字前，而 'an' 用於母音發音開頭的單字前。'new' 的發音 /njuː/ 是以子音開頭，所以應該使用 'a'。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "單字拼寫錯誤",
+          "original_phrase": "phonee",
+          "correction": "phone",
+          "explanation": "「手機」的正確英文拼寫是 'phone'，學生在字尾多加了一個不必要的 'e'。",
+          "severity": "major"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T12:25:13.111019",
+    "chinese_sentence": "他上週買了一隻新手機。",
+    "user_answer": "He buy an new phonee last week.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "He bought a new phone last week.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "動詞時態錯誤",
+          "original_phrase": "buy",
+          "correction": "bought",
+          "explanation": "句中有時間副詞 'last week'（上週），表示動作發生在過去，因此動詞 'buy' 應使用過去式 'bought'。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "不定冠詞使用錯誤",
+          "original_phrase": "an new",
+          "correction": "a new",
+          "explanation": "不定冠詞 'a' 用於子音發音開頭的單字前，而 'an' 用於母音發音開頭的單字前。'new' 的發音 /njuː/ 是以子音開頭，所以應該用 'a'。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "單字拼寫錯誤",
+          "original_phrase": "phonee",
+          "correction": "phone",
+          "explanation": "'phone' 的正確拼法是 p-h-o-n-e，多了一個不必要的 'e'。",
+          "severity": "major"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T12:35:07.230289",
+    "chinese_sentence": "她決定全力以赴準備考試。",
+    "user_answer": "She decided to give it her all on the test.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    }
+  },
+  {
+    "timestamp": "2025-08-11T12:40:23.822984",
+    "chinese_sentence": "弟弟每天寫作業。",
+    "user_answer": "My brother do homeworks everyday.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "My brother does his homework every day.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "主詞動詞不一致",
+          "original_phrase": "do",
+          "correction": "does",
+          "explanation": "當主詞是第三人稱單數時（例如 he, she, it, my brother），現在簡單式的動詞需要加上 -s 或 -es。因此，助動詞 'do' 應該改為 'does'。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "不可數名詞的複數形式",
+          "original_phrase": "homeworks",
+          "correction": "homework",
+          "explanation": "'Homework' 在英文中是不可數名詞，沒有複數形式。即使指的作業量很多，也只能用 'homework' 或 'a lot of homework'。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "副詞 'every day' 的拼寫",
+          "original_phrase": "everyday",
+          "correction": "every day",
+          "explanation": "'everyday'（一個字）是形容詞，意思是「日常的」，例如 'everyday life'（日常生活）。當要表達「每一天」這個時間頻率時，應該使用副詞片語 'every day'（兩個字）。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T12:47:03.605360",
+    "chinese_sentence": "我的爸爸每天早上讀報紙。",
+    "user_answer": "My father reads news paper for daily basis.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "My father reads the newspaper every morning.",
+      "error_analysis": [
+        {
+          "category": "isolated",
+          "key_point_summary": "慣用語與介係詞錯誤",
+          "original_phrase": "for daily basis",
+          "correction": "every morning",
+          "explanation": "表達「每天」的常見說法是 'every day' 或 'on a daily basis'。此處使用 'for' 是不正確的，且 'basis' 前面應有冠詞 'a'。然而，更精準的翻譯應根據原句的「每天早上」，使用 'every morning'。",
+          "severity": "major"
+        },
+        {
+          "category": "other",
+          "key_point_summary": "漏譯「早上」",
+          "original_phrase": "for daily basis",
+          "correction": "every morning",
+          "explanation": "中文原句是「每天早上」，而學生的翻譯只表達了「每天」的意思，遺漏了「早上」這個重要的時間點。最直接且準確的翻譯是 'every morning'。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "拼寫錯誤",
+          "original_phrase": "news paper",
+          "correction": "newspaper",
+          "explanation": "'newspaper' 是一個複合名詞，應該寫成一個單字，而不是分開的兩個字 'news paper'。",
+          "severity": "minor"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "冠詞的使用",
+          "original_phrase": "reads news paper",
+          "correction": "reads the newspaper",
+          "explanation": "當我們談論讀報紙這個日常習慣時，通常會使用定冠詞 'the'，因為指的是一種普遍的、特定的活動或物品。'reads the newspaper' 是更自然的說法。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T12:48:31.976350",
+    "chinese_sentence": "她每天搭公車上學。",
+    "user_answer": "She goes school by bus everyday.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "She goes to school by bus every day.",
+      "error_analysis": [
+        {
+          "category": "isolated",
+          "key_point_summary": "動詞 go 後面接目的地時，需加介係詞 to",
+          "original_phrase": "goes school",
+          "correction": "goes to school",
+          "explanation": "動詞 'go' 表示「去某個地方」時，後面需要加上介係詞 'to' 來連接目的地。這是一個固定的用法，例如 'go to the park'、'go to the store'。因此，「去上學」的正確說法是 'go to school'。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "everyday (形容詞) vs. every day (副詞片語)",
+          "original_phrase": "everyday",
+          "correction": "every day",
+          "explanation": "'everyday' (一個字) 是形容詞，意思是「日常的、普通的」，用來修飾名詞，例如 'everyday clothes' (日常服裝)。'every day' (兩個字) 是副詞片語，意思是「每一天」，用來修飾動詞，說明動作發生的頻率。在此句中，是要表達「每一天」都去上學，所以應該使用副詞片語 'every day'。",
+          "severity": "minor"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-11T23:34:57.875890",
+    "chinese_sentence": "我喜歡閱讀",
+    "user_answer": "I like reading.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  }
+]

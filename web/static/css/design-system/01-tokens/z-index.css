@@ -1,0 +1,48 @@
+/**
+ * Z-Index Design Tokens
+ * 
+ * Provides standardized z-index values for consistent layering across the application.
+ * Values are organized in logical groups with clear naming conventions.
+ */
+
+:root {
+  /* Base Levels (0-10) */
+  --z-base: 0;          /* Default base level */
+  --z-raised: 1;        /* Slightly raised elements */
+  --z-elevated: 2;      /* Elevated content */
+
+  /* Content Overlays (100-999) */
+  --z-dropdown: 100;    /* Dropdown menus and tooltips */
+  --z-sticky: 100;      /* Sticky navigation elements */
+  --z-overlay: 100;     /* General content overlays */
+
+  /* Modals and Dialogs (1000-9999) */
+  --z-modal-base: 1000;     /* Base modal level */
+  --z-modal-stack-1: 1001;  /* Modal stacking level 1 */
+  --z-modal-stack-2: 1002;  /* Modal stacking level 2 */
+  --z-modal-stack-3: 1003;  /* Modal stacking level 3 */
+  --z-drawer: 1000;         /* Side drawers */
+  --z-save-indicator: 1000; /* Save status indicators */
+
+  /* High-Level Overlays (2000-9999) */
+  --z-popover: 2000;        /* High-priority popovers */
+  --z-toast: 5000;          /* Toast notifications */
+
+  /* System Level (10000+) */
+  --z-loading: 9999;        /* Loading masks and overlays */
+  --z-debug: 10000;         /* Debug tools and dev overlays */
+}
+
+/* Z-Index Utility Classes */
+.z-base { z-index: var(--z-base); }
+.z-raised { z-index: var(--z-raised); }
+.z-elevated { z-index: var(--z-elevated); }
+.z-dropdown { z-index: var(--z-dropdown); }
+.z-sticky { z-index: var(--z-sticky); }
+.z-overlay { z-index: var(--z-overlay); }
+.z-modal { z-index: var(--z-modal-base); }
+.z-drawer { z-index: var(--z-drawer); }
+.z-popover { z-index: var(--z-popover); }
+.z-toast { z-index: var(--z-toast); }
+.z-loading { z-index: var(--z-loading); }
+.z-debug { z-index: var(--z-debug); }

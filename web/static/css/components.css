@@ -27,7 +27,7 @@
 }
 
 .item .title {
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-semibold);
   margin-bottom: var(--space-2);
   color: var(--text-primary);
 }
@@ -48,7 +48,7 @@
   padding: var(--space-3);
   background: var(--surface-subtle);
   border-radius: var(--radius-md);
-  font-family: var(--font-family-mono);
+  font-family: var(--font-mono);
   font-size: var(--text-sm);
 }
 
@@ -58,7 +58,7 @@
 
 .examples .en {
   color: var(--text-accent);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-medium);
 }
 
 /* Utility Classes */
@@ -103,7 +103,7 @@
 
 .section-title {
   font-size: var(--text-2xl);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-bold);
   margin-bottom: var(--space-6);
   color: var(--text-primary);
 }
@@ -116,8 +116,8 @@
 }
 
 .empty-state svg {
-  width: 64px;
-  height: 64px;
+  width: var(--space-16);
+  height: var(--space-16);
   margin: 0 auto var(--space-4);
   opacity: 0.3;
 }
@@ -148,7 +148,7 @@
   transform: translateY(100px);
   opacity: 0;
   transition: var(--transition-all);
-  z-index: 1000;
+  z-index: var(--z-modal-base);
 }
 
 .toast.show {

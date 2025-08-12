@@ -42,20 +42,36 @@ line-ending = "auto"
 
 [tool.pytest.ini_options]
 # pytest 設定
-testpaths = ["tests", "."]
+testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
-    "-v",           # 詳細輸出
-    "--tb=short",   # 簡短的 traceback
-    "--strict-markers",  # 標記必須預先定義
+    "-v",                    # 詳細輸出
+    "--tb=short",           # 簡短的 traceback
+    "--strict-markers",     # 標記必須預先定義
+    "--cov=core",           # 覆蓋率檢查核心模組
+    "--cov=web",            # 覆蓋率檢查 web 模組  
+    "--cov-report=term-missing",  # 顯示未覆蓋的行
+    "--cov-report=html",    # 生成 HTML 覆蓋率報告
+    "--cov-fail-under=80", # 覆蓋率低於 80% 時失敗
+    "--asyncio-mode=auto", # 自動檢測異步測試
 ]
 markers = [
     "slow: 標記為慢速測試",
     "integration: 整合測試",
     "unit: 單元測試",
+    "asyncio: 異步測試",
+    "ai: 涉及 AI 服務的測試",
+    "mock: 使用 mock 的測試",
+    "repository: repository 層測試",
+    "service: 服務層測試",
 ]
+# 測試發現設定
+minversion = "7.0"
+# 異步測試超時設定
+asyncio_mode = "auto"
+timeout = 300
 
 [project]
 name = "linker-cli"
@@ -77,6 +93,11 @@ dev = [
     "ruff>=0.1.0",
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+    "factory-boy>=3.3.0",
+    "freezegun>=1.2.0",
+    "responses>=0.24.0",
 ]
 
 [build-system]

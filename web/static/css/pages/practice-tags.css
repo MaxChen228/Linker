@@ -42,7 +42,7 @@
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
-  transition: all 0.3s ease;
+  transition: all var(--duration-normal) ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -57,7 +57,7 @@
   height: 100%;
   background: linear-gradient(135deg, var(--accent-500) 0%, var(--accent-600) 100%);
   transform: scaleY(0);
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-normal) ease;
 }
 
 .tag-card:hover {
@@ -122,7 +122,7 @@
   height: 100%;
   background: linear-gradient(90deg, var(--accent-400) 0%, var(--accent-600) 100%);
   border-radius: var(--radius-full);
-  transition: width 0.3s ease;
+  transition: width var(--duration-normal) ease;
 }
 
 .stat-value {
@@ -149,7 +149,7 @@
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background var(--duration-normal) ease;
 }
 
 .tag-card-action:hover {
@@ -208,7 +208,7 @@
   font-size: var(--text-xs);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
 }
 
 .filter-btn:hover {
@@ -235,7 +235,7 @@
   cursor: pointer;
   user-select: none;
   border-radius: var(--radius);
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
 }
 
 .category-header:hover {
@@ -244,7 +244,7 @@
 
 .toggle-icon {
   margin-right: var(--space-2);
-  transition: transform 0.2s ease;
+  transition: transform var(--duration-normal) ease;
 }
 
 .category-header.collapsed .toggle-icon {
@@ -259,7 +259,7 @@
 }
 
 .category-count {
-  padding: 2px 6px;
+  padding: var(--space-0-25) var(--space-1-5);
   background: var(--gray-100);
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
@@ -287,14 +287,14 @@
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
   box-shadow: var(--shadow-xs);
 }
 
 .draggable-tag:hover {
   background: var(--accent-50);
   border-color: var(--accent-300);
-  transform: translateX(4px);
+  transform: translateX(var(--space-1));
   box-shadow: var(--shadow-sm);
 }
 
@@ -337,7 +337,7 @@
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   background: var(--gray-50);
-  transition: all 0.3s ease;
+  transition: all var(--duration-normal) ease;
   position: relative;
 }
 
@@ -375,7 +375,7 @@
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
-  animation: tagEnter 0.3s ease;
+  animation: tagEnter var(--duration-normal) ease;
 }
 
 @keyframes tagEnter {
@@ -400,7 +400,7 @@
 }
 
 .tag-complexity {
-  padding: 2px 6px;
+  padding: var(--space-0-25) var(--space-1-5);
   background: rgba(255, 255, 255, 0.2);
   border-radius: var(--radius);
   font-size: var(--text-xs);
@@ -415,7 +415,7 @@
   font-size: var(--text-lg);
   cursor: pointer;
   opacity: 0.8;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--duration-normal) ease;
 }
 
 .remove-tag:hover {
@@ -451,7 +451,7 @@
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
 }
 
 .radio-option:hover {
@@ -460,7 +460,7 @@
 
 .radio-option input[type="radio"] {
   margin-right: var(--space-2);
-  margin-top: 2px;
+  margin-top: var(--space-0-25);
 }
 
 .radio-option input[type="radio"]:checked ~ span {
@@ -592,7 +592,7 @@
 .meter-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--accent-300) 0%, var(--accent-600) 100%);
-  transition: width 0.3s ease;
+  transition: width var(--duration-normal) ease;
 }
 
 /* 開始練習按鈕 */
@@ -606,7 +606,7 @@
   font-size: var(--text-base);
   font-weight: var(--font-medium);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
 }
 
 .start-practice-btn:hover {
@@ -628,7 +628,7 @@
   border-radius: var(--radius);
   padding: var(--space-3);
   box-shadow: var(--shadow-lg);
-  z-index: 1000;
+  z-index: var(--z-dropdown);
   max-width: 300px;
 }
 
@@ -652,7 +652,7 @@
   padding: var(--space-2);
   border-radius: var(--radius);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background var(--duration-normal) ease;
 }
 
 .suggestion-item:hover {
@@ -726,5 +726,5 @@
 
 .warning-icon {
   color: var(--warning-500);
-  margin-top: 2px;
+  margin-top: var(--space-0-25);
 }

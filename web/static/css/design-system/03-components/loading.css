@@ -16,28 +16,28 @@
 
 /* Spinner Sizes */
 .spinner[data-size="xs"] {
-  --spinner-size: 16px;
+  --spinner-size: var(--space-4);
 }
 
 .spinner[data-size="sm"] {
-  --spinner-size: 24px;
+  --spinner-size: var(--space-6);
 }
 
 .spinner[data-size="md"] {
-  --spinner-size: 40px;
+  --spinner-size: var(--space-10);
 }
 
 .spinner[data-size="lg"] {
-  --spinner-size: 56px;
+  --spinner-size: 56px; /* 14*4px, 自定義設計系統值 */
 }
 
 .spinner[data-size="xl"] {
-  --spinner-size: 72px;
+  --spinner-size: 72px; /* 18*4px, 自定義設計系統值 */
 }
 
 /* Simple Spinner */
 .spinner-simple {
-  border: 3px solid var(--gray-200);
+  border: 3px solid var(--gray-200); /* 簡單 spinner 邊框 */
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: var(--animation-spin);
@@ -79,7 +79,7 @@
 
 .spinner-ring:nth-child(1) {
   border-top-color: var(--primary);
-  animation: spinnerRing1 1s linear infinite;
+  animation: spinnerRing1 var(--duration-slower) linear infinite;
 }
 
 .spinner-ring:nth-child(2) {
@@ -97,14 +97,14 @@
 /* Dots Spinner */
 .spinner-dots {
   display: inline-flex;
-  gap: 4px;
+  gap: var(--space-1);
   align-items: center;
   height: var(--spinner-size, 40px);
 }
 
 .spinner-dot {
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
   border-radius: 50%;
   background: var(--primary);
   animation: var(--animation-pulse);
@@ -115,11 +115,11 @@
 }
 
 .spinner-dot:nth-child(2) {
-  animation-delay: 150ms;
+  animation-delay: var(--duration-fast); /* 點點載入延遲 */
 }
 
 .spinner-dot:nth-child(3) {
-  animation-delay: 300ms;
+  animation-delay: var(--duration-normal); /* 點點載入延遲 */
 }
 
 /* ========== Loading Overlays ========== */
@@ -129,12 +129,12 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px); /* 載入蒙罩模糊 */
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: var(--z-loading); /* 載入蒙罩層級 */
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--duration-normal) var(--ease-out);
@@ -152,8 +152,8 @@
   border-radius: var(--radius-xl);
   padding: var(--space-10);
   text-align: center;
-  max-width: 360px;
-  width: 90%;
+  max-width: 360px; /* 載入模態最大寬度 */
+  width: 90%; /* 載入模態響應式寬度 */
   box-shadow: var(--shadow-modal);
   animation: var(--animation-scale-in);
 }
@@ -161,7 +161,7 @@
 /* Glass Effect Loading Modal */
 .loading-modal[data-glass="true"] {
   background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px); /* 玻璃效果模糊 */
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
@@ -185,7 +185,7 @@
   color: var(--text-muted);
   font-size: var(--text-sm);
   margin-bottom: var(--space-4);
-  line-height: 1.5;
+  line-height: var(--leading-normal);
 }
 
 /* Loading Tips */
@@ -206,11 +206,11 @@
   color: var(--text-muted);
   text-align: left;
   opacity: 0;
-  animation: tipFadeIn 0.5s ease forwards;
+  animation: tipFadeIn var(--duration-slow) ease forwards;
 }
 
-.loading-tip:nth-child(1) { animation-delay: 0.5s; }
-.loading-tip:nth-child(2) { animation-delay: 1s; }
+.loading-tip:nth-child(1) { animation-delay: var(--duration-slow); }
+.loading-tip:nth-child(2) { animation-delay: var(--duration-slower); }
 .loading-tip:nth-child(3) { animation-delay: 1.5s; }
 
 .loading-tip svg {
@@ -234,10 +234,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16px;
-  height: 16px;
-  margin: -8px 0 0 -8px;
-  border: 2px solid currentColor;
+  width: var(--space-4);
+  height: var(--space-4);
+  margin: calc(var(--space-2) * -1) 0 0 calc(var(--space-2) * -1);
+  border: var(--space-0-25) solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
   animation: var(--animation-spin);
@@ -255,9 +255,9 @@
   position: absolute;
   inset: 0;
   background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px); /* 表單載入模糊 */
   border-radius: var(--radius);
-  z-index: 1;
+  z-index: var(--z-raised);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -340,24 +340,24 @@
 
 .skeleton-heading {
   height: 1.5em;
-  width: 60%;
+  width: 60%; /* skeleton 標題寬度 */
   margin-bottom: var(--space-3);
 }
 
 .skeleton-button {
-  height: 40px;
-  width: 120px;
+  height: var(--space-10); /* skeleton 按鈕高度 */
+  width: 120px; /* skeleton 按鈕寬度 */
   border-radius: var(--radius-lg);
 }
 
 .skeleton-avatar {
-  width: 40px;
-  height: 40px;
+  width: var(--space-10); /* skeleton 頭像尺寸 */
+  height: var(--space-10); /* skeleton 頭像尺寸 */
   border-radius: 50%;
 }
 
 .skeleton-card {
-  height: 200px;
+  height: 200px; /* skeleton 卡片高度 */
   border-radius: var(--radius-xl);
 }
 
@@ -366,7 +366,7 @@
 /* Progress Bar */
 .progress {
   width: 100%;
-  height: 8px;
+  height: var(--space-2); /* 進度標高度 */
   background: var(--gray-200);
   border-radius: var(--radius-full);
   overflow: hidden;
@@ -381,17 +381,17 @@
 }
 
 .progress[data-indeterminate="true"] .progress-bar {
-  width: 30%;
+  width: 30%; /* 不定進度模式寬度 */
   position: absolute;
   animation: progressIndeterminate 1.5s ease-in-out infinite;
 }
 
 @keyframes progressIndeterminate {
   0% {
-    left: -30%;
+    left: -30%; /* 不定進度起始位置 */
   }
   100% {
-    left: 100%;
+    left: 100%; /* 不定進度結束位置 */
   }
 }
 
@@ -411,13 +411,13 @@
 .progress-circle-bg {
   stroke: var(--gray-200);
   fill: none;
-  stroke-width: 4;
+  stroke-width: 4; /* 圓形進度標寬度 */
 }
 
 .progress-circle-bar {
   stroke: var(--primary);
   fill: none;
-  stroke-width: 4;
+  stroke-width: 4; /* 圓形進度標寬度 */
   stroke-linecap: round;
   stroke-dasharray: var(--progress, 0) 100;
   transition: stroke-dasharray var(--duration-normal) var(--ease-out);
@@ -427,7 +427,7 @@
 
 /* Page Loading State */
 .page-loading {
-  min-height: 400px;
+  min-height: 400px; /* 頁面載入最小高度 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -438,7 +438,7 @@
 /* Content Loading State */
 .content-loading {
   position: relative;
-  min-height: 100px;
+  min-height: 100px; /* 內容載入最小高度 */
 }
 
 .content-loading::after {
@@ -447,9 +447,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--gray-200);
+  width: var(--space-8); /* 內容載入 spinner 尺寸 */
+  height: var(--space-8); /* 內容載入 spinner 尺寸 */
+  border: 3px solid var(--gray-200); /* 簡單 spinner 邊框 */
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: var(--animation-spin);
@@ -461,11 +461,11 @@
 .is-loading {
   pointer-events: none;
   opacity: 0.6;
-  filter: blur(1px);
+  filter: blur(1px); /* 載入模糊效果 */
 }
 
 .loading-blur {
-  filter: blur(2px);
+  filter: blur(2px); /* 載入模糊效果 */
   transition: filter var(--duration-normal) var(--ease-out);
 }
 
@@ -502,8 +502,8 @@
 /* Screen Reader Text for Loading States */
 .sr-loading-text {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: 1px; /* 螢幕閱讀器文本寬度 */
+  height: 1px; /* 螢幕閱讀器文本高度 */
   padding: 0;
   margin: -1px;
   overflow: hidden;

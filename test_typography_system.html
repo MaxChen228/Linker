@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字系統測試 | Typography System Test</title>
+    <link rel="stylesheet" href="web/static/css/design-system/index.css">
+    <style>
+        body {
+            font-family: var(--font-sans);
+            line-height: var(--leading-normal);
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            margin: 0;
+            padding: var(--space-6);
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .test-section {
+            margin-bottom: var(--space-12);
+            padding: var(--space-6);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+        }
+
+        .test-item {
+            padding: var(--space-4);
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+        }
+
+        .test-item code {
+            font-family: var(--font-mono);
+            font-size: var(--text-xs);
+            color: var(--text-accent);
+            background: var(--bg-tertiary);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            display: block;
+            margin-top: var(--space-2);
+        }
+
+        .weight-demo {
+            margin: var(--space-2) 0;
+        }
+
+        .line-height-demo {
+            border: 1px dashed var(--border-light);
+            padding: var(--space-3);
+            margin: var(--space-2) 0;
+        }
+
+        .spacing-demo {
+            background: var(--bg-tertiary);
+            padding: var(--space-3);
+            margin: var(--space-2) 0;
+            border-radius: var(--radius-sm);
+        }
+
+        .combo-demo {
+            padding: var(--space-4);
+            margin: var(--space-2) 0;
+            border-left: 4px solid var(--accent-primary);
+            background: var(--bg-accent-subtle);
+        }
+
+        .responsive-demo {
+            padding: var(--space-4);
+            margin: var(--space-2) 0;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            border-radius: var(--radius-lg);
+        }
+
+        /* 示例響應式文字變數 */
+        :root {
+            --text-responsive-6xl: clamp(2.25rem, 3.75rem + 4vw, 4.5rem);
+            --text-responsive-5xl: clamp(2rem, 3rem + 3vw, 3.75rem);
+            --text-responsive-4xl: clamp(1.75rem, 2.25rem + 2vw, 3rem);
+            --text-responsive-3xl: clamp(1.5rem, 1.875rem + 1.5vw, 2.25rem);
+            --text-responsive-2xl: clamp(1.25rem, 1.5rem + 1vw, 1.875rem);
+            --text-responsive-xl: clamp(1.125rem, 1.25rem + 0.5vw, 1.5rem);
+            --text-responsive-lg: clamp(1rem, 1.125rem + 0.25vw, 1.25rem);
+            --text-responsive-base: clamp(0.875rem, 1rem, 1.125rem);
+            --text-responsive-sm: clamp(0.75rem, 0.875rem, 1rem);
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--space-4);
+            font-size: var(--text-sm);
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: var(--space-3);
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .stats-table th {
+            background: var(--bg-tertiary);
+            font-weight: var(--font-semibold);
+        }
+
+        .highlight {
+            background: var(--bg-warning-subtle);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <header class="test-section">
+            <h1 style="font-size: var(--text-5xl); font-weight: var(--font-bold); line-height: var(--leading-tight); margin: 0;">
+                文字系統測試頁面
+            </h1>
+            <p style="font-size: var(--text-lg); color: var(--text-secondary); margin-top: var(--space-2);">
+                Typography System Test Page - 驗證所有文字設計令牌的視覺效果
+            </p>
+        </header>
+
+        <!-- 字體大小測試 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                字體大小 (Font Sizes)
+            </h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div style="font-size: var(--text-6xl);">巨大標題 6XL</div>
+                    <code>--text-6xl: 3.75rem (60px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-5xl);">超大標題 5XL</div>
+                    <code>--text-5xl: 3rem (48px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-4xl);">特大標題 4XL</div>
+                    <code>--text-4xl: 2.25rem (36px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-3xl);">大標題 3XL</div>
+                    <code>--text-3xl: 1.875rem (30px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-2xl);">標題 2XL</div>
+                    <code>--text-2xl: 1.5rem (24px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-xl);">小標題 XL</div>
+                    <code>--text-xl: 1.25rem (20px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-lg);">大文字 LG</div>
+                    <code>--text-lg: 1.125rem (18px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-base);">基準文字 BASE</div>
+                    <code>--text-base: 1rem (16px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-sm);">小文字 SM</div>
+                    <code>--text-sm: 0.875rem (14px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-xs);">極小文字 XS</div>
+                    <code>--text-xs: 0.75rem (12px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-xxs);">特殊小字 XXS</div>
+                    <code>--text-xxs: 0.6875rem (11px)</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-size: var(--text-2xs);">微小文字 2XS</div>
+                    <code>--text-2xs: 0.625rem (10px)</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- 字重測試 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                字重 (Font Weights)
+            </h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-thin); font-size: var(--text-xl);">
+                        極細字重 Thin (100)
+                    </div>
+                    <code>--font-thin: 100</code>
+                </div>
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-extralight); font-size: var(--text-xl);">
+                        超細字重 Extra Light (200)
+                    </div>
+                    <code>--font-extralight: 200</code>
+                </div>
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-light); font-size: var(--text-xl);">
+                        細字重 Light (300)
+                    </div>
+                    <code>--font-light: 300</code>
+                </div>
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-normal); font-size: var(--text-xl);">
+                        標準字重 Normal (400)
+                    </div>
+                    <code>--font-normal: 400</code>
+                </div>
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-medium); font-size: var(--text-xl);">
+                        中等字重 Medium (500)
+                    </div>
+                    <code>--font-medium: 500</code>
+                </div>
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-semibold); font-size: var(--text-xl);">
+                        半粗字重 Semi Bold (600)
+                    </div>
+                    <code>--font-semibold: 600</code>
+                </div>
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-bold); font-size: var(--text-xl);">
+                        粗字重 Bold (700)
+                    </div>
+                    <code>--font-bold: 700</code>
+                </div>
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-extrabold); font-size: var(--text-xl);">
+                        超粗字重 Extra Bold (800)
+                    </div>
+                    <code>--font-extrabold: 800</code>
+                </div>
+                <div class="test-item">
+                    <div class="weight-demo" style="font-weight: var(--font-black); font-size: var(--text-xl);">
+                        極粗字重 Black (900)
+                    </div>
+                    <code>--font-black: 900</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- 行高測試 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                行高 (Line Heights)
+            </h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="line-height-demo" style="line-height: var(--leading-tight); font-size: var(--text-base);">
+                        緊密行高 (1.25)<br>
+                        這是第二行文字用來展示行高效果<br>
+                        第三行幫助更好地觀察行間距
+                    </div>
+                    <code>--leading-tight: 1.25</code>
+                </div>
+                <div class="test-item">
+                    <div class="line-height-demo" style="line-height: var(--leading-normal); font-size: var(--text-base);">
+                        標準行高 (1.5)<br>
+                        這是第二行文字用來展示行高效果<br>
+                        第三行幫助更好地觀察行間距
+                    </div>
+                    <code>--leading-normal: 1.5</code>
+                </div>
+                <div class="test-item">
+                    <div class="line-height-demo" style="line-height: var(--leading-relaxed); font-size: var(--text-base);">
+                        寬鬆行高 (1.625)<br>
+                        這是第二行文字用來展示行高效果<br>
+                        第三行幫助更好地觀察行間距
+                    </div>
+                    <code>--leading-relaxed: 1.625</code>
+                </div>
+                <div class="test-item">
+                    <div class="line-height-demo" style="line-height: var(--leading-loose); font-size: var(--text-base);">
+                        超寬鬆行高 (2.0)<br>
+                        這是第二行文字用來展示行高效果<br>
+                        第三行幫助更好地觀察行間距
+                    </div>
+                    <code>--leading-loose: 2.0</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- 字距測試 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                字距 (Letter Spacing)
+            </h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="spacing-demo" style="letter-spacing: var(--tracking-tight); font-size: var(--text-lg);">
+                        緊密字距 TIGHT SPACING
+                    </div>
+                    <code>--tracking-tight: -0.02em</code>
+                </div>
+                <div class="test-item">
+                    <div class="spacing-demo" style="letter-spacing: var(--tracking-normal); font-size: var(--text-lg);">
+                        標準字距 NORMAL SPACING
+                    </div>
+                    <code>--tracking-normal: 0</code>
+                </div>
+                <div class="test-item">
+                    <div class="spacing-demo" style="letter-spacing: var(--tracking-wide); font-size: var(--text-lg);">
+                        寬鬆字距 WIDE SPACING
+                    </div>
+                    <code>--tracking-wide: 0.025em</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- 字體系列測試 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                字體系列 (Font Families)
+            </h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div style="font-family: var(--font-sans); font-size: var(--text-lg);">
+                        無襯線字體 Sans Serif<br>
+                        中英混排測試 Mixed Text 123
+                    </div>
+                    <code>--font-sans: -apple-system, BlinkMacSystemFont...</code>
+                </div>
+                <div class="test-item">
+                    <div style="font-family: var(--font-mono); font-size: var(--text-lg);">
+                        等寬字體 Monospace<br>
+                        code { display: block; }<br>
+                        中英混排測試 Mixed Text 123
+                    </div>
+                    <code>--font-mono: 'SF Mono', 'Monaco'...</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- 組合示例 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                實際應用組合 (Real World Combinations)
+            </h2>
+            
+            <div class="combo-demo">
+                <h3 style="font-size: var(--text-xl); font-weight: var(--font-bold); line-height: var(--leading-tight); margin: 0 0 var(--space-2) 0;">
+                    文章標題樣式
+                </h3>
+                <p style="font-size: var(--text-base); font-weight: var(--font-normal); line-height: var(--leading-relaxed); margin: 0; color: var(--text-secondary);">
+                    這是正文段落的樣式，使用標準文字大小和寬鬆行高，確保良好的閱讀體驗。支援中英文混排，The quick brown fox jumps over the lazy dog. 
+                    中文段落測試，字間距和行高都經過優化。
+                </p>
+                <div style="margin-top: var(--space-3); font-size: var(--text-sm); color: var(--text-muted);">
+                    <span style="font-weight: var(--font-medium);">發布時間：</span>
+                    <span>2024年1月15日</span>
+                    <span style="margin-left: var(--space-4); font-weight: var(--font-medium);">標籤：</span>
+                    <span style="background: var(--bg-accent-subtle); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); font-size: var(--text-xs);">設計系統</span>
+                </div>
+            </div>
+
+            <div class="combo-demo">
+                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3);">
+                    <button style="font-size: var(--text-sm); font-weight: var(--font-medium); letter-spacing: var(--tracking-wide); padding: var(--space-2) var(--space-4); background: var(--accent-primary); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
+                        主要按鈕
+                    </button>
+                    <button style="font-size: var(--text-sm); font-weight: var(--font-medium); padding: var(--space-2) var(--space-4); background: transparent; color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                        次要按鈕
+                    </button>
+                </div>
+                <div style="margin-bottom: var(--space-3);">
+                    <label style="display: block; font-size: var(--text-sm); font-weight: var(--font-medium); margin-bottom: var(--space-1);">
+                        表單標籤
+                    </label>
+                    <input type="text" placeholder="輸入文字..." style="font-size: var(--text-base); padding: var(--space-3); border: 1px solid var(--border-color); border-radius: var(--radius-md); width: 200px;">
+                    <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-1);">
+                        這是幫助文字，使用較小的字體大小
+                    </div>
+                </div>
+                <code style="font-family: var(--font-mono); font-size: var(--text-sm); background: var(--bg-tertiary); padding: var(--space-3); border-radius: var(--radius-md); display: block;">
+                    console.log('程式碼樣式展示');
+                    const fontSize = 'var(--text-sm)';
+                </code>
+            </div>
+        </section>
+
+        <!-- 響應式示例 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                響應式文字示例 (Responsive Typography)
+            </h2>
+            <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4);">
+                <span class="highlight">調整視窗大小</span>觀察以下文字如何自動適應不同螢幕尺寸
+            </p>
+            
+            <div class="responsive-demo">
+                <h3 style="font-size: var(--text-responsive-4xl); font-weight: var(--font-bold); line-height: var(--leading-tight); margin: 0 0 var(--space-3) 0;">
+                    響應式大標題
+                </h3>
+                <p style="font-size: var(--text-responsive-lg); line-height: var(--leading-relaxed); margin: 0;">
+                    這個段落使用響應式文字大小，會根據視窗寬度自動調整。在大螢幕上較大，在小螢幕上較小，提供最佳的閱讀體驗。
+                </p>
+            </div>
+        </section>
+
+        <!-- 系統統計 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                系統統計 (System Statistics)
+            </h2>
+            
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>類別</th>
+                        <th>變數數量</th>
+                        <th>涵蓋範圍</th>
+                        <th>狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>字體大小</td>
+                        <td>12 個</td>
+                        <td>10px - 60px</td>
+                        <td><span class="highlight">完整</span></td>
+                    </tr>
+                    <tr>
+                        <td>字重</td>
+                        <td>9 個</td>
+                        <td>100 - 900</td>
+                        <td><span class="highlight">完整</span></td>
+                    </tr>
+                    <tr>
+                        <td>行高</td>
+                        <td>4 個</td>
+                        <td>1.25 - 2.0</td>
+                        <td><span class="highlight">基礎</span></td>
+                    </tr>
+                    <tr>
+                        <td>字距</td>
+                        <td>3 個</td>
+                        <td>-0.02em - 0.025em</td>
+                        <td><span class="highlight">基礎</span></td>
+                    </tr>
+                    <tr>
+                        <td>字體系列</td>
+                        <td>2 個</td>
+                        <td>Sans, Mono</td>
+                        <td><span class="highlight">基礎</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top: var(--space-4); padding: var(--space-4); background: var(--bg-info-subtle); border-radius: var(--radius-md); border-left: 4px solid var(--accent-info);">
+                <h4 style="font-size: var(--text-lg); font-weight: var(--font-semibold); margin: 0 0 var(--space-2) 0;">
+                    改進建議
+                </h4>
+                <ul style="font-size: var(--text-sm); line-height: var(--leading-relaxed); margin: 0; padding-left: var(--space-4);">
+                    <li>新增語義化變數 (--text-heading-1, --text-body 等)</li>
+                    <li>實現響應式文字變數</li>
+                    <li>新增中文字體優化</li>
+                    <li>擴展行高系統 (新增 tight-none, loose-xl 等)</li>
+                    <li>新增更多字距選項</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 中英混排測試 -->
+        <section class="test-section">
+            <h2 style="font-size: var(--text-2xl); font-weight: var(--font-semibold); margin-bottom: var(--space-4);">
+                中英混排測試 (Mixed Language Test)
+            </h2>
+            
+            <div style="font-size: var(--text-lg); line-height: var(--leading-relaxed); margin-bottom: var(--space-4);">
+                <p style="margin-bottom: var(--space-3);">
+                    Linker 是一個英文翻譯練習系統，使用 Gemini API 進行智能出題和批改。
+                    The system uses FastAPI + Jinja2 templates for SSR architecture.
+                </p>
+                <p style="margin-bottom: var(--space-3);">
+                    系統採用雙模型架構：Gemini 2.5 Flash 負責快速出題，Gemini 2.5 Pro 負責精準批改。
+                    This dual-model approach ensures both speed and accuracy in the learning process.
+                </p>
+                <p style="margin: 0;">
+                    文字系統支援 responsive design，在不同設備上都能提供最佳的 user experience。
+                    Typography variables ensure consistency across all components and pages.
+                </p>
+            </div>
+
+            <div style="font-size: var(--text-sm); color: var(--text-secondary); font-style: italic;">
+                中英混排測試能夠驗證字體、行高、字距等設定在多語言環境下的表現效果。
+                Mixed language testing validates typography settings across multilingual content.
+            </div>
+        </section>
+
+        <footer class="test-section" style="text-align: center;">
+            <p style="font-size: var(--text-sm); color: var(--text-muted); margin: 0;">
+                文字系統測試頁面 | Typography System Test Page<br>
+                <span style="font-size: var(--text-xs);">
+                    生成時間：2024年1月12日 | Generated on January 12, 2024
+                </span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 添加動態測試功能
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Typography System Test Page Loaded');
+            
+            // 檢測當前視窗大小並顯示
+            function updateViewportInfo() {
+                const viewport = document.createElement('div');
+                viewport.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--bg-primary);
+                    border: 1px solid var(--border-color);
+                    border-radius: var(--radius-md);
+                    padding: var(--space-3);
+                    font-size: var(--text-xs);
+                    font-family: var(--font-mono);
+                    color: var(--text-secondary);
+                    z-index: 1000;
+                    box-shadow: var(--shadow-md);
+                `;
+                viewport.innerHTML = `
+                    視窗大小: ${window.innerWidth}px × ${window.innerHeight}px<br>
+                    設備比例: ${window.devicePixelRatio}
+                `;
+                
+                // 移除舊的信息
+                const old = document.querySelector('#viewport-info');
+                if (old) old.remove();
+                
+                viewport.id = 'viewport-info';
+                document.body.appendChild(viewport);
+            }
+            
+            updateViewportInfo();
+            window.addEventListener('resize', updateViewportInfo);
+        });
+    </script>
+</body>
+</html>

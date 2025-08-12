@@ -1,0 +1,4 @@
+/* Test file for stylelint pre-commit hook */
+.test {
+  color: #f00;
+}

@@ -25,7 +25,9 @@ class ErrorCategory(Enum):
             "enhancement": cls.ENHANCEMENT,
             "other": cls.OTHER,
         }
-        return mapping.get(value, cls.OTHER)
+        if value not in mapping:
+            raise ValueError(f"Invalid category: {value}")
+        return mapping[value]
 
     def to_chinese(self) -> str:
         """轉換為中文名稱"""

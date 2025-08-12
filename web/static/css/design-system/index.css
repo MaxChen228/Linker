@@ -1,31 +1,38 @@
 /* ================================================
-   設計系統 - 主入口
+   設計系統 - 主入口 (優化載入順序)
    ================================================ */
 
-/* 1. 設計令牌 (Design Tokens) */
-@import url('./01-tokens/colors-v2.css');
-@import url('./01-tokens/compatibility.css');  /* Fix: Import compatibility layer */
-@import url('./01-tokens/spacing.css');
-@import url('./01-tokens/typography.css');
-@import url('./01-tokens/effects.css');
-@import url('./01-tokens/animations.css');
-@import url('./01-tokens/shadows-v2.css');
-@import url('./01-tokens/glass.css');
-@import url('./01-tokens/performance.css');
-@import url('./01-tokens/will-change.css');
-
-/* 2. 基礎樣式 (Base Styles) */
+/* 1. 重置樣式 (Reset/Normalize) - 必須最先載入 */
 @import url('./02-base/reset.css');
 
-/* 3. 組件 (Components) */
+/* 2. 核心設計令牌 (Core Design Tokens) */
+@import url('./01-tokens/colors.css');
+@import url('./01-tokens/spacing.css');
+@import url('./01-tokens/typography.css');
+@import url('./01-tokens/border-radius.css');
+
+/* 3. 衍生設計令牌 (Derived Design Tokens) */
+@import url('./01-tokens/shadows.css');
+@import url('./01-tokens/effects.css');
+@import url('./01-tokens/glass.css');
+@import url('./01-tokens/animations.css');
+
+/* 4. 技術/效能令牌 (Technical/Performance Tokens) */
+@import url('./01-tokens/z-index.css');
+@import url('./01-tokens/will-change.css');
+@import url('./01-tokens/performance.css');
+
+/* 5. 組件樣式 (Components) - 按依賴關係排序 */
 @import url('./03-components/buttons.css');
-@import url('./03-components/cards.css');
 @import url('./03-components/badges.css');
 @import url('./03-components/forms.css');
+@import url('./03-components/cards.css');
 @import url('./03-components/loading.css');
 @import url('./03-components/modals.css');
-@import url('./03-components/utilities.css');
 
-/* 4. 佈局 (Layouts) */
-@import url('./04-layouts/layout.css');
+/* 6. 佈局系統 (Layout System) */
 @import url('./04-layouts/grid.css');
+@import url('./04-layouts/layout.css');
+
+/* 7. 工具類別 (Utilities) - 最高優先級，最後載入 */
+@import url('./03-components/utilities.css');

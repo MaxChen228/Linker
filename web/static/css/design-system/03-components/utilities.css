@@ -55,7 +55,7 @@ footer small {
   color: var(--text-muted);
   opacity: 0;
   transition: var(--transition-all);
-  z-index: 1000;
+  z-index: var(--z-save-indicator); /* 儲存指示器層級 */
   pointer-events: none;
   box-shadow: var(--shadow-md);
 }
@@ -114,11 +114,11 @@ footer small {
   .btn,
   .badge,
   .form-control {
-    border-width: 2px;
+    border-width: var(--space-0-25);
   }
   
   .focus-ring {
-    outline-width: 3px;
+    outline-width: 3px; /* 高對比模式焦點框寬度 */
   }
 }
 

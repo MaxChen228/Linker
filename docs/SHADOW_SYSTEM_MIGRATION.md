@@ -118,7 +118,7 @@ rgba(0, 0, 0, 0.1) → var(--shadow-md)
 # 實施步驟
 
 ## 步驟 1: 準備階段
-1. ✅ 建立新陰影系統 (shadows-v2.css)
+1. ✅ 建立新陰影系統 (shadows.css)
 2. ✅ 建立遷移映射 (shadows-migration.css)
 3. ✅ 建立替換對照表
 
@@ -130,7 +130,7 @@ rgba(0, 0, 0, 0.1) → var(--shadow-md)
 ## 步驟 3: 清理階段
 1. 刪除舊系統重複定義
 2. 移除遷移映射檔案
-3. 重命名 shadows-v2.css 為 shadows.css
+3. ✅ 重命名 shadows-v2.css 為 shadows.css
 
 ## 步驟 4: 驗證階段
 1. 全面測試所有組件

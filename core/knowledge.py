@@ -275,6 +275,50 @@ class KnowledgeManager:
         self.knowledge_points: list[KnowledgePoint] = self._load_knowledge()
         self.practice_history = self._load_practice_log()
         self.type_system = ErrorTypeSystem()
+        
+        # 初始化後驗證並清理數據
+        self._validate_and_clean_data()
+
+    def _validate_and_clean_data(self):
+        """驗證並清理數據，確保向後兼容性"""
+        # 驗證 practice_history 中的數據
+        original_count = len(self.practice_history)
+        self.practice_history = [
+            item for item in self.practice_history 
+            if isinstance(item, dict)
+        ]
+        
+        if len(self.practice_history) != original_count:
+            cleaned_count = original_count - len(self.practice_history)
+            self.logger.info(f"清理了 {cleaned_count} 個無效的練習記錄")
+            # 保存清理後的數據
+            self._save_practice_log()
+        
+        # 驗證每個練習記錄的必需字段
+        for i, practice in enumerate(self.practice_history):
+            if not isinstance(practice, dict):
+                continue
+                
+            # 確保必需字段存在，如果不存在則設置默認值
+            required_fields = {
+                "timestamp": datetime.now().isoformat(),
+                "chinese_sentence": "",
+                "user_answer": "",
+                "is_correct": False,
+                "feedback": {},
+                "practice_mode": "new"
+            }
+            
+            updated = False
+            for field, default_value in required_fields.items():
+                if field not in practice:
+                    practice[field] = default_value
+                    updated = True
+            
+            if updated:
+                self.logger.debug(f"為練習記錄 {i} 添加了缺失的字段")
+        
+        self.logger.info(f"數據驗證完成，共有 {len(self.practice_history)} 個有效練習記錄")
 
     @handle_file_operation("read")
     def _load_knowledge(self) -> list[KnowledgePoint]:
@@ -327,14 +371,62 @@ class KnowledgeManager:
     def _load_practice_log(self) -> list[dict]:
         """載入練習記錄"""
         if self.practice_log.exists():
-            with open(self.practice_log, encoding="utf-8") as f:
-                return json.load(f)
+            try:
+                with open(self.practice_log, encoding="utf-8") as f:
+                    data = json.load(f)
+                    
+                    # 支援新版本格式（含 version 和 data 欄位）
+                    if isinstance(data, dict) and 'data' in data:
+                        practice_data = data['data']
+                        self.logger.info(f"載入新版本格式的練習記錄（version: {data.get('version', 'unknown')}）")
+                    elif isinstance(data, list):
+                        practice_data = data
+                        self.logger.info("載入舊版本格式的練習記錄")
+                    else:
+                        self.logger.warning(f"練習記錄格式不正確，期望 list 或含 'data' 的 dict，得到 {type(data)}")
+                        return []
+                    
+                    # 確保返回的是字典列表，過濾掉無效數據
+                    validated_data = []
+                    for item in practice_data:
+                        if isinstance(item, dict):
+                            validated_data.append(item)
+                        else:
+                            self.logger.warning(f"跳過無效的練習記錄數據: {type(item)} - {item}")
+                    
+                    return validated_data
+            except (json.JSONDecodeError, FileNotFoundError) as e:
+                self.logger.error(f"載入練習記錄失敗: {e}")
+                return []
         return []
 
     def _save_practice_log(self):
         """儲存練習記錄"""
-        with open(self.practice_log, "w", encoding="utf-8") as f:
-            json.dump(self.practice_history, f, ensure_ascii=False, indent=2)
+        try:
+            # 在保存前再次驗證數據
+            valid_practices = [
+                practice for practice in self.practice_history 
+                if isinstance(practice, dict)
+            ]
+            
+            if len(valid_practices) != len(self.practice_history):
+                self.logger.warning(f"保存時發現無效數據，已自動過濾")
+                self.practice_history = valid_practices
+            
+            # 使用新版本格式保存
+            from datetime import datetime
+            save_data = {
+                "version": "2.0",
+                "last_updated": datetime.now().isoformat(),
+                "data": self.practice_history
+            }
+            
+            with open(self.practice_log, "w", encoding="utf-8") as f:
+                json.dump(save_data, f, ensure_ascii=False, indent=2)
+                
+        except Exception as e:
+            self.logger.error(f"儲存練習記錄失敗: {e}", exc_info=True)
+            raise
 
     def save_mistake(self, chinese_sentence: str, user_answer: str, feedback: dict[str, Any], practice_mode: str = "new"):
         """儲存錯誤記錄（使用新的分類系統）
@@ -342,6 +434,21 @@ class KnowledgeManager:
         Args:
             practice_mode: 'new' 表示新題模式，'review' 表示複習模式
         """
+        # 輸入驗證
+        if not isinstance(feedback, dict):
+            self.logger.error(f"feedback 必須是字典類型，但收到 {type(feedback)}")
+            feedback = {}
+        
+        if not isinstance(chinese_sentence, str):
+            chinese_sentence = str(chinese_sentence) if chinese_sentence else ""
+            
+        if not isinstance(user_answer, str):
+            user_answer = str(user_answer) if user_answer else ""
+            
+        if practice_mode not in ["new", "review"]:
+            self.logger.warning(f"未知的練習模式: {practice_mode}，使用默認值 'new'")
+            practice_mode = "new"
+        
         # 記錄練習歷史
         practice = {
             "timestamp": datetime.now().isoformat(),
@@ -351,6 +458,12 @@ class KnowledgeManager:
             "feedback": feedback,
             "practice_mode": practice_mode,
         }
+        
+        # 確保 practice_history 是列表
+        if not isinstance(self.practice_history, list):
+            self.logger.warning("practice_history 不是列表，重新初始化")
+            self.practice_history = []
+            
         self.practice_history.append(practice)
         self._save_practice_log()
 
@@ -503,6 +616,11 @@ class KnowledgeManager:
         # 返回練習歷史中的錯誤記錄，並為每個記錄添加知識點信息
         mistakes = []
         for practice in self.practice_history:
+            # 確保 practice 是字典類型
+            if not isinstance(practice, dict):
+                self.logger.warning(f"跳過無效的練習記錄: {type(practice)} - {practice}")
+                continue
+                
             if not practice.get("is_correct", True):
                 # 為每個錯誤記錄添加關聯的知識點
                 mistake = practice.copy()
@@ -583,8 +701,19 @@ class KnowledgeManager:
 
     def get_statistics(self) -> dict[str, Any]:
         """獲取統計資料"""
-        total_practices = len(self.practice_history)
-        correct_count = sum(1 for p in self.practice_history if p.get("is_correct", False))
+        # 確保 practice_history 中的每個元素都是字典
+        valid_practices = [p for p in self.practice_history if isinstance(p, dict)]
+        
+        # 如果發現無效數據，記錄警告並清理
+        if len(valid_practices) != len(self.practice_history):
+            invalid_count = len(self.practice_history) - len(valid_practices)
+            self.logger.warning(f"發現 {invalid_count} 個無效的練習記錄，已自動跳過")
+            # 可選：自動清理無效數據
+            self.practice_history = valid_practices
+            self._save_practice_log()
+        
+        total_practices = len(valid_practices)
+        correct_count = sum(1 for p in valid_practices if p.get("is_correct", False))
 
         # 分類統計
         category_stats = {

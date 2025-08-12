@@ -20,7 +20,7 @@
   box-shadow: var(--shadow-sm);
   
   /* 動畫 */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================ */
@@ -33,7 +33,7 @@
 }
 
 .card[data-interactive="true"]:hover {
-  transform: translateY(-3px);
+  transform: translateY(-3px); /* 互動卡片惸停位移 */
   box-shadow: var(--shadow-md);
   border-color: rgba(var(--accent-rgb), 0.15);
 }
@@ -53,10 +53,10 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 3px; /* 裝飾線高度 */
   background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--duration-normal) ease;
 }
 
 .card[data-decorated="true"]:hover::before {
@@ -87,7 +87,7 @@
 
 .card[data-type="pattern"]:hover {
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* 卡片惸停位移 */
 }
 
 /* 實例卡片 */
@@ -100,7 +100,7 @@
 /* 系統性錯誤群組卡片 */
 .card[data-type="group"] {
   background: white;
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -109,7 +109,7 @@
 
 .card[data-type="group"]:hover {
   box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* 卡片惸停位移 */
 }
 
 /* ============================================ */
@@ -165,7 +165,7 @@
   font-weight: var(--font-semibold);
   color: var(--text);
   margin: 0;
-  line-height: 1.4;
+  line-height: var(--leading-snug);
   flex: 1;
 }
 
@@ -187,7 +187,7 @@
 .card-body {
   flex: 1;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
 }
 
 .card-body p {
@@ -201,7 +201,7 @@
 /* 卡片統計區 */
 .card-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* 統計格子最小寬度 */
   gap: var(--space-3);
   padding: var(--space-4);
   background: var(--bg);
@@ -220,7 +220,7 @@
   font-size: var(--text-xs);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-wider);
 }
 
 .stat-value {
@@ -245,12 +245,12 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-2);
-  line-height: 1.5;
+  line-height: var(--leading-normal);
 }
 
 .compare-label {
   font-weight: var(--font-medium);
-  min-width: 60px;
+  min-width: 60px; /* 比對標籤最小寬度 */
   flex-shrink: 0;
 }
 
@@ -282,7 +282,7 @@
   cursor: pointer;
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
   position: relative;
-  transition: background 0.2s ease;
+  transition: background var(--duration-normal) ease;
 }
 
 .group-header:hover {
@@ -294,7 +294,7 @@
   border-top: 1px solid var(--border);
   padding: 0;
   display: none;
-  transition: all 0.3s ease-out;
+  transition: all var(--duration-normal) ease-out;
 }
 
 .group-content.expanded {
@@ -305,8 +305,8 @@
 /* 進度環 */
 .progress-ring {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 60px; /* 進度環尺寸 */
+  height: 60px; /* 進度環尺寸 */
   flex-shrink: 0;
 }
 
@@ -315,7 +315,7 @@
 }
 
 .progress-ring circle {
-  transition: stroke-dasharray 0.3s ease;
+  transition: stroke-dasharray var(--duration-normal) ease;
 }
 
 .progress-text {
@@ -331,8 +331,8 @@
 /* 掌握度指示器 */
 .mastery-indicator {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 48px; /* 掌握度指示器尺寸 */
+  height: 48px; /* 掌握度指示器尺寸 */
   flex-shrink: 0;
 }
 

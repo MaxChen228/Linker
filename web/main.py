@@ -71,7 +71,36 @@ check_and_migrate_versions()
 assets = KnowledgeAssets()
 knowledge = KnowledgeManager(data_dir=str(DATA_DIR))
 ai = AIService()
+
+# 初始化服務層
+from services import PracticeService
+from core.repositories import KnowledgeRepository, PracticeRepository
+
+# 初始化資料存取層
+knowledge_repo = KnowledgeRepository(str(DATA_DIR / "knowledge.json"))
+practice_repo = PracticeRepository(str(DATA_DIR / "practice_log.json"))
+
+# 初始化練習服務
+practice_service = PracticeService(
+    ai_service=ai,
+    knowledge_manager=knowledge,
+    knowledge_repository=knowledge_repo,
+    practice_repository=practice_repo
+)
+
 # logger 已經在上面初始化了
+
+# 輔助函數
+def _format_target_points_description(target_points):
+    """格式化目標知識點描述"""
+    if not target_points:
+        return ""
+    
+    descriptions = []
+    for point in target_points:
+        descriptions.append(f"{point.get('key_point', '')}")
+    
+    return "、".join(descriptions)
 
 
 @app.middleware("http")
@@ -376,54 +405,34 @@ def practice_post(
     mode: str = Form("new"),
     target_point_ids: str = Form(""),  # JSON string of point IDs
 ):
-    # 使用 AI 進行批改
-    result = ai.grade_translation(chinese=chinese, english=english)
-
-    # 如果是複習模式，更新相關知識點的掌握度
-    if mode == "review" and target_point_ids:
+    # 解析目標知識點 IDs
+    parsed_point_ids = []
+    if target_point_ids:
         try:
             import json
-            point_ids = json.loads(target_point_ids)
-            is_correct = result.get("is_generally_correct", False)
-
-            # 更新每個相關知識點的掌握狀態
-            for point_id in point_ids:
-                knowledge.update_knowledge_point(point_id, is_correct)
-
-            # 記錄複習結果到日誌
-            logger.info(
-                "review_practice",
-                mode="review",
-                target_points=point_ids,
-                is_correct=is_correct,
-                chinese=chinese[:50],
-                english=english[:50]
-            )
+            parsed_point_ids = json.loads(target_point_ids)
         except (json.JSONDecodeError, TypeError) as e:
             logger.error(f"Failed to parse target_point_ids: {e}")
 
-    # 保存結果到知識庫（區分新題和複習模式）
-    if not result.get("is_generally_correct", False):
-        # 錯誤情況：新題會創建新知識點，複習會更新現有知識點
-        knowledge.save_mistake(
-            chinese_sentence=chinese, 
-            user_answer=english, 
-            feedback=result, 
-            practice_mode=mode
-        )
-    elif mode == "review" and target_point_ids:
-        # 複習模式答對：為相關知識點添加成功記錄
-        try:
-            import json
-            point_ids = json.loads(target_point_ids)
-            for point_id in point_ids:
-                knowledge.add_review_success(
-                    knowledge_point_id=point_id,
-                    chinese_sentence=chinese,
-                    user_answer=english
-                )
-        except (json.JSONDecodeError, TypeError) as e:
-            logger.error(f"Failed to process review success: {e}")
+    # 使用服務層處理翻譯提交
+    service_result = practice_service.submit_translation(
+        chinese=chinese,
+        english=english,
+        mode=mode,
+        level=level,
+        length=length,
+        target_point_ids=parsed_point_ids,
+        request_id=getattr(request.state, 'request_id', None)
+    )
+    
+    # 如果服務層處理失敗，回退到原始邏輯或返回錯誤
+    if not service_result.success:
+        logger.error(f"服務層處理失敗: {service_result.message}")
+        # 這裡可以選擇回退到原始邏輯或直接顯示錯誤
+        result = {"error": service_result.message, "is_generally_correct": False}
+    else:
+        # 從服務層結果中提取批改結果
+        result = service_result.data["grading_result"]
 
     return templates.TemplateResponse(
         "practice.html",
@@ -657,6 +666,8 @@ async def grade_answer_api(request: Request):
         chinese = data.get("chinese", "")
         english = data.get("english", "")
         mode = data.get("mode", "new")
+        level = data.get("level", 1)
+        length = data.get("length", "short")
         target_point_ids = data.get("target_point_ids", [])
         
         if not chinese or not english:
@@ -665,45 +676,35 @@ async def grade_answer_api(request: Request):
                 "error": "缺少必要參數"
             })
         
-        # 使用 AI 進行批改
-        result = ai.grade_translation(chinese=chinese, english=english)
+        # 使用服務層處理批改
+        service_result = practice_service.submit_translation(
+            chinese=chinese,
+            english=english,
+            mode=mode,
+            level=level,
+            length=length,
+            target_point_ids=target_point_ids,
+            request_id=getattr(request.state, 'request_id', None)
+        )
         
-        # 如果是複習模式，更新知識點
-        if mode == "review" and target_point_ids:
-            is_correct = result.get("is_generally_correct", False)
-            for point_id in target_point_ids:
-                knowledge.update_knowledge_point(point_id, is_correct)
+        if not service_result.success:
+            return JSONResponse({
+                "success": False,
+                "error": service_result.message
+            })
         
-        # 保存錯誤到知識庫（如果有錯誤）
-        if not result.get("is_generally_correct", False):
-            knowledge.save_mistake(
-                chinese_sentence=chinese,
-                user_answer=english,
-                feedback=result
-            )
-        
-        # 計算分數
-        score = 100
-        errors = result.get("error_analysis", [])
-        for error in errors:
-            category = error.get("category", "other")
-            if category == "systematic":
-                score -= 15
-            elif category == "isolated":
-                score -= 10
-            elif category == "enhancement":
-                score -= 5
-            else:
-                score -= 8
-        score = max(0, min(100, score))
+        # 提取結果
+        result_data = service_result.data
+        grading_result = result_data["grading_result"]
+        score = result_data["score"]
         
         return JSONResponse({
             "success": True,
             "score": score,
-            "is_generally_correct": result.get("is_generally_correct", False),
-            "feedback": result.get("overall_suggestion", ""),
-            "error_analysis": result.get("error_analysis", []),
-            "detailed_feedback": result.get("detailed_feedback", "")
+            "is_generally_correct": grading_result.get("is_generally_correct", False),
+            "feedback": grading_result.get("overall_suggestion", ""),
+            "error_analysis": grading_result.get("error_analysis", []),
+            "detailed_feedback": grading_result.get("detailed_feedback", "")
         })
         
     except Exception as e:
@@ -774,43 +775,39 @@ async def generate_question_api(request: Request):
         
         logger.info(f"Generate question API: mode={mode}, length={length}, level={level}")
         
+        # 使用服務層生成練習句子
+        service_result = practice_service.generate_practice_sentence(
+            mode=mode,
+            level=level,
+            length=length,
+            request_id=getattr(request.state, 'request_id', None)
+        )
+        
+        if not service_result.success:
+            return JSONResponse({
+                "success": False,
+                "error": service_result.message
+            })
+        
+        # 準備響應數據
+        sentence_data = service_result.data
+        
         if mode == "review":
-            # 複習模式：從知識點生成題目
-            review_points = knowledge.get_review_candidates(max_points=5)
-            if not review_points:
-                return JSONResponse({
-                    "success": False,
-                    "error": "沒有待複習的知識點"
-                })
-            
-            payload = ai.generate_review_sentence(
-                knowledge_points=review_points,
-                level=level,
-                length=length
-            )
-            
             return JSONResponse({
                 "success": True,
-                "chinese": payload.get("sentence", ""),
-                "hint": payload.get("hint", ""),
-                "target_point_ids": payload.get("target_point_ids", []),
-                "target_points": payload.get("target_points", []),
-                "target_points_description": payload.get("target_points_description", "")
+                "chinese": sentence_data.get("chinese_sentence", ""),
+                "hint": "",  # 複習模式暫時不提供提示
+                "target_point_ids": sentence_data.get("target_points", []),
+                "target_points": sentence_data.get("target_point_details", []),
+                "target_points_description": _format_target_points_description(
+                    sentence_data.get("target_point_details", [])
+                )
             })
         else:
-            # 新題模式
-            bank = assets.get_example_bank(length=length, difficulty=level)
-            payload = ai.generate_practice_sentence(
-                level=level,
-                length=length,
-                examples=bank[:5] if bank else None,
-                shuffle=True
-            )
-            
             return JSONResponse({
                 "success": True,
-                "chinese": payload.get("sentence", ""),
-                "hint": payload.get("hint", ""),
+                "chinese": sentence_data.get("chinese_sentence", ""),
+                "hint": "",  # 新題模式暫時不提供提示
                 "target_point_ids": [],
                 "target_points": [],
                 "target_points_description": ""

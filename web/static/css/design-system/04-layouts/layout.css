@@ -28,7 +28,7 @@ header.container {
   border-bottom: none;
   position: sticky;
   top: var(--space-4);
-  z-index: 100;
+  z-index: var(--z-sticky);
   border-radius: var(--radius-lg);
   margin: var(--space-4) auto;
   max-width: calc(1200px - var(--space-8));
@@ -110,7 +110,7 @@ main {
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--space-8) var(--space-6);
-  min-height: calc(100vh - 200px);
+  min-height: calc(100vh - var(--space-50));
 }
 
 /* Stack Layout */

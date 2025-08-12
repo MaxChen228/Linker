@@ -7,6 +7,15 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+# 引入常數定義，但保持向後兼容性
+from core.constants import (
+    DisplayConstants,
+    LearningConstants,
+    APIEndpoints,
+    ValidationRules,
+    CacheConstants,
+)
+
 
 @dataclass
 class DisplaySettings:
@@ -244,6 +253,208 @@ class Settings:
                 "MAX_SENTENCE_LENGTH": self.practice.MAX_SENTENCE_LENGTH,
                 "RECENT_MISTAKES_COUNT": self.practice.RECENT_MISTAKES_COUNT,
                 "MIN_PRACTICE_FOR_ANALYSIS": self.practice.MIN_PRACTICE_FOR_ANALYSIS,
+            },
+        }
+
+        with open(config_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+        print(f"✅ 配置已保存到 {config_file}")
+
+
+@dataclass
+class ServiceSettings:
+    """服務層配置"""
+    
+    # AI服務配置
+    AI_REQUEST_TIMEOUT: int = APIEndpoints.GEMINI_REQUEST_TIMEOUT
+    AI_MAX_RETRIES: int = APIEndpoints.GEMINI_MAX_RETRIES
+    AI_TEMPERATURE_CREATIVE: float = APIEndpoints.TEMPERATURE_CREATIVE
+    AI_TEMPERATURE_PRECISE: float = APIEndpoints.TEMPERATURE_PRECISE
+    
+    # 批次處理配置
+    BATCH_SIZE_SMALL: int = 5
+    BATCH_SIZE_MEDIUM: int = 10
+    BATCH_SIZE_LARGE: int = 20
+    
+    # 併發配置
+    MAX_CONCURRENT_REQUESTS: int = 3
+    REQUEST_QUEUE_SIZE: int = 100
+
+
+@dataclass  
+class RepositorySettings:
+    """資料存取層配置"""
+    
+    # 檔案操作配置
+    FILE_ENCODING: str = "utf-8"
+    BACKUP_ENABLED: bool = True
+    BACKUP_MAX_COUNT: int = 5
+    
+    # 資料驗證配置
+    VALIDATE_ON_LOAD: bool = True
+    VALIDATE_ON_SAVE: bool = True
+    AUTO_MIGRATE: bool = True
+    
+    # 查詢配置
+    DEFAULT_LIMIT: int = DisplayConstants.DEFAULT_PAGE_SIZE
+    MAX_LIMIT: int = DisplayConstants.MAX_PAGE_SIZE
+    ENABLE_CACHING: bool = False  # 目前禁用
+
+
+@dataclass
+class ResponseSettings:
+    """回應處理配置"""
+    
+    # HTTP回應配置  
+    DEFAULT_TIMEOUT: int = APIEndpoints.GEMINI_REQUEST_TIMEOUT
+    MAX_RESPONSE_SIZE: int = 1024 * 1024  # 1MB
+    
+    # 錯誤處理配置
+    INCLUDE_ERROR_DETAILS: bool = True
+    LOG_REQUEST_DETAILS: bool = True
+    SANITIZE_ERROR_MESSAGES: bool = True
+    
+    # 快取配置（已禁用）
+    CACHE_ENABLED: bool = False
+    CACHE_TTL: int = CacheConstants.CACHE_TTL_SECONDS
+
+
+@dataclass
+class ValidationSettings:
+    """驗證相關配置"""
+    
+    # 輸入驗證配置
+    STRICT_VALIDATION: bool = True
+    ALLOW_EMPTY_TRANSLATIONS: bool = False
+    NORMALIZE_WHITESPACE: bool = True
+    
+    # 中文驗證配置
+    MIN_CHINESE_CHARS: int = 2
+    MAX_CHINESE_CHARS: int = 100
+    ALLOW_MIXED_LANGUAGE: bool = True
+    
+    # 英文驗證配置
+    MIN_ENGLISH_WORDS: int = 1
+    MAX_ENGLISH_WORDS: int = 50
+    CHECK_GRAMMAR: bool = False  # 暫時不啟用文法檢查
+    
+    # 特殊字符處理
+    ALLOWED_PUNCTUATION: str = ".,!?;:()[]{}\"'-"
+    STRIP_EXTRA_SPACES: bool = True
+    
+
+class Settings:
+    """統一配置類"""
+
+    def __init__(self):
+        self.display = DisplaySettings()
+        self.learning = LearningSettings()
+        self.cache = CacheSettings()
+        self.api = APISettings()
+        self.error_priority = ErrorPrioritySettings()
+        self.practice = PracticeSettings()
+        self.ui = UISettings()
+        
+        # 新增配置區塊
+        self.service = ServiceSettings()
+        self.repository = RepositorySettings()
+        self.response = ResponseSettings()
+        self.validation = ValidationSettings()
+
+    @classmethod
+    def load_from_file(cls, config_file: str = "config.json") -> "Settings":
+        """從文件加載配置"""
+        settings = cls()
+        config_path = Path(config_file)
+
+        if config_path.exists():
+            try:
+                with open(config_path, encoding="utf-8") as f:
+                    data = json.load(f)
+
+                # 更新各個配置部分（保持向後兼容）
+                config_sections = [
+                    ("display", settings.display),
+                    ("learning", settings.learning),
+                    ("cache", settings.cache),
+                    ("api", settings.api),
+                    ("practice", settings.practice),
+                    ("service", settings.service),
+                    ("repository", settings.repository),
+                    ("response", settings.response),
+                    ("validation", settings.validation),
+                ]
+                
+                for section_name, section_obj in config_sections:
+                    if section_name in data:
+                        for key, value in data[section_name].items():
+                            if hasattr(section_obj, key):
+                                setattr(section_obj, key, value)
+
+                print(f"✅ 已從 {config_file} 加載配置")
+            except Exception as e:
+                print(f"⚠️ 加載配置文件失敗: {e}，使用默認配置")
+
+        return settings
+
+    def save_to_file(self, config_file: str = "config.json"):
+        """保存配置到文件"""
+        data = {
+            "display": {
+                "MAX_DISPLAY_ITEMS": self.display.MAX_DISPLAY_ITEMS,
+                "MAX_EXAMPLES_PER_POINT": self.display.MAX_EXAMPLES_PER_POINT,
+                "SEPARATOR_WIDTH": self.display.SEPARATOR_WIDTH,
+                "SEPARATOR_CHAR": self.display.SEPARATOR_CHAR,
+                "WIDE_SEPARATOR_CHAR": self.display.WIDE_SEPARATOR_CHAR,
+            },
+            "learning": {
+                "MASTERY_INCREMENTS": self.learning.MASTERY_INCREMENTS,
+                "MASTERY_DECREMENTS": self.learning.MASTERY_DECREMENTS,
+                "REVIEW_INTERVALS": self.learning.REVIEW_INTERVALS,
+                "MASTERY_THRESHOLDS": self.learning.MASTERY_THRESHOLDS,
+                "DIFFICULTY_LEVELS": self.learning.DIFFICULTY_LEVELS,
+            },
+            "cache": {
+                "CACHE_TTL_SECONDS": self.cache.CACHE_TTL_SECONDS,
+                "MAX_CACHE_SIZE": self.cache.MAX_CACHE_SIZE,
+                "CACHE_KEY_LENGTH": self.cache.CACHE_KEY_LENGTH,
+            },
+            "api": {
+                "DEFAULT_MODEL": self.api.DEFAULT_MODEL,
+                "REQUEST_TIMEOUT": self.api.REQUEST_TIMEOUT,
+                "MAX_RETRIES": self.api.MAX_RETRIES,
+                "RESPONSE_MIME_TYPE": self.api.RESPONSE_MIME_TYPE,
+            },
+            "practice": {
+                "MIN_SENTENCE_LENGTH": self.practice.MIN_SENTENCE_LENGTH,
+                "MAX_SENTENCE_LENGTH": self.practice.MAX_SENTENCE_LENGTH,
+                "RECENT_MISTAKES_COUNT": self.practice.RECENT_MISTAKES_COUNT,
+                "MIN_PRACTICE_FOR_ANALYSIS": self.practice.MIN_PRACTICE_FOR_ANALYSIS,
+            },
+            # 新增配置區塊
+            "service": {
+                "AI_REQUEST_TIMEOUT": self.service.AI_REQUEST_TIMEOUT,
+                "AI_MAX_RETRIES": self.service.AI_MAX_RETRIES,
+                "BATCH_SIZE_MEDIUM": self.service.BATCH_SIZE_MEDIUM,
+                "MAX_CONCURRENT_REQUESTS": self.service.MAX_CONCURRENT_REQUESTS,
+            },
+            "repository": {
+                "FILE_ENCODING": self.repository.FILE_ENCODING,
+                "BACKUP_ENABLED": self.repository.BACKUP_ENABLED,
+                "DEFAULT_LIMIT": self.repository.DEFAULT_LIMIT,
+                "VALIDATE_ON_SAVE": self.repository.VALIDATE_ON_SAVE,
+            },
+            "response": {
+                "DEFAULT_TIMEOUT": self.response.DEFAULT_TIMEOUT,
+                "INCLUDE_ERROR_DETAILS": self.response.INCLUDE_ERROR_DETAILS,
+                "CACHE_ENABLED": self.response.CACHE_ENABLED,
+            },
+            "validation": {
+                "STRICT_VALIDATION": self.validation.STRICT_VALIDATION,
+                "MIN_CHINESE_CHARS": self.validation.MIN_CHINESE_CHARS,
+                "MAX_ENGLISH_WORDS": self.validation.MAX_ENGLISH_WORDS,
+                "NORMALIZE_WHITESPACE": self.validation.NORMALIZE_WHITESPACE,
             },
         }
 

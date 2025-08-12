@@ -58,7 +58,7 @@
 .badge-value {
   font-size: var(--text-2xl);
   font-weight: var(--font-semibold);
-  line-height: 1;
+  line-height: var(--leading-none);
   color: var(--text-primary);
 }
 
@@ -77,8 +77,8 @@
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
-  width: 6px;
-  height: 6px;
+  width: var(--space-1-5);
+  height: var(--space-1-5);
   border-radius: 50%;
 }
 
@@ -260,7 +260,7 @@
 .filter-container {
   margin-bottom: var(--space-6);
   animation: var(--animation-fade-in-up);
-  animation-delay: 150ms;
+  animation-delay: var(--duration-fast);
 }
 
 .filter-section {
@@ -315,7 +315,7 @@
 
 .knowledge-section {
   animation: var(--animation-fade-in-up);
-  animation-delay: 200ms;
+  animation-delay: var(--duration-normal);
 }
 
 .section-title {
@@ -402,7 +402,7 @@
   cursor: pointer;
   background: var(--surface-base);
   position: relative;
-  transition: background 0.2s ease;
+  transition: background var(--duration-normal) ease;
 }
 
 .group-header:hover {
@@ -425,7 +425,7 @@
   font-weight: var(--font-semibold);
   color: var(--text-primary);
   margin: 0;
-  line-height: 1.4;
+  line-height: var(--leading-snug);
 }
 
 .group-stats {
@@ -466,7 +466,7 @@
 }
 
 .progress-ring circle {
-  transition: stroke-dasharray 0.3s ease;
+  transition: stroke-dasharray var(--duration-normal) ease;
 }
 
 .progress-text {
@@ -485,11 +485,11 @@
   padding: var(--space-2);
   cursor: pointer;
   color: var(--text-muted);
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
 }
 
 .group-toggle svg {
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-normal) ease;
 }
 
 .group-toggle:hover {
@@ -501,7 +501,7 @@
   border-top: 1px solid var(--border-light);
   padding: 0;
   display: none;
-  transition: all 0.3s ease-out;
+  transition: all var(--duration-normal) ease-out;
 }
 
 .group-content.expanded {
@@ -599,7 +599,7 @@
   background: var(--surface-base);
   border-radius: var(--radius-sm);
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
 }
 
 .sentence-label {
@@ -624,7 +624,7 @@
 
 .compare-item {
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   padding: var(--space-2);
   border-radius: var(--radius-sm);
 }
@@ -710,13 +710,13 @@
   font-weight: var(--font-semibold);
   color: var(--text-primary);
   flex: 1;
-  line-height: 1.5;
+  line-height: var(--leading-normal);
 }
 
 .card-explanation {
   color: var(--text-secondary);
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   margin: 0 0 var(--space-3) 0;
 }
 
@@ -754,7 +754,7 @@
 
 .sentence-en {
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   padding: var(--space-2-5);
   border-radius: var(--radius-sm);
 }
@@ -1019,7 +1019,7 @@
   gap: var(--space-2);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
-  line-height: 1.4;
+  line-height: var(--leading-snug);
   flex: 1;
   overflow: hidden;
   -webkit-line-clamp: 2;

@@ -14,6 +14,8 @@ from typing import Dict, List, Optional
 
 from core.ai_service import AIService
 from core.log_config import get_module_logger
+from core.config_manager import get_config
+from core.constants import AIConfig
 
 # 設定日誌
 logger = get_module_logger(__name__)
@@ -128,7 +130,7 @@ class ResponsePostProcessor:
 
         except Exception as e:
             logger.error(f"Failed to clean response: {e}")
-            logger.debug(f"Raw response: {raw_response[:500]}...")
+            logger.debug(f"Raw response: {raw_response[:AIConfig.DEBUG_RESPONSE_TRUNCATE]}...")
             raise
 
     def fix_json_errors(self, json_str: str) -> str:
@@ -190,9 +192,11 @@ class PatternEnrichmentService:
     def __init__(self):
         self.ai_service = AIService()
         self.batch_size = 5  # 每批處理5個句型
-        self.retry_limit = 3
+        config = get_config()
+        self.retry_limit = config.ai_max_retries
         self.delay_between_batches = 2  # 秒
-        self.temperature = 0.7  # 平衡創意與一致性
+        self.temperature = config.temperature_enrich
+        self.max_tokens = config.ai_max_tokens
         self.rate_limiter = RateLimiter(max_requests_per_minute=30)
         self.progress_tracker = ProgressTracker()
         self.post_processor = ResponsePostProcessor()
@@ -288,7 +292,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
                 response = await self.ai_service.generate_async(
                     prompt=prompt,
                     temperature=self.temperature,
-                    max_tokens=3000
+                    max_tokens=self.max_tokens
                 )
 
                 # 處理回應
@@ -302,7 +306,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
                         'original_pattern': pattern.get('pattern'),
                         'original_explanation': pattern.get('explanation'),
                         'enriched_at': datetime.now().isoformat(),
-                        'enrichment_model': 'gemini-2.5-pro'
+                        'enrichment_model': config.model_enrich
                     })
                     return validated
 
@@ -310,7 +314,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
                 logger.error(f"Attempt {attempt + 1} failed for {pattern_id}: {e}")
                 if attempt == self.retry_limit - 1:
                     raise
-                await asyncio.sleep(2 ** attempt)  # 指數退避
+                await asyncio.sleep(AIConfig.RETRY_BACKOFF_BASE ** attempt)  # 指數退避
 
         raise Exception(f"Failed to enrich pattern {pattern_id} after {self.retry_limit} attempts")
 
@@ -442,7 +446,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
                 'enrichment_summary': {
                     'completed': len(self.progress_tracker.progress['completed']),
                     'failed': len(self.progress_tracker.progress['failed']),
-                    'model': 'gemini-2.5-pro',
+                    'model': config.model_enrich,
                     'temperature': self.temperature
                 },
                 'patterns': enriched_patterns

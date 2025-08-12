@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Minified CSS files
+*.min.css
+
+# Token definitions (allowed to have raw values)
+web/static/css/design-system/01-tokens/*.css
+
+# Vendor CSS
+vendor/
+third-party/
+
+# Legacy CSS (if any)
+legacy/
+
+# Generated CSS
+generated/

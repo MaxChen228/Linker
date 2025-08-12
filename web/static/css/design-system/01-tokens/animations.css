@@ -1,7 +1,6 @@
-/* ===================================
-   Design Tokens - Animation System
-   統一動畫定義系統
-   =================================== */
+/* ================================================
+   設計令牌 - 動畫系統
+   ================================================ */
 
 /* ========== Animation Tokens ========== */
 :root {
@@ -22,17 +21,17 @@
   --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   
   /* Animation Definitions */
-  --animation-spin: spin 1s linear infinite;
-  --animation-spin-slow: spin 2s linear infinite;
-  --animation-pulse: pulse 2s ease-in-out infinite;
-  --animation-bounce: bounce 1s ease-in-out infinite;
-  --animation-fade-in: fadeIn 300ms ease-out;
-  --animation-fade-out: fadeOut 300ms ease-in;
-  --animation-slide-up: slideUp 300ms ease-out;
-  --animation-slide-down: slideDown 300ms ease-out;
-  --animation-slide-in: slideIn 500ms ease-out;
-  --animation-scale-in: scaleIn 300ms ease-out;
-  --animation-shake: shake 300ms ease-in-out;
+  --animation-spin: spin var(--duration-slower) linear infinite;
+  --animation-spin-slow: spin var(--duration-slowest) linear infinite;
+  --animation-pulse: pulse var(--duration-slowest) ease-in-out infinite;
+  --animation-bounce: bounce var(--duration-slower) ease-in-out infinite;
+  --animation-fade-in: fadeIn var(--duration-normal) ease-out;
+  --animation-fade-out: fadeOut var(--duration-normal) ease-in;
+  --animation-slide-up: slideUp var(--duration-normal) ease-out;
+  --animation-slide-down: slideDown var(--duration-normal) ease-out;
+  --animation-slide-in: slideIn var(--duration-slow) ease-out;
+  --animation-scale-in: scaleIn var(--duration-normal) ease-out;
+  --animation-shake: shake var(--duration-normal) ease-in-out;
   --animation-shimmer: shimmer 1.5s infinite;
 }
 

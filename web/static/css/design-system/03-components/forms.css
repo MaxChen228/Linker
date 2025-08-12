@@ -22,9 +22,9 @@ textarea {
   width: 100%;
   
   /* Sizing */
-  padding: var(--form-padding, 12px 16px);
-  font-size: var(--form-font-size, 0.95rem);
-  line-height: 1.5;
+  padding: var(--form-padding, var(--space-3) var(--space-4));
+  font-size: var(--form-font-size, var(--text-base)); /* 標準表單字體大小 */
+  line-height: var(--leading-normal);
   
   /* Appearance */
   background: var(--form-bg, var(--surface));
@@ -33,7 +33,7 @@ textarea {
   border-radius: var(--form-radius, var(--radius));
   
   /* Transitions */
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
   
   /* Reset */
   appearance: none;
@@ -43,7 +43,7 @@ textarea {
 
 /* Textarea specific */
 textarea {
-  min-height: 120px;
+  min-height: 120px; /* textarea 最小高度 */
   resize: vertical;
   font-family: inherit;
 }
@@ -53,8 +53,8 @@ select {
   cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 36px;
+  background-position: right var(--space-3) center;
+  padding-right: 36px; /* select 箭頭留白 */
 }
 
 /* Dark mode select arrow */
@@ -73,7 +73,7 @@ textarea:focus {
   background: var(--form-focus-bg, var(--surface));
   box-shadow: 
     0 0 0 3px rgba(var(--accent-600-rgb), 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.05);
+    0 1px 2px rgba(0, 0, 0, 0.05); /* 焦點陰影 */
 }
 
 /* Hover States */
@@ -107,16 +107,16 @@ textarea:disabled {
 .form-control[data-size="sm"],
 input[data-size="sm"],
 select[data-size="sm"] {
-  padding: 8px 12px;
-  font-size: 0.875rem;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
 }
 
 .form-control[data-size="lg"],
 input[data-size="lg"],
 select[data-size="lg"],
 textarea[data-size="lg"] {
-  padding: 16px 20px;
-  font-size: 1.05rem;
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--text-lg); /* 大表單元素字體 */
 }
 
 /* Status Variants */
@@ -134,7 +134,7 @@ select[data-status="error"]:focus,
 textarea[data-status="error"]:focus {
   box-shadow: 
     0 0 0 3px rgba(239, 68, 68, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.05);
+    0 1px 2px rgba(0, 0, 0, 0.05); /* 錯誤狀態陰影 */
 }
 
 .form-control[data-status="success"],
@@ -151,7 +151,7 @@ select[data-status="success"]:focus,
 textarea[data-status="success"]:focus {
   box-shadow: 
     0 0 0 3px rgba(16, 185, 129, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.05);
+    0 1px 2px rgba(0, 0, 0, 0.05); /* 成功狀態陰影 */
 }
 
 .form-control[data-status="warning"],
@@ -170,8 +170,8 @@ textarea[data-status="warning"] {
 .form-label {
   display: block;
   margin-bottom: var(--space-2);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   color: var(--text-muted);
 }
 
@@ -182,17 +182,17 @@ textarea[data-status="warning"] {
 
 .form-hint {
   margin-top: var(--space-1);
-  font-size: 0.8125rem;
+  font-size: var(--text-sm); /* 13px, 特小提示文字 */
   color: var(--text-muted);
 }
 
 .form-error {
   margin-top: var(--space-1);
-  font-size: 0.8125rem;
+  font-size: var(--text-sm); /* 13px, 特小提示文字 */
   color: var(--error);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 /* Input Groups */
@@ -226,11 +226,11 @@ textarea[data-status="warning"] {
 .input-group-text {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   background: var(--gray-100);
   border: 1px solid var(--border);
   border-radius: 0;
-  font-size: 0.95rem;
+  font-size: var(--text-base); /* 輸入組文字大小 */
   color: var(--text-muted);
 }
 
@@ -260,14 +260,14 @@ textarea[data-status="warning"] {
 }
 
 .form-check-input {
-  width: 20px;
-  height: 20px;
+  width: var(--space-5);
+  height: var(--space-5);
   margin-right: var(--space-2);
-  border: 2px solid var(--border);
-  border-radius: 4px;
+  border: var(--space-0-25) solid var(--border);
+  border-radius: var(--radius-sm);
   background: var(--surface);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
   appearance: none;
   -webkit-appearance: none;
   position: relative;
@@ -291,17 +291,17 @@ textarea[data-status="warning"] {
 }
 
 .form-check-input[type="checkbox"]:checked::after {
-  width: 6px;
-  height: 10px;
-  border: 2px solid white;
+  width: 6px; /* checkbox 勾號寬度 */
+  height: 10px; /* checkbox 勾號高度 */
+  border: var(--space-0-25) solid white;
   border-top: 0;
   border-left: 0;
   transform: translate(-50%, -60%) rotate(45deg);
 }
 
 .form-check-input[type="radio"]:checked::after {
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
   background: white;
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -318,7 +318,7 @@ textarea[data-status="warning"] {
 }
 
 .form-check-label {
-  font-size: 0.95rem;
+  font-size: var(--text-base); /* 輸入組文字大小 */
   color: var(--text);
   cursor: pointer;
   user-select: none;
@@ -338,12 +338,12 @@ textarea[data-status="warning"] {
 
 .form-switch-input {
   position: relative;
-  width: 48px;
-  height: 24px;
+  width: 48px; /* switch 寬度 */
+  height: var(--space-6); /* switch 高度 */
   background: var(--gray-300);
-  border-radius: 24px;
+  border-radius: var(--space-6); /* switch 圓角 */
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background var(--duration-normal) ease;
   appearance: none;
   -webkit-appearance: none;
   margin-right: var(--space-2);
@@ -352,14 +352,14 @@ textarea[data-status="warning"] {
 .form-switch-input::after {
   content: "";
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
+  top: var(--space-0-25);
+  left: var(--space-0-25);
+  width: var(--space-5);
+  height: var(--space-5);
   background: white;
   border-radius: 50%;
   box-shadow: var(--shadow-xl);
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-normal) ease;
 }
 
 .form-switch-input:checked {
@@ -367,7 +367,7 @@ textarea[data-status="warning"] {
 }
 
 .form-switch-input:checked::after {
-  transform: translateX(24px);
+  transform: translateX(var(--space-6)); /* switch 按鈕移動距離 */
 }
 
 .form-switch-input:focus {
@@ -389,9 +389,9 @@ textarea[data-status="warning"] {
 /* Range Slider */
 .form-range {
   width: 100%;
-  height: 6px;
+  height: 6px; /* range slider 軌道高度 */
   background: var(--gray-200);
-  border-radius: 3px;
+  border-radius: 3px; /* range slider 軌道圓角 */
   outline: none;
   appearance: none;
   -webkit-appearance: none;
@@ -401,23 +401,23 @@ textarea[data-status="warning"] {
 
 .form-range::-webkit-slider-thumb {
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: var(--space-5);
+  height: var(--space-5);
   background: var(--primary);
   border-radius: 50%;
   cursor: pointer;
   box-shadow: var(--shadow-xl);
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
 }
 
 .form-range::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: var(--space-5);
+  height: var(--space-5);
   background: var(--primary);
   border-radius: 50%;
   cursor: pointer;
   box-shadow: var(--shadow-xl);
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
   border: none;
 }
 
@@ -457,20 +457,20 @@ textarea[data-status="warning"] {
 
 .form-file-input {
   position: absolute;
-  left: -9999px;
+  left: -9999px; /* 隱藏文件輸入 */
 }
 
 .form-file-label {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 12px 20px;
+  padding: var(--space-3) var(--space-5);
   background: var(--surface);
-  border: 2px dashed var(--border);
+  border: var(--space-0-25) dashed var(--border);
   border-radius: var(--radius);
-  font-size: 0.95rem;
+  font-size: var(--text-base); /* 輸入組文字大小 */
   color: var(--text);
-  transition: all 0.2s ease;
+  transition: all var(--duration-normal) ease;
 }
 
 .form-file-label:hover {
@@ -506,10 +506,10 @@ textarea[data-status="warning"] {
 /* Animation */
 @keyframes formShake {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  25% { transform: translateX(-5px); /* 错誤动画左移 */ }
+  75% { transform: translateX(5px); /* 错誤动画右移 */ }
 }
 
 .form-control[data-status="error"] {
-  animation: formShake 0.3s ease-in-out;
+  animation: formShake var(--duration-normal) ease-in-out;
 }

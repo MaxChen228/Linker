@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linker 間距系統視覺化展示</title>
+    <style>
+        /* 引入設計令牌 */
+        :root {
+            /* 基礎間距 */
+            --space-0: 0;
+            --space-1: 4px;
+            --space-1-5: 6px;
+            --space-2: 8px;
+            --space-2-5: 10px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+            --space-20: 80px;
+            
+            /* 顏色系統 */
+            --accent-500: #6366f1;
+            --accent-100: #e0e7ff;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            
+            /* 字型系統 */
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --font-medium: 500;
+            --font-semibold: 600;
+            
+            /* 圓角系統 */
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+        
+        /* 基礎樣式 */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            color: var(--gray-700);
+            background: #fff;
+            margin: 0;
+            padding: var(--space-6);
+        }
+        
+        h1 {
+            color: var(--gray-900);
+            font-size: var(--text-2xl);
+            font-weight: var(--font-semibold);
+            margin-bottom: var(--space-8);
+        }
+        
+        h2 {
+            color: var(--gray-900);
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            margin: var(--space-12) 0 var(--space-6) 0;
+        }
+        
+        h3 {
+            color: var(--gray-700);
+            font-size: var(--text-lg);
+            font-weight: var(--font-medium);
+            margin: var(--space-8) 0 var(--space-4) 0;
+        }
+        
+        p {
+            margin-bottom: var(--space-4);
+            color: var(--gray-500);
+        }
+        
+        /* 展示容器 */
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            margin-bottom: var(--space-16);
+            padding: var(--space-8);
+            background: var(--gray-100);
+            border-radius: var(--radius-lg);
+        }
+        
+        /* 間距視覺化 */
+        .spacing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+        
+        .spacing-item {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            border: 2px solid var(--gray-200);
+        }
+        
+        .spacing-visual {
+            background: var(--accent-500);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            position: relative;
+        }
+        
+        .spacing-label {
+            font-weight: var(--font-medium);
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+        
+        .spacing-value {
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        
+        /* 間距階梯 */
+        .spacing-scale {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            background: white;
+            padding: var(--space-6);
+            border-radius: var(--radius-md);
+            border: 2px solid var(--gray-200);
+        }
+        
+        .scale-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .scale-visual {
+            background: var(--accent-500);
+            height: 8px;
+            border-radius: 2px;
+            min-width: 4px;
+        }
+        
+        .scale-label {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: var(--text-sm);
+            color: var(--gray-700);
+            min-width: 120px;
+        }
+        
+        .scale-usage {
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+        }
+        
+        /* 實際應用範例 */
+        .example-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--gray-200);
+            overflow: hidden;
+        }
+        
+        .example-header {
+            background: var(--gray-100);
+            padding: var(--space-4) var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+            font-weight: var(--font-medium);
+        }
+        
+        .example-content {
+            padding: var(--space-6);
+        }
+        
+        /* 按鈕範例 */
+        .btn-demo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2) var(--space-5);
+            background: var(--accent-500);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: var(--space-3);
+            margin-bottom: var(--space-3);
+        }
+        
+        .btn-demo:hover {
+            background: var(--accent-600, #4f46e5);
+            transform: translateY(-1px);
+        }
+        
+        .btn-sm {
+            padding: var(--space-1) var(--space-4);
+            font-size: var(--text-sm);
+        }
+        
+        .btn-lg {
+            padding: var(--space-3) var(--space-8);
+            font-size: var(--text-lg);
+        }
+        
+        /* 卡片範例 */
+        .card-demo {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+        
+        .card-title {
+            font-weight: var(--font-semibold);
+            margin-bottom: var(--space-2);
+            color: var(--gray-900);
+        }
+        
+        .card-content {
+            color: var(--gray-500);
+            margin-bottom: var(--space-4);
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        /* 表單範例 */
+        .form-demo {
+            max-width: 400px;
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-1);
+            font-weight: var(--font-medium);
+            color: var(--gray-900);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: var(--text-base);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-500);
+            box-shadow: 0 0 0 3px var(--accent-100);
+        }
+        
+        /* 清單範例 */
+        .list-demo {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .list-item {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+        
+        .item-title {
+            font-weight: var(--font-medium);
+            color: var(--gray-900);
+        }
+        
+        .item-meta {
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+        }
+        
+        /* 響應式調整 */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--space-4);
+            }
+            
+            .spacing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-section {
+                padding: var(--space-4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🎯 Linker 間距系統視覺化展示</h1>
+        <p>這個頁面展示了 Linker 設計系統中間距變數的實際效果和應用範例。</p>
+        
+        <!-- 間距階梯展示 -->
+        <section class="demo-section">
+            <h2>📏 間距階梯系統</h2>
+            <p>基於 8px 網格系統的完整間距階梯，每個間距都有其特定的使用場景。</p>
+            
+            <div class="spacing-scale">
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-1);"></div>
+                    <div class="scale-label">--space-1 (4px)</div>
+                    <div class="scale-usage">最小間距 - 圖標與文字</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-1-5);"></div>
+                    <div class="scale-label">--space-1-5 (6px)</div>
+                    <div class="scale-usage">微調間距 - 徽章內距</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-2);"></div>
+                    <div class="scale-label">--space-2 (8px)</div>
+                    <div class="scale-usage">基準間距 - 按鈕內容</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-3);"></div>
+                    <div class="scale-label">--space-3 (12px)</div>
+                    <div class="scale-usage">小間距 - 表單元素</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-4);"></div>
+                    <div class="scale-label">--space-4 (16px)</div>
+                    <div class="scale-usage">標準間距 - 卡片內距</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-5);"></div>
+                    <div class="scale-label">--space-5 (20px)</div>
+                    <div class="scale-usage">中等間距 - 按鈕內距</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-6);"></div>
+                    <div class="scale-label">--space-6 (24px)</div>
+                    <div class="scale-usage">大間距 - 組件間距</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-8);"></div>
+                    <div class="scale-label">--space-8 (32px)</div>
+                    <div class="scale-usage">區塊間距 - 大組件</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-10);"></div>
+                    <div class="scale-label">--space-10 (40px)</div>
+                    <div class="scale-usage">大區塊間距</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-12);"></div>
+                    <div class="scale-label">--space-12 (48px)</div>
+                    <div class="scale-usage">主要區段間距</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-16);"></div>
+                    <div class="scale-label">--space-16 (64px)</div>
+                    <div class="scale-usage">頁面級間距</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-visual" style="width: var(--space-20);"></div>
+                    <div class="scale-label">--space-20 (80px)</div>
+                    <div class="scale-usage">超大間距</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 按鈕間距範例 -->
+        <section class="demo-section">
+            <h2>🔘 按鈕間距範例</h2>
+            <p>展示不同尺寸按鈕的內距設計和按鈕間的間距。</p>
+            
+            <div class="example-container">
+                <div class="example-header">按鈕尺寸與間距</div>
+                <div class="example-content">
+                    <button class="btn-demo btn-sm">小型按鈕 (--space-1, --space-4)</button>
+                    <button class="btn-demo">中型按鈕 (--space-2, --space-5)</button>
+                    <button class="btn-demo btn-lg">大型按鈕 (--space-3, --space-8)</button>
+                    <br><br>
+                    <p><strong>說明:</strong> 按鈕間距使用 --space-3，內距根據按鈕大小使用不同變數。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 卡片間距範例 -->
+        <section class="demo-section">
+            <h2>🎴 卡片間距範例</h2>
+            <p>展示卡片內部間距和卡片間的間距設計。</p>
+            
+            <div class="example-container">
+                <div class="example-header">卡片佈局間距</div>
+                <div class="example-content">
+                    <div class="card-demo">
+                        <div class="card-title">卡片標題</div>
+                        <div class="card-content">卡片內容區域。標題下方使用 --space-2 間距，內容下方使用 --space-4 間距。</div>
+                        <div class="card-actions">
+                            <button class="btn-demo">主要動作</button>
+                            <button class="btn-demo" style="background: var(--gray-100); color: var(--gray-700);">次要動作</button>
+                        </div>
+                    </div>
+                    <div class="card-demo">
+                        <div class="card-title">另一張卡片</div>
+                        <div class="card-content">卡片間距使用 --space-4，確保視覺分離。</div>
+                        <div class="card-actions">
+                            <button class="btn-demo">查看詳情</button>
+                        </div>
+                    </div>
+                    <p><strong>說明:</strong> 卡片內距 --space-4，卡片間距 --space-4，按鈕間距 --space-3。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 表單間距範例 -->
+        <section class="demo-section">
+            <h2>📝 表單間距範例</h2>
+            <p>展示表單元素的間距設計，包括標籤、輸入框和表單組之間的間距。</p>
+            
+            <div class="example-container">
+                <div class="example-header">表單佈局間距</div>
+                <div class="example-content">
+                    <div class="form-demo">
+                        <div class="form-group">
+                            <label class="form-label">用戶名</label>
+                            <input type="text" class="form-input" placeholder="請輸入用戶名">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">密碼</label>
+                            <input type="password" class="form-input" placeholder="請輸入密碼">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">確認密碼</label>
+                            <input type="password" class="form-input" placeholder="請再次輸入密碼">
+                        </div>
+                        <div style="margin-top: var(--space-6);">
+                            <button class="btn-demo">註冊</button>
+                            <button class="btn-demo" style="background: var(--gray-100); color: var(--gray-700);">取消</button>
+                        </div>
+                    </div>
+                    <p><strong>說明:</strong> 標籤下方 --space-1，表單組間距 --space-4，輸入框內距 --space-2 和 --space-3，動作區上方 --space-6。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 清單間距範例 -->
+        <section class="demo-section">
+            <h2>📋 清單間距範例</h2>
+            <p>展示清單項目的內距和清單項目間的視覺分隔。</p>
+            
+            <div class="example-container">
+                <div class="example-header">清單佈局間距</div>
+                <div class="example-content">
+                    <div class="list-demo">
+                        <div class="list-item">
+                            <div class="item-content">
+                                <div class="item-title">英文翻譯練習</div>
+                                <div class="item-meta">今天 14:30 • 初級</div>
+                            </div>
+                            <button class="btn-demo btn-sm">開始</button>
+                        </div>
+                        <div class="list-item">
+                            <div class="item-content">
+                                <div class="item-title">文法複習</div>
+                                <div class="item-meta">昨天 16:45 • 中級</div>
+                            </div>
+                            <button class="btn-demo btn-sm">繼續</button>
+                        </div>
+                        <div class="list-item">
+                            <div class="item-content">
+                                <div class="item-title">知識點總結</div>
+                                <div class="item-meta">2天前 10:20 • 高級</div>
+                            </div>
+                            <button class="btn-demo btn-sm">複習</button>
+                        </div>
+                    </div>
+                    <p><strong>說明:</strong> 清單項內距 --space-3 和 --space-4，項目內容間距 --space-1。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 層次間距展示 -->
+        <section class="demo-section">
+            <h2>🎭 間距層次展示</h2>
+            <p>展示間距的視覺層次，從微觀到宏觀的間距應用。</p>
+            
+            <div class="example-container">
+                <div class="example-header">間距層次結構</div>
+                <div class="example-content" style="padding: var(--space-16);">
+                    <div style="background: var(--accent-100); padding: var(--space-8); border-radius: var(--radius-lg); margin-bottom: var(--space-8);">
+                        <h3 style="margin: 0 0 var(--space-4) 0;">區塊級容器 (--space-16 外距, --space-8 內距)</h3>
+                        <div style="background: white; padding: var(--space-6); border-radius: var(--radius-md); margin-bottom: var(--space-6);">
+                            <h4 style="margin: 0 0 var(--space-3) 0;">組件容器 (--space-6 內距)</h4>
+                            <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-4);">
+                                <div style="background: var(--gray-100); padding: var(--space-2); border-radius: var(--radius-md); flex: 1;">
+                                    <div style="margin-bottom: var(--space-1);">元素 A (--space-2 內距)</div>
+                                    <div style="font-size: var(--text-sm); color: var(--gray-500);">--space-1 間距</div>
+                                </div>
+                                <div style="background: var(--gray-100); padding: var(--space-2); border-radius: var(--radius-md); flex: 1;">
+                                    <div style="margin-bottom: var(--space-1);">元素 B (--space-2 內距)</div>
+                                    <div style="font-size: var(--text-sm); color: var(--gray-500);">--space-1 間距</div>
+                                </div>
+                            </div>
+                            <p style="margin: 0; font-size: var(--text-sm); color: var(--gray-500);">元素間使用 --space-4 gap</p>
+                        </div>
+                        <div style="background: white; padding: var(--space-6); border-radius: var(--radius-md);">
+                            <h4 style="margin: 0 0 var(--space-3) 0;">另一個組件</h4>
+                            <p style="margin: 0; color: var(--gray-500);">組件間距 --space-6</p>
+                        </div>
+                    </div>
+                    <p><strong>層次說明:</strong></p>
+                    <ul style="font-size: var(--text-sm); color: var(--gray-500); margin: 0;">
+                        <li><strong>頁面級:</strong> --space-16 (64px) - 主要內容區域</li>
+                        <li><strong>區塊級:</strong> --space-8 (32px) - 大區塊內距</li>
+                        <li><strong>組件級:</strong> --space-6 (24px) - 組件內距和間距</li>
+                        <li><strong>元素級:</strong> --space-4 (16px) - 元素間距</li>
+                        <li><strong>內容級:</strong> --space-2 (8px) - 內容內距</li>
+                        <li><strong>細節級:</strong> --space-1 (4px) - 細節間距</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 響應式間距展示 -->
+        <section class="demo-section">
+            <h2>📱 響應式間距建議</h2>
+            <p>在不同螢幕尺寸下，間距應該適當調整以保持良好的視覺效果。</p>
+            
+            <div class="example-container">
+                <div class="example-header">響應式間距策略</div>
+                <div class="example-content">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-6);">
+                        <div style="background: var(--gray-100); padding: var(--space-4); border-radius: var(--radius-md);">
+                            <h4 style="margin: 0 0 var(--space-2) 0;">手機端 (< 768px)</h4>
+                            <ul style="margin: 0; font-size: var(--text-sm); color: var(--gray-500);">
+                                <li>容器內距: --space-4</li>
+                                <li>組件間距: --space-4</li>
+                                <li>元素間距: --space-2</li>
+                            </ul>
+                        </div>
+                        <div style="background: var(--accent-100); padding: var(--space-6); border-radius: var(--radius-md);">
+                            <h4 style="margin: 0 0 var(--space-2) 0;">平板端 (≥ 768px)</h4>
+                            <ul style="margin: 0; font-size: var(--text-sm);">
+                                <li>容器內距: --space-6</li>
+                                <li>組件間距: --space-6</li>
+                                <li>元素間距: --space-4</li>
+                            </ul>
+                        </div>
+                        <div style="background: var(--gray-100); padding: var(--space-8); border-radius: var(--radius-md);">
+                            <h4 style="margin: 0 0 var(--space-2) 0;">桌面端 (≥ 1024px)</h4>
+                            <ul style="margin: 0; font-size: var(--text-sm); color: var(--gray-500);">
+                                <li>容器內距: --space-8</li>
+                                <li>組件間距: --space-8</li>
+                                <li>元素間距: --space-4</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--space-6);"><strong>建議:</strong> 在較小螢幕上使用較小的間距，在較大螢幕上使用較大的間距，保持比例協調。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 間距檢測工具 -->
+        <section class="demo-section">
+            <h2>🔍 間距檢測工具</h2>
+            <p>點擊按鈕啟用間距視覺化工具，幫助檢查頁面中的間距是否符合設計系統。</p>
+            
+            <div class="example-container">
+                <div class="example-header">調試工具</div>
+                <div class="example-content">
+                    <button class="btn-demo" onclick="toggleSpacingDebug()">切換間距視覺化</button>
+                    <button class="btn-demo" onclick="checkSpacing()" style="background: var(--gray-500);">檢查間距規範</button>
+                    <div id="spacing-results" style="margin-top: var(--space-4); padding: var(--space-4); background: var(--gray-100); border-radius: var(--radius-md); display: none;">
+                        <h4 style="margin: 0 0 var(--space-2) 0;">檢測結果:</h4>
+                        <div id="spacing-report"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        let debugMode = false;
+        
+        function toggleSpacingDebug() {
+            debugMode = !debugMode;
+            const body = document.body;
+            
+            if (debugMode) {
+                body.style.position = 'relative';
+                
+                // 創建間距標尺
+                const ruler = document.createElement('div');
+                ruler.id = 'spacing-ruler';
+                ruler.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 24px;
+                    background: repeating-linear-gradient(90deg, 
+                        #ff0000 0px, #ff0000 1px, 
+                        transparent 1px, transparent 8px);
+                    z-index: 9999;
+                    pointer-events: none;
+                    opacity: 0.6;
+                `;
+                body.appendChild(ruler);
+                
+                // 添加調試樣式
+                const debugStyle = document.createElement('style');
+                debugStyle.id = 'debug-spacing';
+                debugStyle.textContent = `
+                    * {
+                        outline: 1px solid rgba(255, 0, 0, 0.2) !important;
+                        background: rgba(255, 0, 0, 0.02) !important;
+                    }
+                    
+                    *::before {
+                        content: attr(class);
+                        position: absolute;
+                        top: -20px;
+                        left: 0;
+                        font-size: 10px;
+                        color: red;
+                        background: white;
+                        padding: 1px 4px;
+                        border: 1px solid red;
+                        z-index: 10000;
+                        pointer-events: none;
+                    }
+                `;
+                document.head.appendChild(debugStyle);
+            } else {
+                const ruler = document.getElementById('spacing-ruler');
+                const debugStyle = document.getElementById('debug-spacing');
+                if (ruler) ruler.remove();
+                if (debugStyle) debugStyle.remove();
+            }
+        }
+        
+        function checkSpacing() {
+            const results = document.getElementById('spacing-results');
+            const report = document.getElementById('spacing-report');
+            
+            // 簡單的間距檢查邏輯
+            const elements = document.querySelectorAll('*');
+            let violations = [];
+            
+            elements.forEach((el, index) => {
+                const styles = window.getComputedStyle(el);
+                const padding = parseInt(styles.paddingTop) || 0;
+                const margin = parseInt(styles.marginTop) || 0;
+                
+                // 檢查是否符合 4px 的倍數（8px 網格的基礎）
+                if (padding > 0 && padding % 4 !== 0) {
+                    violations.push(`元素 ${index}: padding ${padding}px 不符合 4px 倍數`);
+                }
+                if (margin > 0 && margin % 4 !== 0) {
+                    violations.push(`元素 ${index}: margin ${margin}px 不符合 4px 倍數`);
+                }
+            });
+            
+            if (violations.length === 0) {
+                report.innerHTML = '<p style="color: green; margin: 0;">✅ 所有間距都符合設計系統規範！</p>';
+            } else {
+                report.innerHTML = `
+                    <p style="color: orange; margin: 0 0 8px 0;">⚠️ 發現 ${violations.length} 個不符合規範的間距:</p>
+                    <ul style="margin: 0; font-size: 12px;">
+                        ${violations.slice(0, 10).map(v => `<li>${v}</li>`).join('')}
+                        ${violations.length > 10 ? `<li>... 還有 ${violations.length - 10} 個</li>` : ''}
+                    </ul>
+                `;
+            }
+            
+            results.style.display = 'block';
+        }
+        
+        // 頁面載入完成後顯示歡迎訊息
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Linker 間距系統展示頁面已載入');
+            console.log('💡 提示：你可以使用瀏覽器開發者工具檢查各元素的間距值');
+            console.log('📝 所有間距都基於 CSS 變數，可以在 :root 中找到定義');
+        });
+    </script>
+</body>
+</html>

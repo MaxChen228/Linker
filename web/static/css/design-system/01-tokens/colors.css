@@ -1,12 +1,17 @@
 /* ================================================
-   設計令牌 - 顏色系統
+   現代化三層顏色架構系統 v2
+   ================================================
+   
+   Layer 1: 原始調色盤 (Raw Palette)
+   Layer 2: 語義組合 (Semantic Combinations)
+   Layer 3: 使用場景 (Use Cases) - 向後兼容
+   
    ================================================ */
 
 :root {
-  /* ========== Simplified Color System ========== */
-  /* Using a single accent color (indigo) with grayscale */
+  /* ===== LAYER 1: 原始調色盤 ===== */
   
-  /* ========== Gray Scale ========== */
+  /* ========== Grayscale ========== */
   --gray-50: #fafafa;
   --gray-100: #f4f4f5;
   --gray-200: #e4e4e7;
@@ -19,7 +24,7 @@
   --gray-900: #18181b;
   --gray-950: #09090b;
   
-  /* ========== Primary Accent (Indigo) ========== */
+  /* ========== Accent (Primary) - Indigo ========== */
   --accent-50: #eef2ff;
   --accent-100: #e0e7ff;
   --accent-200: #c7d2fe;
@@ -31,139 +36,326 @@
   --accent-800: #3730a3;
   --accent-900: #312e81;
   
-  /* ========== Semantic Colors (Minimal) ========== */
-  --color-primary: var(--accent-600);
-  --color-primary-hover: var(--accent-700);
-  --color-primary-active: var(--accent-800);
-  --color-primary-light: var(--accent-50);
-  --color-primary-lighter: var(--accent-100);
+  /* ========== Semantic Base Colors ========== */
+  /* Success - Green */
+  --success-50: #ecfdf5;
+  --success-100: #d1fae5;
+  --success-200: #a7f3d0;
+  --success-300: #6ee7b7;
+  --success-400: #34d399;
+  --success-500: #10b981;
+  --success-600: #059669;
+  --success-700: #047857;
+  --success-800: #065f46;
+  --success-900: #064e3b;
   
-  /* Proper Semantic Colors for better UX */
-  --color-success: #10b981;  /* Green for success */
-  --color-success-hover: #059669;
-  --color-success-active: #047857;
-  --color-success-light: #d1fae5;
+  /* Warning - Orange/Amber */
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-200: #fed7aa;
+  --warning-300: #fdba74;
+  --warning-400: #fb923c;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-700: #b45309;
+  --warning-800: #92400e;
+  --warning-900: #78350f;
   
-  --color-warning: #f59e0b;  /* Orange for warning */
-  --color-warning-hover: #d97706;
-  --color-warning-active: #b45309;
-  --color-warning-light: #fed7aa;
+  /* Error - Red */
+  --error-50: #fef2f2;
+  --error-100: #fee2e2;
+  --error-200: #fecaca;
+  --error-300: #fca5a5;
+  --error-400: #f87171;
+  --error-500: #ef4444;
+  --error-600: #dc2626;
+  --error-700: #b91c1c;
+  --error-800: #991b1b;
+  --error-900: #7f1d1d;
+
+  /* ===== LAYER 2: 語義組合層 ===== */
   
-  --color-error: #ef4444;  /* Red for error */
-  --color-error-hover: #dc2626;
-  --color-error-active: #b91c1c;
-  --color-error-light: #fee2e2;
+  /* ========== Primary Color System ========== */
+  --primary: var(--accent-600);
+  --primary-hover: var(--accent-700);
+  --primary-active: var(--accent-800);
+  --primary-light: var(--accent-50);
+  --primary-subtle: var(--accent-100);
+  --primary-muted: var(--accent-200);
+  --primary-emphasis: var(--accent-900);
   
-  --color-info: var(--accent-500);
-  --color-info-light: var(--accent-50);
+  /* ========== Success Color System ========== */
+  --success: var(--success-600);
+  --success-hover: var(--success-700);
+  --success-active: var(--success-800);
+  --success-light: var(--success-100);
+  --success-subtle: var(--success-50);
+  --success-muted: var(--success-200);
+  --success-emphasis: var(--success-900);
   
-  /* Add missing subtle variants */
-  --color-primary-subtle: var(--accent-50);
-  --color-success-subtle: #d1fae5;
-  --color-warning-subtle: #fed7aa;
-  --color-error-subtle: #fee2e2;
-  --color-info-subtle: var(--accent-50);
+  /* ========== Warning Color System ========== */
+  --warning: var(--warning-600);
+  --warning-hover: var(--warning-700);
+  --warning-active: var(--warning-800);
+  --warning-light: var(--warning-100);
+  --warning-subtle: var(--warning-50);
+  --warning-muted: var(--warning-200);
+  --warning-emphasis: var(--warning-900);
   
-  /* ========== Surface Colors ========== */
+  /* ========== Error Color System ========== */
+  --error: var(--error-600);
+  --error-hover: var(--error-700);
+  --error-active: var(--error-800);
+  --error-light: var(--error-100);
+  --error-subtle: var(--error-50);
+  --error-muted: var(--error-200);
+  --error-emphasis: var(--error-900);
+  
+  /* ========== Info Color System ========== */
+  --info: var(--accent-500);
+  --info-hover: var(--accent-600);
+  --info-active: var(--accent-700);
+  --info-light: var(--accent-50);
+  --info-subtle: var(--accent-100);
+  --info-muted: var(--accent-200);
+  --info-emphasis: var(--accent-900);
+  
+  /* ========== Surface Color System ========== */
   --surface-base: #ffffff;
   --surface-elevated: var(--gray-50);
   --surface-subtle: var(--gray-100);
+  --surface-muted: var(--gray-200);
+  --surface-emphasis: var(--gray-900);
   --surface-overlay: rgba(255, 255, 255, 0.95);
   --surface-glass: rgba(255, 255, 255, 0.7);
   
-  /* ========== Text Colors ========== */
+  /* ========== Text Color System ========== */
   --text-primary: var(--gray-900);
   --text-secondary: var(--gray-600);
   --text-muted: var(--gray-500);
   --text-disabled: var(--gray-400);
   --text-inverse: #ffffff;
   --text-accent: var(--accent-600);
+  --text-on-primary: #ffffff;
+  --text-on-success: #ffffff;
+  --text-on-warning: #ffffff;
+  --text-on-error: #ffffff;
   
-  /* ========== Border Colors ========== */
+  /* ========== Border Color System ========== */
   --border-light: var(--gray-200);
   --border-default: var(--gray-300);
-  --border-dark: var(--gray-400);
+  --border-emphasis: var(--gray-400);
+  --border-strong: var(--gray-600);
   --border-focus: var(--accent-400);
   --border-accent: var(--accent-300);
+  --border-success: var(--success-300);
+  --border-warning: var(--warning-300);
+  --border-error: var(--error-300);
   
-  /* ========== Background Colors ========== */
+  /* ========== Interactive State System ========== */
+  --hover-bg: var(--gray-100);
+  --hover-bg-subtle: var(--gray-50);
+  --hover-border: var(--gray-400);
+  --active-bg: var(--gray-200);
+  --active-border: var(--gray-500);
+  --focus-ring: 0 0 0 3px var(--accent-100);
+  --focus-ring-error: 0 0 0 3px var(--error-100);
+  --focus-ring-success: 0 0 0 3px var(--success-100);
+  --focus-ring-warning: 0 0 0 3px var(--warning-100);
+
+  /* ===== LAYER 3: 使用場景層（向後兼容） ===== */
+  
+  /* ========== Legacy Primary Colors ========== */
+  --color-primary-active: var(--primary-active);
+  --color-primary-light: var(--primary-light);
+  --color-primary-lighter: var(--primary-subtle);
+  --color-primary-subtle: var(--primary-subtle);
+  --primary-base: var(--primary);
+  
+  /* ========== Legacy Success Colors ========== */
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  --color-success-active: var(--success-active);
+  --color-success-light: var(--success-light);
+  --color-success-subtle: var(--success-subtle);
+  --success-base: var(--success);
+  
+  /* ========== Legacy Warning Colors ========== */
+  --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
+  --color-warning-active: var(--warning-active);
+  --color-warning-light: var(--warning-light);
+  --color-warning-subtle: var(--warning-subtle);
+  --warning-base: var(--warning);
+  
+  /* ========== Legacy Error Colors ========== */
+  --color-error: var(--error);
+  --color-error-hover: var(--error-hover);
+  --color-error-active: var(--error-active);
+  --color-error-light: var(--error-light);
+  --color-error-subtle: var(--error-subtle);
+  --error-base: var(--error);
+  --error-border: var(--error-muted);
+  
+  /* ========== Legacy Info Colors ========== */
+  --color-info-hover: var(--info-hover);
+  --color-info-active: var(--info-active);
+  --color-info-light: var(--info-light);
+  --color-info-subtle: var(--info-subtle);
+  
+  /* ========== Legacy Background Colors ========== */
   --bg-primary: var(--surface-base);
   --bg-secondary: var(--surface-elevated);
+  --bg-tertiary: var(--surface-muted);
   --bg-overlay: rgba(0, 0, 0, 0.4);
-  --bg-accent-subtle: var(--accent-50);
+  --bg-accent-subtle: var(--primary-light);
   --bg-gray-subtle: var(--gray-50);
   
-  /* ========== Shadow Colors ========== */
+  /* ========== Legacy Shadow Colors ========== */
   --shadow-color: rgba(0, 0, 0, 0.08);
   --shadow-color-light: rgba(0, 0, 0, 0.04);
   --shadow-color-dark: rgba(0, 0, 0, 0.12);
   
-  /* ========== Interactive States ========== */
-  --hover-bg: var(--gray-100);
-  --hover-border: var(--gray-400);
-  --active-bg: var(--gray-200);
-  --focus-ring: 0 0 0 3px var(--accent-100);
-  
-  /* ========== Missing Variables for Compatibility ========== */
-  --primary-base: var(--accent-600);
-  --warning-base: #f59e0b;
-  --success-base: #10b981;
-  --error-base: #ef4444;
-  --bg-tertiary: var(--gray-200);
-  --error-border: #fca5a5;
-  --accent-600-rgb: 79, 70, 229;  /* RGB values for accent-600 */
+  /* ========== Legacy RGB Values ========== */
+  --accent-600-rgb: 79, 70, 229;
+  --accent-rgb: 79, 70, 229;  /* Alias for --accent-600-rgb */
+  --success-600-rgb: 5, 150, 105;
+  --warning-600-rgb: 217, 119, 6;
+  --error-600-rgb: 220, 38, 38;
 }
 
-/* ========== Dark Mode ========== */
+/* ========== 暗色模式支援 ========== */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Surface Colors */
+    /* ===== LAYER 2: 暗色模式語義組合 ===== */
+    
+    /* ========== Primary Color System (Dark) ========== */
+    --primary: var(--accent-500);
+    --primary-hover: var(--accent-400);
+    --primary-active: var(--accent-300);
+    --primary-light: rgba(99, 102, 241, 0.1);
+    --primary-subtle: rgba(99, 102, 241, 0.05);
+    --primary-muted: rgba(99, 102, 241, 0.15);
+    --primary-emphasis: var(--accent-200);
+    
+    /* ========== Success Color System (Dark) ========== */
+    --success: var(--success-500);
+    --success-hover: var(--success-400);
+    --success-active: var(--success-300);
+    --success-light: rgba(16, 185, 129, 0.1);
+    --success-subtle: rgba(16, 185, 129, 0.05);
+    --success-muted: rgba(16, 185, 129, 0.15);
+    --success-emphasis: var(--success-200);
+    
+    /* ========== Warning Color System (Dark) ========== */
+    --warning: var(--warning-500);
+    --warning-hover: var(--warning-400);
+    --warning-active: var(--warning-300);
+    --warning-light: rgba(245, 158, 11, 0.1);
+    --warning-subtle: rgba(245, 158, 11, 0.05);
+    --warning-muted: rgba(245, 158, 11, 0.15);
+    --warning-emphasis: var(--warning-200);
+    
+    /* ========== Error Color System (Dark) ========== */
+    --error: var(--error-500);
+    --error-hover: var(--error-400);
+    --error-active: var(--error-300);
+    --error-light: rgba(239, 68, 68, 0.1);
+    --error-subtle: rgba(239, 68, 68, 0.05);
+    --error-muted: rgba(239, 68, 68, 0.15);
+    --error-emphasis: var(--error-200);
+    
+    /* ========== Info Color System (Dark) ========== */
+    --info: var(--accent-400);
+    --info-hover: var(--accent-300);
+    --info-active: var(--accent-200);
+    --info-light: rgba(129, 140, 248, 0.1);
+    --info-subtle: rgba(129, 140, 248, 0.05);
+    --info-muted: rgba(129, 140, 248, 0.15);
+    --info-emphasis: var(--accent-200);
+    
+    /* ========== Surface Color System (Dark) ========== */
     --surface-base: #18181b;
     --surface-elevated: #27272a;
-    --surface-subtle: #1f1f23;  /* Added for dark mode */
+    --surface-subtle: #1f1f23;
+    --surface-muted: #3f3f46;
+    --surface-emphasis: #fafafa;
     --surface-overlay: rgba(24, 24, 27, 0.9);
     --surface-glass: rgba(24, 24, 27, 0.8);
-    --surface-dark: #0f0f11;  /* Added for components needing darker surface */
     
-    /* Text Colors */
+    /* ========== Text Color System (Dark) ========== */
     --text-primary: #fafafa;
     --text-secondary: #a1a1aa;
     --text-muted: #71717a;
     --text-disabled: #52525b;
-    --text-accent: var(--accent-400);  /* Lighter accent for dark mode */
+    --text-inverse: var(--gray-900);
+    --text-accent: var(--accent-400);
+    --text-on-primary: #ffffff;
+    --text-on-success: #ffffff;
+    --text-on-warning: #000000;
+    --text-on-error: #ffffff;
     
-    /* Border Colors */
+    /* ========== Border Color System (Dark) ========== */
     --border-light: #27272a;
     --border-default: #3f3f46;
-    --border-dark: #52525b;
-    --border-focus: var(--accent-500);  /* Brighter focus for dark mode */
-    --glass-border-dark: rgba(255, 255, 255, 0.1);  /* Added for glass morphism */
+    --border-emphasis: #52525b;
+    --border-strong: #71717a;
+    --border-focus: var(--accent-500);
+    --border-accent: var(--accent-600);
+    --border-success: var(--success-600);
+    --border-warning: var(--warning-600);
+    --border-error: var(--error-600);
     
-    /* Background Colors */
-    --bg-primary: var(--surface-base);
-    --bg-secondary: var(--surface-elevated);
-    --bg-tertiary: var(--surface-subtle);  /* Added */
-    --bg-overlay: rgba(0, 0, 0, 0.7);
-    --bg-accent-subtle: rgba(99, 102, 241, 0.1);  /* Added - dark mode accent bg */
-    --bg-gray-subtle: var(--gray-900);  /* Added */
-    
-    /* Dark mode subtle variants */
-    --color-primary-subtle: rgba(99, 102, 241, 0.1);
-    --color-success-subtle: rgba(16, 185, 129, 0.1);
-    --color-warning-subtle: rgba(245, 158, 11, 0.1);
-    --color-error-subtle: rgba(239, 68, 68, 0.1);
-    --color-info-subtle: rgba(99, 102, 241, 0.1);
-    
-    /* Interactive States */
-    --hover-bg: rgba(255, 255, 255, 0.05);  /* Added - subtle hover for dark */
-    --hover-bg-dark: rgba(0, 0, 0, 0.3);  /* Added - darker hover option */
+    /* ========== Interactive State System (Dark) ========== */
+    --hover-bg: rgba(255, 255, 255, 0.05);
+    --hover-bg-subtle: rgba(255, 255, 255, 0.02);
     --hover-border: var(--gray-600);
-    --active-bg: rgba(255, 255, 255, 0.1);  /* Added - active state for dark */
-    --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.3);  /* Adjusted for dark */
+    --active-bg: rgba(255, 255, 255, 0.1);
+    --active-border: var(--gray-500);
+    --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.3);
+    --focus-ring-error: 0 0 0 3px rgba(239, 68, 68, 0.3);
+    --focus-ring-success: 0 0 0 3px rgba(16, 185, 129, 0.3);
+    --focus-ring-warning: 0 0 0 3px rgba(245, 158, 11, 0.3);
+
+    /* ===== LAYER 3: 暗色模式使用場景（向後兼容） ===== */
     
-    /* Shadow Colors */
+    /* ========== Legacy Colors Updated for Dark Mode ========== */
+    --bg-accent-subtle: var(--primary-light);
+    --bg-gray-subtle: var(--gray-900);
     --shadow-color: rgba(0, 0, 0, 0.3);
     --shadow-color-light: rgba(0, 0, 0, 0.2);
     --shadow-color-dark: rgba(0, 0, 0, 0.4);
+    
+    /* Glass morphism border for dark mode */
+    --glass-border-dark: rgba(255, 255, 255, 0.1);
+    
+    /* Additional dark mode specific variables */
+    --surface-dark: #0f0f11;
+    --hover-bg-dark: rgba(0, 0, 0, 0.3);
   }
 }
+
+/* ========== 實用工具類別 ========== */
+.color-primary { color: var(--primary) !important; }
+.color-success { color: var(--success) !important; }
+.color-warning { color: var(--warning) !important; }
+.color-error { color: var(--error) !important; }
+.color-info { color: var(--info) !important; }
+
+.bg-primary { background-color: var(--primary) !important; }
+.bg-success { background-color: var(--success) !important; }
+.bg-warning { background-color: var(--warning) !important; }
+.bg-error { background-color: var(--error) !important; }
+.bg-info { background-color: var(--info) !important; }
+
+.bg-primary-subtle { background-color: var(--primary-subtle) !important; }
+.bg-success-subtle { background-color: var(--success-subtle) !important; }
+.bg-warning-subtle { background-color: var(--warning-subtle) !important; }
+.bg-error-subtle { background-color: var(--error-subtle) !important; }
+.bg-info-subtle { background-color: var(--info-subtle) !important; }
+
+.border-primary { border-color: var(--primary) !important; }
+.border-success { border-color: var(--success) !important; }
+.border-warning { border-color: var(--warning) !important; }
+.border-error { border-color: var(--error) !important; }
+.border-info { border-color: var(--info) !important; }

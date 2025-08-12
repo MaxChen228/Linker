@@ -8,6 +8,7 @@ import os
 import time
 from typing import Any, Dict, List, Optional
 
+from core.config_manager import get_config
 from core.log_config import get_module_logger
 
 
@@ -18,8 +19,12 @@ class AIService:
         self.logger = get_module_logger(__name__)  # 先初始化 logger
         self.api_key = os.getenv("GEMINI_API_KEY")
         # 模型名稱可由環境變數覆蓋
-        self.generate_model_name = os.getenv("GEMINI_GENERATE_MODEL", "gemini-2.5-flash")
-        self.grade_model_name = os.getenv("GEMINI_GRADE_MODEL", "gemini-2.5-pro")
+        config = get_config()
+        self.generate_model_name = config.model_generate
+        self.grade_model_name = config.model_grade
+        self.ai_config = config.get_ai_config()
+        self.temperature_generate = config.temperature_generate
+        self.temperature_grade = config.temperature_grade
         self.generate_model = None
         self.grade_model = None
         # self.cache = {}  # 完全禁用快取
@@ -42,7 +47,7 @@ class AIService:
                 self.generate_model_name,
                 generation_config=genai.GenerationConfig(
                     response_mime_type="application/json",
-                    temperature=1.0,  # 提高溫度以增加創意和變化
+                    temperature=self.temperature_generate,  # 提高溫度以增加創意和變化
                     top_p=0.95,
                     top_k=40,  # 增加候選token數量
                 ),
@@ -52,7 +57,7 @@ class AIService:
                 self.grade_model_name,
                 generation_config=genai.GenerationConfig(
                     response_mime_type="application/json",
-                    temperature=0.2,
+                    temperature=self.temperature_grade,
                     top_p=0.9,
                 ),
             )
@@ -176,10 +181,13 @@ class AIService:
         self,
         prompt: str,
         temperature: float = 0.7,
-        max_tokens: int = 3000,
+        max_tokens: int = None,
         model: Optional[Any] = None
     ) -> str:
         """異步生成內容"""
+        if max_tokens is None:
+            max_tokens = self.ai_config['max_tokens']
+            
         # 使用 asyncio 在後台執行同步方法
         loop = asyncio.get_event_loop()
 

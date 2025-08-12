@@ -4,47 +4,47 @@
 
 /* ========== 頁面頭部 ========== */
 .patterns-header {
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
 .header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
 }
 
 .page-title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
   color: var(--text-primary);
   margin: 0;
 }
 
 .quick-stats {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .stat-badge {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.75rem 1.5rem;
+  padding: var(--space-3) var(--space-6);
   background: var(--accent-50);
   border: 1px solid var(--accent-200);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
 }
 
 .badge-label {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--text-secondary);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
 }
 
 .badge-value {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
   color: var(--accent-600);
 }
 
@@ -56,12 +56,12 @@
 
 .search-bar input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 3rem;
-  font-size: 1rem;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-12);
+  font-size: var(--text-base);
   border: 2px solid var(--border-default);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: var(--surface-base);
-  transition: all 0.2s;
+  transition: all var(--duration-normal);
 }
 
 .search-bar input:focus {
@@ -72,7 +72,7 @@
 
 .search-icon {
   position: absolute;
-  left: 1rem;
+  left: var(--space-4);
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-tertiary);
@@ -80,25 +80,25 @@
 
 .search-hint {
   position: absolute;
-  right: 1rem;
+  right: var(--space-4);
   top: 50%;
   transform: translateY(-50%);
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--text-tertiary);
   pointer-events: none;
 }
 
 /* ========== 篩選區域 ========== */
 .filter-container {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
+  margin-bottom: var(--space-8);
+  padding: var(--space-6);
   background: var(--surface-elevated);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
 }
 
 .filter-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
 }
 
 .filter-section:last-child {
@@ -106,10 +106,10 @@
 }
 
 .filter-title {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
   color: var(--text-secondary);
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -118,7 +118,7 @@
 .filter-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 /* 舊的 .filter-tab 和 .filter-pill 樣式已移至設計系統 */
@@ -133,15 +133,15 @@
 .patterns-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  gap: var(--space-6);
+  margin-bottom: var(--space-12);
 }
 
 .pattern-card-compact {
   background: var(--surface-base);
   border: 1px solid var(--border-light);
-  border-radius: 12px;
-  transition: all 0.3s;
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-normal);
   overflow: hidden;
 }
 
@@ -153,7 +153,7 @@
 
 .pattern-link {
   display: block;
-  padding: 1.25rem;
+  padding: var(--space-5);
   text-decoration: none;
   color: inherit;
 }
@@ -163,44 +163,44 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
 }
 
 .pattern-formula {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
   color: var(--text-primary);
   margin: 0;
-  line-height: 1.3;
+  line-height: var(--leading-snug);
 }
 
 .pattern-badges {
   display: flex;
-  gap: 0.375rem;
+  gap: var(--space-1-5);
   flex-shrink: 0;
 }
 
 .category-badge {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  border-radius: var(--radius);
+  font-weight: var(--font-medium);
   background: var(--accent-100);
   color: var(--accent-700);
 }
 
 /* 公式展示 */
 .pattern-formula-compact {
-  margin-bottom: 0.75rem;
-  padding: 0.5rem;
+  margin-bottom: var(--space-3);
+  padding: var(--space-2);
   background: var(--surface-dark);
-  border-radius: 6px;
+  border-radius: var(--radius);
   overflow: hidden;
 }
 
 .pattern-formula-compact code {
   font-family: 'Fira Code', 'Consolas', monospace;
-  font-size: 0.8125rem;
+  font-size: var(--text-sm);
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
@@ -211,8 +211,8 @@
 /* 統計資訊 */
 .pattern-stats-compact {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border-light);
 }
@@ -221,7 +221,7 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.8125rem;
+  font-size: var(--text-sm);
   color: var(--text-tertiary);
 }
 
@@ -231,26 +231,26 @@
 
 /* 例句預覽 */
 .pattern-example-preview {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
 }
 
 .example-item {
-  padding: 0.625rem;
+  padding: var(--space-2-5);
   background: var(--surface-elevated);
-  border-radius: 6px;
+  border-radius: var(--radius);
   border-left: 3px solid var(--accent-300);
 }
 
 .example-zh,
 .example-en {
   display: block;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
 }
 
 .example-zh {
   color: var(--text-secondary);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
 }
 
 .example-en {
@@ -261,14 +261,14 @@
 /* 卡片底部 */
 .pattern-footer {
   text-align: right;
-  padding-top: 0.5rem;
+  padding-top: var(--space-2);
 }
 
 .view-detail {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--accent-600);
-  font-weight: 500;
-  transition: color 0.2s;
+  font-weight: var(--font-medium);
+  transition: color var(--duration-normal);
 }
 
 .pattern-card-compact:hover .view-detail {
@@ -282,18 +282,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
+  padding: var(--space-16) var(--space-8);
   text-align: center;
 }
 
 .no-results svg {
   color: var(--text-tertiary);
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 
 .no-results p {
   color: var(--text-secondary);
-  font-size: 1.125rem;
+  font-size: var(--text-lg);
 }
 
 /* ========== 響應式設計 ========== */
@@ -305,7 +305,7 @@
   .header-top {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: var(--space-4);
   }
   
   .filter-tabs {
@@ -316,7 +316,7 @@
   
   .pattern-header-compact {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
   
   .pattern-badges {

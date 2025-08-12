@@ -66,8 +66,8 @@ a:hover {
 }
 
 a:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  outline: var(--space-0-25) solid var(--primary);
+  outline-offset: var(--space-0-25);
   border-radius: var(--radius-sm);
 }
 
@@ -91,7 +91,7 @@ img {
   font-style: italic;
   background-repeat: no-repeat;
   background-size: cover;
-  shape-margin: 0.75rem;
+  shape-margin: var(--space-3);
   vertical-align: middle;
 }
 
@@ -138,8 +138,8 @@ table {
 
 /* Focus Styles */
 :focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  outline: var(--space-0-25) solid var(--primary);
+  outline-offset: var(--space-0-25);
 }
 
 /* Selection */
@@ -150,8 +150,8 @@ table {
 
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
 }
 
 ::-webkit-scrollbar-track {
@@ -181,7 +181,7 @@ table {
   }
   
   @page {
-    margin: 2cm;
+    margin: var(--space-8);
   }
 }
 

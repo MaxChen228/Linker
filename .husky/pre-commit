@@ -1,0 +1,29 @@
+echo "🎨 Running stylelint on CSS files..."
+
+# Get staged CSS files
+STAGED_CSS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(css)$' | tr '\n' ' ')
+
+if [ -z "$STAGED_CSS_FILES" ]; then
+    echo "✅ No CSS files to lint"
+    exit 0
+fi
+
+echo "📁 Checking files: $STAGED_CSS_FILES"
+
+# Run stylelint on staged files only
+npx stylelint $STAGED_CSS_FILES
+
+STYLELINT_EXIT_CODE=$?
+
+if [ $STYLELINT_EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "❌ Stylelint found errors in your CSS files!"
+    echo "💡 To fix automatically, run: npm run lint:css"
+    echo "🔧 To check without fixing: npm run lint:css:check"
+    echo ""
+    echo "Commit aborted. Please fix the issues and try again."
+    exit 1
+fi
+
+echo "✅ All CSS files pass stylelint checks!"
+exit 0

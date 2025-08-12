@@ -10,12 +10,12 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px); /* 模態蒙罩模糊 */
   -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--z-modal-overlay, 1000);
+  z-index: var(--z-modal-base);
   padding: var(--space-4);
   opacity: 0;
   visibility: hidden;
@@ -39,7 +39,7 @@
 
 .modal-overlay[data-variant="light"] {
   background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px); /* 淡色蒙罩模糊 */
 }
 
 .modal-overlay[data-variant="transparent"] {
@@ -56,11 +56,11 @@
   box-shadow: var(--shadow-modal);
   width: 100%;
   max-width: var(--modal-width, 500px);
-  max-height: 90vh;
+  max-height: 90vh; /* 模態最大高度 */
   display: flex;
   flex-direction: column;
   position: relative;
-  transform: scale(0.95) translateY(20px);
+  transform: scale(0.95) translateY(var(--space-5)); /* 模態初始狀態 */
   opacity: 0;
   transition: 
     transform var(--duration-normal) var(--ease-spring),
@@ -77,19 +77,19 @@
 
 /* Modal Sizes */
 .modal[data-size="sm"] {
-  --modal-width: 400px;
+  --modal-width: 400px; /* 小模態寬度 */
 }
 
 .modal[data-size="md"] {
-  --modal-width: 500px;
+  --modal-width: 500px; /* 中模態寬度 */
 }
 
 .modal[data-size="lg"] {
-  --modal-width: 700px;
+  --modal-width: 700px; /* 大模態寬度 */
 }
 
 .modal[data-size="xl"] {
-  --modal-width: 900px;
+  --modal-width: 900px; /* 特大模態寬度 */
 }
 
 .modal[data-size="full"] {
@@ -100,7 +100,7 @@
 /* Glass Morphism Modal */
 .modal[data-glass="true"] {
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%); /* 玻璃效果 */
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
@@ -129,7 +129,7 @@
   font-weight: var(--font-semibold);
   color: var(--text);
   margin: 0;
-  line-height: 1.2;
+  line-height: var(--leading-tight);
 }
 
 .modal-subtitle {
@@ -143,8 +143,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--space-8);
+  height: var(--space-8);
   padding: 0;
   background: transparent;
   border: none;
@@ -175,7 +175,7 @@
 
 /* Scrollbar Styling */
 .modal-body::-webkit-scrollbar {
-  width: 8px;
+  width: var(--space-2); /* 滾動標寬度 */
 }
 
 .modal-body::-webkit-scrollbar-track {
@@ -220,7 +220,7 @@
 
 /* Alert Modal */
 .modal[data-type="alert"] {
-  --modal-width: 400px;
+  --modal-width: 400px; /* 小模態寬度 */
 }
 
 .modal[data-type="alert"] .modal-body {
@@ -229,8 +229,8 @@
 }
 
 .modal[data-type="alert"] .modal-icon {
-  width: 64px;
-  height: 64px;
+  width: 64px; /* 提示模態圖標尺寸 */
+  height: 64px; /* 提示模態圖標尺寸 */
   margin: 0 auto var(--space-4);
   display: flex;
   align-items: center;
@@ -256,12 +256,12 @@
 
 /* Confirm Modal */
 .modal[data-type="confirm"] {
-  --modal-width: 450px;
+  --modal-width: 450px; /* 確認模態寬度 */
 }
 
 .modal[data-type="confirm"] .modal-message {
   font-size: var(--text-base);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   color: var(--text-muted);
   margin-bottom: var(--space-4);
 }
@@ -281,8 +281,8 @@
 
 /* Image/Media Modal */
 .modal[data-type="media"] {
-  --modal-width: 90vw;
-  max-width: 1200px;
+  --modal-width: 90vw; /* 媒體模態響應式寬度 */
+  max-width: 1200px; /* 媒體模態最大寬度 */
   background: rgba(0, 0, 0, 0.95);
 }
 
@@ -293,7 +293,7 @@
   right: 0;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
   border: none;
-  z-index: 1;
+  z-index: var(--z-raised);
 }
 
 .modal[data-type="media"] .modal-title {
@@ -309,19 +309,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
+  min-height: 400px; /* 媒體模態最小高度 */
 }
 
 .modal[data-type="media"] img,
 .modal[data-type="media"] video {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 100%; /* 媒體元素最大寬度 */
+  max-height: 100%; /* 媒體元素最大高度 */
   object-fit: contain;
 }
 
 /* Debug/Code Modal */
 .modal[data-type="debug"] {
-  --modal-width: 800px;
+  --modal-width: 800px; /* 調試模態寬度 */
   font-family: var(--font-mono);
 }
 
@@ -334,7 +334,7 @@
 .modal[data-type="debug"] .debug-content {
   padding: var(--space-4);
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   white-space: pre-wrap;
   word-break: break-all;
 }
@@ -384,11 +384,11 @@
 /* Zoom Animation */
 @keyframes modalZoom {
   from {
-    transform: scale(0.7);
+    transform: scale(0.7); /* zoom 動畫起始縮放 */
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: scale(1); /* zoom 動畫結束縮放 */
     opacity: 1;
   }
 }
@@ -422,12 +422,12 @@
   .modal {
     max-width: 100%;
     width: 100%;
-    max-height: 85vh;
+    max-height: 85vh; /* 手機模態最大高度 */
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   }
   
   .modal[data-size="full"] {
-    height: 100vh;
+    height: 100vh; /* 全螢幕模態高度 */
     border-radius: 0;
   }
   
@@ -447,8 +447,8 @@
     top: var(--space-2);
     left: 50%;
     transform: translateX(-50%);
-    width: 36px;
-    height: 4px;
+    width: 36px; /* 手機 sheet 指示器寬度 */
+    height: var(--space-1); /* 手機 sheet 指示器高度 */
     background: var(--gray-300);
     border-radius: var(--radius-full);
   }
@@ -463,15 +463,15 @@ body.modal-open {
 
 /* Modal Stack Management */
 .modal-overlay[data-stack="1"] {
-  z-index: 1001;
+  z-index: var(--z-modal-stack-1); /* 模態堆疊層級 1 */
 }
 
 .modal-overlay[data-stack="2"] {
-  z-index: 1002;
+  z-index: var(--z-modal-stack-2); /* 模態堆疊層級 2 */
 }
 
 .modal-overlay[data-stack="3"] {
-  z-index: 1003;
+  z-index: var(--z-modal-stack-3); /* 模態堆疊層級 3 */
 }
 
 /* ========== Accessibility ========== */
@@ -489,7 +489,7 @@ body.modal-open {
 @media (prefers-reduced-motion: reduce) {
   .modal-overlay,
   .modal {
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important; /* 無障礙動畫時長 */
     animation-duration: 0.01ms !important;
   }
 }

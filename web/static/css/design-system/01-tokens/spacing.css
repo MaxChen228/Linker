@@ -5,44 +5,45 @@
 :root {
   /* ========== Spacing Scale (8px base) ========== */
   --space-0: 0;
-  --space-1: 4px;   /* 0.5 * 8 */
-  --space-1-5: 6px; /* 0.75 * 8 */
-  --space-2: 8px;   /* 1 * 8 */
+  
+  /* Micro spacing (less than 4px) */
+  --space-0-25: 2px; /* 0.25 * 8 */
+  --space-0-375: 3px; /* 0.375 * 8 */
+  
+  --space-1: 4px;    /* 0.5 * 8 */
+  --space-1-25: 5px; /* 0.625 * 8 */
+  --space-1-5: 6px;  /* 0.75 * 8 */
+  --space-2: 8px;    /* 1 * 8 */
   --space-2-5: 10px; /* 1.25 * 8 */
-  --space-3: 12px;  /* 1.5 * 8 */
-  --space-4: 16px;  /* 2 * 8 */
-  --space-5: 20px;  /* 2.5 * 8 */
-  --space-6: 24px;  /* 3 * 8 */
-  --space-8: 32px;  /* 4 * 8 */
-  --space-10: 40px; /* 5 * 8 */
-  --space-12: 48px; /* 6 * 8 */
-  --space-16: 64px; /* 8 * 8 */
-  --space-20: 80px; /* 10 * 8 */
+  --space-3: 12px;   /* 1.5 * 8 */
+  --space-4: 16px;   /* 2 * 8 */
+  --space-5: 20px;   /* 2.5 * 8 */
+  --space-6: 24px;   /* 3 * 8 */
+  --space-7: 56px;   /* 7 * 8 - 填補空缺 */
+  --space-8: 32px;   /* 4 * 8 */
+  --space-10: 40px;  /* 5 * 8 */
+  --space-12: 48px;  /* 6 * 8 */
+  --space-15: 60px;  /* 7.5 * 8 */
+  --space-16: 64px;  /* 8 * 8 */
+  --space-20: 80px;  /* 10 * 8 */
+  --space-50: 400px; /* 50 * 8 - for layout calculations */
   
-  /* ========== Button Specific ========== */
-  --btn-height-sm: 32px;
-  --btn-height-md: 40px;
-  --btn-height-lg: 48px;
+  /* Special values (based on actual usage) */
+  --space-special-15: 15px; /* Legacy value, consider migrating to standard scale */
+  --space-special-30: 30px; /* Legacy value, consider migrating to standard scale */
   
-  --btn-padding-sm: 0 var(--space-4);
-  --btn-padding-md: 0 var(--space-5);
-  --btn-padding-lg: 0 var(--space-8);
+  /* ========== Negative Spacing (for margins) ========== */
+  --space-n1: -4px;
+  --space-n2: -8px;
+  --space-n3: -12px;
+  --space-n4: -16px;
+  --space-n6: -24px;
   
-  --btn-gap-sm: var(--space-1);
-  --btn-gap-md: var(--space-2);
-  --btn-gap-lg: var(--space-3);
-  
-  /* ========== Border Radius ========== */
-  --radius-none: 0;
-  --radius-sm: 4px;
-  --radius: 8px;     /* Default radius */
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px;
-  --radius-full: 9999px;
-  
-  /* Button specific radius */
-  --btn-radius: var(--radius-lg);
-  --btn-radius-full: var(--radius-full);
+  /* ========== Semantic Spacing ========== */
+  --spacing-xs: var(--space-1);
+  --spacing-sm: var(--space-2);
+  --spacing-md: var(--space-4);
+  --spacing-lg: var(--space-6);
+  --spacing-xl: var(--space-8);
+  --spacing-2xl: var(--space-12);
 }
