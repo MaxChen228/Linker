@@ -12,15 +12,15 @@
     <div class="header-top">
       <h2 class="page-title">我的知識點庫</h2>
       <div class="quick-stats">
-        <div class="badge stat-badge" data-variant="primary" data-size="xl">
+        <div class="badge" data-variant="primary" data-size="xl">
           <span class="badge-label">總知識點</span>
           <span class="badge-value">{{ points|length }}</span>
         </div>
-        <div class="badge stat-badge" data-variant="warning" data-size="xl">
+        <div class="badge" data-variant="warning" data-size="xl">
           <span class="badge-label">待複習</span>
           <span class="badge-value">{{ due_points|length }}</span>
         </div>
-        <div class="badge stat-badge" data-variant="success" data-size="xl">
+        <div class="badge" data-variant="success" data-size="xl">
           <span class="badge-label">平均掌握度</span>
           <span class="badge-value">{{ "%.0f"|format(stats.avg_mastery * 100) }}%</span>
         </div>

@@ -30,69 +30,6 @@
   flex-wrap: wrap;
 }
 
-.stat-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface-base);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  transition: var(--transition-base);
-  position: relative;
-  min-width: 100px;
-}
-
-.stat-badge:hover {
-  background: var(--bg-secondary);
-  border-color: var(--border-default);
-}
-
-.badge-label {
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--text-tertiary);
-  margin-bottom: var(--space-1);
-}
-
-.badge-value {
-  font-size: var(--text-2xl);
-  font-weight: var(--font-semibold);
-  line-height: 1;
-  color: var(--text-primary);
-}
-
-/* 統一所有統計徽章的顏色 - 移除彩色數字 */
-.stat-badge[data-variant="primary"] .badge-value,
-.stat-badge[data-variant="warning"] .badge-value,
-.stat-badge[data-variant="success"] .badge-value {
-  color: var(--text-primary);
-}
-
-/* 只用小圓點來標識不同類型 */
-.stat-badge[data-variant="primary"]::after,
-.stat-badge[data-variant="warning"]::after,
-.stat-badge[data-variant="success"]::after {
-  content: '';
-  position: absolute;
-  top: var(--space-2);
-  right: var(--space-2);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.stat-badge[data-variant="primary"]::after {
-  background: var(--primary-base);
-}
-
-.stat-badge[data-variant="warning"]::after {
-  background: var(--warning-base);
-}
-
-.stat-badge[data-variant="success"]::after {
-  background: var(--success-base);
-}
 
 /* ========== 搜尋欄 ========== */
 .search-bar {
@@ -210,7 +147,7 @@
 
 .queue-item.due {
   border-left: 3px solid var(--warning);
-  background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);
+  background: linear-gradient(to right, var(--color-warning-subtle), transparent);
 }
 
 .queue-item-info {
@@ -237,15 +174,15 @@
 }
 
 .queue-item-badge .badge.isolated {
-  background: rgba(245, 158, 11, 0.1);
+  background: var(--color-warning-subtle);
   color: var(--warning);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: 1px solid var(--color-warning-subtle);
 }
 
 .queue-item-badge .badge.enhancement {
-  background: rgba(16, 185, 129, 0.1);
+  background: var(--color-success-subtle);
   color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid var(--color-success-subtle);
 }
 
 .queue-more {
@@ -548,7 +485,7 @@
   font-weight: var(--font-semibold);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-full);
-  background: rgba(99, 102, 241, 0.1);
+  background: var(--color-primary-subtle);
   color: var(--text-accent);
 }
 
@@ -613,12 +550,12 @@
 }
 
 .sentence-item.error {
-  background: rgba(239, 68, 68, 0.03);
+  background: var(--color-error-subtle);
   border-left: 2px solid var(--error);
 }
 
 .sentence-item.correct {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--color-success-subtle);
   border-left: 2px solid var(--success);
 }
 
@@ -630,13 +567,13 @@
 }
 
 .compare-item.error {
-  background: rgba(239, 68, 68, 0.03);
+  background: var(--color-error-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--error);
 }
 
 .compare-item.correct {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--color-success-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--success);
 }
@@ -648,7 +585,7 @@
 }
 
 .compare-item.improved {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--color-success-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--success);
 }
@@ -689,7 +626,7 @@
 .card.knowledge-single-card.enhancement,
 .card.knowledge-single-card[data-category="可以更好"] {
   border-left: 3px solid var(--success);
-  background: linear-gradient(to right, rgba(16, 185, 129, 0.02), transparent);
+  background: linear-gradient(to right, var(--color-success-subtle), transparent);
 }
 
 /* 其他錯誤樣式 */
@@ -760,13 +697,13 @@
 }
 
 .sentence-en.error {
-  background: rgba(239, 68, 68, 0.03);
+  background: var(--color-error-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--error);
 }
 
 .sentence-en.correct {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--color-success-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--success);
 }
@@ -778,37 +715,11 @@
 }
 
 .sentence-en.improved {
-  background: rgba(16, 185, 129, 0.03);
+  background: var(--color-success-subtle);
   color: var(--text-primary);
   border-left: 2px solid var(--success);
 }
 
-/* 掌握度徽章 */
-.mastery-badge {
-  font-size: var(--text-xs);
-  padding: var(--space-1-5) var(--space-2-5);
-  border-radius: var(--radius-full);
-  font-weight: var(--font-semibold);
-  white-space: nowrap;
-}
-
-.mastery-badge[data-mastery="low"] {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--error);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-}
-
-.mastery-badge[data-mastery="medium"] {
-  background: rgba(245, 158, 11, 0.1);
-  color: var(--warning);
-  border: 1px solid rgba(245, 158, 11, 0.2);
-}
-
-.mastery-badge[data-mastery="high"] {
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
 
 /* ========== 無結果提示 ========== */
 .no-results {
@@ -855,10 +766,6 @@
     justify-content: space-between;
   }
   
-  .stat-badge {
-    flex: 1;
-    min-width: 100px;
-  }
   
   .search-bar {
     max-width: 100%;
@@ -897,10 +804,6 @@
 
 /* ========== 深色模式 ========== */
 @media (prefers-color-scheme: dark) {
-  .stat-badge {
-    background: var(--surface-elevated);
-    border-color: var(--border-dark);
-  }
   
   .search-bar input {
     background: var(--surface-elevated);

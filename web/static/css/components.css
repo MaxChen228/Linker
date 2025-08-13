@@ -192,3 +192,82 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  /* Lists */
+  .item {
+    background: var(--surface-elevated);
+    border-color: var(--border-light);
+  }
+  
+  .item:hover {
+    background: var(--surface-base);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .item .title {
+    color: var(--text-primary);
+  }
+  
+  /* Examples Section */
+  .examples {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-light);
+  }
+  
+  .examples .zh {
+    color: var(--text-secondary);
+  }
+  
+  .examples .en {
+    color: var(--text-accent);
+  }
+  
+  /* Toast Notifications */
+  .toast {
+    background: var(--surface-elevated);
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .toast-success {
+    background: var(--success-subtle);
+    border-color: var(--success);
+  }
+  
+  .toast-error {
+    background: var(--error-subtle);
+    border-color: var(--error);
+  }
+  
+  /* Empty State */
+  .empty-state {
+    color: var(--text-secondary);
+  }
+  
+  .empty-state svg {
+    opacity: 0.4;
+  }
+  
+  /* Section Styles */
+  .section-title {
+    color: var(--text-primary);
+  }
+  
+  /* Divider */
+  .divider {
+    background: var(--border-light);
+  }
+  
+  /* Utility Classes */
+  .muted {
+    color: var(--text-muted);
+  }
+  
+  /* Focus States */
+  .focus-ring {
+    outline-color: var(--primary);
+  }
+}

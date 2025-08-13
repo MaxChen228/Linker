@@ -1,8 +1,10 @@
 """
 Linker Web Application - Main Entry Point
 """
+import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -10,6 +12,9 @@ from core.log_config import get_module_logger
 from core.version_manager import VersionManager
 from web.dependencies import STATIC_DIR
 from web.middleware import access_log_middleware, configure_logging
+
+# 載入 .env 文件中的環境變數
+load_dotenv()
 
 # 初始化模組 logger
 logger = get_module_logger(__name__)

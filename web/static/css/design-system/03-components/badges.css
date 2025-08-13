@@ -350,38 +350,38 @@
   .badge[data-variant="success"] {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%);
     border-color: rgba(16, 185, 129, 0.4);
-    color: #34d399;
+    color: var(--success-emphasis);
   }
   
   .badge[data-variant="warning"] {
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.15) 100%);
     border-color: rgba(245, 158, 11, 0.4);
-    color: #fbbf24;
+    color: var(--warning-emphasis);
   }
   
   .badge[data-variant="error"] {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.15) 100%);
     border-color: rgba(239, 68, 68, 0.4);
-    color: #f87171;
+    color: var(--error-emphasis);
   }
   
   /* Enhanced dark mode for error categories */
   .badge[data-category="systematic"] {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(239, 68, 68, 0.2) 100%);
     border-color: rgba(239, 68, 68, 0.5);
-    color: #f87171;
+    color: var(--error-emphasis);
   }
   
   .badge[data-category="isolated"] {
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%);
     border-color: rgba(245, 158, 11, 0.5);
-    color: #fbbf24;
+    color: var(--warning-emphasis);
   }
   
   .badge[data-category="enhancement"] {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.2) 100%);
     border-color: rgba(16, 185, 129, 0.5);
-    color: #34d399;
+    color: var(--success-emphasis);
   }
   
   .badge[data-category="other"] {
@@ -395,32 +395,3 @@
   }
 }
 
-/* ============================================ */
-/* 向後兼容（漸進式遷移）                        */
-/* ============================================ */
-
-/* 保留舊類名的基本樣式 */
-.tag {
-  /* 繼承 badge 的所有樣式 */
-  @extend .badge;
-}
-
-.category-badge {
-  @extend .badge;
-}
-
-.stat-badge {
-  @extend .badge[data-size="xl"];
-}
-
-.mastery-badge {
-  @extend .badge;
-}
-
-.error-category-badge {
-  @extend .badge;
-}
-
-.subtype-badge {
-  @extend .badge[data-size="sm"];
-}

@@ -152,6 +152,7 @@
   --border-default: var(--gray-300);
   --border-emphasis: var(--gray-400);
   --border-strong: var(--gray-600);
+  --border-dark: var(--gray-700);
   --border-focus: var(--accent-400);
   --border-accent: var(--accent-300);
   --border-success: var(--success-300);
@@ -239,7 +240,7 @@
     /* ===== LAYER 2: 暗色模式語義組合 ===== */
     
     /* ========== Primary Color System (Dark) ========== */
-    --primary: var(--accent-500);
+    --primary: var(--accent-600);
     --primary-hover: var(--accent-400);
     --primary-active: var(--accent-300);
     --primary-light: rgba(99, 102, 241, 0.1);
@@ -248,7 +249,7 @@
     --primary-emphasis: var(--accent-200);
     
     /* ========== Success Color System (Dark) ========== */
-    --success: var(--success-500);
+    --success: var(--success-600);
     --success-hover: var(--success-400);
     --success-active: var(--success-300);
     --success-light: rgba(16, 185, 129, 0.1);
@@ -257,7 +258,7 @@
     --success-emphasis: var(--success-200);
     
     /* ========== Warning Color System (Dark) ========== */
-    --warning: var(--warning-500);
+    --warning: var(--warning-700);
     --warning-hover: var(--warning-400);
     --warning-active: var(--warning-300);
     --warning-light: rgba(245, 158, 11, 0.1);
@@ -266,7 +267,7 @@
     --warning-emphasis: var(--warning-200);
     
     /* ========== Error Color System (Dark) ========== */
-    --error: var(--error-500);
+    --error: var(--error-600);
     --error-hover: var(--error-400);
     --error-active: var(--error-300);
     --error-light: rgba(239, 68, 68, 0.1);
@@ -295,7 +296,7 @@
     /* ========== Text Color System (Dark) ========== */
     --text-primary: #fafafa;
     --text-secondary: #a1a1aa;
-    --text-muted: #71717a;
+    --text-muted: #9ca3af;
     --text-disabled: #52525b;
     --text-inverse: var(--gray-900);
     --text-accent: var(--accent-400);
@@ -309,6 +310,7 @@
     --border-default: #3f3f46;
     --border-emphasis: #52525b;
     --border-strong: #71717a;
+    --border-dark: var(--gray-800);
     --border-focus: var(--accent-500);
     --border-accent: var(--accent-600);
     --border-success: var(--success-600);

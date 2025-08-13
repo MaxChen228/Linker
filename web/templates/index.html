@@ -56,7 +56,7 @@
       <div class="review-card {% if item.is_due %}is-due{% endif %}" 
            data-mastery="{{ item.mastery_level }}">
         <div class="review-card-header">
-          <span class="review-category badge-{{ item.category_value }}">
+          <span class="badge" data-variant="{% if item.category_value == 'systematic' %}error{% elif item.category_value == 'isolated' %}warning{% elif item.category_value == 'enhancement' %}info{% else %}neutral{% endif %}" data-size="sm">
             {{ item.category }}
           </span>
           <div class="review-stats">
@@ -80,7 +80,7 @@
             錯誤 {{ item.mistake_count }} 次
           </span>
           {% if item.is_due %}
-          <span class="due-badge">待複習</span>
+          <span class="badge" data-variant="warning" data-size="sm">待複習</span>
           {% endif %}
         </div>
       </div>

@@ -41,7 +41,7 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--bg-overlay);
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -141,7 +141,7 @@
 }
 
 .debug-json, .debug-prompt {
-  background: var(--surface-dark, #282c34);
+  background: var(--surface-dark);
   color: var(--text-secondary);
   padding: 15px;
   border-radius: 6px;
@@ -167,34 +167,34 @@
   padding: 8px 12px;
   background: white;
   border-radius: 6px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border-light);
 }
 
 .prompt-stats span {
   font-size: 14px;
-  color: #6c757d;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 /* JSON 語法高亮 */
 .debug-json .json-key {
-  color: #e06c75;
+  color: var(--color-error);
 }
 
 .debug-json .json-string {
-  color: #98c379;
+  color: var(--color-success);
 }
 
 .debug-json .json-number {
-  color: #d19a66;
+  color: var(--color-warning);
 }
 
 .debug-json .json-boolean {
-  color: #56b6c2;
+  color: var(--color-info);
 }
 
 .debug-json .json-null {
-  color: #abb2bf;
+  color: var(--text-muted);
   font-style: italic;
 }
 
@@ -740,8 +740,8 @@
   }
   
   .practice-ready {
-    background: rgba(79, 70, 229, 0.05);
-    border-color: rgba(79, 70, 229, 0.2);
+    background: var(--color-primary-subtle);
+    border-color: var(--color-primary-subtle);
   }
   
   .empty-state {
@@ -750,8 +750,8 @@
   
   .question-section .card[data-type="question"] {
     background: linear-gradient(135deg, 
-      rgba(24, 24, 27, 0.95) 0%, 
-      rgba(24, 24, 27, 0.85) 100%);
+      var(--surface-overlay) 0%, 
+      var(--surface-overlay) 100%);
     border-color: var(--glass-border-dark);
   }
   
@@ -761,7 +761,7 @@
   }
   
   .answer-input:focus {
-    background: rgba(79, 70, 229, 0.15);  /* Increased opacity from 0.05 to 0.15 for better visibility */
+    background: var(--color-primary-subtle);  /* Increased opacity from 0.05 to 0.15 for better visibility */
     border-color: var(--accent-500);
   }
   

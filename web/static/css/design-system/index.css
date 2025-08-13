@@ -25,6 +25,10 @@
 @import url('./03-components/loading.css');
 @import url('./03-components/modals.css');
 @import url('./03-components/utilities.css');
+@import url('./03-components/comparison-cards.css');
+@import url('./03-components/stats-displays.css');
+@import url('./03-components/progress-indicators.css');
+@import url('./03-components/difficulty-badges.css');
 
 /* 4. 佈局 (Layouts) */
 @import url('./04-layouts/layout.css');

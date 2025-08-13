@@ -1,5 +1,10 @@
 /* ================================================
-   知識點詳情頁面 - 統一設計系統
+   知識點詳情頁面 - 使用設計系統組件
+   現在使用以下組件：
+   - comparison-cards.css (錯誤對比)
+   - stats-displays.css (統計顯示)
+   - progress-indicators.css (掌握度)
+   - difficulty-badges.css (標籤徽章)
    ================================================ */
 
 /* ========== 容器 ========== */
@@ -43,7 +48,7 @@
   margin-bottom: var(--space-5);
 }
 
-/* 錯誤對比區塊 - 非對稱設計 */
+/* 錯誤對比區塊 - 使用 comparison-cards 組件 */
 .error-comparison-wrapper {
   position: relative;
   margin: calc(var(--space-4) * -1) calc(var(--space-6) * -1) var(--space-10) calc(var(--space-6) * -1);
@@ -53,103 +58,21 @@
 }
 
 .error-comparison-title {
+  /* 使用 error-comparison 組件類 */
   display: flex;
   align-items: stretch;
   justify-content: space-between;
   gap: 0;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   position: relative;
   max-width: 1000px;
-  margin: 0 auto;
 }
 
-.error-phrase {
-  flex: 0 1 auto;
-  position: relative;
-  color: var(--gray-500);
-  padding: var(--space-2) var(--space-4);
-  background: white;
-  border-radius: var(--radius-lg) 0 var(--radius-lg) var(--radius-lg);
-  border: 2px solid var(--gray-200);
-  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-  font-size: var(--text-sm);
-  letter-spacing: -0.5px;
-  transition: all 0.3s ease;
-  opacity: 0.6;
-  transform: scale(0.9);
-  transform-origin: left center;
-  align-self: flex-start;
-}
-
-.error-phrase::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: var(--space-3);
-  right: var(--space-3);
-  height: 2px;
-  background: var(--error-400);
-  transform: translateY(-50%) rotate(-1deg);
-  opacity: 0.8;
-}
-
-.arrow-icon {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 80px;
-  height: 60px;
-  margin: 0 var(--space-4);
-  position: relative;
-  align-self: center;
-}
-
-.arrow-icon::before {
-  content: '→';
-  font-size: var(--text-3xl);
-  color: var(--gray-300);
-  font-weight: 200;
-  transform: scaleX(1.5);
-}
-
-.correct-phrase {
-  flex: 1 1 auto;
-  position: relative;
-  color: var(--gray-900);
-  font-weight: var(--font-bold);
-  padding: var(--space-5) var(--space-6);
-  background: white;
-  border-radius: var(--radius-2xl);
-  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-  font-size: var(--text-xl);
-  letter-spacing: 0.5px;
-  box-shadow: var(--shadow-elevated-xl);
-  border: 3px solid var(--success-500);
-  transform: scale(1.05);
-  align-self: flex-end;
-  position: relative;
-  z-index: 2;
-}
-
-.correct-phrase::before {
-  content: '✓';
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  width: 32px;
-  height: 32px;
-  background: var(--success-500);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--text-lg);
-  font-weight: bold;
-  box-shadow: var(--shadow-xl);
-}
+/* 以下樣式已移至 comparison-cards.css 組件 */
+/* .error-phrase 使用 .comparison-item[data-type="error"] */
+/* .correct-phrase 使用 .comparison-item[data-type="correct"] */
+/* .arrow-icon 使用 .comparison-arrow */
 
 /* 知識點描述文字 */
 .knowledge-point-desc {
@@ -170,41 +93,26 @@
   font-size: var(--text-2xl);
   color: var(--gray-300);
   position: absolute;
-  top: -10px;
+  top: calc(var(--space-2-5) * -1);
 }
 
 .knowledge-point-desc::before {
-  left: -20px;
+  left: calc(var(--space-5) * -1);
 }
 
 .knowledge-point-desc::after {
-  right: -20px;
+  right: calc(var(--space-5) * -1);
   transform: rotate(180deg);
 }
 
+/* 徽章組 - 使用 difficulty-badges 組件 */
 .detail-badges {
+  /* 使用 .badge-group 組件類 */
   display: flex;
   gap: var(--space-2);
   align-items: center;
 }
 
-/* 簡化的徽章樣式 */
-.category-badge,
-.subtype-badge {
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  background: var(--gray-100);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-light);
-}
-
-.category-badge.category-isolated {
-  background: var(--accent-50);
-  color: var(--accent-700);
-  border-color: var(--accent-200);
-}
 
 /* ========== 統計資訊 - 不對稱網格 ========== */
 .detail-stats {
@@ -231,7 +139,7 @@
   background: white;
   border-radius: var(--radius-lg);
   border: 1px solid var(--gray-200);
-  transition: all 0.3s ease;
+  transition: all var(--transition-slow);
   position: relative;
 }
 
@@ -239,7 +147,7 @@
 .stat-item:first-child {
   grid-column: span 1;
   background: linear-gradient(135deg, var(--accent-50) 0%, white 100%);
-  border-width: 2px;
+  border-width: var(--space-1);
   border-color: var(--accent-200);
   padding: var(--space-6);
 }
@@ -325,7 +233,7 @@
 
 .mastery-bar {
   width: 100%;
-  height: 12px;
+  height: var(--space-3);
   background: var(--gray-100);
   border-radius: var(--radius-full);
   overflow: hidden;
@@ -348,7 +256,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, var(--surface-glass) 50%, transparent 100%);
   animation: shimmer 2s infinite;
 }
 
@@ -396,8 +304,8 @@
 
 .section-title::before {
   content: '';
-  width: 20px;
-  height: 2px;
+  width: var(--space-5);
+  height: var(--space-1);
   background: var(--accent-400);
   border-radius: var(--radius-full);
 }
@@ -425,8 +333,8 @@
   position: absolute;
   top: var(--space-4);
   left: var(--space-4);
-  width: 40px;
-  height: 40px;
+  width: var(--space-10);
+  height: var(--space-10);
   background: var(--accent-100);
   border-radius: 50%;
   opacity: 0.3;
@@ -471,7 +379,7 @@
   font-size: var(--text-base);
   line-height: 1.8;
   position: relative;
-  transition: all 0.3s ease;
+  transition: all var(--transition-slow);
 }
 
 .original-sentence {
@@ -487,8 +395,8 @@
   left: var(--space-4);
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: var(--space-6);
+  height: var(--space-6);
   background: var(--error-100);
   color: var(--error-600);
   border-radius: 50%;
@@ -518,8 +426,8 @@
   left: var(--space-4);
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: var(--space-6);
+  height: var(--space-6);
   background: var(--success-500);
   color: white;
   border-radius: 50%;
@@ -576,8 +484,8 @@
 
 .subsection-title::before {
   content: '';
-  width: 20px;
-  height: 2px;
+  width: var(--space-5);
+  height: var(--space-1);
   background: var(--gray-300);
   border-radius: var(--radius-full);
 }
@@ -770,6 +678,275 @@
 .btn-secondary:hover {
   background: var(--gray-50);
   border-color: var(--border-dark);
+}
+
+/* ========== 深色模式 ========== */
+[data-theme="dark"] {
+  /* 頭部卡片深色版本 */
+  .detail-header-card {
+    background: linear-gradient(135deg, var(--surface-elevated) 0%, var(--surface-base) 100%);
+    border-color: var(--border-default);
+    box-shadow: var(--shadow-elevated-md);
+  }
+
+  /* 錯誤對比區塊深色版本 */
+  .error-comparison-wrapper {
+    background: linear-gradient(135deg, var(--surface-elevated) 0%, var(--surface-base) 50%, var(--surface-elevated) 100%);
+    border-bottom-color: var(--border-default);
+  }
+
+  /* 錯誤短語深色適配 */
+  .error-phrase {
+    background: var(--surface-base);
+    border-color: var(--border-default);
+    color: var(--text-muted);
+  }
+
+  .error-phrase::after {
+    background: var(--error-400);
+  }
+
+  /* 箭頭圖標深色適配 */
+  .arrow-icon::before {
+    color: var(--text-muted);
+  }
+
+  /* 正確短語深色適配 */
+  .correct-phrase {
+    background: var(--surface-base);
+    color: var(--text-primary);
+    border-color: var(--success-500);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+  }
+
+  /* 引號裝飾深色適配 */
+  .knowledge-point-desc {
+    color: var(--text-secondary);
+  }
+
+  .knowledge-point-desc::before,
+  .knowledge-point-desc::after {
+    color: var(--text-muted);
+  }
+
+  /* 統計卡片深色版本 */
+  .stat-item {
+    background: var(--surface-elevated);
+    border-color: var(--border-default);
+  }
+
+  /* 掌握度卡片深色版本 */
+  .stat-item:first-child {
+    background: linear-gradient(135deg, var(--surface-elevated) 0%, var(--surface-base) 100%);
+    border-color: var(--accent-600);
+  }
+
+  /* 下次複習卡片深色版本 */
+  .stat-item:nth-child(4) {
+    background: var(--surface-base);
+    border-color: var(--border-light);
+  }
+
+  /* 統計數值顏色調整 */
+  .stat-value {
+    color: var(--text-primary);
+  }
+
+  .stat-label {
+    color: var(--text-secondary);
+  }
+
+  .stat-item:first-child .stat-label {
+    color: var(--accent-400);
+  }
+
+  /* 進度條深色適配 */
+  .mastery-bar {
+    background: var(--surface-base);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .mastery-fill {
+    background: linear-gradient(90deg, var(--accent-500) 0%, var(--accent-400) 100%);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+  }
+
+  .mastery-text {
+    color: var(--accent-400);
+  }
+
+  /* 內容卡片深色版本 */
+  .detail-content-card {
+    background: var(--surface-elevated);
+    box-shadow: var(--shadow-elevated-lg);
+  }
+
+  /* 段落標題裝飾深色適配 */
+  .section-title {
+    color: var(--text-secondary);
+  }
+
+  .section-title::before {
+    background: var(--accent-500);
+  }
+
+  .subsection-title {
+    color: var(--text-secondary);
+  }
+
+  .subsection-title::before {
+    background: var(--border-default);
+  }
+
+  /* 知識點描述深色版本 */
+  .description-content {
+    background: linear-gradient(135deg, var(--surface-base) 0%, var(--surface-elevated) 100%);
+    color: var(--text-primary);
+    border-left-color: var(--accent-500);
+  }
+
+  .description-content::before,
+  .description-content::after {
+    background: rgba(139, 92, 246, 0.1);
+  }
+
+  /* 修正區塊深色版本 */
+  .correction-section {
+    background: var(--surface-base);
+    border-top-color: var(--border-default);
+  }
+
+  /* 句子對比深色適配 */
+  .original-sentence,
+  .corrected-sentence {
+    background: var(--surface-elevated);
+  }
+
+  .original-sentence {
+    border-color: var(--border-default);
+  }
+
+  .original-sentence::before {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error-400);
+  }
+
+  .corrected-sentence {
+    background: linear-gradient(135deg, var(--surface-elevated) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border-color: var(--success-600);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+  }
+
+  .corrected-sentence:hover {
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2);
+  }
+
+  .sentence-text {
+    color: var(--text-primary);
+  }
+
+  .sentence-label {
+    color: var(--text-secondary);
+  }
+
+  /* 改進建議深色版本 */
+  .improvement-text {
+    background: rgba(139, 92, 246, 0.05);
+    color: var(--text-primary);
+    border-left-color: var(--accent-600);
+  }
+
+  /* 錯誤記錄深色版本 */
+  .mistakes-section {
+    background: var(--surface-elevated);
+    border-color: var(--border-default);
+  }
+
+  .mistake-card {
+    background: var(--surface-base);
+    border-color: var(--border-default);
+  }
+
+  .mistake-card:hover {
+    background: var(--surface-elevated);
+    border-color: var(--border-dark);
+  }
+
+  .mistake-header {
+    border-bottom-color: var(--border-default);
+  }
+
+  .mistake-date {
+    color: var(--text-muted);
+  }
+
+  /* 錯誤狀態標籤深色適配 */
+  .mistake-status.correct {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--accent-400);
+  }
+
+  .mistake-status.incorrect {
+    background: var(--surface-base);
+    color: var(--text-secondary);
+  }
+
+  /* 句子內容深色版本 */
+  .chinese-sentence,
+  .user-answer,
+  .correct-answer {
+    background: var(--surface-elevated);
+    border-color: var(--border-default);
+  }
+
+  .user-answer.error {
+    background: var(--surface-base);
+    border-color: var(--border-default);
+    border-left-color: var(--text-muted);
+  }
+
+  .correct-answer {
+    background: rgba(139, 92, 246, 0.05);
+    border-color: var(--accent-600);
+    border-left-color: var(--accent-500);
+  }
+
+  .mistake-explanation {
+    background: var(--surface-base);
+    border-left-color: var(--border-default);
+  }
+
+  .explanation-label {
+    color: var(--text-secondary);
+  }
+
+  /* 無記錄提示深色版本 */
+  .no-mistakes {
+    background: var(--surface-base);
+    border-color: var(--border-light);
+    color: var(--text-muted);
+  }
+
+  /* 按鈕深色適配 */
+  .btn-primary {
+    background: var(--accent-600);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-500);
+  }
+
+  .btn-secondary {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-default);
+  }
+
+  .btn-secondary:hover {
+    background: var(--surface-base);
+    border-color: var(--border-dark);
+  }
 }
 
 /* ========== 響應式設計 ========== */

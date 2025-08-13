@@ -209,9 +209,9 @@
 
 /* Filter Tab - 篩選標籤（如錯誤類別、句型分類） */
 .btn[data-variant="filter-tab"] {
-  background: #ffffff;
-  color: #6b7280;  /* gray-500 */
-  border: 1px solid #e5e7eb;  /* gray-200 */
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   font-weight: 500;
   transition: all 0.2s ease;
@@ -230,7 +230,7 @@
 .btn[data-variant="filter-tab"].active,
 .btn[data-variant="filter-tab"][data-active="true"] {
   background: var(--gray-900) !important;
-  color: #ffffff !important;
+  color: var(--surface-base) !important;
   border-color: var(--gray-900) !important;
   box-shadow: var(--shadow-lg) !important;
   font-weight: 600 !important;
@@ -238,9 +238,9 @@
 
 /* Filter Pill - 篩選藥丸（如掌握度、難度） */
 .btn[data-variant="filter-pill"] {
-  background: #ffffff;
-  color: #6b7280;  /* gray-500 */
-  border: 1px solid #e5e7eb;  /* gray-200 */
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
   border-radius: 9999px;  /* full */
   padding: var(--space-2) var(--space-4);
   font-size: 0.875rem;
@@ -260,9 +260,9 @@
 
 .btn[data-variant="filter-pill"].active,
 .btn[data-variant="filter-pill"][data-active="true"] {
-  background: #4f46e5 !important;  /* Indigo-600 */
-  color: #ffffff !important;
-  border-color: #4f46e5 !important;
+  background: var(--primary) !important;
+  color: var(--surface-base) !important;
+  border-color: var(--primary) !important;
   box-shadow: var(--shadow-primary-lg) !important;
   font-weight: 600 !important;
 }
@@ -515,5 +515,44 @@
   .btn[data-variant="icon"]:hover:not(:disabled) {
     background: var(--surface-elevated);
     color: var(--text-primary);
+  }
+  
+  /* Filter variants dark mode overrides */
+  .btn[data-variant="filter-tab"] {
+    background: var(--surface-base);
+    color: var(--text-secondary);
+    border-color: var(--border-dark);
+  }
+  
+  .btn[data-variant="filter-tab"]:hover:not(:disabled) {
+    background: var(--surface-elevated);
+    border-color: var(--border-focus);
+    color: var(--text-primary);
+  }
+  
+  .btn[data-variant="filter-tab"].active,
+  .btn[data-variant="filter-tab"][data-active="true"] {
+    background: var(--primary) !important;
+    color: var(--text-inverse) !important;
+    border-color: var(--primary) !important;
+  }
+  
+  .btn[data-variant="filter-pill"] {
+    background: var(--surface-base);
+    color: var(--text-secondary);
+    border-color: var(--border-dark);
+  }
+  
+  .btn[data-variant="filter-pill"]:hover:not(:disabled) {
+    background: var(--surface-elevated);
+    border-color: var(--border-focus);
+    color: var(--text-primary);
+  }
+  
+  .btn[data-variant="filter-pill"].active,
+  .btn[data-variant="filter-pill"][data-active="true"] {
+    background: var(--primary) !important;
+    color: var(--text-inverse) !important;
+    border-color: var(--primary) !important;
   }
 }

@@ -634,3 +634,283 @@
   align-items: center;
   gap: 16px;
 }
+
+/* ================================================
+   深色模式適配 - 練習佇列系統
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+  /* 題目佇列容器深色模式 */
+  .question-queue {
+    background: linear-gradient(
+      to bottom,
+      var(--surface-base),
+      rgba(var(--gray-900-rgb, 17, 24, 39), 0.3)
+    );
+    border-color: var(--border-default);
+  }
+
+  /* 背景裝飾深色適配 */
+  .question-queue::before {
+    background: radial-gradient(
+      circle,
+      rgba(var(--accent-400-rgb, 129, 140, 248), 0.1) 0%,
+      transparent 70%
+    );
+    opacity: 0.5;
+  }
+
+  /* 佇列標題區深色模式 */
+  .queue-header {
+    border-bottom-color: var(--border-default);
+  }
+
+  .queue-clear-btn:hover {
+    background: var(--surface-elevated);
+  }
+
+  /* 漸層遮罩效果深色適配 */
+  .queue-items::before {
+    background: linear-gradient(
+      90deg,
+      var(--surface-base),
+      transparent
+    );
+  }
+
+  .queue-items::after {
+    background: linear-gradient(
+      -90deg,
+      var(--surface-base),
+      transparent
+    );
+  }
+
+  /* 自訂捲軸深色樣式 */
+  .queue-items::-webkit-scrollbar-thumb {
+    background: var(--gray-600);
+  }
+
+  /* 題目卡片基礎深色樣式 */
+  .queue-item {
+    background: var(--surface-elevated);
+    border-color: var(--border-default);
+  }
+
+  /* 複習題模式深色適配 */
+  .queue-item[data-mode="review"] {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--error-950-rgb, 69, 10, 10), 0.3),
+      var(--surface-elevated)
+    );
+    border-color: var(--error-700);
+  }
+
+  .queue-item[data-mode="review"]::before {
+    background: var(--error-500);
+  }
+
+  .queue-item[data-mode="review"]:hover {
+    border-color: var(--error-600);
+  }
+
+  /* 新題目模式深色適配 */
+  .queue-item[data-mode="new"] {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--accent-950-rgb, 30, 27, 75), 0.3),
+      var(--surface-elevated)
+    );
+    border-color: var(--accent-700);
+  }
+
+  .queue-item[data-mode="new"]::before {
+    background: var(--accent-400);
+  }
+
+  .queue-item[data-mode="new"]:hover {
+    border-color: var(--accent-600);
+  }
+
+  /* 句型練習模式深色適配 */
+  .queue-item[data-mode="pattern"] {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--success-950-rgb, 20, 83, 45), 0.3),
+      var(--surface-elevated)
+    );
+    border-color: var(--success-700);
+  }
+
+  .queue-item[data-mode="pattern"]::before {
+    background: var(--success-400);
+  }
+
+  .queue-item[data-mode="pattern"]:hover {
+    border-color: var(--success-600);
+  }
+
+  /* 生成中狀態深色模式 */
+  .queue-item[data-status="generating"] {
+    background: var(--surface-elevated);
+    border-color: var(--accent-600);
+  }
+
+  /* 作答中狀態深色適配 */
+  .queue-item[data-status="active"] {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--accent-900-rgb, 49, 46, 129), 0.4),
+      rgba(var(--accent-800-rgb, 55, 48, 163), 0.2)
+    );
+    border-color: var(--accent-400);
+    box-shadow: 
+      0 0 0 3px rgba(var(--accent-400-rgb, 129, 140, 248), 0.3),
+      var(--shadow-md);
+  }
+
+  /* 作答中脈動效果深色適配 */
+  @keyframes activeGlowDark {
+    0%, 100% { 
+      box-shadow: 
+        0 0 0 3px rgba(var(--accent-400-rgb, 129, 140, 248), 0.3),
+        var(--shadow-md);
+    }
+    50% { 
+      box-shadow: 
+        0 0 0 5px rgba(var(--accent-400-rgb, 129, 140, 248), 0.2),
+        var(--shadow-lg);
+    }
+  }
+
+  .queue-item[data-status="active"] {
+    animation: activeGlowDark 2s ease-in-out infinite;
+  }
+
+  /* 批改中狀態深色模式 */
+  .queue-item[data-status="grading"] {
+    background: rgba(var(--warning-900-rgb, 120, 53, 15), 0.3);
+    border-color: var(--warning-600);
+  }
+
+  /* 已完成狀態深色適配 */
+  .queue-item[data-status="completed"] {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--gray-900-rgb, 17, 24, 39), 0.5),
+      var(--surface-elevated)
+    );
+    border-color: var(--gray-600);
+  }
+
+  .queue-item[data-status="completed"]::before {
+    background: var(--success-400);
+  }
+
+  /* 新增按鈕深色適配 */
+  .queue-item.add-new {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--accent-900-rgb, 49, 46, 129), 0.2),
+      transparent
+    );
+    border-color: var(--accent-600);
+    color: var(--accent-300);
+  }
+
+  .queue-item.add-new:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--accent-800-rgb, 55, 48, 163), 0.4),
+      rgba(var(--accent-700-rgb, 67, 56, 202), 0.2)
+    );
+    border-color: var(--accent-400);
+    color: var(--accent-200);
+  }
+
+  /* 進度條深色模式 */
+  .queue-item-progress {
+    background: var(--gray-700);
+  }
+
+  .progress-bar {
+    background: linear-gradient(90deg, var(--accent-500), var(--accent-400));
+  }
+
+  /* Spinner 深色模式 */
+  .spinner[data-type="simple"] {
+    border-color: var(--gray-600);
+    border-top-color: var(--accent-400);
+  }
+
+  /* Toast 提示深色模式 */
+  .generating-toast {
+    background: var(--surface-elevated);
+    border-color: var(--border-default);
+  }
+
+  /* Badge 深色模式適配 */
+  .queue-item-badge.ready {
+    background: rgba(var(--success-900-rgb, 20, 83, 45), 0.3);
+    color: var(--success-300);
+  }
+
+  .queue-item-badge.review {
+    background: rgba(var(--error-900-rgb, 127, 29, 29), 0.3);
+    color: var(--error-300);
+  }
+
+  .queue-item-badge.new {
+    background: rgba(var(--accent-900-rgb, 49, 46, 129), 0.3);
+    color: var(--accent-300);
+  }
+
+  .queue-item-badge.pattern {
+    background: rgba(var(--success-900-rgb, 20, 83, 45), 0.3);
+    color: var(--success-300);
+  }
+
+  .queue-item-badge.active {
+    background: var(--accent-500);
+    color: var(--surface-base);
+  }
+
+  .queue-item-badge.grading {
+    background: rgba(var(--warning-900-rgb, 120, 53, 15), 0.3);
+    color: var(--warning-300);
+  }
+
+  .queue-item-badge.completed {
+    background: var(--gray-700);
+    color: var(--gray-300);
+  }
+
+  /* 分數顯示深色模式 */
+  .score-display.high {
+    color: var(--success-400);
+  }
+
+  .score-display.high::before {
+    background: var(--success-500);
+    box-shadow: 0 0 8px rgba(var(--success-400-rgb, 34, 197, 94), 0.4);
+  }
+
+  .score-display.medium {
+    color: var(--warning-400);
+  }
+
+  .score-display.medium::before {
+    background: var(--warning-500);
+    box-shadow: 0 0 8px rgba(var(--warning-400-rgb, 251, 191, 36), 0.4);
+  }
+
+  .score-display.low {
+    color: var(--error-400);
+  }
+
+  .score-display.low::before {
+    background: var(--error-500);
+    box-shadow: 0 0 8px rgba(var(--error-400-rgb, 248, 113, 113), 0.4);
+  }
+}

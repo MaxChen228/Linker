@@ -373,7 +373,7 @@ class PracticeSystem {
                 content = `
                     <div class="queue-item-body">
                         <span class="queue-item-text">${preview}...</span>
-                        <span class="queue-item-badge ${question.status}">${modeIcon} ${modeLabel}-${statusText}</span>
+                        <span class="badge" data-variant="${question.status === this.QuestionStatus.ACTIVE ? 'warning' : 'info'}" data-size="sm">${modeIcon} ${modeLabel}-${statusText}</span>
                     </div>
                 `;
                 break;
@@ -510,18 +510,9 @@ class PracticeSystem {
                 <div class="error-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div class="title" style="font-weight: 600; color: #2d3748;">${this.escapeHtml(e.key_point_summary)}</div>
                     ${e.category ? `
-                        <span class="badge error-category-badge" data-category="${e.category}" style="
-                            display: inline-block;
-                            padding: 2px 8px;
-                            background: ${e.category === 'systematic' ? '#fee' : 
-                                         e.category === 'isolated' ? '#fef' : 
-                                         e.category === 'enhancement' ? '#eff' : '#f5f5f5'};
-                            color: ${e.category === 'systematic' ? '#c41e3a' : 
-                                    e.category === 'isolated' ? '#9333ea' : 
-                                    e.category === 'enhancement' ? '#0891b2' : '#666'};
-                            border-radius: 12px;
-                            font-size: 12px;
-                        ">
+                        <span class="badge" data-variant="${e.category === 'systematic' ? 'error' : 
+                              e.category === 'isolated' ? 'warning' : 
+                              e.category === 'enhancement' ? 'info' : 'neutral'}" data-size="sm">
                             ${e.category === 'systematic' ? '系統性錯誤' : 
                               e.category === 'isolated' ? '單一性錯誤' : 
                               e.category === 'enhancement' ? '可以更好' : '其他錯誤'}

@@ -496,11 +496,60 @@ textarea[data-status="warning"] {
 /* Backward Compatibility */
 /* 保留舊類名以支援漸進式遷移 */
 .answer-input {
-  @extend .form-control;
+  /* Layout */
+  display: block;
+  width: 100%;
+  
+  /* Sizing */
+  padding: var(--form-padding, 12px 16px);
+  font-size: var(--form-font-size, 0.95rem);
+  line-height: 1.5;
+  
+  /* Appearance */
+  background: var(--form-bg, var(--surface));
+  color: var(--form-text, var(--text));
+  border: 1px solid var(--form-border, var(--border));
+  border-radius: var(--form-radius, var(--radius));
+  
+  /* Transitions */
+  transition: all 0.2s ease;
+  
+  /* Reset */
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
 }
 
 .param-group select {
-  @extend .form-control;
+  /* Layout */
+  display: block;
+  width: 100%;
+  
+  /* Sizing */
+  padding: var(--form-padding, 12px 16px);
+  font-size: var(--form-font-size, 0.95rem);
+  line-height: 1.5;
+  
+  /* Appearance */
+  background: var(--form-bg, var(--surface));
+  color: var(--form-text, var(--text));
+  border: 1px solid var(--form-border, var(--border));
+  border-radius: var(--form-radius, var(--radius));
+  
+  /* Transitions */
+  transition: all 0.2s ease;
+  
+  /* Reset */
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  
+  /* Select specific styles */
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
 }
 
 /* Animation */

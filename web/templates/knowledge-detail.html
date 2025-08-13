@@ -14,11 +14,11 @@
         <!-- 標題與徽章 -->
         <div class="detail-header-top">
             <div class="detail-badges">
-                <span class="category-badge category-{{ point.category.value }}">
+                <span class="badge" data-variant="{% if point.category.value == 'systematic' %}error{% elif point.category.value == 'isolated' %}warning{% elif point.category.value == 'enhancement' %}info{% else %}neutral{% endif %}">
                     {{ point.category.chinese_name }}
                 </span>
                 {% if point.subtype %}
-                <span class="subtype-badge">{{ subtype_display }}</span>
+                <span class="badge" data-variant="neutral">{{ subtype_display }}</span>
                 {% endif %}
             </div>
         </div>
@@ -159,10 +159,10 @@
 
     <!-- 操作按鈕 -->
     <div class="detail-actions">
-        <a href="/practice?mode=review&point_id={{ point.id }}" class="btn btn-primary">
+        <a href="/practice?mode=review&point_id={{ point.id }}" class="btn" data-variant="primary">
             開始複習此知識點
         </a>
-        <button onclick="window.history.back()" class="btn btn-secondary">
+        <button onclick="window.history.back()" class="btn" data-variant="secondary">
             返回
         </button>
     </div>

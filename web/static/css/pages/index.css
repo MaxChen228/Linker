@@ -467,9 +467,7 @@
   }
   
   .stat-card[data-glass="true"] {
-    background: linear-gradient(135deg, 
-      rgba(24, 24, 27, 0.95) 0%, 
-      rgba(24, 24, 27, 0.85) 100%);
+    background: var(--surface-overlay);
   }
   
   .action-section {
@@ -477,6 +475,6 @@
   }
   
   .suggestion-text {
-    background: rgba(79, 70, 229, 0.1);
+    background: var(--color-primary-subtle);
   }
 }

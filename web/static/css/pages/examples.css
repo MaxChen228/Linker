@@ -1,6 +1,6 @@
 /* Examples Section */
 .examples {
-  background: linear-gradient(135deg, var(--bg) 0%, rgba(255, 255, 255, 0.5) 100%);
+  background: linear-gradient(135deg, var(--bg) 0%, var(--surface-glass) 100%);
   border-radius: var(--radius);
   padding: 20px;
   margin: 20px 0;
@@ -293,4 +293,122 @@
 .sentence-en {
   font-size: 0.875rem;
   line-height: 1.5;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  /* Examples Section */
+  .examples {
+    background: linear-gradient(135deg, var(--bg) 0%, var(--surface-glass) 100%);
+    box-shadow: var(--shadow-inner-md);
+  }
+
+  .examples .zh,
+  .example-zh,
+  .example-chinese,
+  .sentence-zh,
+  .sentence-text {
+    color: var(--text);
+  }
+
+  .examples .en,
+  .example-en,
+  .examples-label,
+  .sentence-label {
+    color: var(--text-muted);
+  }
+
+  /* Example Items */
+  .example-item {
+    border-top-color: var(--border);
+  }
+
+  .example-item + .example-item {
+    border-top: 1px solid var(--border);
+  }
+
+  /* Copy Button */
+  .btn-copy-example {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-muted);
+  }
+
+  .btn-copy-example:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  /* Examples Toggle */
+  .examples-toggle {
+    background: var(--bg);
+    border-color: var(--border);
+    color: var(--text-muted);
+  }
+
+  .examples-toggle:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  /* Example Items Container */
+  .example-item,
+  .card-examples {
+    background: var(--bg);
+    border-color: var(--border);
+  }
+
+  /* Instance Examples */
+  .instance-examples {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+
+  /* User and Correct Examples */
+  .example-user {
+    color: var(--error-600);
+  }
+
+  .example-correct {
+    color: var(--success-600);
+  }
+
+  /* Sentence Borders */
+  .sentence-zh {
+    border-bottom-color: var(--border);
+  }
+
+  /* Examples Section Border */
+  .examples-section {
+    border-top-color: var(--border);
+  }
+
+  /* Toast Notification */
+  .toast {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .toast svg {
+    color: var(--success-600);
+  }
+
+  /* No Results & Empty State */
+  .no-results,
+  .empty-state {
+    color: var(--text-muted);
+  }
+
+  .no-results h3,
+  .empty-state h3 {
+    color: var(--text);
+  }
+
+  .no-results svg,
+  .empty-state svg {
+    opacity: 0.4;
+  }
 }

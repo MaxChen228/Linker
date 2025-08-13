@@ -12,7 +12,7 @@
     <div class="header-top">
       <h2 class="page-title">英文句型知識庫</h2>
       <div class="quick-stats">
-        <div class="badge stat-badge" data-variant="primary" data-size="xl">
+        <div class="badge" data-variant="primary" data-size="xl">
           <span class="badge-label">總句型</span>
           <span class="badge-value">{{ patterns|length }}</span>
         </div>
@@ -71,7 +71,7 @@
           <h3 class="pattern-formula">{{ pattern.pattern }}</h3>
           <div class="pattern-badges">
             {% if pattern.category %}
-              <span class="badge category-badge" data-variant="primary">{{ pattern.category }}</span>
+              <span class="badge" data-variant="primary">{{ pattern.category }}</span>
             {% endif %}
           </div>
         </div>

@@ -1,0 +1,302 @@
+/* ================================================
+   對比卡片組件系統
+   用於顯示錯誤/正確、前後對比等場景
+   ================================================ */
+
+/* ========== 基礎對比卡片 ========== */
+.comparison-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--surface-base);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-slow);
+}
+
+/* ========== 錯誤對比區塊 ========== */
+.error-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--gray-50) 0%, white 50%, var(--gray-50) 100%);
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+
+/* 錯誤項目樣式 */
+.comparison-item[data-type="error"] {
+  flex: 0 1 auto;
+  padding: var(--space-3) var(--space-4);
+  background: white;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  color: var(--gray-500);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  position: relative;
+  opacity: 0.6;
+  transform: scale(0.9);
+  transition: all var(--transition-slow);
+}
+
+/* 錯誤刪除線效果 */
+.comparison-item[data-type="error"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: var(--space-3);
+  right: var(--space-3);
+  height: 2px;
+  background: var(--error-400);
+  transform: translateY(-50%) rotate(-1deg);
+  opacity: 0.8;
+}
+
+/* 正確項目樣式 */
+.comparison-item[data-type="correct"] {
+  flex: 1 1 auto;
+  padding: var(--space-5) var(--space-6);
+  background: white;
+  border: 3px solid var(--success-500);
+  border-radius: var(--radius-2xl);
+  color: var(--gray-900);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  box-shadow: var(--shadow-elevated-xl);
+  transform: scale(1.05);
+  position: relative;
+  z-index: 2;
+}
+
+/* 正確標記 */
+.comparison-item[data-type="correct"]::before {
+  content: '✓';
+  position: absolute;
+  top: calc(var(--space-3) * -1);
+  right: calc(var(--space-3) * -1);
+  width: var(--space-8);
+  height: var(--space-8);
+  background: var(--success-500);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  font-weight: bold;
+  box-shadow: var(--shadow-xl);
+}
+
+/* 箭頭指示器 */
+.comparison-arrow {
+  flex: 0 0 auto;
+  width: var(--space-20);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.comparison-arrow::before {
+  content: '→';
+  font-size: var(--text-3xl);
+  color: var(--gray-300);
+  font-weight: 200;
+  transform: scaleX(1.5);
+}
+
+/* ========== 句子對比卡片 ========== */
+.sentence-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.sentence-item {
+  display: block;
+  padding: var(--space-5) var(--space-6);
+  background: white;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  line-height: 1.8;
+  position: relative;
+  transition: all var(--transition-slow);
+}
+
+/* 原始句子（錯誤） */
+.sentence-item[data-type="original"] {
+  border: 2px solid var(--gray-200);
+  background: white;
+  padding-left: var(--space-8);
+}
+
+.sentence-item[data-type="original"]::before {
+  content: '×';
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--space-6);
+  height: var(--space-6);
+  background: var(--error-100);
+  color: var(--error-600);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  font-weight: bold;
+}
+
+/* 修正句子（正確） */
+.sentence-item[data-type="corrected"] {
+  border: 2px solid var(--success-200);
+  background: linear-gradient(135deg, white 0%, var(--success-50) 100%);
+  box-shadow: var(--shadow-success-light);
+  padding-left: var(--space-8);
+  transform: scale(1.02);
+}
+
+.sentence-item[data-type="corrected"]:hover {
+  transform: scale(1.03);
+  box-shadow: var(--shadow-success-heavy);
+}
+
+.sentence-item[data-type="corrected"]::before {
+  content: '✓';
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--space-6);
+  height: var(--space-6);
+  background: var(--success-500);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: bold;
+}
+
+/* 句子標籤 */
+.sentence-label {
+  display: inline-block;
+  font-weight: var(--font-semibold);
+  color: var(--gray-600);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-2);
+  opacity: 0.8;
+}
+
+/* 句子文本 */
+.sentence-text {
+  display: block;
+  color: var(--gray-900);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  letter-spacing: 0.2px;
+  position: relative;
+  z-index: 1;
+}
+
+.sentence-item[data-type="corrected"] .sentence-text {
+  font-weight: var(--font-medium);
+  color: var(--gray-900);
+}
+
+/* ========== 錯誤對比網格 ========== */
+.mistake-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.mistake-item {
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.mistake-item[data-type="wrong"] {
+  background: var(--error-50);
+  border: 1px solid var(--error-300);
+}
+
+.mistake-item[data-type="correct"] {
+  background: var(--success-50);
+  border: 1px solid var(--success-300);
+}
+
+.mistake-item .label {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-2);
+}
+
+.mistake-item[data-type="wrong"] .label {
+  color: var(--error-600);
+}
+
+.mistake-item[data-type="correct"] .label {
+  color: var(--success-600);
+}
+
+.mistake-item .text {
+  color: var(--text-primary);
+}
+
+/* ========== 響應式設計 ========== */
+@media (max-width: 768px) {
+  .error-comparison {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .comparison-arrow {
+    transform: rotate(90deg);
+    height: var(--space-10);
+  }
+  
+  .mistake-comparison {
+    grid-template-columns: 1fr;
+  }
+  
+  .comparison-item[data-type="error"],
+  .comparison-item[data-type="correct"] {
+    transform: scale(1);
+  }
+}
+
+/* ========== 暗色模式 ========== */
+@media (prefers-color-scheme: dark) {
+  .comparison-card {
+    background: var(--surface-elevated);
+  }
+  
+  .error-comparison {
+    background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 50%, var(--gray-800) 100%);
+  }
+  
+  .comparison-item[data-type="error"],
+  .comparison-item[data-type="correct"],
+  .sentence-item {
+    background: var(--surface-dark);
+  }
+  
+  .sentence-text {
+    color: var(--text-primary);
+  }
+}

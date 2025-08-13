@@ -1,11 +1,14 @@
 /* ========================================
-   句型詳情頁面樣式 - 簡潔人性化版本
+   句型詳情頁面樣式 - 使用設計系統組件
+   現在使用以下組件：
+   - difficulty-badges.css (難度指示器)
+   - comparison-cards.css (錯誤對比)
    ======================================== */
 
 .pattern-detail-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--space-8);
 }
 
 /* ========== 返回按鈕 ========== */
@@ -14,9 +17,9 @@
   align-items: center;
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.9rem;
-  margin-bottom: 2rem;
-  transition: color 0.2s;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-8);
+  transition: color var(--transition-base);
 }
 
 .back-link:hover {
@@ -72,9 +75,9 @@
 /* ========== 第二層：關鍵重點 ========== */
 .key-points-section {
   background: var(--surface-elevated);
-  padding: 2rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-8);
   border: 1px solid var(--border-light);
 }
 
@@ -95,7 +98,7 @@
 
 .key-points li {
   position: relative;
-  padding: 0.75rem 0 0.75rem 2rem;
+  padding: var(--space-3) 0 var(--space-3) var(--space-8);
   color: var(--text-secondary);
   line-height: 1.6;
   border-bottom: 1px solid var(--border-light);
@@ -111,12 +114,12 @@
   left: 0;
   color: var(--success-600);
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: var(--text-lg);
 }
 
 /* ========== 第三層：例句學習 ========== */
 .examples-section {
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
 .examples-section h2 {
@@ -128,15 +131,18 @@
 
 .examples-container {
   display: grid;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .example-card {
+  /* 使用 difficulty-indicator 組件樣式 */
   background: var(--surface-base);
   border: 1px solid var(--border-light);
-  border-radius: 8px;
-  padding: 1.25rem;
-  transition: all 0.2s;
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  transition: all var(--transition-base);
+  position: relative;
+  padding-left: var(--space-6);
 }
 
 .example-card:hover {
@@ -145,41 +151,52 @@
   border-color: var(--accent-300);
 }
 
-.example-card[data-difficulty="basic"] {
-  border-left: 3px solid var(--success-500);
+/* 使用 difficulty-indicator 組件的難度指示器 */
+.example-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
 }
 
-.example-card[data-difficulty="intermediate"] {
-  border-left: 3px solid var(--warning-500);
+.example-card[data-difficulty="basic"]::before {
+  background: var(--success-500);
 }
 
-.example-card[data-difficulty="advanced"] {
-  border-left: 3px solid var(--error-500);
+.example-card[data-difficulty="intermediate"]::before {
+  background: var(--warning-500);
+}
+
+.example-card[data-difficulty="advanced"]::before {
+  background: var(--error-500);
 }
 
 .example-content {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
 }
 
 .example-content .zh {
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
+  font-size: var(--text-base);
+  margin-bottom: var(--space-2);
 }
 
 .example-content .en {
   color: var(--text-primary);
-  font-size: 1.05rem;
+  font-size: var(--text-base);
   font-weight: 500;
   font-style: italic;
 }
 
 .example-note {
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-2) var(--space-3);
   background: var(--surface-dark);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   color: var(--text-tertiary);
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
 }
 
 /* ========== 第四層：常見錯誤 ========== */
@@ -208,74 +225,33 @@
 
 .mistakes-container {
   display: grid;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .mistake-card {
   background: white;
-  padding: 1.25rem;
-  border-radius: 8px;
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
   border: 1px solid var(--error-200);
 }
 
-.mistake-comparison {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.wrong,
-.correct {
-  padding: 0.75rem;
-  border-radius: 6px;
-  font-family: 'Fira Code', 'Consolas', monospace;
-  font-size: 0.9rem;
-}
-
-.wrong {
-  background: var(--error-50);
-  border: 1px solid var(--error-300);
-}
-
-.correct {
-  background: var(--success-50);
-  border: 1px solid var(--success-300);
-}
-
-.wrong .label,
-.correct .label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.wrong .label {
-  color: var(--error-600);
-}
-
-.correct .label {
-  color: var(--success-600);
-}
-
-.wrong .text,
-.correct .text {
-  color: var(--text-primary);
-}
+/* 使用 comparison-cards 組件的 mistake-comparison 樣式 */
+/* .mistake-comparison 現在可以使用組件中的樣式 */
+/* .wrong 使用 .mistake-item[data-type="wrong"] */
+/* .correct 使用 .mistake-item[data-type="correct"] */
 
 .mistake-card .explanation {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
 /* ========== 第五層：變化形式 ========== */
 .variations-section {
   background: var(--surface-elevated);
-  padding: 2rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-8);
 }
 
 .variations-section h2 {
@@ -287,25 +263,25 @@
 
 .variations-grid {
   display: grid;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .variation-item {
   display: flex;
   align-items: baseline;
-  padding: 0.75rem;
+  padding: var(--space-3);
   background: var(--surface-base);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
 }
 
 .variation-item .label {
   flex-shrink: 0;
   width: 80px;
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--accent-600);
-  margin-right: 1rem;
+  margin-right: var(--space-4);
 }
 
 .variation-item .example {
@@ -341,16 +317,16 @@
 
 .practice-list {
   display: grid;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
 }
 
 .practice-item {
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: var(--space-4);
   background: white;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
 }
 
@@ -365,7 +341,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  margin-right: 1rem;
+  margin-right: var(--space-4);
 }
 
 .practice-item .sentence {
@@ -376,15 +352,15 @@
 
 .btn-practice {
   display: inline-block;
-  padding: 0.75rem 2rem;
+  padding: var(--space-3) var(--space-8);
   background: var(--accent-600);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-base);
 }
 
 .btn-practice:hover {
@@ -396,20 +372,20 @@
 /* ========== 響應式設計 ========== */
 @media (max-width: 768px) {
   .pattern-detail-container {
-    padding: 1rem;
+    padding: var(--space-4);
   }
   
   .core-section {
-    padding: 1.5rem;
+    padding: var(--space-6);
   }
   
   .pattern-title {
-    font-size: 1.75rem;
+    font-size: var(--text-2xl);
   }
   
   .pattern-formula {
-    font-size: 0.9rem;
-    padding: 0.75rem;
+    font-size: var(--text-sm);
+    padding: var(--space-3);
   }
   
   .mistake-comparison {
@@ -421,14 +397,14 @@
   }
   
   .variation-item .label {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-2);
   }
 }
 
 /* ========== 深色模式 ========== */
 @media (prefers-color-scheme: dark) {
   .core-section {
-    background: linear-gradient(135deg, #4c566a 0%, #2e3440 100%);
+    background: var(--surface-elevated);
   }
   
   .key-points-section {
@@ -440,7 +416,7 @@
   }
   
   .mistakes-section {
-    background: rgba(245, 101, 101, 0.1);
+    background: var(--color-error-subtle);
   }
   
   .mistake-card {
@@ -456,7 +432,7 @@
   }
   
   .practice-section {
-    background: linear-gradient(135deg, rgba(168, 237, 234, 0.1) 0%, rgba(254, 214, 227, 0.1) 100%);
+    background: var(--color-info-subtle);
   }
   
   .practice-item {
