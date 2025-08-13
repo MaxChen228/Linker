@@ -815,6 +815,30 @@
   animation-delay: 250ms;
 }
 
+/* ========== 批改中指示器 ========== */
+.grading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-4);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--border-default);
+  animation: var(--animation-pulse-subtle);
+  color: var(--text-secondary);
+  min-height: 200px;
+}
+
+.grading-indicator .spinner {
+  margin-bottom: var(--space-4);
+}
+
+.grading-indicator span {
+  font-size: var(--text-lg);
+  text-align: center;
+}
+
 #submitBtn {
   padding: var(--space-3) var(--space-8);
   background: var(--accent-600);

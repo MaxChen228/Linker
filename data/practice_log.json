@@ -419,5 +419,195 @@
       ]
     },
     "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:09:12.093874",
+    "chinese_sentence": "我明天會去看電影。",
+    "user_answer": "I will go watching movie tomorrorw.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:16:41.333452",
+    "chinese_sentence": "我明天會去看電影。",
+    "user_answer": "I will go watching movie tomorrow.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "I am going to see a movie tomorrow.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "動詞搭配錯誤: go watching",
+          "original_phrase": "go watching",
+          "correction": "go see / go to see",
+          "explanation": "「go + V-ing」這個句型通常用於表示從事某項休閒活動，例如 go swimming (去游泳)、go shopping (去購物)。然而，「看電影」這個活動通常不使用「go watching」。更自然的說法是「go see a movie」、「go to see a movie」或「go to the movies」(去電影院)。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "冠詞錯誤: movie 前缺少冠詞",
+          "original_phrase": "movie",
+          "correction": "a movie",
+          "explanation": "「Movie」是一個單數可數名詞，在句子中通常需要一個冠詞 (a/an/the) 或其他限定詞。當我們泛指「一部電影」時，應該用「a movie」。如果指的是去「電影院」這個地方，則常用「the movies」。",
+          "severity": "major"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:16:56.704160",
+    "chinese_sentence": "我的朋友週末常去圖書館看書。",
+    "user_answer": "My friend often goes to library on weekend.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:17:10.926669",
+    "chinese_sentence": "我的朋友週末常去圖書館看書。",
+    "user_answer": "My friend often goes to library on weekend.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:25:51.681534",
+    "chinese_sentence": "我的朋友週末常去圖書館看書。",
+    "user_answer": "My friend often goes to library on weekend.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:27:16.980907",
+    "chinese_sentence": "他們週末會去海邊。",
+    "user_answer": "They go to beach on weekend.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "They go to the beach on the weekend.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "冠詞錯誤: beach → the beach",
+          "original_phrase": "to beach",
+          "correction": "to the beach",
+          "explanation": "「beach」是可數名詞。當我們指「去海邊」這個活動或地點時，習慣上會使用冠詞「the」，形成固定片語「go to the beach」。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "介係詞片語錯誤: on weekend → on the weekend",
+          "original_phrase": "on weekend",
+          "correction": "on the weekend",
+          "explanation": "表示「在週末」的標準英文說法是「on the weekend」（美式用法）或「at the weekend」（英式用法）。這裡漏掉了冠詞「the」。",
+          "severity": "major"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:27:53.674956",
+    "chinese_sentence": "我媽媽每天早上做早餐。",
+    "user_answer": "My mom makes breakfast every day.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:29:44.512004",
+    "chinese_sentence": "她為了達成目標，決心全力以赴。",
+    "user_answer": "In order to achieve her goal, her gave it her all.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:34:28.585810",
+    "chinese_sentence": "就是這個團隊完成了這項重要任務。",
+    "user_answer": "It is the team complete this important task.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:37:14.897640",
+    "chinese_sentence": "就是這個團隊完成了這項重要任務。",
+    "user_answer": "It is the team complete this important task.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:39:31.097978",
+    "chinese_sentence": "就是這個團隊完成了這項重要任務。",
+    "user_answer": "It is the team completes this important task.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T15:39:36.419746",
+    "chinese_sentence": "就是這個團隊完成了這項重要任務。",
+    "user_answer": "It is the team completes this important task.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T16:02:08.035667",
+    "chinese_sentence": "弟弟正在玩電腦遊戲。",
+    "user_answer": "My brother is playing computer games.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
   }
 ]

@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "last_updated": "2025-08-13T14:36:17.066818",
+  "last_updated": "2025-08-13T15:29:44.508310",
   "data": [
     {
       "id": 1,
@@ -48,11 +48,11 @@
       },
       "review_examples": [],
       "mastery_level": 0.0,
-      "mistake_count": 2,
+      "mistake_count": 3,
       "correct_count": 0,
       "created_at": "2025-08-10T18:54:10.354320",
-      "last_seen": "2025-08-11T12:35:07.228145",
-      "next_review": "2025-08-12T12:35:07.228163"
+      "last_seen": "2025-08-13T15:29:44.508255",
+      "next_review": "2025-08-14T15:29:44.508291"
     },
     {
       "id": 3,
@@ -611,6 +611,94 @@
       "created_at": "2025-08-13T14:36:17.066767",
       "last_seen": "2025-08-13T14:36:17.066772",
       "next_review": "2025-08-14T14:36:17.066797"
+    },
+    {
+      "id": 26,
+      "key_point": "動詞搭配錯誤: go watching: go watching",
+      "category": "systematic",
+      "subtype": "naturalness",
+      "explanation": "「go + V-ing」這個句型通常用於表示從事某項休閒活動，例如 go swimming (去游泳)、go shopping (去購物)。然而，「看電影」這個活動通常不使用「go watching」。更自然的說法是「go see a movie」、「go to see a movie」或「go to the movies」(去電影院)。",
+      "original_phrase": "go watching",
+      "correction": "go see / go to see",
+      "original_error": {
+        "chinese_sentence": "我明天會去看電影。",
+        "user_answer": "I will go watching movie tomorrow.",
+        "correct_answer": "I am going to see a movie tomorrow.",
+        "timestamp": "2025-08-13T15:16:41.336316"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T15:16:41.336362",
+      "last_seen": "2025-08-13T15:16:41.336366",
+      "next_review": "2025-08-14T15:16:41.336392"
+    },
+    {
+      "id": 27,
+      "key_point": "冠詞錯誤: movie 前缺少冠詞: movie",
+      "category": "systematic",
+      "subtype": "omission",
+      "explanation": "「Movie」是一個單數可數名詞，在句子中通常需要一個冠詞 (a/an/the) 或其他限定詞。當我們泛指「一部電影」時，應該用「a movie」。如果指的是去「電影院」這個地方，則常用「the movies」。",
+      "original_phrase": "movie",
+      "correction": "a movie",
+      "original_error": {
+        "chinese_sentence": "我明天會去看電影。",
+        "user_answer": "I will go watching movie tomorrow.",
+        "correct_answer": "I am going to see a movie tomorrow.",
+        "timestamp": "2025-08-13T15:16:41.338749"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T15:16:41.338769",
+      "last_seen": "2025-08-13T15:16:41.338772",
+      "next_review": "2025-08-14T15:16:41.338785"
+    },
+    {
+      "id": 28,
+      "key_point": "冠詞錯誤: beach → the beach: to beach",
+      "category": "systematic",
+      "subtype": "collocation",
+      "explanation": "「beach」是可數名詞。當我們指「去海邊」這個活動或地點時，習慣上會使用冠詞「the」，形成固定片語「go to the beach」。",
+      "original_phrase": "to beach",
+      "correction": "to the beach",
+      "original_error": {
+        "chinese_sentence": "他們週末會去海邊。",
+        "user_answer": "They go to beach on weekend.",
+        "correct_answer": "They go to the beach on the weekend.",
+        "timestamp": "2025-08-13T15:27:16.983914"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T15:27:16.983968",
+      "last_seen": "2025-08-13T15:27:16.983973",
+      "next_review": "2025-08-14T15:27:16.983998"
+    },
+    {
+      "id": 29,
+      "key_point": "介係詞片語錯誤: on weekend → on the weekend: on weekend",
+      "category": "systematic",
+      "subtype": "collocation",
+      "explanation": "表示「在週末」的標準英文說法是「on the weekend」（美式用法）或「at the weekend」（英式用法）。這裡漏掉了冠詞「the」。",
+      "original_phrase": "on weekend",
+      "correction": "on the weekend",
+      "original_error": {
+        "chinese_sentence": "他們週末會去海邊。",
+        "user_answer": "They go to beach on weekend.",
+        "correct_answer": "They go to the beach on the weekend.",
+        "timestamp": "2025-08-13T15:27:16.987184"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T15:27:16.987211",
+      "last_seen": "2025-08-13T15:27:16.987214",
+      "next_review": "2025-08-14T15:27:16.987229"
     }
   ]
 }
