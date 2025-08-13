@@ -1,272 +1,103 @@
-# 系統架構
+# Technical Architecture
 
-## 概述
+## System Overview
 
-Linker 採用分層模組化架構，提供 CLI 和 Web 雙界面，確保高內聚低耦合。
+Linker is built on a modern, scalable architecture using FastAPI for the backend and Server-Side Rendering (SSR) with Jinja2 templates for the frontend.
 
 ```
-┌─────────────────────────────────────────────┐
-│            使用者介面層 (CLI)                │
-│              linker_cli.py                   │
-└─────────────────┬───────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│                   Client Layer                   │
+│            (Browser / Mobile Device)             │
+└─────────────────┬───────────────────────────────┘
+                  │ HTTP/HTTPS
+┌─────────────────▼───────────────────────────────┐
+│                Application Layer                 │
+│                                                  │
+│  ┌──────────────────────────────────────────┐   │
+│  │            FastAPI Server                │   │
+│  │                                          │   │
+│  │  ┌────────────┐  ┌──────────────────┐  │   │
+│  │  │   Routes   │  │    Templates     │  │   │
+│  │  │            │  │   (Jinja2 SSR)   │  │   │
+│  │  └──────┬─────┘  └──────────────────┘  │   │
+│  │         │                               │   │
+│  │  ┌──────▼─────────────────────────┐    │   │
+│  │  │     Business Logic Layer       │    │   │
+│  │  │  ┌──────────┐ ┌─────────────┐ │    │   │
+│  │  │  │AIService │ │KnowledgeMgr │ │    │   │
+│  │  │  └──────────┘ └─────────────┘ │    │   │
+│  │  └─────────────────────────────────┘    │   │
+│  └──────────────────────────────────────────┘   │
+└─────────────────┬───────────────────────────────┘
                   │
-┌─────────────────▼───────────────────────────┐
-│             業務邏輯層                       │
-│  ┌─────────────────────────────────────┐    │
-│  │    翻譯練習    │    知識點管理        │    │
-│  │  practice_*()  │  KnowledgeManager   │    │
-│  └─────────────────────────────────────┘    │
-└─────────────────┬───────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────┐
-│              核心服務層                       │
-│  ┌──────────┬──────────┬───────────────┐    │
-│  │ AI服務   │錯誤分類  │  日誌系統      │    │
-│  │AIService │Classifier│   Logger       │    │
-│  └──────────┴──────────┴───────────────┘    │
-└─────────────────┬───────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────┐
-│            基礎設施層                         │
-│  ┌──────────┬──────────┬───────────────┐    │
-│  │ 配置管理 │異常處理  │  數據存儲      │    │
-│  │ Settings │Exception │   JSON Files   │    │
-│  └──────────┴──────────┴───────────────┘    │
-└─────────────────────────────────────────────┘
+┌─────────────────▼───────────────────────────────┐
+│                 External Services                │
+│  ┌──────────────────┐  ┌──────────────────┐    │
+│  │  Gemini AI API   │  │  Local Storage   │    │
+│  │  (2.5 Flash/Pro) │  │   (JSON Files)   │    │
+│  └──────────────────┘  └──────────────────┘    │
+└─────────────────────────────────────────────────┘
 ```
 
-## 模組詳解
+## Core Components
 
-### 1. 使用者介面層
+### 1. Web Layer (`web/`)
+- **FastAPI Application**: Handles HTTP requests and responses
+- **Routers**: Modular route handlers for different features
+- **Templates**: Jinja2 templates for server-side rendering
+- **Static Assets**: CSS design system and JavaScript for interactivity
 
-#### linker_cli.py
-- **職責**：處理用戶輸入，顯示選單，協調各模組
-- **主要功能**：
-  - `main()` - 主程式入口
-  - `show_menu()` - 顯示主選單
-  - `practice_translation()` - 翻譯練習入口
-  - `display_feedback()` - 顯示反饋
-  - `manage_knowledge()` - 知識點管理入口
+### 2. Core Business Logic (`core/`)
+- **AIService**: Manages Gemini AI API interactions
+- **KnowledgeManager**: Handles knowledge point tracking and review scheduling
+- **ErrorClassifier**: Categorizes translation errors
+- **VersionManager**: Manages data schema migrations
 
-### 2. 業務邏輯層
+### 3. Data Layer
+- **JSON Storage**: Lightweight, file-based persistence
+- **Automatic Versioning**: Schema migration on startup
+- **Backup Strategy**: Automatic backups before migrations
 
-#### 翻譯練習模組
-- **職責**：管理翻譯練習流程
-- **關鍵函數**：
-  - `select_difficulty()` - 難度選擇
-  - `get_practice_sentence()` - 獲取練習句子
-  - `process_translation()` - 處理翻譯
-  - `update_knowledge_points()` - 更新知識點
+## Technology Stack
 
-#### 知識點管理（core/knowledge.py）
-- **職責**：知識點的 CRUD 操作和掌握度管理
-- **類別**：`KnowledgeManager`
-- **主要方法**：
-  - `add_knowledge_point()` - 新增知識點
-  - `update_mastery()` - 更新掌握度
-  - `get_review_items()` - 獲取需要複習的項目
-  - `export_statistics()` - 匯出統計數據
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Backend Framework | FastAPI 0.111+ | High-performance async web framework |
+| Template Engine | Jinja2 | Server-side rendering |
+| AI Service | Google Gemini API | Natural language processing |
+| Data Storage | JSON Files | Simple, portable data persistence |
+| CSS Architecture | Design System | Modular, maintainable styling |
+| Python Version | 3.9+ | Modern Python features |
 
-### 3. 核心服務層
+## Design Patterns
 
-#### AI 服務（core/ai_service.py）
-- **職責**：與 Gemini API 交互
-- **類別**：`AIService`
-- **主要方法**：
-  - `check_translation()` - 檢查翻譯
-  - `analyze_errors()` - 分析錯誤
-  - `generate_examples()` - 生成例句
-- **特性**：
-  - 請求緩存
-  - 重試機制
-  - 錯誤處理
+### Dependency Injection
+All services are initialized once and injected where needed, ensuring single instances and efficient resource usage.
 
-#### 錯誤分類器（core/error_classifier.py）
-- **職責**：智能分類錯誤類型
-- **類別**：`ErrorClassifier`
-- **分類邏輯**：
-  ```python
-  系統性錯誤 → 文法規則類
-  單一性錯誤 → 詞彙、搭配類
-  可以更好 → 表達優化類
-  其他錯誤 → 理解、遺漏類
-  ```
+### Repository Pattern
+Data access is abstracted through manager classes, allowing easy migration to databases if needed.
 
-#### 日誌系統（core/logger.py）
-- **職責**：統一日誌記錄和管理
-- **類別**：`Logger`
-- **功能**：
-  - 多級別日誌（DEBUG, INFO, WARNING, ERROR, CRITICAL）
-  - 多輸出目標（控制台、文件）
-  - 多種格式（純文本、JSON）
-  - 性能監控
+### Service Layer
+Business logic is separated from web handlers, making the code testable and maintainable.
 
-### 4. 基礎設施層
+## Performance Optimizations
 
-#### 配置管理（settings.py）
-- **職責**：集中管理所有配置
-- **配置類別**：
-  - `DisplaySettings` - 顯示配置
-  - `LearningSettings` - 學習參數
-  - `CacheSettings` - 緩存配置
-  - `APISettings` - API 設定
-  - `LogSettings` - 日誌配置
-  - `DataSettings` - 數據路徑
+1. **Async Operations**: Non-blocking I/O for API calls
+2. **Connection Pooling**: Reused HTTP connections to AI services
+3. **Smart Caching**: Frequently accessed data cached in memory
+4. **Lazy Loading**: Resources loaded only when needed
 
-#### 異常處理（core/exceptions.py）
-- **職責**：統一異常定義和處理
-- **異常層級**：
-  ```
-  LinkerException
-  ├── APIException
-  │   └── GeminiAPIException
-  ├── DataException
-  ├── ValidationException
-  ├── ConfigException
-  ├── FileOperationException
-  ├── ParseException
-  └── UserInputException
-  ```
+## Security Considerations
 
-#### 數據存儲
-- **格式**：JSON 文件
-- **文件**：
-  - `knowledge.json` - 知識點數據
-  - `practice_log.json` - 練習記錄
-  - `grammar_patterns.json` - 文法句型庫
-  - `assets.py` - 分級例句庫
+- API keys stored in environment variables
+- Input validation on all user inputs
+- XSS protection through template escaping
+- No sensitive data in client-side code
 
-## 數據流
+## Scalability Path
 
-### 翻譯練習流程
-
-```
-用戶輸入翻譯
-    ↓
-AI Service 檢查
-    ↓
-錯誤分類器分析
-    ↓
-知識點管理器更新
-    ↓
-數據持久化到 JSON
-    ↓
-顯示反饋給用戶
-```
-
-### 知識點更新流程
-
-```
-識別錯誤類型
-    ↓
-查找或創建知識點
-    ↓
-計算掌握度變化
-    ↓
-更新複習排程
-    ↓
-保存到數據文件
-```
-
-## 設計模式
-
-### 1. 單例模式（Singleton）
-- **應用**：Settings 配置管理
-- **目的**：確保全局只有一個配置實例
-
-### 2. 工廠模式（Factory）
-- **應用**：Logger 創建
-- **目的**：根據配置創建不同類型的日誌器
-
-### 3. 策略模式（Strategy）
-- **應用**：錯誤分類策略
-- **目的**：根據不同錯誤類型採用不同處理策略
-
-### 4. 裝飾器模式（Decorator）
-- **應用**：函數日誌記錄
-- **目的**：無侵入式添加日誌功能
-
-## 性能考量
-
-### 緩存策略
-- API 響應緩存（TTL: 5分鐘）
-- 知識點內存緩存
-- 例句預載入
-
-### 優化措施
-- 延遲載入大型數據文件
-- 批量寫入減少 I/O
-- 異步日誌寫入（計劃中）
-
-## 安全考量
-
-### API 金鑰保護
-- 環境變數存儲
-- 不在代碼中硬編碼
-- 日誌中遮蔽敏感信息
-
-### 數據驗證
-- 用戶輸入驗證
-- JSON 格式檢查
-- 異常邊界處理
-
-## 擴展性設計
-
-### 插件化架構（計劃中）
-- 支援自定義錯誤分類器
-- 可替換的 AI 服務提供者
-- 自定義數據存儲後端
-
-### 介面設計
-- 明確的模組介面
-- 依賴注入支援
-- 易於測試的設計
-
-## 部署架構
-
-### 單機部署
-```
-linker-cli/
-├── 程式文件
-├── 配置文件
-├── 數據文件
-└── 日誌文件
-```
-
-### Docker 部署（計劃中）
-```dockerfile
-FROM python:3.8-slim
-WORKDIR /app
-COPY . .
-RUN pip install -r requirements.txt
-CMD ["python", "linker_cli.py"]
-```
-
-## 監控和維護
-
-### 日誌監控
-- 錯誤率追蹤
-- API 調用統計
-- 性能指標記錄
-
-### 健康檢查
-- API 連接檢查
-- 數據文件完整性
-- 配置驗證
-
-## 未來規劃
-
-### 短期（v2.1）
-- 批量練習模式
-- 報告匯出功能
-- 性能優化
-
-### 中期（v2.2）
-- Web 介面
-- 多用戶支援
-- 雲端同步
-
-### 長期（v3.0）
-- 微服務架構
-- 多語言支援
-- AI 模型本地化
+The current architecture supports:
+- Horizontal scaling with load balancer
+- Migration to microservices
+- Database integration (PostgreSQL/MongoDB)
+- Container deployment (Docker/Kubernetes)

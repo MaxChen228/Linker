@@ -26,8 +26,8 @@ class TestSettings:
         assert s.learning.MASTERY_THRESHOLDS["beginner"] == 0.3
 
         # 測試緩存設定
-        assert s.cache.CACHE_TTL_SECONDS == 300
-        assert s.cache.MAX_CACHE_SIZE == 100
+        assert s.cache.CACHE_TTL_SECONDS == 0  # 已禁用快取
+        assert s.cache.MAX_CACHE_SIZE == 0  # 已禁用快取
 
         # 測試API設定
         assert s.api.DEFAULT_MODEL == "gemini-2.0-flash-exp"

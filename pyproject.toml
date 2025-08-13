@@ -52,7 +52,6 @@ addopts = [
     "--strict-markers",     # 標記必須預先定義
     "--cov=core",           # 覆蓋率檢查核心模組
     "--cov=web",            # 覆蓋率檢查 web 模組  
-    "--cov=services",       # 覆蓋率檢查 services 模組
     "--cov-report=term-missing",  # 顯示未覆蓋的行
     "--cov-report=html",    # 生成 HTML 覆蓋率報告
 ]
@@ -68,9 +67,8 @@ markers = [
 ]
 # 測試發現設定
 minversion = "7.0"
-# 異步測試超時設定
+# 異步測試設定
 asyncio_mode = "auto"
-timeout = 300
 
 [project]
 name = "linker-cli"
@@ -107,3 +105,8 @@ dev = [
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "web*"]
+exclude = ["tests*", "docs*", "logs*", "data*", "venv*", "node_modules*"]

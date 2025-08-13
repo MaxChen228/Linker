@@ -679,6 +679,9 @@
       const question = questionQueue.find(q => q.id === questionId);
       if (!question || question.status !== QuestionStatus.READY) return;
       
+      // 重要：在更新 currentQuestionId 之前先保存當前題目的草稿
+      saveDraftForCurrentQuestion();
+      
       // 如果有其他題目正在作答中，先恢復為就緒
       if (currentQuestionId && currentQuestionId !== questionId) {
         const prevQuestion = questionQueue.find(q => q.id === currentQuestionId);
@@ -698,8 +701,8 @@
     
     // 載入題目到表單
     function loadQuestionToForm(question) {
-      // 儲存當前答案到之前的題目（如果有的話）
-      saveDraftForCurrentQuestion();
+      // 注意：草稿保存已移至 selectQuestion() 中，避免順序問題
+      // saveDraftForCurrentQuestion() 已在切換前執行
       
       // 更新中文句子
       const chineseInput = document.getElementById('chinese-input');

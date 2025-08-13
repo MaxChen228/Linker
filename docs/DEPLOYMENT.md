@@ -1,387 +1,263 @@
-# Linker 部署指南
+# Deployment & Operations Guide
 
-## 快速部署選項
+## Prerequisites
 
-### 方案一：本地部署（開發測試）
+- Python 3.9+
+- 2GB RAM minimum
+- 10GB disk space
+- Internet connectivity for AI API access
 
-最簡單的部署方式，適合個人使用和開發測試。
+## Environment Variables
 
 ```bash
-# 1. 設置環境變數
-export GEMINI_API_KEY="your-api-key"
+# Required
+GEMINI_API_KEY=your-api-key
 
-# 2. 啟動服務
+# Optional
+GEMINI_GENERATE_MODEL=gemini-2.5-flash  # Default
+GEMINI_GRADE_MODEL=gemini-2.5-pro       # Default
+LOG_LEVEL=INFO                          # INFO|DEBUG|WARNING|ERROR
+PORT=8000                                # Server port
+HOST=0.0.0.0                            # Bind address
+```
+
+## Deployment Options
+
+### 1. Local Development
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run with auto-reload
+uvicorn web.main:app --reload --port 8000
+```
+
+### 2. Production Server
+
+```bash
+# Install production dependencies
+pip install -r requirements.txt
+pip install gunicorn
+
+# Run with Gunicorn (4 workers)
+gunicorn web.main:app -w 4 -k uvicorn.workers.UvicornWorker \
+  --bind 0.0.0.0:8000 \
+  --access-logfile - \
+  --error-logfile -
+```
+
+### 3. Docker Deployment
+
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+CMD ["uvicorn", "web.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+```bash
+# Build and run
+docker build -t linker .
+docker run -p 8000:8000 -e GEMINI_API_KEY=your-key linker
+```
+
+### 4. Docker Compose
+
+```yaml
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    restart: unless-stopped
+```
+
+### 5. Cloud Deployment
+
+#### Render.com
+1. Connect GitHub repository
+2. Set environment variables in dashboard
+3. Deploy with `render.yaml`:
+
+```yaml
+services:
+  - type: web
+    name: linker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn web.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+```
+
+#### Railway
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Deploy
+railway login
+railway up
+```
+
+#### Google Cloud Run
+```bash
+# Build container
+gcloud builds submit --tag gcr.io/PROJECT_ID/linker
+
+# Deploy
+gcloud run deploy linker \
+  --image gcr.io/PROJECT_ID/linker \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-env-vars GEMINI_API_KEY=your-key
+```
+
+## System Monitoring
+
+### Health Checks
+
+```bash
+# Basic health check
+curl http://localhost:8000/api/health
+
+# Detailed status
+curl http://localhost:8000/api/health?detailed=true
+```
+
+### Logging
+
+Logs are written to:
+- Console (stdout/stderr)
+- `logs/linker.log` (rotating daily)
+- `logs/error.log` (errors only)
+
+### Metrics to Monitor
+
+1. **Application Metrics**
+   - Request rate and latency
+   - Error rate (4xx, 5xx)
+   - Active sessions
+
+2. **AI Service Metrics**
+   - API call success rate
+   - Response time
+   - Token usage
+
+3. **System Metrics**
+   - CPU usage (target < 70%)
+   - Memory usage (target < 80%)
+   - Disk I/O
+
+## Maintenance Tasks
+
+### Daily
+- Check error logs for anomalies
+- Monitor AI API quota usage
+
+### Weekly
+- Backup data files (`data/*.json`)
+- Review performance metrics
+- Update dependencies if security patches available
+
+### Monthly
+- Clean old log files
+- Review and optimize slow queries
+- Update documentation if needed
+
+## Backup & Recovery
+
+### Backup Strategy
+```bash
+# Automated daily backup
+0 2 * * * tar -czf /backup/linker-$(date +\%Y\%m\%d).tar.gz /app/data
+```
+
+### Recovery Process
+```bash
+# Restore from backup
+tar -xzf /backup/linker-20240115.tar.gz -C /
+systemctl restart linker
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **AI Service Connection Failed**
+   - Verify GEMINI_API_KEY is set correctly
+   - Check network connectivity
+   - Verify API quota not exceeded
+
+2. **High Memory Usage**
+   - Restart application to clear caches
+   - Check for memory leaks in logs
+   - Consider increasing server RAM
+
+3. **Slow Response Times**
+   - Check AI API latency
+   - Review application logs for bottlenecks
+   - Consider implementing caching
+
+### Debug Mode
+
+Enable debug logging:
+```bash
+export LOG_LEVEL=DEBUG
 ./run.sh
 ```
 
-訪問：http://localhost:8000
-
-### 方案二：局域網部署（家庭/辦公室）
-
-讓同一網路內的其他設備可以訪問。
-
+View real-time logs:
 ```bash
-# 啟動網路服務
-./run-network.sh
+tail -f logs/linker.log
 ```
 
-服務會自動顯示訪問地址：
-- 本機：http://localhost:8000
-- 其他設備：http://192.168.x.x:8000（實際IP會顯示）
-
-**注意事項**：
-- 確保防火牆允許 8000 端口
-- Windows 需要在防火牆設置中允許 Python
-- macOS 可能需要在系統偏好設定中允許連接
-
-### 方案三：Docker 部署（生產環境）
-
-使用容器化部署，適合長期穩定運行。
-
-#### 前置要求
-- 安裝 [Docker](https://docs.docker.com/get-docker/)
-- 安裝 [Docker Compose](https://docs.docker.com/compose/install/)
-
-#### 部署步驟
-
-1. **創建環境配置**
-```bash
-cat > .env << EOF
-GEMINI_API_KEY=your-api-key
-GEMINI_GENERATE_MODEL=gemini-2.5-flash
-GEMINI_GRADE_MODEL=gemini-2.5-pro
-EOF
-```
-
-2. **啟動服務**
-```bash
-# 構建並後台運行
-docker-compose up -d
-
-# 查看運行狀態
-docker-compose ps
-
-# 查看日誌
-docker-compose logs -f
-```
-
-3. **管理服務**
-```bash
-# 停止服務
-docker-compose stop
-
-# 重啟服務
-docker-compose restart
-
-# 完全清理
-docker-compose down
-```
-
-#### 數據備份
-數據自動掛載到 `./data` 目錄，定期備份此目錄即可。
-
-## 雲端部署
-
-### Render 部署（推薦）
-
-Render 提供免費套餐，適合個人項目。
-
-#### 快速部署步驟
-
-1. **準備 GitHub 倉庫**
-```bash
-git init
-git add .
-git commit -m "Initial commit for Render deployment"
-git remote add origin https://github.com/你的用戶名/linker-cli.git
-git push -u origin main
-```
-
-2. **創建 Render 服務**
-   - 登入 [Render Dashboard](https://render.com)
-   - 點擊 **"New +"** → **"Web Service"**
-   - 連接你的 GitHub 帳號
-   - 選擇 `linker-cli` 倉庫
-   - 填寫服務設定：
-     - **Name**: `linker-translator`
-     - **Region**: Singapore（離亞洲較近）
-     - **Branch**: `main`
-     - **Runtime**: Python 3
-     - **Build Command**: `pip install -r requirements.txt`
-     - **Start Command**: `python start.py`
-     - **Instance Type**: Free
-
-3. **設置環境變數**
-   - **Key**: `GEMINI_API_KEY`
-   - **Value**: 你的 Gemini API Key
-   - 獲取 API Key：[Google AI Studio](https://makersuite.google.com/app/apikey)
-
-4. **添加持久化儲存（可選）**
-   - 在服務設定頁面，找到 "Disks" 區域
-   - 點擊 "Add Disk"
-   - 設定：
-     - **Name**: `linker-data`
-     - **Mount Path**: `/data`
-     - **Size**: 1 GB（免費方案）
-
-5. **部署完成**
-   - 點擊 **"Create Web Service"** 開始部署
-   - 首次部署約需 5-10 分鐘
-   - 部署成功後獲得 URL：`https://your-app.onrender.com`
-
-#### Render 免費方案說明
-- 750 小時/月的運行時間
-- 服務會在 15 分鐘無活動後休眠
-- 首次訪問可能需要等待啟動（約 30 秒）
-- 100 GB 頻寬/月
-
-#### 監控與管理
-- **查看日誌**：Dashboard → "Logs" 標籤
-- **手動部署**：Dashboard → "Manual Deploy" → "Deploy latest commit"
-- **自動部署**：每次推送到 GitHub 會自動部署
-
-### Railway 部署
-
-Railway 提供簡單的部署流程。
-
-```bash
-# 安裝 Railway CLI
-npm install -g @railway/cli
-
-# 登入並部署
-railway login
-railway up
-
-# 設置環境變數
-railway variables set GEMINI_API_KEY="your-key"
-```
-
-### Fly.io 部署
-
-適合需要全球部署的場景。
-
-```bash
-# 安裝 Fly CLI
-curl -L https://fly.io/install.sh | sh
-
-# 初始化應用
-fly launch
-
-# 設置密鑰
-fly secrets set GEMINI_API_KEY="your-key"
-
-# 部署
-fly deploy
-```
-
-## 進階配置
-
-### 自定義配置
-
-#### 更改端口
-```bash
-# 環境變數方式
-PORT=3000 ./run.sh
-
-# Docker 方式
-# 修改 docker-compose.yml
-ports:
-  - "3000:8000"
-```
-
-#### 配置 HTTPS
-
-使用 Nginx 反向代理：
-
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name your-domain.com;
-    
-    ssl_certificate /path/to/cert.pem;
-    ssl_certificate_key /path/to/key.pem;
-    
-    location / {
-        proxy_pass http://localhost:8000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
-### 生產環境優化
-
-#### 使用 Gunicorn
-```bash
-# 安裝 Gunicorn
-pip install gunicorn
-
-# 啟動（4個工作進程）
-gunicorn web.main:app \
-  --workers 4 \
-  --worker-class uvicorn.workers.UvicornWorker \
-  --bind 0.0.0.0:8000
-```
-
-#### 使用 Supervisor
-```ini
-# /etc/supervisor/conf.d/linker.conf
-[program:linker]
-command=/usr/bin/gunicorn web.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
-directory=/opt/linker
-user=www-data
-autostart=true
-autorestart=true
-redirect_stderr=true
-stdout_logfile=/var/log/linker.log
-environment=GEMINI_API_KEY="your-key"
-```
-
-## 移動設備訪問
-
-### 設置步驟
-
-1. **啟動局域網服務**
-```bash
-./run-network.sh
-# 會顯示類似：其他設備請訪問: http://192.168.1.100:8000
-```
-
-2. **手機/平板訪問**
-   - 確保與電腦在同一 WiFi
-   - 在瀏覽器輸入顯示的地址
-   - 建議使用 Chrome 或 Safari
-
-3. **添加到主屏幕**
-   - iOS：Safari > 分享 > 加到主畫面
-   - Android：Chrome > 選單 > 加到主畫面
-
-### 故障排除
-
-如果無法訪問：
-1. 檢查防火牆是否允許 8000 端口
-2. 確認設備在同一網段
-3. 嘗試關閉電腦防火牆測試
-4. 手動獲取 IP：
-   - Windows: `ipconfig | findstr IPv4`
-   - macOS: `ifconfig | grep "inet " | grep -v 127.0.0.1`
-   - Linux: `ip addr show | grep inet`
-
-## 安全建議
-
-### 基本安全措施
-
-1. **API Key 管理**
-   - 使用環境變數或 .env 文件
-   - 絕不提交到版本控制
-   - 定期輪換密鑰
-
-2. **網路安全**
-   - 局域網：僅供信任的網路使用
-   - 公網：必須使用 HTTPS
-   - 考慮使用 VPN 或內網穿透
-
-3. **訪問控制**
-   - 可添加 Basic Auth 認證
-   - 限制 IP 訪問範圍
-   - 使用防火牆規則
-
-### 添加基本認證
-
-```python
-# 在 web/main.py 添加
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-import secrets
-
-security = HTTPBasic()
-
-def verify_credentials(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, "admin")
-    correct_password = secrets.compare_digest(credentials.password, "your-password")
-    if not (correct_username and correct_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect credentials",
-        )
-    return credentials.username
-
-# 在需要保護的路由添加依賴
-@app.get("/practice", dependencies=[Depends(verify_credentials)])
-```
-
-## 常見問題
-
-### 部署相關
-
-**Q: 部署後無法訪問？**
-- 檢查服務是否正常啟動：`docker-compose ps` 或 `ps aux | grep uvicorn`
-- 檢查端口是否被佔用：`lsof -i:8000` (macOS/Linux) 或 `netstat -ano | findstr :8000` (Windows)
-- 查看錯誤日誌：`docker-compose logs` 或查看 `logs/` 目錄
-
-**Q: 如何更新部署？**
-```bash
-# Docker 部署
-git pull
-docker-compose down
-docker-compose up -d --build
-
-# 普通部署
-git pull
-pip install -r requirements.txt
-# 重啟服務
-```
-
-**Q: Render 部署常見問題？**
-- **構建失敗**：檢查 requirements.txt 是否完整
-- **服務無法啟動**：確認 start.py 存在且語法正確
-- **API 無法使用**：檢查環境變數是否正確設置
-
-### 數據管理
-
-**Q: 如何遷移數據？**
-1. 備份舊環境的 `data/` 目錄
-2. 在新環境還原到相同位置
-3. 確保文件權限正確
-
-**Q: 如何清理數據？**
-- 清理日誌：刪除 `logs/` 目錄下的舊文件
-- 重置學習記錄：刪除 `data/practice_log.json`
-- 重置知識點：刪除 `data/knowledge.json`
-
-### 性能優化
-
-**Q: 響應速度慢？**
-- 檢查網路延遲
-- 考慮使用更快的 Gemini 模型
-- 增加服務器資源（CPU/內存）
-- 使用 CDN 加速靜態資源
-
-## 資源鏈接
-
-### 文檔
-- [系統架構](ARCHITECTURE.md)
-- [配置指南](CONFIGURATION.md)
-- [開發文檔](DEVELOPMENT.md)
-- [API 文檔](API.md)
-- [快速開始](getting-started/quick-start.md)
-
-### 獲取幫助
-- 提交 [GitHub Issue](https://github.com/your-repo/issues)
-- 查看項目文檔
-- 聯繫開發團隊
-
-### 相關工具
-- [Gemini API](https://makersuite.google.com/app/apikey) - 獲取 API Key
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) - 容器化部署
-- [Render](https://render.com) - 雲端託管
-- [Railway](https://railway.app) - 簡易部署
-- [Fly.io](https://fly.io) - 全球部署
-
----
-
-**最後更新**: 2025-08-08  
-**版本**: 2.5.0
+## Security Checklist
+
+- [ ] API keys stored in environment variables
+- [ ] HTTPS enabled in production
+- [ ] Regular security updates applied
+- [ ] Access logs monitored for anomalies
+- [ ] Rate limiting configured
+- [ ] Input validation enabled
+- [ ] XSS protection active
+
+## Performance Tuning
+
+### Optimization Tips
+
+1. **Enable Response Caching**
+   ```python
+   # In settings.py
+   CACHE_TTL_SECONDS = 300
+   ```
+
+2. **Adjust Worker Count**
+   ```bash
+   # Based on CPU cores
+   workers = (2 * cpu_cores) + 1
+   ```
+
+3. **Database Connection Pooling**
+   (Currently using JSON files, consider database for scale)
+
+## Support
+
+For production issues:
+1. Check logs for error details
+2. Review this guide's troubleshooting section
+3. Create issue on GitHub with logs and environment details
