@@ -1,22 +1,49 @@
 /* ================================================
-   題目佇列系統 - 使用設計系統變數
+   題目佇列系統 - 統一設計語言
    ================================================ */
 
-/* 題目佇列容器 */
+/* 題目佇列容器 - 精緻卡片風格 */
 .question-queue {
   margin: var(--space-6) 0;
   padding: var(--space-6);
-  background: var(--surface-elevated);
+  background: linear-gradient(
+    to bottom,
+    var(--surface-base),
+    rgba(var(--gray-50-rgb, 250, 250, 250), 0.5)
+  );
   border-radius: var(--radius-xl);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-elevated-sm);
+  position: relative;
+  overflow: hidden;
 }
 
-/* 佇列標題區 */
+/* 背景裝飾 - 微妙的漸層 */
+.question-queue::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 50%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    var(--accent-100) 0%,
+    transparent 70%
+  );
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* 佇列標題區 - 更精緻的設計 */
 .queue-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
 }
 
 .queue-controls {
@@ -26,12 +53,16 @@
 }
 
 .queue-clear-btn {
-  opacity: 0.7;
-  transition: opacity var(--duration-fast) var(--ease-out);
+  opacity: 0.6;
+  transition: all var(--duration-normal) var(--ease-out);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
 }
 
 .queue-clear-btn:hover {
   opacity: 1;
+  background: var(--gray-100);
+  transform: translateY(-1px);
 }
 
 .queue-title {
@@ -39,25 +70,89 @@
   font-weight: var(--font-semibold);
   color: var(--text-primary);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* 標題裝飾線 */
+.queue-title::after {
+  content: '';
+  height: 2px;
+  width: 40px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-400),
+    transparent
+  );
+  display: inline-block;
+  margin-left: var(--space-2);
 }
 
 .queue-count {
   font-size: var(--text-sm);
-  color: var(--text-secondary);
-  padding: var(--space-1) var(--space-2);
+  font-weight: var(--font-medium);
+  color: var(--accent-700);
+  padding: var(--space-1) var(--space-3);
   background: var(--accent-100);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--accent-200);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
-/* 題目卡片容器 */
+/* 數字動畫 */
+.queue-count::before {
+  content: '•';
+  color: var(--accent-500);
+  animation: pulse 2s infinite;
+}
+
+/* 題目卡片容器 - 改進間距和滾動 */
 .queue-items {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-4);
   overflow-x: auto;
-  padding: var(--space-2) 0;
-  min-height: 120px;
+  padding: var(--space-3) 0;
+  min-height: 130px;
   scrollbar-width: thin;
   scrollbar-color: var(--gray-300) transparent;
+  position: relative;
+  
+  /* 平滑滾動 */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 漸層遮罩效果 */
+.queue-items::before,
+.queue-items::after {
+  content: '';
+  position: sticky;
+  top: 0;
+  width: 20px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.queue-items::before {
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    var(--surface-base),
+    transparent
+  );
+}
+
+.queue-items::after {
+  right: 0;
+  background: linear-gradient(
+    -90deg,
+    var(--surface-base),
+    transparent
+  );
 }
 
 /* 自訂捲軸樣式 */
@@ -74,56 +169,113 @@
   border-radius: var(--radius-sm);
 }
 
-/* 題目卡片基礎樣式 */
+/* 題目卡片基礎樣式 - 更大更精緻 */
 .queue-item {
   flex-shrink: 0;
-  width: 180px;
-  height: 100px;
-  padding: var(--space-3);
+  width: 200px;
+  height: 110px;
+  padding: var(--space-4);
   background: var(--surface-base);
-  border: 2px solid var(--border-light);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
   position: relative;
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
 }
 
-/* 複習題模式樣式 */
+/* 側邊狀態指示條 */
+.queue-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent-500);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+/* 頂部進度條 */
+.queue-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-400),
+    var(--accent-600)
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+/* 複習題模式樣式 - 優雅漸層 */
 .queue-item[data-mode="review"] {
-  background: linear-gradient(135deg, var(--error-50) 0%, var(--surface-base) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--error-50-rgb, 254, 242, 242), 0.7),
+    var(--surface-base)
+  );
   border-color: var(--error-200);
 }
 
-.queue-item[data-mode="review"]:hover {
-  border-color: var(--error-400);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+.queue-item[data-mode="review"]::before {
+  background: var(--error-400);
 }
 
-/* 新題目模式樣式 */
+.queue-item[data-mode="review"]:hover {
+  border-color: var(--error-300);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 新題目模式樣式 - 活力漸層 */
 .queue-item[data-mode="new"] {
-  background: linear-gradient(135deg, var(--accent-50) 0%, var(--surface-base) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-50-rgb, 238, 242, 255), 0.7),
+    var(--surface-base)
+  );
   border-color: var(--accent-200);
 }
 
-.queue-item[data-mode="new"]:hover {
-  border-color: var(--accent-400);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+.queue-item[data-mode="new"]::before {
+  background: var(--accent-500);
 }
 
-/* 句型練習模式樣式 */
+.queue-item[data-mode="new"]:hover {
+  border-color: var(--accent-300);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 句型練習模式樣式 - 清新漸層 */
 .queue-item[data-mode="pattern"] {
-  background: linear-gradient(135deg, var(--success-50) 0%, var(--surface-base) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--success-50-rgb, 236, 253, 245), 0.7),
+    var(--surface-base)
+  );
   border-color: var(--success-200);
 }
 
+.queue-item[data-mode="pattern"]::before {
+  background: var(--success-500);
+}
+
 .queue-item[data-mode="pattern"]:hover {
-  border-color: var(--success-400);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--success-300);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 /* 卡片內部結構 */
@@ -154,10 +306,14 @@
   justify-content: center;
 }
 
-/* 題目卡片懸停效果 */
+/* 題目卡片懸停效果 - 更細膩 */
 .queue-item:hover:not(.add-new):not([data-status="generating"]):not([data-status="grading"]):not([data-status="active"]) {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.queue-item:hover::before {
+  opacity: 0.3;
 }
 
 /* 就緒狀態 */
@@ -177,12 +333,45 @@
   animation: pulse 2s infinite;
 }
 
-/* 作答中狀態 */
+/* 作答中狀態 - 突出顯示 */
 .queue-item[data-status="active"] {
-  background: linear-gradient(135deg, var(--accent-100) 0%, var(--accent-200) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-100),
+    var(--accent-50)
+  );
   border-color: var(--accent-500);
-  box-shadow: 0 0 0 2px var(--accent-400), var(--shadow-focus-accent);
-  transform: translateY(-2px);
+  box-shadow: 
+    0 0 0 3px rgba(var(--accent-400-rgb, 129, 140, 248), 0.2),
+    var(--shadow-md);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.queue-item[data-status="active"]::before {
+  opacity: 1;
+  width: 4px;
+}
+
+.queue-item[data-status="active"]::after {
+  transform: scaleX(1);
+}
+
+/* 作答中的脈動效果 */
+@keyframes activeGlow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 0 3px rgba(var(--accent-400-rgb, 129, 140, 248), 0.2),
+      var(--shadow-md);
+  }
+  50% { 
+    box-shadow: 
+      0 0 0 5px rgba(var(--accent-400-rgb, 129, 140, 248), 0.1),
+      var(--shadow-lg);
+  }
+}
+
+.queue-item[data-status="active"] {
+  animation: activeGlow 2s ease-in-out infinite;
 }
 
 /* 批改中狀態 */
@@ -193,56 +382,94 @@
   animation: pulse 2s infinite;
 }
 
-/* 已完成狀態 */
+/* 已完成狀態 - 優雅淡出 */
 .queue-item[data-status="completed"] {
-  background: var(--gray-100);
-  border-color: var(--gray-400);
+  background: linear-gradient(
+    135deg,
+    var(--gray-50),
+    var(--surface-base)
+  );
+  border-color: var(--gray-300);
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 0.7;
+  position: relative;
+}
+
+/* 完成標記 */
+.queue-item[data-status="completed"]::before {
+  background: var(--success-500);
+  opacity: 0.5;
 }
 
 .queue-item[data-status="completed"]:hover {
-  background: var(--gray-200);
-  transform: translateY(-1px);
-  opacity: 1;
-}
-
-/* 新增按鈕特殊樣式 */
-.queue-item.add-new {
-  background: transparent;
-  border: 2px dashed var(--border-default);
-  color: var(--text-secondary);
-}
-
-.queue-item.add-new:hover {
-  background: var(--surface-elevated);
-  border-color: var(--accent-500);
-  color: var(--accent-600);
+  opacity: 0.9;
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
 
-/* 卡片內容 */
+/* 新增按鈕特殊樣式 - 更吸引人 */
+.queue-item.add-new {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-50-rgb, 238, 242, 255), 0.3),
+    transparent
+  );
+  border: 2px dashed var(--accent-300);
+  color: var(--accent-600);
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.queue-item.add-new:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-50-rgb, 238, 242, 255), 0.8),
+    rgba(var(--accent-100-rgb, 224, 231, 255), 0.5)
+  );
+  border-color: var(--accent-500);
+  border-style: solid;
+  color: var(--accent-700);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.queue-item.add-new .add-icon {
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.queue-item.add-new:hover .add-icon {
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* 卡片內容 - 更好的排版 */
 .queue-item-text {
   font-size: var(--text-sm);
   color: var(--text-primary);
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
   width: 100%;
-  max-width: 150px;
+  line-height: 1.4;
+  margin: var(--space-1) 0;
 }
 
 .queue-item-badge {
-  font-size: var(--text-xs);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  font-weight: var(--font-medium);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-semibold);
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
 }
 
 .queue-item-badge.ready {
@@ -283,23 +510,50 @@
   color: var(--gray-700);
 }
 
-/* 分數顯示 */
+/* 分數顯示 - 更醒目 */
 .score-display {
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
   font-weight: var(--font-bold);
-  margin-top: var(--space-1);
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.score-display::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
 .score-display.high {
   color: var(--success-600);
 }
 
+.score-display.high::before {
+  background: var(--success-500);
+  box-shadow: 0 0 8px var(--success-400);
+}
+
 .score-display.medium {
   color: var(--warning-600);
 }
 
+.score-display.medium::before {
+  background: var(--warning-500);
+  box-shadow: 0 0 8px var(--warning-400);
+}
+
 .score-display.low {
   color: var(--error-600);
+}
+
+.score-display.low::before {
+  background: var(--error-500);
+  box-shadow: 0 0 8px var(--error-400);
 }
 
 /* 進度條 */
