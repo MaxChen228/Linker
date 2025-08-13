@@ -701,3 +701,96 @@ class AIService:
             return {"patterns": [], "suggestions": []}
 
         return result
+
+    def generate_sentence_for_pattern(
+        self,
+        pattern_data: dict,
+        level: int = 2,
+        length: str = "medium"
+    ) -> dict[str, Any]:
+        """根據特定文法句型生成練習題目
+        
+        Args:
+            pattern_data: 句型資料（包含 pattern, formula, core_concept, examples 等）
+            level: 難度等級
+            length: 句子長度
+            
+        Returns:
+            包含句子、提示等資訊
+        """
+        # 準備句型資訊
+        pattern_name = pattern_data.get("pattern", "")
+        formula = pattern_data.get("formula", "")
+        core_concept = pattern_data.get("core_concept", "")
+        examples = pattern_data.get("examples", [])
+        
+        # 取前3個例句作為參考
+        example_text = ""
+        for i, ex in enumerate(examples[:3], 1):
+            if isinstance(ex, dict):
+                zh = ex.get("zh", "")
+                en = ex.get("en", "")
+                if zh and en:
+                    example_text += f"\n   例{i}. {zh} → {en}"
+        
+        length_hint = {
+            "short": "簡短句子（10-20字）",
+            "medium": "中等長度（20-35字）",
+            "long": "較長句子（35-60字）"
+        }.get(length, "中等長度")
+        
+        difficulty_hint = {
+            1: "基礎程度",
+            2: "中級程度",
+            3: "中高級程度",
+            4: "高級程度",
+            5: "進階程度"
+        }.get(level, "中級程度")
+        
+        system_prompt = f"""
+        你是一位專業的英文教師，請根據指定的文法句型生成一個中文練習句子。
+        
+        目標句型：{pattern_name}
+        句型公式：{formula}
+        核心概念：{core_concept}
+        
+        參考例句：{example_text if example_text else "無"}
+        
+        要求：
+        1. 生成一個{length_hint}的中文句子
+        2. 難度為{difficulty_hint}
+        3. 句子必須能夠自然地使用「{pattern_name}」句型來翻譯
+        4. 句子要實用、貼近生活或工作場景
+        5. 不要直接複製例句，要有創意
+        
+        請以 JSON 格式回覆：
+        {{
+            "sentence": "要翻譯的中文句子",
+            "hint": "給學生的提示（簡短說明這個句型的使用要點）",
+            "expected_structure": "預期的英文句型結構（使用 ... 表示可填入的部分）"
+        }}
+        """
+        
+        user_prompt = "請生成一個適合練習此文法句型的中文句子。"
+        
+        if not self.generate_model:
+            return {
+                "sentence": "今天天氣很好。",
+                "hint": f"注意使用 {pattern_name} 句型",
+                "expected_structure": ""
+            }
+        
+        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
+        
+        # 錯誤處理
+        if not isinstance(result, dict):
+            result = {
+                "sentence": "今天天氣很好。",
+                "hint": f"注意使用 {pattern_name} 句型"
+            }
+        
+        return {
+            "sentence": result.get("sentence", "今天天氣很好。"),
+            "hint": result.get("hint", f"注意使用 {pattern_name} 句型"),
+            "expected_structure": result.get("expected_structure", formula)
+        }

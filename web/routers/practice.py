@@ -2,6 +2,7 @@
 Practice routes for the Linker web application. (Refactored for API-first approach)
 """
 import json
+from pathlib import Path
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
@@ -116,8 +117,9 @@ async def generate_question_api(request: Request):
         mode = data.get("mode", "new")
         length = data.get("length", "short")
         level = data.get("level", 1)
+        pattern_id = data.get("pattern_id")  # 新增的參數
 
-        logger.info(f"API: Generating question - mode={mode}, length={length}, level={level}")
+        logger.info(f"API: Generating question - mode={mode}, length={length}, level={level}, pattern_id={pattern_id}")
 
         if mode == "review":
             review_points = knowledge.get_review_candidates(max_points=5)
@@ -134,6 +136,42 @@ async def generate_question_api(request: Request):
                 "target_point_ids": payload.get("target_point_ids", []),
                 "target_points": payload.get("target_points", []),
                 "target_points_description": payload.get("target_points_description", "")
+            })
+
+        # 文法句型模式
+        elif mode == "pattern":
+            if not pattern_id:
+                return JSONResponse({"success": False, "error": "缺少 pattern_id 參數"}, status_code=400)
+
+            # 載入句型資料
+            enriched_file = Path("data/patterns_enriched_complete.json")
+            if not enriched_file.exists():
+                return JSONResponse({"success": False, "error": "Patterns data not found."}, status_code=404)
+            
+            with open(enriched_file, encoding='utf-8') as f:
+                patterns_data = json.load(f)
+                all_patterns = patterns_data.get('patterns', patterns_data.get('data', []))
+
+            # 尋找指定的句型
+            target_pattern = next((p for p in all_patterns if p.get("id") == pattern_id), None)
+            
+            if not target_pattern:
+                return JSONResponse({"success": False, "error": "找不到指定的句型"}, status_code=404)
+
+            # 呼叫 AI Service 生成與句型相關的題目
+            payload = ai.generate_sentence_for_pattern(
+                pattern_data=target_pattern,
+                level=level,
+                length=length
+            )
+
+            return JSONResponse({
+                "success": True,
+                "chinese": payload.get("sentence", ""),
+                "hint": f"練習句型：{target_pattern.get('pattern')}",
+                "target_point_ids": [],
+                "target_points": [],
+                "target_points_description": target_pattern.get('core_concept', '')
             })
 
         # 預設為新題模式

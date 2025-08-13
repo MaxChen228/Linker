@@ -39,6 +39,7 @@
                 <select name="mode" id="mode-select">
                     <option value="new">新題目</option>
                     <option value="review">複習題</option>
+                    <option value="pattern">文法句型練習</option>
                 </select>
             </div>
             <div class="param-group">
@@ -70,6 +71,22 @@
 <div class="loading-overlay" id="loading-overlay" data-visible="false">
     <div class="spinner"></div>
 </div>
+
+<!-- 句型選擇視窗 -->
+<dialog id="pattern-selector-modal" class="modal">
+    <div class="modal-content">
+        <header class="modal-header">
+            <h2 class="modal-title">選擇一個文法句型</h2>
+            <button class="modal-close" id="modal-close-btn" aria-label="Close">×</button>
+        </header>
+        <div class="modal-body">
+            <input type="search" id="pattern-search-input" class="modal-search" placeholder="搜尋句型...">
+            <div class="pattern-list" id="pattern-list-container">
+                <!-- 動態載入句型列表 -->
+            </div>
+        </div>
+    </div>
+</dialog>
 {% endblock %}
 
 {% block scripts %}

@@ -6,11 +6,12 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 
-from web.dependencies import get_knowledge_assets, get_templates
+from web.dependencies import get_knowledge_assets, get_logger, get_templates
 
 router = APIRouter()
+logger = get_logger()
 
 @router.get("/patterns", response_class=HTMLResponse)
 def patterns(request: Request, category: Optional[str] = None, q: Optional[str] = None):
@@ -126,3 +127,33 @@ def pattern_detail(request: Request, pattern_id: str):
             "active": "patterns",
         },
     )
+
+@router.get("/api/patterns", response_class=JSONResponse)
+def get_all_patterns_api():
+    """API 端點：獲取所有文法句型列表，用於練習模式選擇。"""
+    try:
+        enriched_file = Path("data/patterns_enriched_complete.json")
+        if not enriched_file.exists():
+            return JSONResponse({"success": False, "error": "Patterns data not found."}, status_code=404)
+
+        with open(enriched_file, encoding='utf-8') as f:
+            data = json.load(f)
+            patterns = data.get('patterns', data.get('data', []))
+
+        # 只回傳必要的資訊以減小傳輸量
+        patterns_summary = [
+            {
+                "id": p.get("id"),
+                "pattern": p.get("pattern"),
+                "category": p.get("category", "未分類"),
+                "formula": p.get("formula", ""),
+                "core_concept": p.get("core_concept", "")
+            }
+            for p in patterns if p.get("id") and p.get("pattern")
+        ]
+        
+        return JSONResponse({"success": True, "patterns": patterns_summary})
+
+    except Exception as e:
+        logger.error(f"Error fetching patterns API: {e}", exc_info=True)
+        return JSONResponse({"success": False, "error": "Internal server error."}, status_code=500)
