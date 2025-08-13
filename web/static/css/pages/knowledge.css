@@ -924,15 +924,15 @@
   }
   
   .queue-item-badge .badge.isolated {
-    background: rgba(245, 158, 11, 0.2);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #fbbf24;
+    background: var(--warning-100);
+    border-color: var(--warning-300);
+    color: var(--warning-600);
   }
   
   .queue-item-badge .badge.enhancement {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #34d399;
+    background: var(--success-100);
+    border-color: var(--success-300);
+    color: var(--success-600);
   }
   
   .filter-tab {

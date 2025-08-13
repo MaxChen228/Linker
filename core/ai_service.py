@@ -164,11 +164,12 @@ class AIService:
             raise ValueError("無法解析 AI 回應") from e
 
     def _get_fallback_response(self) -> dict[str, Any]:
-        """獲取備用回應"""
+        """獲取備用回應 - 改進版本，包含錯誤標記"""
         return {
             "is_generally_correct": False,
             "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
             "error_analysis": [],
+            "service_error": True  # 新增標記，方便後端識別
         }
 
     async def generate_async(

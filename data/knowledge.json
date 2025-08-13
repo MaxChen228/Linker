@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "last_updated": "2025-08-13T15:29:44.508310",
+  "last_updated": "2025-08-13T17:46:06.899985",
   "data": [
     {
       "id": 1,
@@ -699,6 +699,94 @@
       "created_at": "2025-08-13T15:27:16.987211",
       "last_seen": "2025-08-13T15:27:16.987214",
       "next_review": "2025-08-14T15:27:16.987229"
+    },
+    {
+      "id": 30,
+      "key_point": "動詞形式錯誤: balancing → to balance: do our best balancing",
+      "category": "systematic",
+      "subtype": "verb_conjugation",
+      "explanation": "片語「do one's best」（盡力）後面應該接不定詞（to + 原形動詞），用來表示「盡力去做某事」。因此，正確的文法結構是 'do our best to balance'。",
+      "original_phrase": "do our best balancing",
+      "correction": "do our best to balance",
+      "original_error": {
+        "chinese_sentence": "儘管面臨許多挑戰，我們仍應盡力平衡工作與生活，以確保身心健康。",
+        "user_answer": "Although facing many difficulties, we should still do our best balancing works and life, to maintain our health.",
+        "correct_answer": "Despite facing many challenges, we should do our best to balance work and life to ensure our physical and mental well-being.",
+        "timestamp": "2025-08-13T17:46:06.890329"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T17:46:06.890382",
+      "last_seen": "2025-08-13T17:46:06.890386",
+      "next_review": "2025-08-14T17:46:06.890413"
+    },
+    {
+      "id": 31,
+      "key_point": "名詞單複數錯誤: works → work: works",
+      "category": "isolated",
+      "subtype": "agreement",
+      "explanation": "當「work」指「工作、職業」時，是一個不可數名詞，沒有複數形式。複數的「works」通常指「作品」（如藝術品、文學作品）或「工程」，在此語境中不適用。",
+      "original_phrase": "works",
+      "correction": "work",
+      "original_error": {
+        "chinese_sentence": "儘管面臨許多挑戰，我們仍應盡力平衡工作與生活，以確保身心健康。",
+        "user_answer": "Although facing many difficulties, we should still do our best balancing works and life, to maintain our health.",
+        "correct_answer": "Despite facing many challenges, we should do our best to balance work and life to ensure our physical and mental well-being.",
+        "timestamp": "2025-08-13T17:46:06.895355"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T17:46:06.895378",
+      "last_seen": "2025-08-13T17:46:06.895381",
+      "next_review": "2025-08-14T17:46:06.895394"
+    },
+    {
+      "id": 32,
+      "key_point": "翻譯不完整: our health → our physical and mental health: our health",
+      "category": "other",
+      "subtype": "style",
+      "explanation": "中文原句的「身心健康」同時包含了「身體」和「心理」兩個層面。只用「health」稍嫌籠統，翻譯成「physical and mental health」或更簡潔的「well-being」能更精準地傳達原意。",
+      "original_phrase": "our health",
+      "correction": "our physical and mental health / our well-being",
+      "original_error": {
+        "chinese_sentence": "儘管面臨許多挑戰，我們仍應盡力平衡工作與生活，以確保身心健康。",
+        "user_answer": "Although facing many difficulties, we should still do our best balancing works and life, to maintain our health.",
+        "correct_answer": "Despite facing many challenges, we should do our best to balance work and life to ensure our physical and mental well-being.",
+        "timestamp": "2025-08-13T17:46:06.897822"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T17:46:06.897839",
+      "last_seen": "2025-08-13T17:46:06.897842",
+      "next_review": "2025-08-14T17:46:06.897850"
+    },
+    {
+      "id": 33,
+      "key_point": "用詞建議: Although... still → Despite: Although facing many difficulties, we should still",
+      "category": "enhancement",
+      "subtype": "naturalness",
+      "explanation": "1. 「Although」後面通常接一個完整的子句（主詞＋動詞），例如「Although we face...」。若要直接接名詞或動名詞片語（V-ing），使用介係詞「Despite」或「In spite of」會更自然。 2. 中文的「仍」在「Although」的句型中通常是多餘的，因為「Although」本身已帶有轉折語氣。 3. 原文的「挑戰」翻譯成「challenges」比「difficulties」更貼切。",
+      "original_phrase": "Although facing many difficulties, we should still",
+      "correction": "Despite facing many challenges, we should",
+      "original_error": {
+        "chinese_sentence": "儘管面臨許多挑戰，我們仍應盡力平衡工作與生活，以確保身心健康。",
+        "user_answer": "Although facing many difficulties, we should still do our best balancing works and life, to maintain our health.",
+        "correct_answer": "Despite facing many challenges, we should do our best to balance work and life to ensure our physical and mental well-being.",
+        "timestamp": "2025-08-13T17:46:06.899958"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T17:46:06.899971",
+      "last_seen": "2025-08-13T17:46:06.899973",
+      "next_review": "2025-08-14T17:46:06.899979"
     }
   ]
 }

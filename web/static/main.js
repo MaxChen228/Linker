@@ -919,72 +919,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadingManager = new LoadingManager();
   window.loadingManager = loadingManager;
   
-  // 練習頁面功能
-  if (window.location.pathname === '/practice') {
-    const draftManager = new DraftManager();
-    draftManager.init();
-    
-    // 初始化練習頁面選項同步
-    const practiceSync = new PracticeSync();
-    
-    // 處理表單提交載入狀態
-    const practiceForm = document.getElementById('practice-form');
-    const submitBtn = document.getElementById('submit-btn');
-    
-    if (practiceForm) {
-      practiceForm.addEventListener('submit', (e) => {
-        const englishInput = document.querySelector('textarea[name="english"]');
-        
-        // 檢查是否有輸入英文翻譯
-        if (englishInput && !englishInput.value.trim()) {
-          e.preventDefault();
-          alert('請輸入你的英文翻譯');
-          return;
-        }
-        
-        // 顯示載入畫面
-        loadingManager.show('AI 正在批改中', '正在分析你的翻譯，請稍候片刻...');
-        loadingManager.showButtonLoading(submitBtn);
-      });
-    }
-    
-    // 處理換一句按鈕載入狀態
-    // 2024-12-10: 暫時禁用，因為會干擾 practice.html 中的事件處理
-    // 這會導致複習模式無法正常工作
-    /*
-    const shuffleBtn = document.getElementById('shuffle-btn');
-    if (shuffleBtn) {
-      // 修改原有的點擊事件處理
-      const originalHandler = shuffleBtn.onclick;
-      shuffleBtn.onclick = null;
-      
-      shuffleBtn.addEventListener('click', (e) => {
-        // 如果已經在載入中，不處理
-        if (shuffleBtn.classList.contains('loading')) {
-          e.preventDefault();
-          return;
-        }
-        
-        // 顯示載入狀態
-        loadingManager.showButtonLoading(shuffleBtn);
-        loadingManager.show('生成新句子', 'AI 正在為你準備新的練習題...');
-        
-        // 延遲一下讓動畫顯示
-        setTimeout(() => {
-          // 如果有原始處理函數，執行它
-          if (originalHandler) {
-            originalHandler.call(shuffleBtn, e);
-          }
-        }, 100);
-      });
-    }
-    */
-    logger.log('[LoadingManager] Skipping shuffle button loading handler - handled in practice.html');
-    
-    // 掛載到全域以便調試
-    window.draftManager = draftManager;
-    window.practiceSync = practiceSync;
-  }
+  // 練習頁面功能 - 已移至 practice-logic.js
+  // 舊的 DraftManager 和 PracticeSync 功能已經被新架構取代
   
   // 文法句型頁面功能
   if (window.location.pathname === '/patterns') {

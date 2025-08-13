@@ -156,7 +156,7 @@
 }
 
 .toast svg {
-  color: #10b981;
+  color: var(--success-600);
 }
 
 /* Examples Section */
@@ -217,13 +217,13 @@
 
 .example-user {
   font-size: 0.875rem;
-  color: #ef4444;
+  color: var(--error-600);
   margin-bottom: 4px;
 }
 
 .example-correct {
   font-size: 0.875rem;
-  color: #10b981;
+  color: var(--success-600);
 }
 
 .instance-examples {

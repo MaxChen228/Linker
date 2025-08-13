@@ -56,6 +56,18 @@ async def grade_answer_api(request: Request):
         # 1. 使用 AI 進行批改
         result = ai.grade_translation(chinese=chinese, english=english)
 
+        # 檢查 AI 服務是否真的成功（檢測 fallback response）
+        if result.get("service_error") or "AI 服務暫時不可用" in result.get("overall_suggestion", ""):
+            logger.warning("AI service unavailable, returning error response")
+            return JSONResponse({
+                "success": False,
+                "error": "AI 批改服務暫時不可用，請稍後再試",
+                "score": 0,
+                "is_generally_correct": False,
+                "feedback": "服務暫時無法使用",
+                "error_analysis": []
+            })
+
         # 2. 更新知識點掌握度（如果是複習模式）
         is_correct = result.get("is_generally_correct", False)
         if mode == "review" and target_point_ids:
@@ -138,11 +150,8 @@ async def generate_question_api(request: Request):
                 "target_points_description": payload.get("target_points_description", "")
             })
 
-        # 文法句型模式
+        # 文法句型模式 - 現在支援隨機選擇
         elif mode == "pattern":
-            if not pattern_id:
-                return JSONResponse({"success": False, "error": "缺少 pattern_id 參數"}, status_code=400)
-
             # 載入句型資料
             enriched_file = Path("data/patterns_enriched_complete.json")
             if not enriched_file.exists():
@@ -152,11 +161,16 @@ async def generate_question_api(request: Request):
                 patterns_data = json.load(f)
                 all_patterns = patterns_data.get('patterns', patterns_data.get('data', []))
 
-            # 尋找指定的句型
-            target_pattern = next((p for p in all_patterns if p.get("id") == pattern_id), None)
-            
-            if not target_pattern:
-                return JSONResponse({"success": False, "error": "找不到指定的句型"}, status_code=404)
+            # 如果沒有指定 pattern_id，隨機選擇一個
+            if not pattern_id:
+                import random
+                target_pattern = random.choice(all_patterns)
+                logger.info(f"Randomly selected pattern: {target_pattern.get('id')} - {target_pattern.get('pattern')}")
+            else:
+                # 尋找指定的句型
+                target_pattern = next((p for p in all_patterns if p.get("id") == pattern_id), None)
+                if not target_pattern:
+                    return JSONResponse({"success": False, "error": "找不到指定的句型"}, status_code=404)
 
             # 呼叫 AI Service 生成與句型相關的題目
             payload = ai.generate_sentence_for_pattern(

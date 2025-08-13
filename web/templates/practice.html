@@ -72,21 +72,7 @@
     <div class="spinner"></div>
 </div>
 
-<!-- 句型選擇視窗 -->
-<dialog id="pattern-selector-modal" class="modal">
-    <div class="modal-content">
-        <header class="modal-header">
-            <h2 class="modal-title">選擇一個文法句型</h2>
-            <button class="modal-close" id="modal-close-btn" aria-label="Close">×</button>
-        </header>
-        <div class="modal-body">
-            <input type="search" id="pattern-search-input" class="modal-search" placeholder="搜尋句型...">
-            <div class="pattern-list" id="pattern-list-container">
-                <!-- 動態載入句型列表 -->
-            </div>
-        </div>
-    </div>
-</dialog>
+<!-- Modal 已移除 - 現在使用後端隨機選擇句型 -->
 {% endblock %}
 
 {% block scripts %}

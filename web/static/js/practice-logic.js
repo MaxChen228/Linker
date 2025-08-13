@@ -21,15 +21,8 @@ class PracticeSystem {
             levelSelect: document.getElementById('level-select'),
             addQuestionBtn: document.getElementById('add-question-btn'),
             clearQueueBtn: document.getElementById('clear-queue-btn'),
-            // Modal 相關元素
-            patternModal: document.getElementById('pattern-selector-modal'),
-            patternListContainer: document.getElementById('pattern-list-container'),
-            patternSearchInput: document.getElementById('pattern-search-input'),
-            modalCloseBtn: document.getElementById('modal-close-btn'),
+            // Modal 相關元素已移除
         };
-        
-        // 快取所有句型
-        this.allPatterns = [];
 
         // 題目狀態
         this.QuestionStatus = {
@@ -73,35 +66,15 @@ class PracticeSystem {
             if (e.target.id === 'next-btn') this.selectNextQuestion();
         });
         
-        // Modal 相關事件
-        if (this.elements.modalCloseBtn) {
-            this.elements.modalCloseBtn.addEventListener('click', () => this.elements.patternModal?.close());
-        }
-        if (this.elements.patternListContainer) {
-            this.elements.patternListContainer.addEventListener('click', (e) => {
-                const item = e.target.closest('.pattern-item');
-                if (item) {
-                    const patternId = item.dataset.patternId;
-                    const patternName = item.dataset.patternName;
-                    this.addNewQuestionFromPattern(patternId, patternName);
-                }
-            });
-        }
-        if (this.elements.patternSearchInput) {
-            this.elements.patternSearchInput.addEventListener('input', (e) => this.filterPatterns(e.target.value));
-        }
+        // Modal 相關代碼已移除 - 現在使用後端隨機選擇句型
     }
     
     /**
-     * 根據模式決定新增題目的方式
+     * 新增題目 - 統一處理所有模式
      */
     handleAddNewQuestion() {
-        const mode = this.elements.modeSelect.value;
-        if (mode === 'pattern') {
-            this.openPatternSelector();
-        } else {
-            this.addNewQuestion();
-        }
+        // 所有模式都直接生成題目，不再有特殊處理
+        this.addNewQuestion();
     }
     
     // ========================================================================
@@ -289,12 +262,22 @@ class PracticeSystem {
         });
         
         if (result.success) {
-            this.updateQuestionState(question.id, { 
-                status: this.QuestionStatus.COMPLETED, 
-                gradeResult: result 
-            });
-            const emoji = result.score >= 80 ? '🎉' : result.score >= 60 ? '👍' : '💪';
-            this.showNotification(`${emoji} 批改完成！得分：${result.score}%`, 'success');
+            // 額外檢查：確保結果真的有效
+            if (!result.score && result.score !== 0) {
+                // 分數無效，視為錯誤
+                this.updateQuestionState(question.id, { 
+                    status: this.QuestionStatus.ACTIVE, 
+                    error: '批改結果無效' 
+                });
+                this.showNotification('批改失敗：未能獲得有效的批改結果', 'error');
+            } else {
+                this.updateQuestionState(question.id, { 
+                    status: this.QuestionStatus.COMPLETED, 
+                    gradeResult: result 
+                });
+                const emoji = result.score >= 80 ? '🎉' : result.score >= 60 ? '👍' : '💪';
+                this.showNotification(`${emoji} 批改完成！得分：${result.score}%`, 'success');
+            }
         } else {
             this.updateQuestionState(question.id, { 
                 status: this.QuestionStatus.ACTIVE, 
@@ -335,117 +318,8 @@ class PracticeSystem {
         }
     }
     
-    /**
-     * 打開句型選擇視窗
-     */
-    async openPatternSelector() {
-        if (!this.elements.patternModal) return;
-        
-        // 如果尚未載入句型，則從 API 獲取
-        if (this.allPatterns.length === 0) {
-            this.elements.patternListContainer.innerHTML = '<div style="text-align:center; padding:20px;">載入句型列表中...</div>';
-            const response = await fetch('/api/patterns');
-            const data = await response.json();
-            if (data.success) {
-                this.allPatterns = data.patterns;
-            } else {
-                this.elements.patternListContainer.innerHTML = '<div style="text-align:center; padding:20px; color:red;">載入失敗</div>';
-                return;
-            }
-        }
-        
-        // 渲染句型列表
-        this.renderPatternList(this.allPatterns);
-        this.elements.patternModal.showModal();
-    }
+    // Modal 相關方法已全部移除 - 現在使用後端隨機選擇句型
     
-    /**
-     * 渲染句型列表到 Modal 中
-     */
-    renderPatternList(patterns) {
-        const categories = patterns.reduce((acc, p) => {
-            const cat = p.category || '未分類';
-            (acc[cat] = acc[cat] || []).push(p);
-            return acc;
-        }, {});
-
-        let html = '';
-        for (const category in categories) {
-            html += `<h3 class="pattern-category">${category}</h3>`;
-            html += `<div class="pattern-group">`;
-            html += categories[category].map(p => `
-                <div class="pattern-item" data-pattern-id="${p.id}" data-pattern-name="${this.escapeHtml(p.pattern)}">
-                    <div class="pattern-name">${this.escapeHtml(p.pattern)}</div>
-                    ${p.formula ? `<div class="pattern-formula">${this.escapeHtml(p.formula)}</div>` : ''}
-                </div>
-            `).join('');
-            html += `</div>`;
-        }
-        this.elements.patternListContainer.innerHTML = html;
-    }
-    
-    /**
-     * 篩選句型列表
-     */
-    filterPatterns(query) {
-        const lowerQuery = query.toLowerCase();
-        const filtered = this.allPatterns.filter(p => 
-            p.pattern.toLowerCase().includes(lowerQuery) ||
-            (p.formula && p.formula.toLowerCase().includes(lowerQuery))
-        );
-        this.renderPatternList(filtered);
-    }
-    
-    /**
-     * 從選擇的句型生成新題目
-     */
-    async addNewQuestionFromPattern(patternId, patternName) {
-        if (this.generatingCount >= 3) {
-            this.showNotification('同時生成太多題目，請稍候', 'warning');
-            return;
-        }
-
-        this.elements.patternModal?.close(); // 關閉視窗
-        this.generatingCount++;
-        
-        const questionId = 'q_' + Date.now() + Math.random().toString(16).slice(2);
-        const params = {
-            mode: 'pattern',
-            length: this.elements.lengthSelect.value,
-            level: parseInt(this.elements.levelSelect.value),
-            pattern_id: patternId
-        };
-        
-        // 在佇列中顯示一個 "生成中" 的卡片
-        const newQuestion = { 
-            id: questionId, 
-            status: this.QuestionStatus.GENERATING, 
-            ...params,
-            patternName: patternName // 保存句型名稱以便顯示
-        };
-        this.questionQueue.push(newQuestion);
-        this.renderQueue();
-
-        const data = await this.fetchAPI('/api/generate-question', params);
-
-        if (data.success) {
-            this.updateQuestionState(questionId, { 
-                status: this.QuestionStatus.READY,
-                ...data,
-                patternName: patternName // 保留句型名稱
-            });
-        } else {
-            this.updateQuestionState(questionId, { 
-                status: this.QuestionStatus.ERROR, 
-                error: data.error 
-            });
-        }
-        
-        this.generatingCount--;
-        this.renderQueue();
-    }
-
-
     // ========================================================================
     // 渲染 (Rendering)
     // ========================================================================
@@ -500,7 +374,6 @@ class PracticeSystem {
                     <div class="queue-item-body">
                         <span class="queue-item-text">${preview}...</span>
                         <span class="queue-item-badge ${question.status}">${modeIcon} ${modeLabel}-${statusText}</span>
-                        ${question.patternName ? `<div class="queue-item-hint" style="font-size:11px; color:#666; margin-top:4px;">${this.escapeHtml(question.patternName)}</div>` : ''}
                     </div>
                 `;
                 break;
@@ -628,7 +501,9 @@ class PracticeSystem {
      */
     renderSandboxResult(question) {
         const result = question.gradeResult;
-        const scoreColor = result.score >= 80 ? '#48bb78' : result.score >= 60 ? '#ed8936' : '#f56565';
+        // 確保分數有效，無效時設為 0
+        const score = (result && typeof result.score === 'number') ? result.score : 0;
+        const scoreColor = score >= 80 ? '#48bb78' : score >= 60 ? '#ed8936' : '#f56565';
         
         const errorList = (result.error_analysis || []).map(e => `
             <li class="item" style="margin-bottom: 16px; padding: 12px; background: #f7fafc; border-left: 4px solid #4299e1; border-radius: 4px;">
@@ -665,7 +540,7 @@ class PracticeSystem {
 
         this.elements.sandboxContent.innerHTML = `
             <section class="card result-section" style="padding: 24px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <h2 style="color: ${scoreColor}; margin: 0 0 20px 0;">批改結果 (${result.score}%)</h2>
+                <h2 style="color: ${scoreColor}; margin: 0 0 20px 0;">批改結果 (${score}%)</h2>
                 <div class="stack" style="display: flex; flex-direction: column; gap: 20px;">
                     <div>
                         <div class="muted" style="color: #718096; font-size: 14px; margin-bottom: 4px;">建議：</div>
@@ -791,143 +666,7 @@ style.textContent = `
         color: #6c757d;
     }
     
-    /* Modal 樣式 */
-    #pattern-selector-modal {
-        width: 90%;
-        max-width: 600px;
-        max-height: 80vh;
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        padding: 0;
-        overflow: hidden;
-    }
-    
-    #pattern-selector-modal::backdrop {
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-    }
-    
-    .modal-content {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    
-    .modal-header {
-        padding: 20px;
-        border-bottom: 1px solid #e9ecef;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #f8f9fa;
-    }
-    
-    .modal-title {
-        font-size: 20px;
-        font-weight: 600;
-        margin: 0;
-        color: #212529;
-    }
-    
-    .modal-close {
-        background: none;
-        border: none;
-        font-size: 28px;
-        line-height: 1;
-        cursor: pointer;
-        color: #6c757d;
-        padding: 0;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 4px;
-        transition: all 0.2s;
-    }
-    
-    .modal-close:hover {
-        background: #e9ecef;
-        color: #212529;
-    }
-    
-    .modal-body {
-        flex: 1;
-        padding: 20px;
-        overflow-y: auto;
-    }
-    
-    .modal-search {
-        width: 100%;
-        padding: 10px 16px;
-        border-radius: 8px;
-        border: 1px solid #dee2e6;
-        margin-bottom: 20px;
-        font-size: 16px;
-        transition: all 0.2s;
-    }
-    
-    .modal-search:focus {
-        outline: none;
-        border-color: #2196f3;
-        box-shadow: 0 0 0 3px rgba(33,150,243,0.1);
-    }
-    
-    .pattern-list {
-        max-height: 400px;
-        overflow-y: auto;
-    }
-    
-    .pattern-category {
-        font-size: 14px;
-        font-weight: 600;
-        color: #6c757d;
-        margin-top: 20px;
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #e9ecef;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .pattern-category:first-child {
-        margin-top: 0;
-    }
-    
-    .pattern-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 20px;
-    }
-    
-    .pattern-item {
-        padding: 12px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-        background: white;
-        border: 1px solid #e9ecef;
-    }
-    
-    .pattern-item:hover {
-        background-color: #e3f2fd;
-        border-color: #2196f3;
-        transform: translateX(4px);
-    }
-    
-    .pattern-name {
-        font-weight: 500;
-        color: #212529;
-        margin-bottom: 4px;
-    }
-    
-    .pattern-formula {
-        font-size: 12px;
-        color: #6c757d;
-        font-family: 'Courier New', monospace;
-    }
+    /* Modal 相關樣式已全部移除 - 現在使用後端隨機選擇句型 */
 `;
 document.head.appendChild(style);
 

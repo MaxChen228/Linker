@@ -609,5 +609,74 @@
       "error_analysis": []
     },
     "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T16:36:46.237508",
+    "chinese_sentence": "他們週末會去公園玩。",
+    "user_answer": "They will go playing in the park on the weekend.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T16:39:03.884241",
+    "chinese_sentence": "他們週末會去公園玩。",
+    "user_answer": "They go to the park in weekends.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-13T17:46:06.886767",
+    "chinese_sentence": "儘管面臨許多挑戰，我們仍應盡力平衡工作與生活，以確保身心健康。",
+    "user_answer": "Although facing many difficulties, we should still do our best balancing works and life, to maintain our health.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "Despite facing many challenges, we should do our best to balance work and life to ensure our physical and mental well-being.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "動詞形式錯誤: balancing → to balance",
+          "original_phrase": "do our best balancing",
+          "correction": "do our best to balance",
+          "explanation": "片語「do one's best」（盡力）後面應該接不定詞（to + 原形動詞），用來表示「盡力去做某事」。因此，正確的文法結構是 'do our best to balance'。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "名詞單複數錯誤: works → work",
+          "original_phrase": "works",
+          "correction": "work",
+          "explanation": "當「work」指「工作、職業」時，是一個不可數名詞，沒有複數形式。複數的「works」通常指「作品」（如藝術品、文學作品）或「工程」，在此語境中不適用。",
+          "severity": "major"
+        },
+        {
+          "category": "other",
+          "key_point_summary": "翻譯不完整: our health → our physical and mental health",
+          "original_phrase": "our health",
+          "correction": "our physical and mental health / our well-being",
+          "explanation": "中文原句的「身心健康」同時包含了「身體」和「心理」兩個層面。只用「health」稍嫌籠統，翻譯成「physical and mental health」或更簡潔的「well-being」能更精準地傳達原意。",
+          "severity": "minor"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "用詞建議: Although... still → Despite",
+          "original_phrase": "Although facing many difficulties, we should still",
+          "correction": "Despite facing many challenges, we should",
+          "explanation": "1. 「Although」後面通常接一個完整的子句（主詞＋動詞），例如「Although we face...」。若要直接接名詞或動名詞片語（V-ing），使用介係詞「Despite」或「In spite of」會更自然。 2. 中文的「仍」在「Although」的句型中通常是多餘的，因為「Although」本身已帶有轉折語氣。 3. 原文的「挑戰」翻譯成「challenges」比「difficulties」更貼切。",
+          "severity": "minor"
+        }
+      ]
+    },
+    "practice_mode": "new"
   }
 ]

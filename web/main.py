@@ -48,13 +48,12 @@ def create_app() -> FastAPI:
     app.middleware("http")(access_log_middleware)
 
     # 註冊路由
-    from web.routers import knowledge, pages, patterns, practice, tags, utils
+    from web.routers import knowledge, pages, patterns, practice, utils
 
     app.include_router(pages.router)
     app.include_router(practice.router)
     app.include_router(knowledge.router)
     app.include_router(patterns.router)
-    app.include_router(tags.router)
     app.include_router(utils.router)
 
     logger.info("Linker Web Application initialized successfully")
