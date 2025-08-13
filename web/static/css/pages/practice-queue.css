@@ -98,8 +98,8 @@
 
 .queue-item[data-mode="review"]:hover {
   border-color: var(--error-400);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* 新題目模式樣式 */
@@ -110,8 +110,8 @@
 
 .queue-item[data-mode="new"]:hover {
   border-color: var(--accent-400);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* 句型練習模式樣式 */
@@ -122,8 +122,8 @@
 
 .queue-item[data-mode="pattern"]:hover {
   border-color: var(--success-400);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* 卡片內部結構 */
@@ -155,9 +155,9 @@
 }
 
 /* 題目卡片懸停效果 */
-.queue-item:hover:not(.add-new):not([data-status="generating"]):not([data-status="grading"]) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.queue-item:hover:not(.add-new):not([data-status="generating"]):not([data-status="grading"]):not([data-status="active"]) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* 就緒狀態 */
@@ -181,9 +181,8 @@
 .queue-item[data-status="active"] {
   background: linear-gradient(135deg, var(--accent-100) 0%, var(--accent-200) 100%);
   border-color: var(--accent-500);
-  border-width: 3px;
-  box-shadow: var(--shadow-focus-accent);
-  transform: translateY(-3px);
+  box-shadow: 0 0 0 2px var(--accent-400), var(--shadow-focus-accent);
+  transform: translateY(-2px);
 }
 
 /* 批改中狀態 */
@@ -219,7 +218,7 @@
   background: var(--surface-elevated);
   border-color: var(--accent-500);
   color: var(--accent-600);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
 
