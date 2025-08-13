@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "last_updated": "2025-08-12T17:35:13.728757",
+  "last_updated": "2025-08-13T14:36:17.066818",
   "data": [
     {
       "id": 1,
@@ -589,6 +589,28 @@
       "created_at": "2025-08-12T17:35:13.728743",
       "last_seen": "2025-08-12T17:35:13.728745",
       "next_review": "2025-08-13T17:35:13.728751"
+    },
+    {
+      "id": 25,
+      "key_point": "冠詞錯誤: 遺漏冠詞: takes bus",
+      "category": "systematic",
+      "subtype": "preposition",
+      "explanation": "在英文中，'bus' 是一個單數可數名詞。當提到單數可數名詞時，前面通常需要加上一個冠詞（如 a/an, the）或其他的限定詞。因為這裡描述的是每天的例行公事，使用 'the bus' 來表示她搭乘的固定路線或交通方式，是最自然的用法。'takes a bus' 雖然文法也正確，但 'the bus' 更能表達習慣性。另一個非常道地的說法是 'She goes to school by bus every day'。",
+      "original_phrase": "takes bus",
+      "correction": "takes the bus",
+      "original_error": {
+        "chinese_sentence": "她每天搭公車上學。",
+        "user_answer": "She takes bus to school every day.",
+        "correct_answer": "She takes the bus to school every day.",
+        "timestamp": "2025-08-13T14:36:17.066718"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-13T14:36:17.066767",
+      "last_seen": "2025-08-13T14:36:17.066772",
+      "next_review": "2025-08-14T14:36:17.066797"
     }
   ]
 }

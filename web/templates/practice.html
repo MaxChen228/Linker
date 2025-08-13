@@ -168,9 +168,9 @@
     <input type="hidden" name="target_point_ids" id="target-point-ids" value="[]">
     
     <!-- 提交按鈕 -->
-    <div class="submit-section" id="submit-section" style="display: none;">
+    <div class="submit-section" id="submit-section" style="display: none; position: relative; z-index: 10;">
       <!-- 改為純按鈕，避免任何表單提交 -->
-      <button class="btn" data-variant="primary" data-size="lg" type="button" id="submit-btn">
+      <button class="btn" data-variant="primary" data-size="lg" type="button" id="submit-btn" style="cursor: pointer;">
         <span class="btn-text">提交答案</span>
       </button>
     </div>
@@ -1134,7 +1134,7 @@
         if (currentQuestionId) {
           const currentQuestion = questionQueue.find(q => q.id === currentQuestionId);
           if (currentQuestion) {
-            displayQuestion(currentQuestion);
+            selectQuestion(currentQuestionId);
           }
         }
         
@@ -1185,12 +1185,16 @@
         }
       });
       
-      // 處理提交按鈕點擊時進行批改
-      const submitBtn = document.getElementById('submit-btn');
+      // 將 isSubmitting 移到外層作用域，避免作用域問題
       let isSubmitting = false;  // 防止重複提交
       
+      // 處理提交按鈕點擊時進行批改
+      const submitBtn = document.getElementById('submit-btn');
+      
       if (submitBtn) {
+        console.log('[Submit] Submit button found and event listener attached');
         submitBtn.addEventListener('click', async function(e) {
+          console.log('[Submit] Button clicked!');
           e.preventDefault();  // 阻止任何預設行為
           e.stopPropagation(); // 阻止事件冒泡
           
@@ -1202,7 +1206,7 @@
           
           // 獲取當前題目
           if (!currentQuestionId) {
-            alert('請先選擇一個題目');
+            showNotification('請先選擇一個題目', 'warning');
             return;
           }
           
@@ -1214,7 +1218,7 @@
           const userAnswer = englishInput.value.trim();
           
           if (!userAnswer) {
-            alert('請輸入你的英文翻譯');
+            showNotification('請輸入你的英文翻譯', 'warning');
             return;
           }
           
