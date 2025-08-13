@@ -19,6 +19,7 @@ class DataVersion(Enum):
     V2_0 = "2.0"  # 第一次擴充（PatternEnrichmentService）
     V3_0 = "3.0"  # 完整擴充版（含所有進階欄位）
     V3_1 = "3.1"  # 修正版本不一致問題後的版本
+    V4_0 = "4.0"  # 知識點管理系統擴充（編輯、刪除、回收站）
 
 
 class FileType(Enum):
@@ -47,6 +48,8 @@ class VersionManager:
         FileType.KNOWLEDGE: {
             None: DataVersion.V1_0,
             DataVersion.V1_0: DataVersion.V2_0,
+            DataVersion.V2_0: DataVersion.V3_0,
+            DataVersion.V3_0: DataVersion.V4_0,
         }
     }
 
@@ -94,7 +97,10 @@ class VersionManager:
             return False, None
 
         # 找出最新版本
-        latest_version = DataVersion.V3_1  # 預設最新版本
+        if file_type == FileType.KNOWLEDGE:
+            latest_version = DataVersion.V4_0
+        else:
+            latest_version = DataVersion.V3_1
 
         # 檢查是否需要遷移
         if current_version == latest_version:
@@ -186,6 +192,30 @@ class VersionManager:
             'knowledge_points': points
         }
 
+    def migrate_knowledge_v2_0_to_v3_0(self, data: Dict) -> Dict:
+        """知識點資料 v2.0 -> v3.0"""
+        logger.info("Migrating knowledge from v2.0 to v3.0")
+        
+        # v3.0 添加了額外的元數據欄位
+        data['version'] = DataVersion.V3_0.value
+        data['last_updated'] = datetime.now().isoformat()
+        return data
+
+    def migrate_knowledge_v3_0_to_v4_0(self, data: Dict) -> Dict:
+        """知識點資料 v3.0 -> v4.0"""
+        logger.info("Migrating knowledge from v3.0 to v4.0")
+        
+        # v4.0 支援編輯、刪除、回收站功能
+        # 知識點本身的遷移已在 knowledge.py 中處理
+        data['version'] = DataVersion.V4_0.value
+        data['features'] = {
+            'edit': True,
+            'delete': True,
+            'trash': True,
+            'version_history': True
+        }
+        return data
+
     def migrate_file(self, file_path: Path, file_type: FileType) -> bool:
         """執行檔案遷移"""
         needs_migration, current_version = self.needs_migration(file_path, file_type)
@@ -204,7 +234,10 @@ class VersionManager:
         # 執行遷移鏈
         migration_path = self.MIGRATION_PATHS[file_type]
         current = current_version
-        target_version = DataVersion.V3_1 if file_type != FileType.KNOWLEDGE else DataVersion.V2_0
+        if file_type == FileType.KNOWLEDGE:
+            target_version = DataVersion.V4_0
+        else:
+            target_version = DataVersion.V3_1
 
         while current != target_version:
             # 找出下一個版本

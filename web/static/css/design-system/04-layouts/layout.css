@@ -99,7 +99,7 @@ nav a:hover {
 }
 
 nav a.active {
-  color: white;
+  color: var(--text-on-primary);
   background: var(--gradient-primary);
   box-shadow: var(--shadow-md);
 }

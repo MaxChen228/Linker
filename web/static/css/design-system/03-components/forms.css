@@ -302,7 +302,7 @@ textarea[data-status="warning"] {
 .form-check-input[type="radio"]:checked::after {
   width: 8px;
   height: 8px;
-  background: white;
+  background: var(--surface-base);
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -356,7 +356,7 @@ textarea[data-status="warning"] {
   left: 2px;
   width: 20px;
   height: 20px;
-  background: white;
+  background: var(--surface-base);
   border-radius: 50%;
   box-shadow: var(--shadow-xl);
   transition: transform 0.3s ease;

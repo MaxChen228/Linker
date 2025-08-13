@@ -35,7 +35,7 @@
 
 /* ========== 頭部卡片 ========== */
 .detail-header-card {
-  background: linear-gradient(135deg, var(--surface-base) 0%, var(--gray-50) 100%);
+  background: linear-gradient(135deg, var(--surface-base) 0%, var(--surface-subtle) 100%);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: var(--space-8) var(--space-6) var(--space-6);
@@ -53,8 +53,8 @@
   position: relative;
   margin: calc(var(--space-4) * -1) calc(var(--space-6) * -1) var(--space-10) calc(var(--space-6) * -1);
   padding: var(--space-10) var(--space-8);
-  background: linear-gradient(135deg, var(--gray-50) 0%, white 50%, var(--gray-50) 100%);
-  border-bottom: 1px solid var(--gray-200);
+  background: linear-gradient(135deg, var(--surface-subtle) 0%, var(--surface-base) 50%, var(--surface-subtle) 100%);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .error-comparison-title {
@@ -69,16 +69,75 @@
   max-width: 1000px;
 }
 
-/* 以下樣式已移至 comparison-cards.css 組件 */
-/* .error-phrase 使用 .comparison-item[data-type="error"] */
-/* .correct-phrase 使用 .comparison-item[data-type="correct"] */
-/* .arrow-icon 使用 .comparison-arrow */
+/* 錯誤和正確短語樣式 */
+.error-phrase {
+  flex: 1;
+  padding: var(--space-6) var(--space-8);
+  background: var(--surface-base);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-secondary);
+  position: relative;
+  transition: all var(--transition-base);
+  text-decoration: line-through;
+  text-decoration-color: var(--error-400);
+  opacity: 0.8;
+}
+
+.error-phrase::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--error-500);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.arrow-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-6);
+  font-size: var(--text-2xl);
+  color: var(--text-muted);
+}
+
+.arrow-icon::before {
+  content: '→';
+  font-weight: var(--font-bold);
+  color: var(--text-secondary);
+}
+
+.correct-phrase {
+  flex: 1;
+  padding: var(--space-6) var(--space-8);
+  background: linear-gradient(135deg, var(--surface-base) 0%, rgba(var(--success-rgb), 0.05) 100%);
+  border: 2px solid var(--success-200);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--success-700);
+  position: relative;
+  box-shadow: 0 4px 12px rgba(var(--success-rgb), 0.1);
+  transition: all var(--transition-base);
+}
+
+.correct-phrase:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(var(--success-rgb), 0.15);
+}
 
 /* 知識點描述文字 */
 .knowledge-point-desc {
   text-align: center;
   font-size: var(--text-base);
-  color: var(--gray-500);
+  color: var(--text-secondary);
   margin: var(--space-6) auto 0;
   padding: 0;
   font-weight: var(--font-normal);
@@ -91,7 +150,7 @@
 .knowledge-point-desc::after {
   content: '"';
   font-size: var(--text-2xl);
-  color: var(--gray-300);
+  color: var(--text-muted);
   position: absolute;
   top: calc(var(--space-2-5) * -1);
 }
@@ -136,9 +195,9 @@
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-4);
-  background: white;
+  background: var(--surface-elevated);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--border-light);
   transition: all var(--transition-slow);
   position: relative;
 }
@@ -146,7 +205,7 @@
 /* 掌握度卡片 - 特別大 */
 .stat-item:first-child {
   grid-column: span 1;
-  background: linear-gradient(135deg, var(--accent-50) 0%, white 100%);
+  background: linear-gradient(135deg, var(--accent-50) 0%, var(--surface-base) 100%);
   border-width: var(--space-1);
   border-color: var(--accent-200);
   padding: var(--space-6);
@@ -177,7 +236,7 @@
 
 .stat-label {
   font-size: var(--text-xs);
-  color: var(--gray-500);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: var(--font-normal);
@@ -292,7 +351,7 @@
 .section-title {
   font-size: var(--text-xs);
   font-weight: var(--font-bold);
-  color: var(--gray-500);
+  color: var(--text-secondary);
   margin: 0;
   padding: var(--space-6) var(--space-8) var(--space-3);
   text-transform: uppercase;
@@ -374,7 +433,7 @@
 .corrected-sentence {
   display: block;
   padding: var(--space-5) var(--space-6);
-  background: white;
+  background: var(--surface-elevated);
   border-radius: var(--radius-lg);
   font-size: var(--text-base);
   line-height: 1.8;
@@ -383,8 +442,8 @@
 }
 
 .original-sentence {
-  border: 2px solid var(--gray-200);
-  background: white;
+  border: 2px solid var(--border-light);
+  background: var(--surface-elevated);
   position: relative;
   padding-left: var(--space-8);
 }
@@ -409,7 +468,7 @@
 
 .corrected-sentence {
   border: 2px solid var(--success-200);
-  background: linear-gradient(135deg, white 0%, var(--success-50) 100%);
+  background: linear-gradient(135deg, var(--surface-elevated) 0%, var(--success-50) 100%);
   box-shadow: var(--shadow-success-light);
   padding-left: var(--space-8);
   transform: scale(1.02);
@@ -429,7 +488,7 @@
   width: var(--space-6);
   height: var(--space-6);
   background: var(--success-500);
-  color: white;
+  color: var(--text-on-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -461,7 +520,7 @@
 
 .corrected-sentence .sentence-text {
   font-weight: var(--font-medium);
-  color: var(--gray-900);
+  color: var(--success-700);
 }
 
 .improvement-section {
@@ -473,7 +532,7 @@
 .subsection-title {
   font-size: var(--text-xs);
   font-weight: var(--font-bold);
-  color: var(--gray-500);
+  color: var(--text-secondary);
   margin: 0 0 var(--space-4) 0;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -593,7 +652,7 @@
 
 .user-answer.error {
   background: var(--gray-50);
-  border-color: var(--gray-300);
+  border-color: var(--border-light);
   border-left: 3px solid var(--gray-400);
 }
 
@@ -659,7 +718,7 @@
 
 .btn-primary {
   background: var(--gray-900);
-  color: white;
+  color: var(--text-inverse);
   cursor: pointer;
 }
 
@@ -681,7 +740,7 @@
 }
 
 /* ========== 深色模式 ========== */
-[data-theme="dark"] {
+@media (prefers-color-scheme: dark) {
   /* 頭部卡片深色版本 */
   .detail-header-card {
     background: linear-gradient(135deg, var(--surface-elevated) 0%, var(--surface-base) 100%);
@@ -713,10 +772,10 @@
 
   /* 正確短語深色適配 */
   .correct-phrase {
-    background: var(--surface-base);
-    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--surface-elevated) 0%, rgba(34, 197, 94, 0.1) 100%);
+    color: var(--success-400);
     border-color: var(--success-500);
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
   }
 
   /* 引號裝飾深色適配 */
@@ -845,6 +904,10 @@
     color: var(--text-primary);
   }
 
+  .corrected-sentence .sentence-text {
+    color: var(--success-400);
+  }
+
   .sentence-label {
     color: var(--text-secondary);
   }
@@ -906,9 +969,10 @@
   }
 
   .correct-answer {
-    background: rgba(139, 92, 246, 0.05);
+    background: rgba(139, 92, 246, 0.08);
     border-color: var(--accent-600);
     border-left-color: var(--accent-500);
+    color: var(--text-primary);
   }
 
   .mistake-explanation {
@@ -930,7 +994,7 @@
   /* 按鈕深色適配 */
   .btn-primary {
     background: var(--accent-600);
-    color: white;
+    color: var(--text-on-primary);
   }
 
   .btn-primary:hover {

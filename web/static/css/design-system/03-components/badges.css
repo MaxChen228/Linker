@@ -86,25 +86,25 @@
 /* 實心變體 */
 .badge[data-variant="solid"] {
   background: var(--accent);
-  color: white;
+  color: var(--text-on-primary);
   border-color: var(--accent);
 }
 
 .badge[data-variant="solid-success"] {
   background: var(--success);
-  color: white;
+  color: var(--text-on-primary);
   border-color: var(--success);
 }
 
 .badge[data-variant="solid-warning"] {
   background: var(--warning);
-  color: white;
+  color: var(--text-on-primary);
   border-color: var(--warning);
 }
 
 .badge[data-variant="solid-error"] {
   background: var(--error);
-  color: white;
+  color: var(--text-on-primary);
   border-color: var(--error);
 }
 

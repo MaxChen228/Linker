@@ -279,7 +279,7 @@
   width: var(--space-8);
   height: var(--space-8);
   border-radius: 50%;
-  background: white;
+  background: var(--surface-elevated);
   border: 2px solid var(--gray-300);
   display: flex;
   align-items: center;
@@ -293,13 +293,13 @@
 .step-item[data-status="completed"] .step-circle {
   background: var(--success-500);
   border-color: var(--success-500);
-  color: white;
+  color: var(--text-on-primary);
 }
 
 .step-item[data-status="active"] .step-circle {
   background: var(--accent-500);
   border-color: var(--accent-500);
-  color: white;
+  color: var(--text-on-primary);
   box-shadow: var(--shadow-focus-accent);
 }
 

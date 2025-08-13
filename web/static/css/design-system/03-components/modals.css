@@ -297,11 +297,11 @@
 }
 
 .modal[data-type="media"] .modal-title {
-  color: white;
+  color: var(--text-inverse);
 }
 
 .modal[data-type="media"] .modal-close {
-  color: white;
+  color: var(--text-inverse);
 }
 
 .modal[data-type="media"] .modal-body {

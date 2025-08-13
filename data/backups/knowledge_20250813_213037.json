@@ -1,6 +1,6 @@
 {
   "version": "4.0",
-  "last_updated": "2025-08-13T21:30:37.315850",
+  "last_updated": "2025-08-13T21:30:22.738820",
   "data": [
     {
       "id": 1,
@@ -521,13 +521,13 @@
       "created_at": "2025-08-11T12:23:51.386451",
       "last_seen": "2025-08-11T12:25:13.113162",
       "next_review": "2025-08-12T12:25:13.113166",
-      "is_deleted": true,
-      "deleted_at": "2025-08-13T21:30:37.315837",
+      "is_deleted": false,
+      "deleted_at": "",
       "deleted_reason": "",
       "tags": [],
       "custom_notes": "",
       "version_history": [],
-      "last_modified": "2025-08-13T21:30:37.315837"
+      "last_modified": "2025-08-11T12:23:51.386451"
     },
     {
       "id": 16,

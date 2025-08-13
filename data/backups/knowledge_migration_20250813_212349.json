@@ -1,6 +1,6 @@
 {
-  "version": "4.0",
-  "last_updated": "2025-08-13T21:30:37.315850",
+  "version": "3.0",
+  "last_updated": "2025-08-13T17:46:06.899985",
   "data": [
     {
       "id": 1,
@@ -30,14 +30,7 @@
       "correct_count": 0,
       "created_at": "2025-08-10T18:54:10.353806",
       "last_seen": "2025-08-11T12:40:23.824617",
-      "next_review": "2025-08-12T12:40:23.824625",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-10T18:54:10.353806"
+      "next_review": "2025-08-12T12:40:23.824625"
     },
     {
       "id": 2,
@@ -59,14 +52,7 @@
       "correct_count": 0,
       "created_at": "2025-08-10T18:54:10.354320",
       "last_seen": "2025-08-13T15:29:44.508255",
-      "next_review": "2025-08-14T15:29:44.508291",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-10T18:54:10.354320"
+      "next_review": "2025-08-14T15:29:44.508291"
     },
     {
       "id": 3,
@@ -88,14 +74,7 @@
       "correct_count": 0,
       "created_at": "2025-08-10T18:54:10.354496",
       "last_seen": "2025-08-10T18:54:10.354498",
-      "next_review": "2025-08-11T18:54:10.354502",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-10T18:54:10.354496"
+      "next_review": "2025-08-11T18:54:10.354502"
     },
     {
       "id": 4,
@@ -117,14 +96,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T00:23:50.121364",
       "last_seen": "2025-08-11T00:23:50.121366",
-      "next_review": "2025-08-12T00:23:50.121383",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T00:23:50.121364"
+      "next_review": "2025-08-12T00:23:50.121383"
     },
     {
       "id": 5,
@@ -168,14 +140,7 @@
       "correct_count": 1,
       "created_at": "2025-08-11T00:23:50.121626",
       "last_seen": "2025-08-11T12:38:25.985261",
-      "next_review": "2025-08-12T12:38:25.985271",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T00:23:50.121626"
+      "next_review": "2025-08-12T12:38:25.985271"
     },
     {
       "id": 6,
@@ -197,14 +162,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T00:23:50.121836",
       "last_seen": "2025-08-11T00:23:50.121837",
-      "next_review": "2025-08-12T00:23:50.121841",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T00:23:50.121836"
+      "next_review": "2025-08-12T00:23:50.121841"
     },
     {
       "id": 7,
@@ -226,14 +184,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T00:23:50.122046",
       "last_seen": "2025-08-11T00:23:50.122048",
-      "next_review": "2025-08-12T00:23:50.122051",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T00:23:50.122046"
+      "next_review": "2025-08-12T00:23:50.122051"
     },
     {
       "id": 8,
@@ -255,14 +206,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T00:23:50.122481",
       "last_seen": "2025-08-11T00:23:50.122483",
-      "next_review": "2025-08-12T00:23:50.122486",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T00:23:50.122481"
+      "next_review": "2025-08-12T00:23:50.122486"
     },
     {
       "id": 9,
@@ -284,14 +228,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T10:25:58.015403",
       "last_seen": "2025-08-11T10:25:58.015406",
-      "next_review": "2025-08-12T10:25:58.015416",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T10:25:58.015403"
+      "next_review": "2025-08-12T10:25:58.015416"
     },
     {
       "id": 10,
@@ -313,14 +250,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T10:25:58.016456",
       "last_seen": "2025-08-11T10:25:58.016458",
-      "next_review": "2025-08-12T10:25:58.016462",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T10:25:58.016456"
+      "next_review": "2025-08-12T10:25:58.016462"
     },
     {
       "id": 11,
@@ -342,14 +272,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T10:25:58.016903",
       "last_seen": "2025-08-11T10:25:58.016905",
-      "next_review": "2025-08-12T10:25:58.016908",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T10:25:58.016903"
+      "next_review": "2025-08-12T10:25:58.016908"
     },
     {
       "id": 12,
@@ -371,14 +294,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:12:39.646836",
       "last_seen": "2025-08-11T12:12:39.646838",
-      "next_review": "2025-08-12T12:12:39.646846",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:12:39.646836"
+      "next_review": "2025-08-12T12:12:39.646846"
     },
     {
       "id": 13,
@@ -400,21 +316,14 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:12:39.647990",
       "last_seen": "2025-08-11T12:12:39.647992",
-      "next_review": "2025-08-12T12:12:39.647996",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:12:39.647990"
+      "next_review": "2025-08-12T12:12:39.647996"
     },
     {
       "id": 14,
       "key_point": "動詞時態錯誤: buy",
       "category": "systematic",
       "subtype": "tense",
-      "explanation": "句中的時間副詞 'last week' (上週) 表示動作發生在過去，因此動詞 'buy' 應使用過去式 'bought'",
+      "explanation": "句中的時間副詞 'last week' (上週) 表示動作發生在過去，因此動詞 'buy' 應使用過去式 'bought'。",
       "original_phrase": "buy",
       "correction": "bought",
       "original_error": {
@@ -444,46 +353,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:23:51.385153",
       "last_seen": "2025-08-11T12:25:13.111721",
-      "next_review": "2025-08-12T12:25:13.111728",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [
-        {
-          "timestamp": "2025-08-13T21:30:00.940850",
-          "before": {
-            "key_point": "動詞時態錯誤: buy",
-            "explanation": "句中的時間副詞 'last week' (上週) 表示動作發生在過去，因此動詞 'buy' 應使用過去式 'bought'。",
-            "original_phrase": "buy",
-            "correction": "bought",
-            "category": "systematic",
-            "subtype": "tense",
-            "tags": [],
-            "custom_notes": ""
-          },
-          "after": {
-            "key_point": "動詞時態錯誤: buy",
-            "explanation": "句中的時間副詞 'last week' (上週) 表示動作發生在過去，因此動詞 'buy' 應使用過去式 'bought'",
-            "original_phrase": "buy",
-            "correction": "bought",
-            "category": "systematic",
-            "subtype": "tense",
-            "tags": [],
-            "custom_notes": ""
-          },
-          "changed_fields": [
-            "key_point",
-            "explanation",
-            "original_phrase",
-            "correction",
-            "category",
-            "custom_notes"
-          ]
-        }
-      ],
-      "last_modified": "2025-08-13T21:30:22.738794"
+      "next_review": "2025-08-12T12:25:13.111728"
     },
     {
       "id": 15,
@@ -520,14 +390,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:23:51.386451",
       "last_seen": "2025-08-11T12:25:13.113162",
-      "next_review": "2025-08-12T12:25:13.113166",
-      "is_deleted": true,
-      "deleted_at": "2025-08-13T21:30:37.315837",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T21:30:37.315837"
+      "next_review": "2025-08-12T12:25:13.113166"
     },
     {
       "id": 16,
@@ -549,14 +412,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:40:23.826058",
       "last_seen": "2025-08-11T12:40:23.826062",
-      "next_review": "2025-08-12T12:40:23.826068",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:40:23.826058"
+      "next_review": "2025-08-12T12:40:23.826068"
     },
     {
       "id": 17,
@@ -578,14 +434,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:40:23.826909",
       "last_seen": "2025-08-11T12:40:23.826911",
-      "next_review": "2025-08-12T12:40:23.826916",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:40:23.826909"
+      "next_review": "2025-08-12T12:40:23.826916"
     },
     {
       "id": 18,
@@ -607,14 +456,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:47:03.608600",
       "last_seen": "2025-08-11T12:47:03.608614",
-      "next_review": "2025-08-12T12:47:03.608687",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:47:03.608600"
+      "next_review": "2025-08-12T12:47:03.608687"
     },
     {
       "id": 19,
@@ -636,14 +478,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:47:03.613331",
       "last_seen": "2025-08-11T12:47:03.613341",
-      "next_review": "2025-08-12T12:47:03.613355",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:47:03.613331"
+      "next_review": "2025-08-12T12:47:03.613355"
     },
     {
       "id": 20,
@@ -665,14 +500,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:47:03.615803",
       "last_seen": "2025-08-11T12:47:03.615842",
-      "next_review": "2025-08-12T12:47:03.615861",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:47:03.615803"
+      "next_review": "2025-08-12T12:47:03.615861"
     },
     {
       "id": 21,
@@ -694,14 +522,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:47:03.618587",
       "last_seen": "2025-08-11T12:47:03.618594",
-      "next_review": "2025-08-12T12:47:03.618604",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:47:03.618587"
+      "next_review": "2025-08-12T12:47:03.618604"
     },
     {
       "id": 22,
@@ -723,14 +544,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:48:31.977955",
       "last_seen": "2025-08-11T12:48:31.977957",
-      "next_review": "2025-08-12T12:48:31.977971",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:48:31.977955"
+      "next_review": "2025-08-12T12:48:31.977971"
     },
     {
       "id": 23,
@@ -752,14 +566,7 @@
       "correct_count": 0,
       "created_at": "2025-08-11T12:48:31.979273",
       "last_seen": "2025-08-11T12:48:31.979275",
-      "next_review": "2025-08-12T12:48:31.979280",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-11T12:48:31.979273"
+      "next_review": "2025-08-12T12:48:31.979280"
     },
     {
       "id": 24,
@@ -781,14 +588,7 @@
       "correct_count": 0,
       "created_at": "2025-08-12T17:35:13.728743",
       "last_seen": "2025-08-12T17:35:13.728745",
-      "next_review": "2025-08-13T17:35:13.728751",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-12T17:35:13.728743"
+      "next_review": "2025-08-13T17:35:13.728751"
     },
     {
       "id": 25,
@@ -810,14 +610,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T14:36:17.066767",
       "last_seen": "2025-08-13T14:36:17.066772",
-      "next_review": "2025-08-14T14:36:17.066797",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T14:36:17.066767"
+      "next_review": "2025-08-14T14:36:17.066797"
     },
     {
       "id": 26,
@@ -839,14 +632,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T15:16:41.336362",
       "last_seen": "2025-08-13T15:16:41.336366",
-      "next_review": "2025-08-14T15:16:41.336392",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T15:16:41.336362"
+      "next_review": "2025-08-14T15:16:41.336392"
     },
     {
       "id": 27,
@@ -868,14 +654,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T15:16:41.338769",
       "last_seen": "2025-08-13T15:16:41.338772",
-      "next_review": "2025-08-14T15:16:41.338785",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T15:16:41.338769"
+      "next_review": "2025-08-14T15:16:41.338785"
     },
     {
       "id": 28,
@@ -897,14 +676,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T15:27:16.983968",
       "last_seen": "2025-08-13T15:27:16.983973",
-      "next_review": "2025-08-14T15:27:16.983998",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T15:27:16.983968"
+      "next_review": "2025-08-14T15:27:16.983998"
     },
     {
       "id": 29,
@@ -926,14 +698,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T15:27:16.987211",
       "last_seen": "2025-08-13T15:27:16.987214",
-      "next_review": "2025-08-14T15:27:16.987229",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T15:27:16.987211"
+      "next_review": "2025-08-14T15:27:16.987229"
     },
     {
       "id": 30,
@@ -955,14 +720,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T17:46:06.890382",
       "last_seen": "2025-08-13T17:46:06.890386",
-      "next_review": "2025-08-14T17:46:06.890413",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T17:46:06.890382"
+      "next_review": "2025-08-14T17:46:06.890413"
     },
     {
       "id": 31,
@@ -984,14 +742,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T17:46:06.895378",
       "last_seen": "2025-08-13T17:46:06.895381",
-      "next_review": "2025-08-14T17:46:06.895394",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T17:46:06.895378"
+      "next_review": "2025-08-14T17:46:06.895394"
     },
     {
       "id": 32,
@@ -1013,14 +764,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T17:46:06.897839",
       "last_seen": "2025-08-13T17:46:06.897842",
-      "next_review": "2025-08-14T17:46:06.897850",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T17:46:06.897839"
+      "next_review": "2025-08-14T17:46:06.897850"
     },
     {
       "id": 33,
@@ -1042,14 +786,7 @@
       "correct_count": 0,
       "created_at": "2025-08-13T17:46:06.899971",
       "last_seen": "2025-08-13T17:46:06.899973",
-      "next_review": "2025-08-14T17:46:06.899979",
-      "is_deleted": false,
-      "deleted_at": "",
-      "deleted_reason": "",
-      "tags": [],
-      "custom_notes": "",
-      "version_history": [],
-      "last_modified": "2025-08-13T17:46:06.899971"
+      "next_review": "2025-08-14T17:46:06.899979"
     }
   ]
 }

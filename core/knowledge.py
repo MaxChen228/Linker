@@ -70,6 +70,15 @@ class KnowledgePoint:
     created_at: str = ""
     last_seen: str = ""
     next_review: str = ""
+    
+    # 新增欄位 - 版本 4.0
+    is_deleted: bool = False  # 軟刪除標記
+    deleted_at: str = ""  # 刪除時間
+    deleted_reason: str = ""  # 刪除原因
+    tags: list[str] = None  # 自定義標籤
+    custom_notes: str = ""  # 用戶筆記
+    version_history: list[dict] = None  # 編輯歷史
+    last_modified: str = ""  # 最後修改時間
 
     def __post_init__(self):
         if not self.created_at:
@@ -80,6 +89,13 @@ class KnowledgePoint:
             self.next_review = self._calculate_next_review()
         if self.review_examples is None:
             self.review_examples = []
+        # 初始化新欄位
+        if self.tags is None:
+            self.tags = []
+        if self.version_history is None:
+            self.version_history = []
+        if not self.last_modified:
+            self.last_modified = self.created_at
 
     @property
     def unique_identifier(self) -> str:
@@ -154,9 +170,92 @@ class KnowledgePoint:
 
         self.last_seen = datetime.now().isoformat()
         self.next_review = self._calculate_next_review()
+    
+    def edit(self, updates: dict) -> dict:
+        """編輯知識點並記錄歷史
+        
+        Args:
+            updates: 要更新的欄位字典
+            
+        Returns:
+            包含變更前後對比的字典
+        """
+        # 記錄變更前的狀態
+        before_state = {
+            "key_point": self.key_point,
+            "explanation": self.explanation,
+            "original_phrase": self.original_phrase,
+            "correction": self.correction,
+            "category": self.category.value,
+            "subtype": self.subtype,
+            "tags": self.tags.copy() if self.tags else [],
+            "custom_notes": self.custom_notes
+        }
+        
+        # 應用更新
+        if "key_point" in updates:
+            self.key_point = updates["key_point"]
+        if "explanation" in updates:
+            self.explanation = updates["explanation"]
+        if "original_phrase" in updates:
+            self.original_phrase = updates["original_phrase"]
+        if "correction" in updates:
+            self.correction = updates["correction"]
+        if "category" in updates:
+            self.category = ErrorCategory.from_string(updates["category"])
+        if "subtype" in updates:
+            self.subtype = updates["subtype"]
+        if "tags" in updates:
+            self.tags = updates["tags"] if isinstance(updates["tags"], list) else []
+        if "custom_notes" in updates:
+            self.custom_notes = updates["custom_notes"]
+            
+        # 更新修改時間
+        self.last_modified = datetime.now().isoformat()
+        
+        # 記錄到版本歷史
+        history_entry = {
+            "timestamp": self.last_modified,
+            "before": before_state,
+            "after": {
+                "key_point": self.key_point,
+                "explanation": self.explanation,
+                "original_phrase": self.original_phrase,
+                "correction": self.correction,
+                "category": self.category.value,
+                "subtype": self.subtype,
+                "tags": self.tags.copy() if self.tags else [],
+                "custom_notes": self.custom_notes
+            },
+            "changed_fields": list(updates.keys())
+        }
+        
+        if self.version_history is None:
+            self.version_history = []
+        self.version_history.append(history_entry)
+        
+        return history_entry
+    
+    def soft_delete(self, reason: str = "") -> None:
+        """軟刪除知識點
+        
+        Args:
+            reason: 刪除原因
+        """
+        self.is_deleted = True
+        self.deleted_at = datetime.now().isoformat()
+        self.deleted_reason = reason
+        self.last_modified = self.deleted_at
+    
+    def restore(self) -> None:
+        """復原軟刪除的知識點"""
+        self.is_deleted = False
+        self.deleted_at = ""
+        self.deleted_reason = ""
+        self.last_modified = datetime.now().isoformat()
 
     def to_dict(self) -> dict:
-        """轉換為字典（用於JSON存儲）- 新格式"""
+        """轉換為字典（用於JSON存儲）- 版本 4.0"""
         return {
             "id": self.id,
             "key_point": self.key_point,
@@ -186,6 +285,14 @@ class KnowledgePoint:
             "created_at": self.created_at,
             "last_seen": self.last_seen,
             "next_review": self.next_review,
+            # 新增欄位 - 版本 4.0
+            "is_deleted": self.is_deleted,
+            "deleted_at": self.deleted_at,
+            "deleted_reason": self.deleted_reason,
+            "tags": self.tags,
+            "custom_notes": self.custom_notes,
+            "version_history": self.version_history,
+            "last_modified": self.last_modified,
         }
 
     @classmethod
@@ -255,6 +362,15 @@ class KnowledgePoint:
 
         # 移除舊格式的 examples 欄位
         data.pop("examples", None)
+        
+        # 處理新增欄位的預設值（版本 4.0）
+        data.setdefault("is_deleted", False)
+        data.setdefault("deleted_at", "")
+        data.setdefault("deleted_reason", "")
+        data.setdefault("tags", [])
+        data.setdefault("custom_notes", "")
+        data.setdefault("version_history", [])
+        data.setdefault("last_modified", data.get("created_at", ""))
 
         return cls(**data)
 
@@ -265,6 +381,10 @@ class KnowledgeManager:
     def __init__(self, data_dir: str = "data"):
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(exist_ok=True)
+        
+        # 創建備份目錄
+        self.backup_dir = self.data_dir / "backups"
+        self.backup_dir.mkdir(exist_ok=True)
 
         self.knowledge_file = self.data_dir / "knowledge.json"
         self.practice_log = self.data_dir / "practice_log.json"
@@ -275,6 +395,9 @@ class KnowledgeManager:
         self.knowledge_points: list[KnowledgePoint] = self._load_knowledge()
         self.practice_history = self._load_practice_log()
         self.type_system = ErrorTypeSystem()
+        
+        # 執行資料遷移（如果需要）
+        self._migrate_if_needed()
 
     @handle_file_operation("read")
     def _load_knowledge(self) -> list[KnowledgePoint]:
@@ -306,13 +429,70 @@ class KnowledgeManager:
                 ) from e
         return []
 
-    @handle_file_operation("write")
-    def _save_knowledge(self):
-        """儲存知識點"""
+    def _create_backup(self, prefix: str = "knowledge") -> Path:
+        """創建備份文件
+        
+        Args:
+            prefix: 備份文件前綴
+            
+        Returns:
+            備份文件路徑
+        """
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_file = self.backup_dir / f"{prefix}_{timestamp}.json"
+        
+        if self.knowledge_file.exists():
+            import shutil
+            shutil.copy2(self.knowledge_file, backup_file)
+            self.logger.info(f"創建備份: {backup_file}")
+            
+            # 清理舊備份（保留最近30個）
+            backups = sorted(self.backup_dir.glob(f"{prefix}_*.json"))
+            if len(backups) > 30:
+                for old_backup in backups[:-30]:
+                    old_backup.unlink()
+                    self.logger.debug(f"刪除舊備份: {old_backup}")
+        
+        return backup_file
+    
+    def _migrate_if_needed(self):
+        """檢查並執行資料遷移"""
+        if not self.knowledge_file.exists():
+            return
+            
         try:
-            # 始終使用新的版本格式（3.0支持新的知識點結構）
+            with open(self.knowledge_file, encoding="utf-8") as f:
+                data = json.load(f)
+                
+            current_version = data.get('version', '1.0') if isinstance(data, dict) else '1.0'
+            
+            # 如果版本低於 4.0，執行遷移
+            if current_version < '4.0':
+                self.logger.info(f"檢測到舊版本 {current_version}，開始遷移到 4.0")
+                self._create_backup("knowledge_migration")
+                
+                # 標記需要保存（會自動使用新版本格式）
+                self._needs_migration = True
+                # 遷移會在第一次保存時自動完成（因為 to_dict 已經包含新欄位）
+                self._save_knowledge()
+                self.logger.info("資料遷移到 4.0 完成")
+        except Exception as e:
+            self.logger.error(f"資料遷移失敗: {e}", exc_info=True)
+
+    @handle_file_operation("write")
+    def _save_knowledge(self, create_backup: bool = False):
+        """儲存知識點
+        
+        Args:
+            create_backup: 是否創建備份
+        """
+        try:
+            if create_backup:
+                self._create_backup()
+                
+            # 使用新的版本格式 4.0
             data = {
-                'version': '3.0',
+                'version': '4.0',
                 'last_updated': datetime.now().isoformat(),
                 'data': [point.to_dict() for point in self.knowledge_points]
             }
@@ -580,6 +760,135 @@ class KnowledgeManager:
                 self._save_knowledge()
                 return True
         return False
+    
+    def edit_knowledge_point(self, point_id: int, updates: dict) -> Optional[dict]:
+        """編輯知識點
+        
+        Args:
+            point_id: 知識點ID
+            updates: 要更新的欄位
+            
+        Returns:
+            編輯歷史記錄，如果失敗返回 None
+        """
+        for point in self.knowledge_points:
+            if point.id == point_id and not point.is_deleted:
+                # 創建備份
+                self._save_knowledge(create_backup=True)
+                
+                # 執行編輯
+                history = point.edit(updates)
+                
+                # 保存變更
+                self._save_knowledge()
+                
+                self.logger.info(f"編輯知識點 {point_id}: {list(updates.keys())}")
+                return history
+        
+        self.logger.warning(f"找不到知識點 {point_id} 或已被刪除")
+        return None
+    
+    def delete_knowledge_point(self, point_id: int, reason: str = "") -> bool:
+        """軟刪除知識點
+        
+        Args:
+            point_id: 知識點ID
+            reason: 刪除原因
+            
+        Returns:
+            是否成功刪除
+        """
+        for point in self.knowledge_points:
+            if point.id == point_id and not point.is_deleted:
+                # 創建備份
+                self._save_knowledge(create_backup=True)
+                
+                # 執行軟刪除
+                point.soft_delete(reason)
+                
+                # 保存變更
+                self._save_knowledge()
+                
+                self.logger.info(f"軟刪除知識點 {point_id}，原因: {reason}")
+                return True
+        
+        self.logger.warning(f"找不到知識點 {point_id} 或已被刪除")
+        return False
+    
+    def restore_knowledge_point(self, point_id: int) -> bool:
+        """復原軟刪除的知識點
+        
+        Args:
+            point_id: 知識點ID
+            
+        Returns:
+            是否成功復原
+        """
+        for point in self.knowledge_points:
+            if point.id == point_id and point.is_deleted:
+                # 執行復原
+                point.restore()
+                
+                # 保存變更
+                self._save_knowledge()
+                
+                self.logger.info(f"復原知識點 {point_id}")
+                return True
+        
+        self.logger.warning(f"找不到已刪除的知識點 {point_id}")
+        return False
+    
+    def get_deleted_points(self) -> list[KnowledgePoint]:
+        """獲取所有已刪除的知識點
+        
+        Returns:
+            已刪除的知識點列表
+        """
+        return [p for p in self.knowledge_points if p.is_deleted]
+    
+    def get_active_points(self) -> list[KnowledgePoint]:
+        """獲取所有未刪除的知識點
+        
+        Returns:
+            未刪除的知識點列表
+        """
+        return [p for p in self.knowledge_points if not p.is_deleted]
+    
+    def permanent_delete_old_points(self, days: int = 30) -> int:
+        """永久刪除超過指定天數的軟刪除知識點
+        
+        Args:
+            days: 天數閾值
+            
+        Returns:
+            刪除的數量
+        """
+        cutoff_date = datetime.now() - timedelta(days=days)
+        deleted_count = 0
+        
+        # 過濾出需要保留的知識點
+        remaining_points = []
+        for point in self.knowledge_points:
+            if point.is_deleted and point.deleted_at:
+                try:
+                    deleted_date = datetime.fromisoformat(point.deleted_at.replace("Z", "+00:00"))
+                    # 移除時區信息進行比較
+                    deleted_date = deleted_date.replace(tzinfo=None)
+                    if deleted_date < cutoff_date:
+                        deleted_count += 1
+                        self.logger.info(f"永久刪除知識點 {point.id}")
+                        continue
+                except (ValueError, AttributeError):
+                    pass
+            
+            remaining_points.append(point)
+        
+        if deleted_count > 0:
+            self.knowledge_points = remaining_points
+            self._save_knowledge(create_backup=True)
+            self.logger.info(f"永久刪除了 {deleted_count} 個舊知識點")
+        
+        return deleted_count
 
     def get_statistics(self) -> dict[str, Any]:
         """獲取統計資料"""

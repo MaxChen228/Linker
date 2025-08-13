@@ -229,7 +229,7 @@
 }
 
 .mistake-card {
-  background: white;
+  background: var(--surface-elevated);
   padding: var(--space-5);
   border-radius: var(--radius-md);
   border: 1px solid var(--error-200);
@@ -325,7 +325,7 @@
   display: flex;
   align-items: center;
   padding: var(--space-4);
-  background: white;
+  background: var(--surface-elevated);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
 }
@@ -335,7 +335,7 @@
   width: 2rem;
   height: 2rem;
   background: var(--accent-500);
-  color: white;
+  color: var(--text-on-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -354,7 +354,7 @@
   display: inline-block;
   padding: var(--space-3) var(--space-8);
   background: var(--accent-600);
-  color: white;
+  color: var(--text-on-primary);
   border: none;
   border-radius: var(--radius-md);
   font-size: var(--text-base);

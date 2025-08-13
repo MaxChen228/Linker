@@ -872,6 +872,41 @@
   .card-comparison {
     background: var(--surface-base);
   }
+  
+  /* 知識卡片深色模式 */
+  .knowledge-card-compact {
+    background: var(--surface-elevated);
+    border-color: var(--border-default);
+  }
+  
+  .knowledge-card-compact:hover {
+    border-color: var(--primary);
+    background: var(--surface-base);
+  }
+  
+  /* 修復標題文字顏色 */
+  .card-title-compact .error-text {
+    color: var(--text-secondary);
+    text-decoration-color: var(--error-500);
+  }
+  
+  .card-title-compact .arrow {
+    color: var(--text-muted);
+  }
+  
+  .card-title-compact .correct-text {
+    color: var(--success-400);
+  }
+  
+  /* 知識點描述文字 */
+  .knowledge-point-desc {
+    color: var(--text-secondary);
+  }
+  
+  /* 類別標籤文字 */
+  .category-label {
+    color: var(--text-muted);
+  }
 }
 
 /* ========== 緊湊卡片佈局 ========== */

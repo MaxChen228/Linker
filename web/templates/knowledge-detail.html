@@ -159,16 +159,156 @@
 
     <!-- 操作按鈕 -->
     <div class="detail-actions">
-        <a href="/practice?mode=review&point_id={{ point.id }}" class="btn" data-variant="primary">
+        <a href="/practice?mode=review&point_id={{ point.id }}" class="btn btn-primary">
             開始複習此知識點
         </a>
-        <button onclick="window.history.back()" class="btn" data-variant="secondary">
+        <button onclick="openEditModal()" class="btn btn-secondary">
+            編輯
+        </button>
+        <button onclick="deleteKnowledgePoint()" class="btn btn-secondary" style="color: var(--error-600); border-color: var(--error-300);">
+            刪除
+        </button>
+        <button onclick="window.history.back()" class="btn btn-secondary">
             返回
         </button>
+    </div>
+</div>
+
+<!-- 編輯模態框 -->
+<div id="editModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--surface-base); padding: var(--space-6); border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+        <h2 style="margin: 0 0 var(--space-4) 0;">編輯知識點</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+            <div>
+                <label style="display: block; margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary);">關鍵點描述</label>
+                <input type="text" id="edit-key-point" value="{{ point.key_point }}" style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-default); border-radius: var(--radius-sm);">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary);">錯誤片段</label>
+                <input type="text" id="edit-original-phrase" value="{{ point.original_phrase }}" style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-default); border-radius: var(--radius-sm);">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary);">正確片段</label>
+                <input type="text" id="edit-correction" value="{{ point.correction }}" style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-default); border-radius: var(--radius-sm);">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary);">詳細說明</label>
+                <textarea id="edit-explanation" rows="4" style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-default); border-radius: var(--radius-sm); resize: vertical;">{{ point.description }}</textarea>
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary);">分類</label>
+                <select id="edit-category" style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-default); border-radius: var(--radius-sm);">
+                    <option value="systematic" {% if point.category.value == 'systematic' %}selected{% endif %}>系統性錯誤</option>
+                    <option value="isolated" {% if point.category.value == 'isolated' %}selected{% endif %}>單一性錯誤</option>
+                    <option value="enhancement" {% if point.category.value == 'enhancement' %}selected{% endif %}>可以更好</option>
+                    <option value="other" {% if point.category.value == 'other' %}selected{% endif %}>其他錯誤</option>
+                </select>
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary);">個人筆記</label>
+                <textarea id="edit-notes" rows="3" placeholder="添加你的學習筆記..." style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-default); border-radius: var(--radius-sm); resize: vertical;"></textarea>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: var(--space-3); justify-content: flex-end; margin-top: var(--space-6);">
+            <button onclick="closeEditModal()" style="padding: var(--space-2) var(--space-4); background: var(--surface-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-md); cursor: pointer;">
+                取消
+            </button>
+            <button onclick="saveEdit()" style="padding: var(--space-2) var(--space-4); background: var(--accent-600); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
+                保存
+            </button>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" href="/static/css/pages/knowledge-detail.css">
+{% endblock %}
+
+{% block scripts %}
+<script>
+const pointId = {{ point.id }};
+
+// 打開編輯模態框
+function openEditModal() {
+    document.getElementById('editModal').style.display = 'block';
+}
+
+// 關閉編輯模態框
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+// 保存編輯
+async function saveEdit() {
+    const updates = {
+        key_point: document.getElementById('edit-key-point').value,
+        original_phrase: document.getElementById('edit-original-phrase').value,
+        correction: document.getElementById('edit-correction').value,
+        explanation: document.getElementById('edit-explanation').value,
+        category: document.getElementById('edit-category').value,
+        custom_notes: document.getElementById('edit-notes').value
+    };
+    
+    try {
+        const response = await fetch(`/api/knowledge/${pointId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updates)
+        });
+        
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert('編輯失敗');
+        }
+    } catch (error) {
+        console.error('編輯錯誤:', error);
+        alert('編輯時發生錯誤');
+    }
+}
+
+// 刪除知識點
+function deleteKnowledgePoint() {
+    if (confirm('確定要刪除這個知識點嗎？刪除後可在回收站中復原。')) {
+        const reason = prompt('請輸入刪除原因（選填）：') || '';
+        
+        fetch(`/api/knowledge/${pointId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ reason })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('知識點已移至回收站');
+                window.location.href = '/knowledge';
+            } else {
+                alert('刪除失敗');
+            }
+        })
+        .catch(error => {
+            console.error('刪除錯誤:', error);
+            alert('刪除時發生錯誤');
+        });
+    }
+}
+
+// ESC 鍵關閉模態框
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeEditModal();
+    }
+});
+</script>
 {% endblock %}

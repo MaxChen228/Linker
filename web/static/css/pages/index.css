@@ -190,7 +190,7 @@
 
 .review-action-btn {
   background: var(--accent-500);
-  color: white;
+  color: var(--text-on-primary);
 }
 
 .review-action-btn:hover {
@@ -476,5 +476,40 @@
   
   .suggestion-text {
     background: var(--color-primary-subtle);
+  }
+  
+  /* 修復複習卡片深色模式 */
+  .review-card {
+    background: var(--surface-elevated);
+    border-color: var(--border-default);
+  }
+  
+  .review-card:hover {
+    background: var(--surface-base);
+    border-color: var(--primary);
+  }
+  
+  .review-card.is-due {
+    border-left-color: var(--primary);
+  }
+  
+  .review-card-footer {
+    border-top-color: var(--border-light);
+  }
+  
+  /* 複習類別標籤 */
+  .review-category {
+    background: var(--surface-base);
+    color: var(--text-secondary);
+  }
+  
+  /* 掌握度文字 */
+  .mastery-value {
+    color: var(--text-primary);
+  }
+  
+  /* 錯誤次數文字 */
+  .mistake-count {
+    color: var(--text-muted);
   }
 }

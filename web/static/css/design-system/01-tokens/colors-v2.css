@@ -144,7 +144,7 @@
   --text-accent: var(--accent-600);
   --text-on-primary: #ffffff;
   --text-on-success: #ffffff;
-  --text-on-warning: #ffffff;
+  --text-on-warning: var(--gray-900);
   --text-on-error: #ffffff;
   
   /* ========== Border Color System ========== */
@@ -302,7 +302,7 @@
     --text-accent: var(--accent-400);
     --text-on-primary: #ffffff;
     --text-on-success: #ffffff;
-    --text-on-warning: #000000;
+    --text-on-warning: var(--gray-900);
     --text-on-error: #ffffff;
     
     /* ========== Border Color System (Dark) ========== */

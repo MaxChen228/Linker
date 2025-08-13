@@ -30,7 +30,7 @@
 .comparison-item[data-type="error"] {
   flex: 0 1 auto;
   padding: var(--space-3) var(--space-4);
-  background: white;
+  background: var(--surface-elevated);
   border: 2px solid var(--gray-200);
   border-radius: var(--radius-lg);
   color: var(--gray-500);
@@ -59,7 +59,7 @@
 .comparison-item[data-type="correct"] {
   flex: 1 1 auto;
   padding: var(--space-5) var(--space-6);
-  background: white;
+  background: var(--surface-elevated);
   border: 3px solid var(--success-500);
   border-radius: var(--radius-2xl);
   color: var(--gray-900);
@@ -81,7 +81,7 @@
   width: var(--space-8);
   height: var(--space-8);
   background: var(--success-500);
-  color: white;
+  color: var(--text-on-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -121,7 +121,7 @@
 .sentence-item {
   display: block;
   padding: var(--space-5) var(--space-6);
-  background: white;
+  background: var(--surface-elevated);
   border-radius: var(--radius-lg);
   font-size: var(--text-base);
   line-height: 1.8;
@@ -132,7 +132,7 @@
 /* 原始句子（錯誤） */
 .sentence-item[data-type="original"] {
   border: 2px solid var(--gray-200);
-  background: white;
+  background: var(--surface-elevated);
   padding-left: var(--space-8);
 }
 
@@ -177,7 +177,7 @@
   width: var(--space-6);
   height: var(--space-6);
   background: var(--success-500);
-  color: white;
+  color: var(--text-on-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;

@@ -69,7 +69,7 @@
 
 /* 問題卡片 */
 .card[data-type="question"] {
-  background: white;
+  background: var(--surface-elevated);
   border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: var(--shadow-sm);
 }
@@ -99,7 +99,7 @@
 
 /* 系統性錯誤群組卡片 */
 .card[data-type="group"] {
-  background: white;
+  background: var(--surface-elevated);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);

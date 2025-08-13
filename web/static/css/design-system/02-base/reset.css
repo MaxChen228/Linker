@@ -173,7 +173,7 @@ table {
 @media print {
   body {
     background: white;
-    color: black;
+    color: var(--text-primary);
   }
   
   a {

@@ -19,8 +19,8 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
     templates = get_templates()
     knowledge = get_knowledge_manager()
 
-    # 獲取所有知識點
-    all_points = knowledge.knowledge_points
+    # 獲取所有未刪除的知識點
+    all_points = knowledge.get_active_points()
 
     # 根據類別篩選
     if category:
@@ -116,6 +116,58 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
             "review_queue": review_queue,  # 複習佇列
             "due_points": due_points,  # 已到期的知識點
             "now": now,  # 當前時間
+            "active": "knowledge",
+        },
+    )
+
+@router.get("/knowledge/trash", response_class=HTMLResponse)
+def knowledge_trash(request: Request):
+    """知識點回收站頁面"""
+    templates = get_templates()
+    knowledge = get_knowledge_manager()
+    
+    # 獲取所有已刪除的知識點
+    deleted_points = knowledge.get_deleted_points()
+    
+    # 按刪除時間排序（最新的在前）
+    deleted_points.sort(key=lambda x: x.deleted_at, reverse=True)
+    
+    # 計算刪除了多久
+    from datetime import datetime
+    now = datetime.now()
+    
+    for point in deleted_points:
+        if point.deleted_at:
+            try:
+                deleted_date = datetime.fromisoformat(point.deleted_at.replace("Z", "+00:00"))
+                deleted_date = deleted_date.replace(tzinfo=None)
+                days_ago = (now - deleted_date).days
+                
+                if days_ago == 0:
+                    point.deleted_time_display = "今天"
+                elif days_ago == 1:
+                    point.deleted_time_display = "昨天"
+                elif days_ago < 7:
+                    point.deleted_time_display = f"{days_ago} 天前"
+                elif days_ago < 30:
+                    weeks_ago = days_ago // 7
+                    point.deleted_time_display = f"{weeks_ago} 週前"
+                else:
+                    point.deleted_time_display = f"{days_ago} 天前"
+                    
+                # 計算剩餘天數
+                point.days_until_permanent = 30 - days_ago
+                
+            except (ValueError, AttributeError):
+                point.deleted_time_display = "未知"
+                point.days_until_permanent = 30
+    
+    return templates.TemplateResponse(
+        "knowledge-trash.html",
+        {
+            "request": request,
+            "deleted_points": deleted_points,
+            "total_count": len(deleted_points),
             "active": "knowledge",
         },
     )
