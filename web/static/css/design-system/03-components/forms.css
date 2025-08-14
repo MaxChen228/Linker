@@ -552,6 +552,280 @@ textarea[data-status="warning"] {
   padding-right: 36px;
 }
 
+/* ========== Form Utility Classes ========== */
+
+/* Form Visibility Utilities */
+.form-hidden {
+  display: none !important;
+}
+
+.form-visible {
+  display: block !important;
+}
+
+/* Form State Utilities */
+.form-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.form-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--gray-300);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: formSpin 1s linear infinite;
+}
+
+@keyframes formSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Form Layout Utilities */
+.form-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.form-inline .form-group {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.form-grid-2 {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.form-grid-3 {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+  .form-grid-2,
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Form Spacing Utilities */
+.form-compact .form-group {
+  margin-bottom: var(--space-2);
+}
+
+.form-compact .form-control,
+.form-compact input,
+.form-compact select,
+.form-compact textarea {
+  padding: 8px 12px;
+  font-size: 0.875rem;
+}
+
+.form-spacious .form-group {
+  margin-bottom: var(--space-6);
+}
+
+.form-spacious .form-control,
+.form-spacious input,
+.form-spacious select,
+.form-spacious textarea {
+  padding: 16px 20px;
+  font-size: 1.05rem;
+}
+
+/* Form Validation Utilities */
+.form-valid {
+  border-color: var(--success) !important;
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(16, 185, 129, 0.02) 100%) !important;
+}
+
+.form-invalid {
+  border-color: var(--error) !important;
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(239, 68, 68, 0.02) 100%) !important;
+}
+
+.form-pending {
+  border-color: var(--warning) !important;
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(245, 158, 11, 0.02) 100%) !important;
+}
+
+/* Form Focus Utilities */
+.form-focus-primary:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.form-focus-success:focus {
+  border-color: var(--success) !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+.form-focus-error:focus {
+  border-color: var(--error) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Form Input Prefix/Suffix Utilities */
+.form-with-icon {
+  position: relative;
+}
+
+.form-with-icon .form-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.form-with-icon .form-icon-left {
+  left: 12px;
+}
+
+.form-with-icon .form-icon-right {
+  right: 12px;
+}
+
+.form-with-icon.has-icon-left .form-control,
+.form-with-icon.has-icon-left input {
+  padding-left: 44px;
+}
+
+.form-with-icon.has-icon-right .form-control,
+.form-with-icon.has-icon-right input {
+  padding-right: 44px;
+}
+
+/* Form Button Group Utilities */
+.form-button-group {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: var(--space-6);
+}
+
+.form-button-group.left {
+  justify-content: flex-start;
+}
+
+.form-button-group.center {
+  justify-content: center;
+}
+
+.form-button-group.space-between {
+  justify-content: space-between;
+}
+
+.form-button-group.vertical {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Form Section Utilities */
+.form-section {
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-6);
+}
+
+.form-section-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.form-section-description {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+/* Form Field Alignment Utilities */
+.form-field-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.form-field-horizontal .form-label {
+  margin-bottom: 0;
+  flex-shrink: 0;
+  min-width: 120px;
+}
+
+.form-field-horizontal .form-control,
+.form-field-horizontal input,
+.form-field-horizontal select,
+.form-field-horizontal textarea {
+  flex: 1;
+}
+
+/* Form Helper Text Utilities */
+.form-help {
+  margin-top: var(--space-1);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.form-help-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.form-success-message {
+  margin-top: var(--space-1);
+  font-size: 0.8125rem;
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-warning-message {
+  margin-top: var(--space-1);
+  font-size: 0.8125rem;
+  color: var(--warning);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Animation */
 @keyframes formShake {
   0%, 100% { transform: translateX(0); }
@@ -561,4 +835,34 @@ textarea[data-status="warning"] {
 
 .form-control[data-status="error"] {
   animation: formShake 0.3s ease-in-out;
+}
+
+@keyframes formPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.form-loading-field {
+  animation: formPulse 1.5s ease-in-out infinite;
+}
+
+/* Form Responsive Utilities */
+@media (max-width: 768px) {
+  .form-field-horizontal {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .form-field-horizontal .form-label {
+    min-width: auto;
+  }
+  
+  .form-button-group {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .form-button-group.vertical {
+    flex-direction: column;
+  }
 }

@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}學習日曆 - Linker{% endblock %}
+
+{% block content %}
+<div class="calendar-container">
+    <!-- 頁面標題 -->
+    <div class="calendar-header">
+        <h1 class="calendar-title">學習日曆</h1>
+        <div class="calendar-subtitle">追蹤你的學習進度，保持每日學習習慣</div>
+    </div>
+
+    <!-- 月份導航 -->
+    <div class="month-navigation">
+        <a href="/calendar?year={{ prev_year }}&month={{ prev_month }}" class="nav-button prev">
+            <span class="nav-icon">←</span>
+        </a>
+        
+        <div class="month-display">
+            <h2 class="month-title">{{ month_data.year }}年 {{ month_data.month }}月</h2>
+            <a href="/calendar" class="today-link">返回今天</a>
+        </div>
+        
+        <a href="/calendar?year={{ next_year }}&month={{ next_month }}" class="nav-button next">
+            <span class="nav-icon">→</span>
+        </a>
+    </div>
+
+    <!-- 統計卡片 -->
+    <div class="calendar-stats">
+        <div class="stat-card">
+            <div class="stat-label">本月待複習</div>
+            <div class="stat-value">{{ month_data.stats.total_reviews_pending }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">已完成複習</div>
+            <div class="stat-value success">{{ month_data.stats.total_completed }}</div>
+        </div>
+        <div class="stat-card" id="streak-card">
+            <div class="stat-label">連續學習</div>
+            <div class="stat-value accent">-</div>
+        </div>
+    </div>
+
+    <!-- 日曆網格 -->
+    <div class="calendar-grid">
+        <!-- 星期標題 -->
+        <div class="weekday-headers">
+            <div class="weekday-header">一</div>
+            <div class="weekday-header">二</div>
+            <div class="weekday-header">三</div>
+            <div class="weekday-header">四</div>
+            <div class="weekday-header">五</div>
+            <div class="weekday-header">六</div>
+            <div class="weekday-header">日</div>
+        </div>
+
+        <!-- 日期格子 -->
+        <div class="calendar-days">
+            {% for week in month_data.weeks %}
+                {% for day in week %}
+                    {% if day %}
+                    <div class="calendar-day 
+                        {% if day.is_today %}today{% endif %}
+                        {% if day.is_past %}past{% endif %}
+                        {% if day.is_future %}future{% endif %}
+                        intensity-{{ day.study_intensity }}"
+                        data-date="{{ day.date_str }}"
+                        onclick="showDayDetails('{{ day.date_str }}')">
+                        
+                        <div class="day-number">{{ day.date }}</div>
+                        
+                        {% if day.reviews_pending > 0 %}
+                        <div class="day-badge pending">
+                            <span class="badge-icon">📚</span>
+                            <span class="badge-count">{{ day.reviews_pending }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if day.reviews_completed > 0 %}
+                        <div class="day-badge completed">
+                            <span class="badge-icon">✓</span>
+                            <span class="badge-count">{{ day.reviews_completed }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if day.new_practices > 0 %}
+                        <div class="day-badge practice">
+                            <span class="badge-icon">✍️</span>
+                            <span class="badge-count">{{ day.new_practices }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="calendar-day empty"></div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 圖例說明 -->
+    <div class="calendar-legend">
+        <div class="legend-title">圖例說明</div>
+        <div class="legend-items">
+            <div class="legend-item">
+                <span class="legend-color intensity-none"></span>
+                <span class="legend-label">無活動</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color intensity-light"></span>
+                <span class="legend-label">輕度學習 (1-2題)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color intensity-medium"></span>
+                <span class="legend-label">中度學習 (3-5題)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color intensity-heavy"></span>
+                <span class="legend-label">重度學習 (6+題)</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 日期詳情模態框 -->
+<div id="dayModal" class="modal hidden">
+    <div class="modal-overlay" onclick="closeDayModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalDate" class="modal-title"></h3>
+            <button class="modal-close" onclick="closeDayModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div id="dayDetailsContent">
+                <!-- 動態載入內容 -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/css/pages/calendar.css">
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 載入連續學習統計
+async function loadStreakStats() {
+    try {
+        const response = await fetch('/calendar/api/stats/streak');
+        const data = await response.json();
+        
+        const streakCard = document.getElementById('streak-card');
+        if (streakCard) {
+            streakCard.querySelector('.stat-value').textContent = 
+                data.current_streak > 0 ? `${data.current_streak} 天` : '0 天';
+            
+            // 添加火焰效果
+            if (data.current_streak >= 7) {
+                streakCard.classList.add('on-fire');
+            }
+        }
+    } catch (error) {
+        console.error('載入連續統計失敗:', error);
+    }
+}
+
+// 顯示日期詳情
+async function showDayDetails(dateStr) {
+    const modal = document.getElementById('dayModal');
+    const modalDate = document.getElementById('modalDate');
+    const content = document.getElementById('dayDetailsContent');
+    
+    // 格式化日期顯示
+    const date = new Date(dateStr);
+    const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+    modalDate.textContent = date.toLocaleDateString('zh-TW', options);
+    
+    // 載入詳細資料
+    try {
+        const response = await fetch(`/calendar/api/day/${dateStr}`);
+        const data = await response.json();
+        
+        let html = '';
+        
+        // 待複習項目
+        if (data.due_reviews && data.due_reviews.length > 0) {
+            html += '<div class="day-section">';
+            html += '<h4 class="section-title">🔁 待複習知識點</h4>';
+            html += '<div class="review-list">';
+            
+            for (const review of data.due_reviews) {
+                const isCompleted = data.completed_reviews.includes(review.id);
+                html += `
+                    <div class="review-item ${isCompleted ? 'completed' : ''}" data-id="${review.id}">
+                        <div class="review-content">
+                            <div class="review-title">${review.key_point}</div>
+                            <div class="review-detail">
+                                <span class="error-text">${review.original_phrase}</span>
+                                <span class="arrow">→</span>
+                                <span class="correct-text">${review.correction}</span>
+                            </div>
+                            <div class="review-meta">
+                                <span class="mastery-badge" data-level="${getMasteryLevel(review.mastery_level)}">
+                                    掌握度 ${Math.round(review.mastery_level * 100)}%
+                                </span>
+                                <span class="category-badge" data-category="${review.category}">
+                                    ${getCategoryName(review.category)}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="review-actions">
+                            ${isCompleted ? 
+                                '<span class="status-icon completed">✓</span>' :
+                                `<a href="/practice?mode=review&point_id=${review.id}" class="btn-review">開始複習</a>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += '</div></div>';
+        }
+        
+        // 學習統計
+        if (data.new_practices > 0 || data.study_minutes > 0) {
+            html += '<div class="day-section">';
+            html += '<h4 class="section-title">📊 今日學習統計</h4>';
+            html += '<div class="day-stats">';
+            
+            if (data.new_practices > 0) {
+                html += `<div class="stat-item">新練習: ${data.new_practices} 題</div>`;
+            }
+            if (data.total_mistakes > 0) {
+                html += `<div class="stat-item">錯誤數: ${data.total_mistakes} 個</div>`;
+            }
+            if (data.study_minutes > 0) {
+                html += `<div class="stat-item">學習時長: ${data.study_minutes} 分鐘</div>`;
+            }
+            if (data.mastery_improvement > 0) {
+                html += `<div class="stat-item">掌握度提升: +${(data.mastery_improvement * 100).toFixed(1)}%</div>`;
+            }
+            
+            html += '</div></div>';
+        }
+        
+        // 如果沒有任何資料
+        if (!html) {
+            html = '<div class="empty-state">這一天沒有學習記錄</div>';
+        }
+        
+        content.innerHTML = html;
+        modal.classList.remove('hidden');
+        
+    } catch (error) {
+        console.error('載入日期詳情失敗:', error);
+        content.innerHTML = '<div class="error-state">載入失敗，請稍後再試</div>';
+        modal.classList.remove('hidden');
+    }
+}
+
+// 關閉模態框
+function closeDayModal() {
+    document.getElementById('dayModal').classList.add('hidden');
+}
+
+// 獲取掌握度等級
+function getMasteryLevel(mastery) {
+    if (mastery < 0.3) return 'low';
+    if (mastery < 0.7) return 'medium';
+    return 'high';
+}
+
+// 獲取分類名稱
+function getCategoryName(category) {
+    const names = {
+        'systematic': '系統性錯誤',
+        'isolated': '單一性錯誤',
+        'enhancement': '可以更好',
+        'other': '其他錯誤'
+    };
+    return names[category] || category;
+}
+
+// ESC 鍵關閉模態框
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDayModal();
+    }
+});
+
+// 頁面載入時初始化
+document.addEventListener('DOMContentLoaded', function() {
+    loadStreakStats();
+});
+</script>
+{% endblock %}

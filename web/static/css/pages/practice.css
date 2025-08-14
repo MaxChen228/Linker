@@ -32,6 +32,16 @@
   50% { opacity: 0.7; }
 }
 
+@keyframes slideIn { 
+  from { transform: translateX(100%); opacity: 0; } 
+  to { transform: translateX(0); opacity: 1; } 
+}
+
+@keyframes slideOut { 
+  from { transform: translateX(0); opacity: 1; } 
+  to { transform: translateX(100%); opacity: 0; } 
+}
+
 /* ========== LLM 調試模態窗口 ========== */
 .debug-modal {
   display: none;
@@ -670,6 +680,70 @@
 .result-section {
   margin-top: var(--space-8);
   animation: var(--animation-slide-in-up);
+  padding: var(--space-6);
+  background: var(--surface-base);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.result-score {
+  margin: 0 0 var(--space-5) 0;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+}
+
+.result-score.score-high {
+  color: var(--success);
+}
+
+.result-score.score-medium {
+  color: var(--warning);
+}
+
+.result-score.score-low {
+  color: var(--error);
+}
+
+.result-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.feedback-section {
+  padding: var(--space-4);
+  background: var(--surface-subtle);
+  border-radius: var(--radius);
+}
+
+.feedback-label {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-1);
+  font-weight: var(--font-medium);
+}
+
+.feedback-content {
+  color: var(--text-primary);
+  line-height: var(--leading-relaxed);
+}
+
+.error-analysis-section {
+  margin-top: var(--space-4);
+}
+
+.error-analysis-label {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-3);
+  font-weight: var(--font-medium);
+}
+
+.result-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-top: var(--space-5);
 }
 
 /* ========== 錯誤分析列表 ========== */
@@ -680,17 +754,94 @@
 }
 
 .error-analysis-item {
-  padding: var(--space-4);
-  border-radius: var(--radius);
-  background: var(--surface-elevated);
-  margin-bottom: var(--space-3);
-  border: 1px solid var(--border-light);
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  background: var(--surface-subtle);
+  border-left: var(--space-1) solid var(--info);
+  border-radius: var(--radius-sm);
   transition: var(--transition-base);
 }
 
 .error-analysis-item:hover {
   box-shadow: var(--shadow-sm);
   transform: translateX(4px);
+}
+
+.error-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.error-title {
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.error-explanation {
+  color: var(--text-muted);
+  margin: var(--space-2) 0;
+  line-height: var(--leading-relaxed);
+}
+
+.error-examples {
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  background: var(--surface-base);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+}
+
+.error-original {
+  color: var(--error);
+  text-decoration: line-through;
+}
+
+.error-correction {
+  color: var(--success);
+  margin-top: var(--space-1);
+}
+
+/* ========== 通知系統 ========== */
+.notification-toast {
+  position: fixed;
+  top: var(--space-5);
+  right: var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 10000;
+  font-weight: var(--font-medium);
+  max-width: 300px;
+  word-wrap: break-word;
+  animation: slideIn 0.3s ease;
+  color: var(--text-inverse);
+}
+
+.notification-toast[data-type="success"] {
+  background: var(--success);
+}
+
+.notification-toast[data-type="error"] {
+  background: var(--error);
+}
+
+.notification-toast[data-type="warning"] {
+  background: var(--warning);
+}
+
+.notification-toast[data-type="info"] {
+  background: var(--info);
+}
+
+.notification-toast.notification-exit {
+  animation: slideOut 0.3s ease;
+}
+
+.error-text {
+  color: var(--error);
+  font-weight: var(--font-medium);
 }
 
 /* ========== 響應式設計 ========== */

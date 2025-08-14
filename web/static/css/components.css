@@ -75,6 +75,18 @@
   display: block;
 }
 
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-1 {
+  opacity: 1;
+}
+
+.flex {
+  display: flex;
+}
+
 /* Responsive Helpers */
 @media (max-width: 768px) {
   .hide-mobile {

@@ -246,7 +246,7 @@ class DraftManager {
     // 10秒後自動隱藏
     setTimeout(() => {
       if (notification.parentElement) {
-        notification.style.opacity = '0';
+        notification.classList.add('opacity-0');
         setTimeout(() => notification.remove(), 300);
       }
     }, 10000);
@@ -337,12 +337,12 @@ class DraftManager {
     indicator.className = `save-indicator ${status}`;
     
     // 顯示指示器
-    indicator.style.opacity = '1';
+    indicator.classList.remove('opacity-0');
 
     // 3秒後淡出（儲存中狀態除外）
     if (status !== 'saving') {
       setTimeout(() => {
-        indicator.style.opacity = '0';
+        indicator.classList.add('opacity-0');
       }, 3000);
     }
   }
@@ -617,11 +617,11 @@ class PatternsManager {
       
       // 顯示或隱藏
       if (categoryMatch && searchMatch) {
-        card.style.display = '';
+        card.classList.remove('hidden');
         visibleCount++;
         hasResults = true;
       } else {
-        card.style.display = 'none';
+        card.classList.add('hidden');
       }
     });
     
@@ -632,7 +632,12 @@ class PatternsManager {
     
     // 顯示或隱藏無結果提示
     if (this.noResults) {
-      this.noResults.style.display = hasResults ? 'none' : 'flex';
+      if (hasResults) {
+        this.noResults.classList.add('hidden');
+      } else {
+        this.noResults.classList.remove('hidden');
+        this.noResults.classList.add('flex');
+      }
     }
     
     // 更新 URL（不重新載入頁面）
@@ -799,12 +804,12 @@ class KnowledgeManager {
       // 顯示或隱藏整個群組
       const section = group.closest('.knowledge-section');
       if (shouldShow) {
-        group.style.display = '';
-        if (section) section.style.display = '';
+        group.classList.remove('hidden');
+        if (section) section.classList.remove('hidden');
         visibleGroups++;
         hasResults = true;
       } else {
-        group.style.display = 'none';
+        group.classList.add('hidden');
       }
     });
     
@@ -833,12 +838,12 @@ class KnowledgeManager {
       // 顯示或隱藏
       const section = card.closest('.knowledge-section');
       if (categoryMatch && masteryMatch && searchMatch) {
-        card.style.display = '';
-        if (section) section.style.display = '';
+        card.classList.remove('hidden');
+        if (section) section.classList.remove('hidden');
         visibleCards++;
         hasResults = true;
       } else {
-        card.style.display = 'none';
+        card.classList.add('hidden');
       }
     });
     
@@ -846,13 +851,18 @@ class KnowledgeManager {
     document.querySelectorAll('.knowledge-section').forEach(section => {
       const visibleItems = section.querySelectorAll('.knowledge-group-card:not([style*="display: none"]), .knowledge-single-card:not([style*="display: none"])');
       if (visibleItems.length === 0 && !section.querySelector('.knowledge-groups')) {
-        section.style.display = 'none';
+        section.classList.add('hidden');
       }
     });
     
     // 顯示或隱藏無結果提示
     if (this.noResults) {
-      this.noResults.style.display = hasResults ? 'none' : 'flex';
+      if (hasResults) {
+        this.noResults.classList.add('hidden');
+      } else {
+        this.noResults.classList.remove('hidden');
+        this.noResults.classList.add('flex');
+      }
     }
   }
   

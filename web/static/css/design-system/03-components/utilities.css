@@ -122,7 +122,713 @@ footer small {
   }
 }
 
-/* Print Utilities */
+/* ========== Display Utilities ========== */
+.hidden {
+  display: none !important;
+}
+
+.block {
+  display: block !important;
+}
+
+.inline-block {
+  display: inline-block !important;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.inline-flex {
+  display: inline-flex !important;
+}
+
+.grid {
+  display: grid !important;
+}
+
+.inline-grid {
+  display: inline-grid !important;
+}
+
+.table {
+  display: table !important;
+}
+
+.table-cell {
+  display: table-cell !important;
+}
+
+.table-row {
+  display: table-row !important;
+}
+
+/* ========== Visibility Utilities ========== */
+.visible {
+  visibility: visible !important;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+/* ========== Opacity Utilities ========== */
+.opacity-0 {
+  opacity: 0 !important;
+}
+
+.opacity-25 {
+  opacity: 0.25 !important;
+}
+
+.opacity-50 {
+  opacity: 0.5 !important;
+}
+
+.opacity-75 {
+  opacity: 0.75 !important;
+}
+
+.opacity-100 {
+  opacity: 1 !important;
+}
+
+/* ========== Text Color Utilities ========== */
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-disabled {
+  color: var(--text-disabled) !important;
+}
+
+.text-inverse {
+  color: var(--text-inverse) !important;
+}
+
+.text-accent {
+  color: var(--text-accent) !important;
+}
+
+.text-error {
+  color: var(--error) !important;
+}
+
+.text-success {
+  color: var(--success) !important;
+}
+
+.text-warning {
+  color: var(--warning) !important;
+}
+
+.text-info {
+  color: var(--info) !important;
+}
+
+/* ========== Background Color Utilities ========== */
+.bg-transparent {
+  background-color: transparent !important;
+}
+
+.bg-surface-base {
+  background-color: var(--surface-base) !important;
+}
+
+.bg-surface-elevated {
+  background-color: var(--surface-elevated) !important;
+}
+
+.bg-surface-subtle {
+  background-color: var(--surface-subtle) !important;
+}
+
+.bg-surface-muted {
+  background-color: var(--surface-muted) !important;
+}
+
+.bg-hover {
+  background-color: var(--hover-bg) !important;
+}
+
+.bg-hover-subtle {
+  background-color: var(--hover-bg-subtle) !important;
+}
+
+.bg-active {
+  background-color: var(--active-bg) !important;
+}
+
+/* ========== Border Utilities ========== */
+.border {
+  border: 1px solid var(--border-default) !important;
+}
+
+.border-0 {
+  border: 0 !important;
+}
+
+.border-t {
+  border-top: 1px solid var(--border-default) !important;
+}
+
+.border-r {
+  border-right: 1px solid var(--border-default) !important;
+}
+
+.border-b {
+  border-bottom: 1px solid var(--border-default) !important;
+}
+
+.border-l {
+  border-left: 1px solid var(--border-default) !important;
+}
+
+.border-light {
+  border-color: var(--border-light) !important;
+}
+
+.border-default {
+  border-color: var(--border-default) !important;
+}
+
+.border-emphasis {
+  border-color: var(--border-emphasis) !important;
+}
+
+.border-focus {
+  border-color: var(--border-focus) !important;
+}
+
+/* ========== Position Utilities ========== */
+.static {
+  position: static !important;
+}
+
+.relative {
+  position: relative !important;
+}
+
+.absolute {
+  position: absolute !important;
+}
+
+.fixed {
+  position: fixed !important;
+}
+
+.sticky {
+  position: sticky !important;
+}
+
+/* ========== Z-Index Utilities ========== */
+.z-0 {
+  z-index: 0 !important;
+}
+
+.z-10 {
+  z-index: 10 !important;
+}
+
+.z-20 {
+  z-index: 20 !important;
+}
+
+.z-30 {
+  z-index: 30 !important;
+}
+
+.z-40 {
+  z-index: 40 !important;
+}
+
+.z-50 {
+  z-index: 50 !important;
+}
+
+.z-auto {
+  z-index: auto !important;
+}
+
+/* ========== Pointer Events Utilities ========== */
+.pointer-events-none {
+  pointer-events: none !important;
+}
+
+.pointer-events-auto {
+  pointer-events: auto !important;
+}
+
+/* ========== Cursor Utilities ========== */
+.cursor-auto {
+  cursor: auto !important;
+}
+
+.cursor-default {
+  cursor: default !important;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.cursor-wait {
+  cursor: wait !important;
+}
+
+.cursor-text {
+  cursor: text !important;
+}
+
+.cursor-move {
+  cursor: move !important;
+}
+
+.cursor-help {
+  cursor: help !important;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
+/* ========== Transition Utilities ========== */
+.transition-none {
+  transition: none !important;
+}
+
+.transition-all {
+  transition: all var(--duration-normal) var(--ease-in-out) !important;
+}
+
+.transition-opacity {
+  transition: opacity var(--duration-normal) var(--ease-in-out) !important;
+}
+
+.transition-transform {
+  transition: transform var(--duration-normal) var(--ease-in-out) !important;
+}
+
+.transition-colors {
+  transition: color var(--duration-normal) var(--ease-in-out), 
+              background-color var(--duration-normal) var(--ease-in-out), 
+              border-color var(--duration-normal) var(--ease-in-out) !important;
+}
+
+.transition-shadow {
+  transition: box-shadow var(--duration-normal) var(--ease-in-out) !important;
+}
+
+.transition-fast {
+  transition-duration: var(--duration-fast) !important;
+}
+
+.transition-normal {
+  transition-duration: var(--duration-normal) !important;
+}
+
+.transition-slow {
+  transition-duration: var(--duration-slow) !important;
+}
+
+/* ========== Transform Utilities ========== */
+.transform {
+  transform: translateX(var(--tw-translate-x, 0)) translateY(var(--tw-translate-y, 0)) rotate(var(--tw-rotate, 0)) skewX(var(--tw-skew-x, 0)) skewY(var(--tw-skew-y, 0)) scaleX(var(--tw-scale-x, 1)) scaleY(var(--tw-scale-y, 1)) !important;
+}
+
+.transform-none {
+  transform: none !important;
+}
+
+.scale-0 {
+  --tw-scale-x: 0;
+  --tw-scale-y: 0;
+  transform: scale(0) !important;
+}
+
+.scale-50 {
+  --tw-scale-x: 0.5;
+  --tw-scale-y: 0.5;
+  transform: scale(0.5) !important;
+}
+
+.scale-75 {
+  --tw-scale-x: 0.75;
+  --tw-scale-y: 0.75;
+  transform: scale(0.75) !important;
+}
+
+.scale-90 {
+  --tw-scale-x: 0.9;
+  --tw-scale-y: 0.9;
+  transform: scale(0.9) !important;
+}
+
+.scale-95 {
+  --tw-scale-x: 0.95;
+  --tw-scale-y: 0.95;
+  transform: scale(0.95) !important;
+}
+
+.scale-100 {
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: scale(1) !important;
+}
+
+.scale-105 {
+  --tw-scale-x: 1.05;
+  --tw-scale-y: 1.05;
+  transform: scale(1.05) !important;
+}
+
+.scale-110 {
+  --tw-scale-x: 1.1;
+  --tw-scale-y: 1.1;
+  transform: scale(1.1) !important;
+}
+
+.scale-125 {
+  --tw-scale-x: 1.25;
+  --tw-scale-y: 1.25;
+  transform: scale(1.25) !important;
+}
+
+.scale-150 {
+  --tw-scale-x: 1.5;
+  --tw-scale-y: 1.5;
+  transform: scale(1.5) !important;
+}
+
+/* ========== Flexbox Utilities ========== */
+.flex-row {
+  flex-direction: row !important;
+}
+
+.flex-row-reverse {
+  flex-direction: row-reverse !important;
+}
+
+.flex-col {
+  flex-direction: column !important;
+}
+
+.flex-col-reverse {
+  flex-direction: column-reverse !important;
+}
+
+.flex-wrap {
+  flex-wrap: wrap !important;
+}
+
+.flex-wrap-reverse {
+  flex-wrap: wrap-reverse !important;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap !important;
+}
+
+.items-start {
+  align-items: flex-start !important;
+}
+
+.items-end {
+  align-items: flex-end !important;
+}
+
+.items-center {
+  align-items: center !important;
+}
+
+.items-baseline {
+  align-items: baseline !important;
+}
+
+.items-stretch {
+  align-items: stretch !important;
+}
+
+.justify-start {
+  justify-content: flex-start !important;
+}
+
+.justify-end {
+  justify-content: flex-end !important;
+}
+
+.justify-center {
+  justify-content: center !important;
+}
+
+.justify-between {
+  justify-content: space-between !important;
+}
+
+.justify-around {
+  justify-content: space-around !important;
+}
+
+.justify-evenly {
+  justify-content: space-evenly !important;
+}
+
+.flex-1 {
+  flex: 1 1 0% !important;
+}
+
+.flex-auto {
+  flex: 1 1 auto !important;
+}
+
+.flex-initial {
+  flex: 0 1 auto !important;
+}
+
+.flex-none {
+  flex: none !important;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0 !important;
+}
+
+.flex-shrink {
+  flex-shrink: 1 !important;
+}
+
+.flex-grow-0 {
+  flex-grow: 0 !important;
+}
+
+.flex-grow {
+  flex-grow: 1 !important;
+}
+
+/* ========== Gap Utilities ========== */
+.gap-0 {
+  gap: 0 !important;
+}
+
+.gap-1 {
+  gap: var(--space-1) !important;
+}
+
+.gap-2 {
+  gap: var(--space-2) !important;
+}
+
+.gap-3 {
+  gap: var(--space-3) !important;
+}
+
+.gap-4 {
+  gap: var(--space-4) !important;
+}
+
+.gap-5 {
+  gap: var(--space-5) !important;
+}
+
+.gap-6 {
+  gap: var(--space-6) !important;
+}
+
+.gap-8 {
+  gap: var(--space-8) !important;
+}
+
+.gap-10 {
+  gap: var(--space-10) !important;
+}
+
+.gap-12 {
+  gap: var(--space-12) !important;
+}
+
+/* ========== Overflow Utilities ========== */
+.overflow-auto {
+  overflow: auto !important;
+}
+
+.overflow-hidden {
+  overflow: hidden !important;
+}
+
+.overflow-clip {
+  overflow: clip !important;
+}
+
+.overflow-visible {
+  overflow: visible !important;
+}
+
+.overflow-scroll {
+  overflow: scroll !important;
+}
+
+.overflow-x-auto {
+  overflow-x: auto !important;
+}
+
+.overflow-y-auto {
+  overflow-y: auto !important;
+}
+
+.overflow-x-hidden {
+  overflow-x: hidden !important;
+}
+
+.overflow-y-hidden {
+  overflow-y: hidden !important;
+}
+
+.overflow-x-clip {
+  overflow-x: clip !important;
+}
+
+.overflow-y-clip {
+  overflow-y: clip !important;
+}
+
+.overflow-x-visible {
+  overflow-x: visible !important;
+}
+
+.overflow-y-visible {
+  overflow-y: visible !important;
+}
+
+.overflow-x-scroll {
+  overflow-x: scroll !important;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll !important;
+}
+
+/* ========== Text Utilities ========== */
+.text-left {
+  text-align: left !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.text-justify {
+  text-align: justify !important;
+}
+
+.text-start {
+  text-align: start !important;
+}
+
+.text-end {
+  text-align: end !important;
+}
+
+.uppercase {
+  text-transform: uppercase !important;
+}
+
+.lowercase {
+  text-transform: lowercase !important;
+}
+
+.capitalize {
+  text-transform: capitalize !important;
+}
+
+.normal-case {
+  text-transform: none !important;
+}
+
+.truncate {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.text-ellipsis {
+  text-overflow: ellipsis !important;
+}
+
+.text-clip {
+  text-overflow: clip !important;
+}
+
+.whitespace-normal {
+  white-space: normal !important;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap !important;
+}
+
+.whitespace-pre {
+  white-space: pre !important;
+}
+
+.whitespace-pre-line {
+  white-space: pre-line !important;
+}
+
+.whitespace-pre-wrap {
+  white-space: pre-wrap !important;
+}
+
+.whitespace-break-spaces {
+  white-space: break-spaces !important;
+}
+
+.break-normal {
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+.break-words {
+  overflow-wrap: break-word !important;
+}
+
+.break-all {
+  word-break: break-all !important;
+}
+
+.break-keep {
+  word-break: keep-all !important;
+}
+
+/* ========== User Select Utilities ========== */
+.select-none {
+  user-select: none !important;
+}
+
+.select-text {
+  user-select: text !important;
+}
+
+.select-all {
+  user-select: all !important;
+}
+
+.select-auto {
+  user-select: auto !important;
+}
+
+/* ========== Print Utilities ========== */
 @media print {
   .no-print {
     display: none !important;

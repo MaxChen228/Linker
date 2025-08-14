@@ -286,9 +286,9 @@
         <div class="trash-item-content">
           <div class="trash-item-title">{{ point.key_point }}</div>
           <div class="trash-item-phrase">
-            <span style="color: var(--error-500);">{{ point.original_phrase }}</span>
+            <span class="color-error">{{ point.original_phrase }}</span>
             <span>→</span>
-            <span style="color: var(--success-600);">{{ point.correction }}</span>
+            <span class="color-success">{{ point.correction }}</span>
           </div>
           <div class="trash-item-meta">
             <span>刪除時間：{{ point.deleted_time_display }}</span>
@@ -305,7 +305,7 @@
               {{ point.days_until_permanent }} 天後永久刪除
             </span>
             {% else %}
-            <span class="warning-badge" style="background: var(--error-100); color: var(--error-700);">
+            <span class="warning-badge bg-error-subtle color-error">
               即將永久刪除
             </span>
             {% endif %}
@@ -339,17 +339,19 @@
 </div>
 
 <!-- 確認對話框 -->
-<div id="confirm-dialog" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
-  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--surface-base); padding: var(--space-6); border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); max-width: 400px;">
-    <h3 id="confirm-title" style="margin: 0 0 var(--space-4) 0;"></h3>
-    <p id="confirm-message" style="margin: 0 0 var(--space-6) 0; color: var(--text-secondary);"></p>
-    <div style="display: flex; gap: var(--space-3); justify-content: flex-end;">
-      <button onclick="closeConfirm()" style="padding: var(--space-2) var(--space-4); background: var(--surface-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-md); cursor: pointer;">
-        取消
-      </button>
-      <button id="confirm-button" style="padding: var(--space-2) var(--space-4); background: var(--error-500); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
-        確認
-      </button>
+<div class="modal-overlay" id="confirm-dialog" style="display: none;">
+  <div class="modal" data-size="sm" data-type="confirm">
+    <div class="modal-body">
+      <h3 id="confirm-title" class="modal-title"></h3>
+      <p id="confirm-message" class="modal-message"></p>
+      <div class="modal-footer">
+        <button onclick="closeConfirm()" class="btn" data-variant="secondary">
+          取消
+        </button>
+        <button id="confirm-button" class="btn" data-variant="danger">
+          確認
+        </button>
+      </div>
     </div>
   </div>
 </div>

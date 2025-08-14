@@ -456,6 +456,165 @@
 
 /* ========== Utility Classes ========== */
 
+/* Modal Visibility Utilities */
+.modal-hidden {
+  display: none !important;
+}
+
+.modal-visible {
+  display: flex !important;
+}
+
+/* Modal State Utilities */
+.modal-error {
+  border-left: 4px solid var(--error);
+}
+
+.modal-error .modal-header {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(239, 68, 68, 0.02) 100%);
+  border-bottom-color: rgba(239, 68, 68, 0.1);
+}
+
+.modal-error .modal-title {
+  color: var(--error);
+}
+
+.modal-error .modal-icon {
+  background: var(--red-100);
+  color: var(--error);
+}
+
+.modal-success {
+  border-left: 4px solid var(--success);
+}
+
+.modal-success .modal-header {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(16, 185, 129, 0.02) 100%);
+  border-bottom-color: rgba(16, 185, 129, 0.1);
+}
+
+.modal-success .modal-title {
+  color: var(--success);
+}
+
+.modal-success .modal-icon {
+  background: var(--green-100);
+  color: var(--success);
+}
+
+.modal-warning {
+  border-left: 4px solid var(--warning);
+}
+
+.modal-warning .modal-header {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(245, 158, 11, 0.02) 100%);
+  border-bottom-color: rgba(245, 158, 11, 0.1);
+}
+
+.modal-warning .modal-title {
+  color: var(--warning);
+}
+
+.modal-warning .modal-icon {
+  background: var(--yellow-100);
+  color: var(--warning);
+}
+
+.modal-info {
+  border-left: 4px solid var(--primary);
+}
+
+.modal-info .modal-header {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(59, 130, 246, 0.02) 100%);
+  border-bottom-color: rgba(59, 130, 246, 0.1);
+}
+
+.modal-info .modal-title {
+  color: var(--primary);
+}
+
+.modal-info .modal-icon {
+  background: var(--blue-100);
+  color: var(--primary);
+}
+
+/* Modal Loading State */
+.modal-loading {
+  pointer-events: none;
+}
+
+.modal-loading .modal-body {
+  opacity: 0.6;
+  position: relative;
+}
+
+.modal-loading .modal-body::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 2px solid var(--gray-300);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: modalSpin 1s linear infinite;
+}
+
+@keyframes modalSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal Backdrop Utilities */
+.modal-backdrop-blur {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-backdrop-dark {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal-backdrop-light {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Modal Position Utilities */
+.modal-top {
+  align-items: flex-start;
+  padding-top: var(--space-8);
+}
+
+.modal-bottom {
+  align-items: flex-end;
+  padding-bottom: var(--space-8);
+}
+
+.modal-center {
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Content Utilities */
+.modal-no-padding .modal-body {
+  padding: 0;
+}
+
+.modal-compact .modal-header,
+.modal-compact .modal-body,
+.modal-compact .modal-footer {
+  padding: var(--space-4);
+}
+
+.modal-spacious .modal-header,
+.modal-spacious .modal-body,
+.modal-spacious .modal-footer {
+  padding: var(--space-8);
+}
+
 /* Prevent Body Scroll */
 body.modal-open {
   overflow: hidden;
