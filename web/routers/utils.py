@@ -1,11 +1,13 @@
 """
 Utility routes for the Linker web application.
 """
+
 from fastapi import APIRouter
 
 from web.dependencies import STATIC_DIR, TEMPLATES_DIR
 
 router = APIRouter()
+
 
 @router.get("/healthz")
 def healthz():

@@ -38,13 +38,14 @@ os.environ["LOG_TO_CONSOLE"] = str(LOG_TO_CONSOLE).lower()
 os.environ["LOG_TO_FILE"] = str(LOG_TO_FILE).lower()
 os.environ["LOG_FORMAT"] = LOG_FORMAT
 
+
 def get_module_logger(module_name: str) -> Logger:
     """
     獲取模組專用的 logger
-    
+
     Args:
         module_name: 模組名稱，建議使用 __name__
-        
+
     Returns:
         配置好的 Logger 實例
     """
@@ -60,26 +61,24 @@ def get_module_logger(module_name: str) -> Logger:
     # 不需要重複設置環境變數
     return get_logger(name=module_name)
 
+
 # 不再預定義 logger 實例，避免重複初始化
 # 每個模組應該在自己的代碼中調用 get_module_logger(__name__)
 
 # 日誌級別映射（用於動態調整）
-LOG_LEVELS = {
-    "DEBUG": 10,
-    "INFO": 20,
-    "WARNING": 30,
-    "ERROR": 40,
-    "CRITICAL": 50
-}
+LOG_LEVELS = {"DEBUG": 10, "INFO": 20, "WARNING": 30, "ERROR": 40, "CRITICAL": 50}
+
 
 def set_log_level(level: str):
     """動態設置日誌級別"""
     import logging
+
     level = level.upper()
     if level in LOG_LEVELS:
         logging.getLogger().setLevel(LOG_LEVELS[level])
         return True
     return False
+
 
 # 導出
 __all__ = [
@@ -88,5 +87,5 @@ __all__ = [
     "IS_PRODUCTION",
     "LOG_LEVEL",
     "LOG_DIR",
-    "LOG_FORMAT"
+    "LOG_FORMAT",
 ]

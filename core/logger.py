@@ -47,7 +47,10 @@ class JsonFormatter(logging.Formatter):
 
     def _sanitize(self, data):
         if isinstance(data, dict):
-            return {k: self._sanitize(self._mask_value(k, v) if isinstance(v, str) else v) for k, v in data.items()}
+            return {
+                k: self._sanitize(self._mask_value(k, v) if isinstance(v, str) else v)
+                for k, v in data.items()
+            }
         if isinstance(data, list):
             return [self._sanitize(v) for v in data]
         return data
@@ -131,6 +134,7 @@ class Logger:
     def _setup_file_handler(self, json_format: bool = False):
         """設置文件處理器"""
         import os
+
         # 創建日誌目錄
         self.log_dir.mkdir(exist_ok=True)
 
@@ -141,7 +145,10 @@ class Logger:
         rotate_daily = os.getenv("LOG_ROTATE_DAILY", "false").lower() == "true"
         if rotate_daily:
             file_handler = logging.handlers.TimedRotatingFileHandler(
-                log_file, when="midnight", backupCount=int(os.getenv("LOG_BACKUP_COUNT", "7")), encoding="utf-8"
+                log_file,
+                when="midnight",
+                backupCount=int(os.getenv("LOG_BACKUP_COUNT", "7")),
+                encoding="utf-8",
             )
         else:
             max_bytes = int(os.getenv("LOG_MAX_BYTES", str(10 * 1024 * 1024)))  # 10MB

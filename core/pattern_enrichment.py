@@ -10,7 +10,7 @@ import time
 from collections import deque
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from core.ai_service import AIService
 from core.log_config import get_module_logger
@@ -41,55 +41,53 @@ class RateLimiter:
 class ProgressTracker:
     """進度追蹤器，支援斷點續傳"""
 
-    def __init__(self, checkpoint_file: str = 'data/enrichment_progress.json'):
+    def __init__(self, checkpoint_file: str = "data/enrichment_progress.json"):
         self.checkpoint_file = Path(checkpoint_file)
         self.progress = self.load_progress()
 
-    def load_progress(self) -> Dict:
+    def load_progress(self) -> dict:
         """載入進度檔案"""
         if self.checkpoint_file.exists():
-            with open(self.checkpoint_file, encoding='utf-8') as f:
+            with open(self.checkpoint_file, encoding="utf-8") as f:
                 return json.load(f)
         return {
-            'completed': [],
-            'failed': [],
-            'started_at': datetime.now().isoformat(),
-            'last_updated': None
+            "completed": [],
+            "failed": [],
+            "started_at": datetime.now().isoformat(),
+            "last_updated": None,
         }
 
     def save_progress(self):
         """儲存進度"""
-        self.progress['last_updated'] = datetime.now().isoformat()
-        with open(self.checkpoint_file, 'w', encoding='utf-8') as f:
+        self.progress["last_updated"] = datetime.now().isoformat()
+        with open(self.checkpoint_file, "w", encoding="utf-8") as f:
             json.dump(self.progress, f, ensure_ascii=False, indent=2)
 
     def mark_completed(self, pattern_id: str):
         """標記完成"""
-        if pattern_id not in self.progress['completed']:
-            self.progress['completed'].append(pattern_id)
+        if pattern_id not in self.progress["completed"]:
+            self.progress["completed"].append(pattern_id)
             self.save_progress()
 
     def mark_failed(self, pattern_id: str, error: str):
         """標記失敗"""
-        self.progress['failed'].append({
-            'id': pattern_id,
-            'error': str(error),
-            'timestamp': datetime.now().isoformat()
-        })
+        self.progress["failed"].append(
+            {"id": pattern_id, "error": str(error), "timestamp": datetime.now().isoformat()}
+        )
         self.save_progress()
 
-    def get_remaining(self, all_patterns: List[Dict]) -> List[Dict]:
+    def get_remaining(self, all_patterns: list[dict]) -> list[dict]:
         """獲取剩餘待處理的句型"""
-        completed_ids = set(self.progress['completed'])
-        return [p for p in all_patterns if p.get('id', p.get('pattern')) not in completed_ids]
+        completed_ids = set(self.progress["completed"])
+        return [p for p in all_patterns if p.get("id", p.get("pattern")) not in completed_ids]
 
     def reset(self):
         """重置進度"""
         self.progress = {
-            'completed': [],
-            'failed': [],
-            'started_at': datetime.now().isoformat(),
-            'last_updated': None
+            "completed": [],
+            "failed": [],
+            "started_at": datetime.now().isoformat(),
+            "last_updated": None,
         }
         self.save_progress()
 
@@ -97,16 +95,16 @@ class ProgressTracker:
 class ResponsePostProcessor:
     """LLM 回應後處理器"""
 
-    def clean_response(self, raw_response: str) -> Dict:
+    def clean_response(self, raw_response: str) -> dict:
         """清理和標準化回應"""
         try:
             # 1. 提取 JSON（處理可能的 markdown 包裹）
-            json_match = re.search(r'```json\s*(.*?)\s*```', raw_response, re.DOTALL)
+            json_match = re.search(r"```json\s*(.*?)\s*```", raw_response, re.DOTALL)
             if json_match:
                 json_str = json_match.group(1)
             else:
                 # 嘗試直接尋找 JSON 物件
-                json_match = re.search(r'\{.*\}', raw_response, re.DOTALL)
+                json_match = re.search(r"\{.*\}", raw_response, re.DOTALL)
                 if json_match:
                     json_str = json_match.group()
                 else:
@@ -124,7 +122,6 @@ class ResponsePostProcessor:
             # 5. 補充缺失欄位
             return self.fill_missing_fields(data)
 
-
         except Exception as e:
             logger.error(f"Failed to clean response: {e}")
             logger.debug(f"Raw response: {raw_response[:500]}...")
@@ -133,46 +130,45 @@ class ResponsePostProcessor:
     def fix_json_errors(self, json_str: str) -> str:
         """修復常見的 JSON 格式錯誤"""
         # 移除尾隨逗號
-        json_str = re.sub(r',\s*}', '}', json_str)
-        json_str = re.sub(r',\s*]', ']', json_str)
+        json_str = re.sub(r",\s*}", "}", json_str)
+        json_str = re.sub(r",\s*]", "]", json_str)
 
         # 確保布林值小寫
-        json_str = json_str.replace('True', 'true')
-        json_str = json_str.replace('False', 'false')
-        return json_str.replace('None', 'null')
+        json_str = json_str.replace("True", "true")
+        json_str = json_str.replace("False", "false")
+        return json_str.replace("None", "null")
 
-
-    def standardize_fields(self, data: Dict) -> Dict:
+    def standardize_fields(self, data: dict) -> dict:
         """標準化欄位名稱和格式"""
         # 確保必要欄位存在
-        if 'examples' not in data:
-            data['examples'] = []
+        if "examples" not in data:
+            data["examples"] = []
 
         # 確保例句格式正確
-        for i, example in enumerate(data.get('examples', [])):
+        for _i, example in enumerate(data.get("examples", [])):
             if isinstance(example, dict):
                 # 確保有 zh 和 en 欄位
-                if 'zh' not in example and 'chinese' in example:
-                    example['zh'] = example.pop('chinese')
-                if 'en' not in example and 'english' in example:
-                    example['en'] = example.pop('english')
+                if "zh" not in example and "chinese" in example:
+                    example["zh"] = example.pop("chinese")
+                if "en" not in example and "english" in example:
+                    example["en"] = example.pop("english")
 
         return data
 
-    def fill_missing_fields(self, data: Dict) -> Dict:
+    def fill_missing_fields(self, data: dict) -> dict:
         """補充缺失的欄位"""
         defaults = {
-            'difficulty': 3,
-            'frequency': 'medium',
-            'structure_analysis': {},
-            'usage_context': {},
-            'variations': {},
-            'collocations': {},
-            'comparison': {},
-            'common_errors': [],
-            'advanced_notes': {},
-            'practice_sentences': [],
-            'corpus_frequency': {}
+            "difficulty": 3,
+            "frequency": "medium",
+            "structure_analysis": {},
+            "usage_context": {},
+            "variations": {},
+            "collocations": {},
+            "comparison": {},
+            "common_errors": [],
+            "advanced_notes": {},
+            "practice_sentences": [],
+            "corpus_frequency": {},
         }
 
         for key, default_value in defaults.items():
@@ -195,27 +191,27 @@ class PatternEnrichmentService:
         self.progress_tracker = ProgressTracker()
         self.post_processor = ResponsePostProcessor()
 
-    def get_enrichment_prompt(self, pattern: Dict) -> str:
+    def get_enrichment_prompt(self, pattern: dict) -> str:
         """生成擴充 prompt"""
         return f"""你是一位經驗豐富的英文老師，擅長有系統地教授句型。請為以下句型生成完整但井然有序的學習內容。
 
 【輸入句型】
-Pattern: {pattern.get('pattern', '')}
-Category: {pattern.get('category', '')}
-Basic Explanation: {pattern.get('explanation', '')}
-Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '')}
+Pattern: {pattern.get("pattern", "")}
+Category: {pattern.get("category", "")}
+Basic Explanation: {pattern.get("explanation", "")}
+Original Example: {pattern.get("example_zh", "")} / {pattern.get("example_en", "")}
 
 【輸出要求】
 請生成符合以下規範的JSON資料：
 
 {{
-  "id": "{pattern.get('id', pattern.get('pattern', ''))}",
-  "pattern": "{pattern.get('pattern', '')}",
+  "id": "{pattern.get("id", pattern.get("pattern", ""))}",
+  "pattern": "{pattern.get("pattern", "")}",
   "formula": "句型公式（清楚標示各成分，如：It + be動詞 + 強調部分 + that/who + 句子剩餘部分）",
-  "category": "{pattern.get('category', '')}",
+  "category": "{pattern.get("category", "")}",
   "core_concept": "這個句型的核心概念（一句話）",
   "when_to_use": "什麼時候用這個句型（具體情境）",
-  
+
   "examples": [
     {{
       "zh": "中文句子",
@@ -225,13 +221,13 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
     }}
     // 提供6-8個例句，從簡單到複雜，涵蓋不同用法
   ],
-  
+
   "key_points": [
     "關鍵重點1（如：It 永遠用單數動詞）",
     "關鍵重點2（如：強調人物時用 who）",
     "關鍵重點3（如：that 可以省略的情況）"
   ],
-  
+
   "common_mistakes": [
     {{
       "wrong": "錯誤寫法",
@@ -240,7 +236,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
     }}
     // 提供2-3個最常見錯誤
   ],
-  
+
   "variations": {{
     "present": "現在式例句",
     "past": "過去式例句",
@@ -248,7 +244,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
     "negative": "否定句例句",
     "question": "疑問句例句"
   }},
-  
+
   "practice_sentences": [
     "練習句1（基礎）",
     "練習句2（中等）",
@@ -267,10 +263,9 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
 
 請直接返回JSON資料。"""
 
-
-    async def enrich_single_pattern(self, pattern: Dict) -> Dict:
+    async def enrich_single_pattern(self, pattern: dict) -> dict:
         """擴充單個句型（含重試機制）"""
-        pattern_id = pattern.get('id', pattern.get('pattern', 'unknown'))
+        pattern_id = pattern.get("id", pattern.get("pattern", "unknown"))
 
         for attempt in range(self.retry_limit):
             try:
@@ -281,11 +276,11 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
                 prompt = self.get_enrichment_prompt(pattern)
 
                 # 調用 AI
-                logger.info(f"Enriching pattern: {pattern_id} (attempt {attempt + 1}/{self.retry_limit})")
+                logger.info(
+                    f"Enriching pattern: {pattern_id} (attempt {attempt + 1}/{self.retry_limit})"
+                )
                 response = await self.ai_service.generate_async(
-                    prompt=prompt,
-                    temperature=self.temperature,
-                    max_tokens=3000
+                    prompt=prompt, temperature=self.temperature, max_tokens=3000
                 )
 
                 # 處理回應
@@ -295,27 +290,27 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
                 validated = self.validate_response(enriched_data)
                 if validated:
                     # 合併原始資料
-                    validated.update({
-                        'original_pattern': pattern.get('pattern'),
-                        'original_explanation': pattern.get('explanation'),
-                        'enriched_at': datetime.now().isoformat(),
-                        'enrichment_model': 'gemini-2.5-pro'
-                    })
+                    validated.update(
+                        {
+                            "original_pattern": pattern.get("pattern"),
+                            "original_explanation": pattern.get("explanation"),
+                            "enriched_at": datetime.now().isoformat(),
+                            "enrichment_model": "gemini-2.5-pro",
+                        }
+                    )
                     return validated
 
             except Exception as e:
                 logger.error(f"Attempt {attempt + 1} failed for {pattern_id}: {e}")
                 if attempt == self.retry_limit - 1:
                     raise
-                await asyncio.sleep(2 ** attempt)  # 指數退避
+                await asyncio.sleep(2**attempt)  # 指數退避
 
         raise Exception(f"Failed to enrich pattern {pattern_id} after {self.retry_limit} attempts")
 
-    def validate_response(self, response: Dict) -> Optional[Dict]:
+    def validate_response(self, response: dict) -> Optional[dict]:
         """驗證 LLM 回應結構"""
-        required_fields = [
-            'pattern', 'formula', 'examples'
-        ]
+        required_fields = ["pattern", "formula", "examples"]
 
         # 驗證必要欄位
         for field in required_fields:
@@ -324,16 +319,16 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
                 return None
 
         # 驗證例句數量
-        if len(response.get('examples', [])) < 3:
+        if len(response.get("examples", [])) < 3:
             logger.warning("Insufficient examples (minimum 3 required)")
             return None
 
         # 驗證例句格式
-        for example in response.get('examples', []):
+        for example in response.get("examples", []):
             if not isinstance(example, dict):
                 logger.warning("Invalid example format")
                 return None
-            if 'zh' not in example or 'en' not in example:
+            if "zh" not in example or "en" not in example:
                 logger.warning("Example missing zh or en field")
                 return None
 
@@ -346,7 +341,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
 
         return cleaned_response
 
-    async def enrich_patterns_batch(self, patterns: List[Dict]) -> List[Dict]:
+    async def enrich_patterns_batch(self, patterns: list[dict]) -> list[dict]:
         """批量擴充句型"""
         enriched_patterns = []
 
@@ -359,11 +354,13 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
         logger.info(f"Processing {len(remaining_patterns)} remaining patterns...")
 
         # 分批處理
-        batches = [remaining_patterns[i:i+self.batch_size]
-                  for i in range(0, len(remaining_patterns), self.batch_size)]
+        batches = [
+            remaining_patterns[i : i + self.batch_size]
+            for i in range(0, len(remaining_patterns), self.batch_size)
+        ]
 
         for batch_idx, batch in enumerate(batches):
-            logger.info(f"Processing batch {batch_idx+1}/{len(batches)}")
+            logger.info(f"Processing batch {batch_idx + 1}/{len(batches)}")
 
             # 並行處理批次內的句型
             tasks = []
@@ -375,7 +372,7 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
 
             # 處理結果與錯誤
             for pattern, result in zip(batch, results):
-                pattern_id = pattern.get('id', pattern.get('pattern', 'unknown'))
+                pattern_id = pattern.get("id", pattern.get("pattern", "unknown"))
 
                 if isinstance(result, Exception):
                     logger.error(f"Failed to enrich {pattern_id}: {result}")
@@ -394,38 +391,41 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
 
         return enriched_patterns
 
-    def create_fallback_enrichment(self, pattern: Dict) -> Dict:
+    def create_fallback_enrichment(self, pattern: dict) -> dict:
         """創建後備擴充資料（當 AI 處理失敗時）"""
         return {
-            'id': pattern.get('id', pattern.get('pattern', '')),
-            'pattern': pattern.get('pattern', ''),
-            'formula': pattern.get('pattern', ''),
-            'category': pattern.get('category', ''),
-            'difficulty': 3,
-            'frequency': 'medium',
-            'explanation': pattern.get('explanation', ''),
-            'examples': [
+            "id": pattern.get("id", pattern.get("pattern", "")),
+            "pattern": pattern.get("pattern", ""),
+            "formula": pattern.get("pattern", ""),
+            "category": pattern.get("category", ""),
+            "difficulty": 3,
+            "frequency": "medium",
+            "explanation": pattern.get("explanation", ""),
+            "examples": [
                 {
-                    'zh': pattern.get('example_zh', ''),
-                    'en': pattern.get('example_en', ''),
-                    'level': 'intermediate',
-                    'focus': 'basic usage'
+                    "zh": pattern.get("example_zh", ""),
+                    "en": pattern.get("example_en", ""),
+                    "level": "intermediate",
+                    "focus": "basic usage",
                 }
             ],
-            'enrichment_status': 'fallback',
-            'original_data': pattern
+            "enrichment_status": "fallback",
+            "original_data": pattern,
         }
 
-    async def run_enrichment(self, input_file: str = 'data/grammar_patterns.json',
-                           output_file: str = 'data/grammar_patterns_v2.json'):
+    async def run_enrichment(
+        self,
+        input_file: str = "data/grammar_patterns.json",
+        output_file: str = "data/grammar_patterns_v2.json",
+    ):
         """執行完整的擴充流程"""
         try:
             # 載入原始資料
             logger.info(f"Loading patterns from {input_file}")
-            with open(input_file, encoding='utf-8') as f:
+            with open(input_file, encoding="utf-8") as f:
                 data = json.load(f)
 
-            patterns = data if isinstance(data, list) else data.get('patterns', [])
+            patterns = data if isinstance(data, list) else data.get("patterns", [])
             logger.info(f"Loaded {len(patterns)} patterns")
 
             # 執行批量擴充
@@ -433,21 +433,21 @@ Original Example: {pattern.get('example_zh', '')} / {pattern.get('example_en', '
 
             # 準備輸出資料
             output_data = {
-                'version': '2.0',
-                'generated_at': datetime.now().isoformat(),
-                'total_patterns': len(enriched_patterns),
-                'enrichment_summary': {
-                    'completed': len(self.progress_tracker.progress['completed']),
-                    'failed': len(self.progress_tracker.progress['failed']),
-                    'model': 'gemini-2.5-pro',
-                    'temperature': self.temperature
+                "version": "2.0",
+                "generated_at": datetime.now().isoformat(),
+                "total_patterns": len(enriched_patterns),
+                "enrichment_summary": {
+                    "completed": len(self.progress_tracker.progress["completed"]),
+                    "failed": len(self.progress_tracker.progress["failed"]),
+                    "model": "gemini-2.5-pro",
+                    "temperature": self.temperature,
                 },
-                'patterns': enriched_patterns
+                "patterns": enriched_patterns,
             }
 
             # 儲存結果
             logger.info(f"Saving enriched data to {output_file}")
-            with open(output_file, 'w', encoding='utf-8') as f:
+            with open(output_file, "w", encoding="utf-8") as f:
                 json.dump(output_data, f, ensure_ascii=False, indent=2)
 
             logger.info("Enrichment completed successfully!")

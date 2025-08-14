@@ -6,98 +6,100 @@
 import os
 import sys
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional
 
 
 @dataclass
 class Colors:
     """ANSI 顏色碼"""
+
     # 基本顏色
-    BLACK = '\033[30m'
-    RED = '\033[31m'
-    GREEN = '\033[32m'
-    YELLOW = '\033[33m'
-    BLUE = '\033[34m'
-    MAGENTA = '\033[35m'
-    CYAN = '\033[36m'
-    WHITE = '\033[37m'
+    BLACK = "\033[30m"
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    MAGENTA = "\033[35m"
+    CYAN = "\033[36m"
+    WHITE = "\033[37m"
 
     # 亮色版本
-    BRIGHT_BLACK = '\033[90m'
-    BRIGHT_RED = '\033[91m'
-    BRIGHT_GREEN = '\033[92m'
-    BRIGHT_YELLOW = '\033[93m'
-    BRIGHT_BLUE = '\033[94m'
-    BRIGHT_MAGENTA = '\033[95m'
-    BRIGHT_CYAN = '\033[96m'
-    BRIGHT_WHITE = '\033[97m'
+    BRIGHT_BLACK = "\033[90m"
+    BRIGHT_RED = "\033[91m"
+    BRIGHT_GREEN = "\033[92m"
+    BRIGHT_YELLOW = "\033[93m"
+    BRIGHT_BLUE = "\033[94m"
+    BRIGHT_MAGENTA = "\033[95m"
+    BRIGHT_CYAN = "\033[96m"
+    BRIGHT_WHITE = "\033[97m"
 
     # 背景色
-    BG_BLACK = '\033[40m'
-    BG_RED = '\033[41m'
-    BG_GREEN = '\033[42m'
-    BG_YELLOW = '\033[43m'
-    BG_BLUE = '\033[44m'
-    BG_MAGENTA = '\033[45m'
-    BG_CYAN = '\033[46m'
-    BG_WHITE = '\033[47m'
+    BG_BLACK = "\033[40m"
+    BG_RED = "\033[41m"
+    BG_GREEN = "\033[42m"
+    BG_YELLOW = "\033[43m"
+    BG_BLUE = "\033[44m"
+    BG_MAGENTA = "\033[45m"
+    BG_CYAN = "\033[46m"
+    BG_WHITE = "\033[47m"
 
     # 樣式
-    BOLD = '\033[1m'
-    DIM = '\033[2m'
-    ITALIC = '\033[3m'
-    UNDERLINE = '\033[4m'
-    BLINK = '\033[5m'
-    REVERSE = '\033[7m'
-    HIDDEN = '\033[8m'
-    STRIKETHROUGH = '\033[9m'
+    BOLD = "\033[1m"
+    DIM = "\033[2m"
+    ITALIC = "\033[3m"
+    UNDERLINE = "\033[4m"
+    BLINK = "\033[5m"
+    REVERSE = "\033[7m"
+    HIDDEN = "\033[8m"
+    STRIKETHROUGH = "\033[9m"
 
     # 重置
-    RESET = '\033[0m'
+    RESET = "\033[0m"
 
     @classmethod
     def disable(cls):
         """停用顏色（用於不支援的終端）"""
         for attr in dir(cls):
-            if not attr.startswith('_') and attr.isupper():
-                setattr(cls, attr, '')
+            if not attr.startswith("_") and attr.isupper():
+                setattr(cls, attr, "")
 
 
 @dataclass
 class Symbols:
     """Unicode 符號"""
+
     # 狀態符號
-    CHECK = '✓'
-    CROSS = '✗'
-    WARNING = '⚠'
-    INFO = 'ℹ'
-    STAR = '★'
-    ARROW = '→'
-    BULLET = '•'
+    CHECK = "✓"
+    CROSS = "✗"
+    WARNING = "⚠"
+    INFO = "ℹ"
+    STAR = "★"
+    ARROW = "→"
+    BULLET = "•"
 
     # 進度符號
-    PROGRESS_EMPTY = '○'
-    PROGRESS_FULL = '●'
+    PROGRESS_EMPTY = "○"
+    PROGRESS_FULL = "●"
 
     # 方框符號
-    BOX_TOP_LEFT = '┌'
-    BOX_TOP_RIGHT = '┐'
-    BOX_BOTTOM_LEFT = '└'
-    BOX_BOTTOM_RIGHT = '┘'
-    BOX_HORIZONTAL = '─'
-    BOX_VERTICAL = '│'
-    BOX_CROSS = '┼'
-    BOX_T_DOWN = '┬'
-    BOX_T_UP = '┴'
-    BOX_T_RIGHT = '├'
-    BOX_T_LEFT = '┤'
+    BOX_TOP_LEFT = "┌"
+    BOX_TOP_RIGHT = "┐"
+    BOX_BOTTOM_LEFT = "└"
+    BOX_BOTTOM_RIGHT = "┘"
+    BOX_HORIZONTAL = "─"
+    BOX_VERTICAL = "│"
+    BOX_CROSS = "┼"
+    BOX_T_DOWN = "┬"
+    BOX_T_UP = "┴"
+    BOX_T_RIGHT = "├"
+    BOX_T_LEFT = "┤"
 
     # 分隔線
-    LINE_THIN = '─' * 50
-    LINE_THICK = '═' * 50
-    LINE_DOUBLE = '━' * 50
-    LINE_DOTTED = '┈' * 50
-    LINE_DASHED = '┅' * 50
+    LINE_THIN = "─" * 50
+    LINE_THICK = "═" * 50
+    LINE_DOUBLE = "━" * 50
+    LINE_DOTTED = "┈" * 50
+    LINE_DASHED = "┅" * 50
 
 
 class Display:
@@ -106,7 +108,7 @@ class Display:
     def __init__(self, use_color: bool = True, width: int = 70):
         """
         初始化顯示管理器
-        
+
         Args:
             use_color: 是否使用顏色
             width: 顯示寬度
@@ -121,14 +123,14 @@ class Display:
     def _supports_color(self) -> bool:
         """檢查終端是否支援顏色"""
         # Windows 需要特殊處理
-        if sys.platform == 'win32':
-            return os.environ.get('ANSICON') is not None
+        if sys.platform == "win32":
+            return os.environ.get("ANSICON") is not None
         # Unix-like 系統
-        return hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
+        return hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
 
     def clear_screen(self):
         """清空螢幕"""
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system("cls" if os.name == "nt" else "clear")
 
     def header(self, title: str, subtitle: Optional[str] = None):
         """顯示標題頭"""
@@ -193,7 +195,7 @@ class Display:
         else:
             print(f"  {bar} {percentage_str}")
 
-    def box(self, title: str, content: List[str], color: Optional[str] = None):
+    def box(self, title: str, content: list[str], color: Optional[str] = None):
         """顯示方框內容"""
         box_color = getattr(self.colors, color.upper()) if color else self.colors.DIM
 
@@ -201,24 +203,34 @@ class Display:
         max_width = max(len(title), *(len(line) for line in content)) + 4
 
         # 上邊框
-        print(f"{box_color}{self.symbols.BOX_TOP_LEFT}{'─' * (max_width - 2)}{self.symbols.BOX_TOP_RIGHT}{self.colors.RESET}")
+        print(
+            f"{box_color}{self.symbols.BOX_TOP_LEFT}{'─' * (max_width - 2)}{self.symbols.BOX_TOP_RIGHT}{self.colors.RESET}"
+        )
 
         # 標題
         padding = max_width - len(title) - 4
-        print(f"{box_color}{self.symbols.BOX_VERTICAL}{self.colors.RESET} {self.colors.BOLD}{title}{self.colors.RESET}{' ' * padding} {box_color}{self.symbols.BOX_VERTICAL}{self.colors.RESET}")
+        print(
+            f"{box_color}{self.symbols.BOX_VERTICAL}{self.colors.RESET} {self.colors.BOLD}{title}{self.colors.RESET}{' ' * padding} {box_color}{self.symbols.BOX_VERTICAL}{self.colors.RESET}"
+        )
 
         # 分隔線
-        print(f"{box_color}{self.symbols.BOX_T_RIGHT}{'─' * (max_width - 2)}{self.symbols.BOX_T_LEFT}{self.colors.RESET}")
+        print(
+            f"{box_color}{self.symbols.BOX_T_RIGHT}{'─' * (max_width - 2)}{self.symbols.BOX_T_LEFT}{self.colors.RESET}"
+        )
 
         # 內容
         for line in content:
             padding = max_width - len(line) - 4
-            print(f"{box_color}{self.symbols.BOX_VERTICAL}{self.colors.RESET} {line}{' ' * padding} {box_color}{self.symbols.BOX_VERTICAL}{self.colors.RESET}")
+            print(
+                f"{box_color}{self.symbols.BOX_VERTICAL}{self.colors.RESET} {line}{' ' * padding} {box_color}{self.symbols.BOX_VERTICAL}{self.colors.RESET}"
+            )
 
         # 下邊框
-        print(f"{box_color}{self.symbols.BOX_BOTTOM_LEFT}{'─' * (max_width - 2)}{self.symbols.BOX_BOTTOM_RIGHT}{self.colors.RESET}")
+        print(
+            f"{box_color}{self.symbols.BOX_BOTTOM_LEFT}{'─' * (max_width - 2)}{self.symbols.BOX_BOTTOM_RIGHT}{self.colors.RESET}"
+        )
 
-    def table(self, headers: List[str], rows: List[List[str]], colors: Optional[List[str]] = None):
+    def table(self, headers: list[str], rows: list[list[str]], colors: Optional[list[str]] = None):
         """顯示表格"""
         # 計算每列的最大寬度
         col_widths = []
@@ -253,10 +265,12 @@ class Display:
         """顯示可折疊內容（模擬）"""
         if expanded:
             print(f"{self.colors.BLUE}▼ {title}{self.colors.RESET}")
-            for line in content.split('\n'):
+            for line in content.split("\n"):
                 print(f"  {self.colors.DIM}{line}{self.colors.RESET}")
         else:
-            print(f"{self.colors.BLUE}▶ {title}{self.colors.RESET} {self.colors.DIM}(詳細內容已折疊){self.colors.RESET}")
+            print(
+                f"{self.colors.BLUE}▶ {title}{self.colors.RESET} {self.colors.DIM}(詳細內容已折疊){self.colors.RESET}"
+            )
 
     def separator(self, style: str = "thin"):
         """顯示分隔線"""
@@ -265,7 +279,7 @@ class Display:
             "thick": self.symbols.LINE_THICK,
             "double": self.symbols.LINE_DOUBLE,
             "dotted": self.symbols.LINE_DOTTED,
-            "dashed": self.symbols.LINE_DASHED
+            "dashed": self.symbols.LINE_DASHED,
         }
         line = styles.get(style, self.symbols.LINE_THIN)
         print(f"{self.colors.DIM}{line}{self.colors.RESET}")

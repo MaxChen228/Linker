@@ -1,8 +1,18 @@
 """
 Configuration for deployment environments
 """
+
 import os
 from pathlib import Path
+
+# 載入 .env 文件
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ImportError:
+    # 如果沒有 python-dotenv，忽略
+    pass
 
 
 def get_data_dir() -> Path:
@@ -23,8 +33,16 @@ def get_data_dir() -> Path:
     # Default to local data directory
     return Path(__file__).resolve().parent.parent / "data"
 
+
 # Global data directory
 DATA_DIR = get_data_dir()
+
+# Database configuration
+USE_DATABASE = os.getenv("USE_DATABASE", "false").lower() == "true"
+ENABLE_DUAL_WRITE = os.getenv("ENABLE_DUAL_WRITE", "false").lower() == "true"
+
+# Database URL
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/linker")
 
 # Only create directory if we have permission
 try:

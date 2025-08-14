@@ -1,6 +1,7 @@
 """
 Knowledge management routes for the Linker web application.
 """
+
 from collections import defaultdict
 from datetime import datetime
 from typing import Optional
@@ -13,8 +14,11 @@ from web.dependencies import get_knowledge_manager, get_templates
 
 router = APIRouter()
 
+
 @router.get("/knowledge", response_class=HTMLResponse)
-def knowledge_points(request: Request, category: Optional[str] = None, mastery: Optional[str] = None):
+def knowledge_points(
+    request: Request, category: Optional[str] = None, mastery: Optional[str] = None
+):
     """知識點瀏覽頁面"""
     templates = get_templates()
     knowledge = get_knowledge_manager()
@@ -86,7 +90,7 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
         "系統性錯誤": len(systematic_groups),  # 群組數量，不是點數量
         "單一性錯誤": len(isolated_points),
         "可以更好": len(enhancement_points),
-        "其他錯誤": len(other_points)
+        "其他錯誤": len(other_points),
     }
 
     # 獲取所有分類
@@ -120,29 +124,31 @@ def knowledge_points(request: Request, category: Optional[str] = None, mastery: 
         },
     )
 
+
 @router.get("/knowledge/trash", response_class=HTMLResponse)
 def knowledge_trash(request: Request):
     """知識點回收站頁面"""
     templates = get_templates()
     knowledge = get_knowledge_manager()
-    
+
     # 獲取所有已刪除的知識點
     deleted_points = knowledge.get_deleted_points()
-    
+
     # 按刪除時間排序（最新的在前）
     deleted_points.sort(key=lambda x: x.deleted_at, reverse=True)
-    
+
     # 計算刪除了多久
     from datetime import datetime
+
     now = datetime.now()
-    
+
     for point in deleted_points:
         if point.deleted_at:
             try:
                 deleted_date = datetime.fromisoformat(point.deleted_at.replace("Z", "+00:00"))
                 deleted_date = deleted_date.replace(tzinfo=None)
                 days_ago = (now - deleted_date).days
-                
+
                 if days_ago == 0:
                     point.deleted_time_display = "今天"
                 elif days_ago == 1:
@@ -154,14 +160,14 @@ def knowledge_trash(request: Request):
                     point.deleted_time_display = f"{weeks_ago} 週前"
                 else:
                     point.deleted_time_display = f"{days_ago} 天前"
-                    
+
                 # 計算剩餘天數
                 point.days_until_permanent = 30 - days_ago
-                
+
             except (ValueError, AttributeError):
                 point.deleted_time_display = "未知"
                 point.days_until_permanent = 30
-    
+
     return templates.TemplateResponse(
         "knowledge-trash.html",
         {
@@ -171,6 +177,7 @@ def knowledge_trash(request: Request):
             "active": "knowledge",
         },
     )
+
 
 @router.get("/knowledge/{point_id}", response_class=HTMLResponse)
 def knowledge_detail(request: Request, point_id: str):
@@ -188,13 +195,17 @@ def knowledge_detail(request: Request, point_id: str):
     # 獲取相關的錯誤記錄（最近的10個）
     related_mistakes = []
     all_mistakes = knowledge.get_all_mistakes()
-    for mistake in all_mistakes[-50:] if len(all_mistakes) > 50 else all_mistakes:  # 檢查最近50個錯誤
+    for mistake in (
+        all_mistakes[-50:] if len(all_mistakes) > 50 else all_mistakes
+    ):  # 檢查最近50個錯誤
         if mistake.get("knowledge_points"):
             for kp in mistake["knowledge_points"]:
                 if kp.get("id") == point_id:
                     # 添加必要的字段以兼容模板
                     if "feedback" in mistake:
-                        mistake["correct_answer"] = mistake["feedback"].get("overall_suggestion", "")
+                        mistake["correct_answer"] = mistake["feedback"].get(
+                            "overall_suggestion", ""
+                        )
                         mistake["explanation"] = mistake["feedback"].get("detailed_feedback", "")
                     related_mistakes.append(mistake)
                     break
@@ -228,7 +239,7 @@ def knowledge_detail(request: Request, point_id: str):
     # 從 original_error 中取得完整的句子
     full_user_answer = ""
     full_correct_answer = ""
-    if hasattr(point, 'original_error') and point.original_error:
+    if hasattr(point, "original_error") and point.original_error:
         full_user_answer = point.original_error.user_answer
         full_correct_answer = point.original_error.correct_answer
 
@@ -236,10 +247,7 @@ def knowledge_detail(request: Request, point_id: str):
         "id": point.id,
         "title": point.key_point,  # 保留 key_point 作為描述性標題
         "key_point": point.key_point,
-        "category": {
-            "value": point.category.value,
-            "chinese_name": point.category.to_chinese()
-        },
+        "category": {"value": point.category.value, "chinese_name": point.category.to_chinese()},
         "subtype": point.subtype,
         "description": point.explanation,  # 使用 explanation 作為 description
         "original_phrase": point.original_phrase,  # 錯誤片段

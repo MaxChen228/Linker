@@ -7,7 +7,7 @@ import contextlib
 import json
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from core.log_config import get_module_logger
 
@@ -65,7 +65,9 @@ class AIService:
             self.logger.error(f"Gemini 初始化失敗: {e}")
             raise
 
-    def _call_model(self, model, system_prompt: str, user_prompt: str, use_cache: bool = True) -> dict[str, Any]:
+    def _call_model(
+        self, model, system_prompt: str, user_prompt: str, use_cache: bool = True
+    ) -> dict[str, Any]:
         """調用指定模型的 LLM API"""
         start_time = time.time()
 
@@ -75,10 +77,16 @@ class AIService:
 
             # 取得模型配置
             model_config = {
-                "model_name": model.model_name if hasattr(model, 'model_name') else str(model),
-                "temperature": model.generation_config.temperature if hasattr(model, 'generation_config') else None,
-                "top_p": model.generation_config.top_p if hasattr(model, 'generation_config') else None,
-                "top_k": model.generation_config.top_k if hasattr(model, 'generation_config') else None,
+                "model_name": model.model_name if hasattr(model, "model_name") else str(model),
+                "temperature": model.generation_config.temperature
+                if hasattr(model, "generation_config")
+                else None,
+                "top_p": model.generation_config.top_p
+                if hasattr(model, "generation_config")
+                else None,
+                "top_k": model.generation_config.top_k
+                if hasattr(model, "generation_config")
+                else None,
             }
 
             # 調用 API
@@ -99,14 +107,14 @@ class AIService:
                     "system_prompt": system_prompt,
                     "user_prompt": user_prompt,
                     "full_prompt": full_prompt,
-                    "prompt_length": len(full_prompt)
+                    "prompt_length": len(full_prompt),
                 },
                 "output": {
                     "raw_response": response.text,
                     "parsed_result": result,
-                    "response_length": len(response.text)
+                    "response_length": len(response.text),
                 },
-                "status": "success"
+                "status": "success",
             }
 
             # 完全禁用快取儲存
@@ -118,7 +126,9 @@ class AIService:
                     api_name="gemini",
                     method="generate_content",
                     params={"prompt_preview": full_prompt[:200]},
-                    response={k: result.get(k) for k in list(result.keys())[:3]} if isinstance(result, dict) else None,
+                    response={k: result.get(k) for k in list(result.keys())[:3]}
+                    if isinstance(result, dict)
+                    else None,
                 )
 
             return result
@@ -128,18 +138,15 @@ class AIService:
             self.last_llm_interaction = {
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "duration_ms": int((time.time() - start_time) * 1000),
-                "model_config": model_config if 'model_config' in locals() else {},
+                "model_config": model_config if "model_config" in locals() else {},
                 "input": {
                     "system_prompt": system_prompt,
                     "user_prompt": user_prompt,
                     "full_prompt": f"{system_prompt}\n\n{user_prompt}",
-                    "prompt_length": len(f"{system_prompt}\n\n{user_prompt}")
+                    "prompt_length": len(f"{system_prompt}\n\n{user_prompt}"),
                 },
-                "output": {
-                    "error": str(e),
-                    "error_type": type(e).__name__
-                },
-                "status": "error"
+                "output": {"error": str(e), "error_type": type(e).__name__},
+                "status": "error",
             }
 
             self.logger.log_api_call(
@@ -169,7 +176,7 @@ class AIService:
             "is_generally_correct": False,
             "overall_suggestion": "AI 服務暫時不可用，請稍後再試",
             "error_analysis": [],
-            "service_error": True  # 新增標記，方便後端識別
+            "service_error": True,  # 新增標記，方便後端識別
         }
 
     async def generate_async(
@@ -177,7 +184,7 @@ class AIService:
         prompt: str,
         temperature: float = 0.7,
         max_tokens: int = 3000,
-        model: Optional[Any] = None
+        model: Optional[Any] = None,
     ) -> str:
         """異步生成內容"""
         # 使用 asyncio 在後台執行同步方法
@@ -195,6 +202,7 @@ class AIService:
             try:
                 # 更新生成配置
                 import google.generativeai as genai
+
                 model.generation_config = genai.GenerationConfig(
                     response_mime_type="application/json",
                     temperature=temperature,
@@ -218,41 +226,41 @@ class AIService:
         """批改翻譯 - 使用新的分類描述"""
         system_prompt = f"""
         你是一位專業的英文教師，請批改學生的翻譯。
-        
+
         中文原句：{chinese}
         {"提示：" + hint if hint else ""}
-        
+
         請以 JSON 格式回覆，包含以下欄位：
-        
+
         1. is_generally_correct (boolean): 翻譯是否基本正確
-        
+
         2. overall_suggestion (string): 建議的最佳翻譯（完整句子，使用英文）
-        
+
         3. error_analysis (array): 錯誤分析列表，每個錯誤包含：
            - category (string): 錯誤分類代碼，必須是以下其中一種：
              * "systematic" - 系統性錯誤：涉及文法規則，學會規則後可避免同類錯誤（如時態、主謂一致、動詞變化）
              * "isolated" - 單一性錯誤：需要個別記憶的內容（如特定詞彙、搭配詞、介係詞、拼寫）
              * "enhancement" - 可以更好：文法正確但表達可以更自然、更道地
              * "other" - 其他錯誤：不屬於上述類別的錯誤（如漏譯、理解錯誤）
-           
+
            - key_point_summary (string): 錯誤重點的具體描述，格式為「錯誤類型: 具體錯誤內容」
              例如：「單字拼寫錯誤: irrevertable」、「時態錯誤: have → has」、「介系詞搭配: in → on」
              這樣可以區分不同的具體錯誤，避免把不相關的錯誤歸在一起（使用繁體中文）
-           
+
            - original_phrase (string): 學生寫錯的片語或句子部分
-           
+
            - correction (string): 正確的寫法
-           
+
            - explanation (string): 詳細解釋為什麼錯了，以及正確的用法（使用繁體中文）
-           
+
            - severity (string): 嚴重程度，"major"（重要錯誤）或 "minor"（次要問題）
-        
+
         分類原則：
         - 如果錯誤涉及可以通過學習規則解決的文法問題，使用 "systematic"
         - 如果錯誤需要記憶特定用法或單字，使用 "isolated"
         - 如果翻譯正確但可以更自然，使用 "enhancement"（通常是 minor）
         - 其他情況使用 "other"
-        
+
         重要：
         - 請確保 category 欄位完全匹配上述四個代碼之一（systematic, isolated, enhancement, other）
         - 每個錯誤都要有清楚的 explanation
@@ -281,7 +289,7 @@ class AIService:
         self,
         level: int = 1,
         length: str = "short",
-        examples: Optional[List[str]] = None,
+        examples: Optional[list[str]] = None,
         shuffle: bool = False,
     ) -> dict[str, str]:
         """生成練習句子（使用出題模型）
@@ -309,7 +317,7 @@ class AIService:
         你是一位專業的英文出題教師，
         請生成一個{difficulty_map.get(level, difficulty_map[1])}、且{length_hint}的中文句子，
         用於英文翻譯練習。
-        
+
         要求：
         1. 句子要自然、實用、符合日常對話或寫作情境
         2. 長度適中（10-30字）
@@ -317,7 +325,7 @@ class AIService:
         4. 避免過於文言或罕見的表達方式
         5. 請參考以下代表例句風格，但不要重複：
         {examples_text}
-        
+
         請以 JSON 格式回覆：
         {{
             "sentence": "中文句子",
@@ -329,13 +337,16 @@ class AIService:
 
         # 加入變體 nonce，鼓勵模型產出不同結果，避免快取重複
         import time as _t
-        user_prompt = f"請生成一個適合練習的中文句子\n[variant_nonce={int(_t.time()*1000)}]"
+
+        user_prompt = f"請生成一個適合練習的中文句子\n[variant_nonce={int(_t.time() * 1000)}]"
 
         if not self.generate_model:
             result = {}
         else:
             # 永遠不使用快取，確保每次都獲得新結果
-            result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
+            result = self._call_model(
+                self.generate_model, system_prompt, user_prompt, use_cache=False
+            )
 
         # 統一的錯誤處理模式 - 確保 result 總是 dict
         if isinstance(result, str):
@@ -349,6 +360,7 @@ class AIService:
         # 確保返回必要的欄位
         # 若 LLM 失敗則從 examples 隨機取一題退回
         import random as _r
+
         fallback_sentence = _r.choice(examples) if examples else "今天天氣很好。"
         return {
             "sentence": result.get("sentence", fallback_sentence),
@@ -364,12 +376,12 @@ class AIService:
         length: str = "medium",
     ) -> dict[str, Any]:
         """生成複習句子（基於待複習知識點）
-        
+
         Args:
             knowledge_points: 待複習的知識點列表
             level: 難度等級
             length: 句子長度
-            
+
         Returns:
             包含句子、提示、考點ID等信息
         """
@@ -397,34 +409,54 @@ class AIService:
         # 只準備被選中的知識點信息給 AI
         points_info = []
         for point in selected_points:
-            points_info.append({
-                "id": getattr(point, 'id', point.get('id') if isinstance(point, dict) else None),
-                "key_point": getattr(point, 'key_point', point.get('key_point') if isinstance(point, dict) else ''),
-                "explanation": getattr(point, 'explanation', point.get('explanation') if isinstance(point, dict) else ''),
-                "original_phrase": getattr(point, 'original_phrase', point.get('original_phrase') if isinstance(point, dict) else ''),
-                "correction": getattr(point, 'correction', point.get('correction') if isinstance(point, dict) else ''),
-            })
+            points_info.append(
+                {
+                    "id": getattr(
+                        point, "id", point.get("id") if isinstance(point, dict) else None
+                    ),
+                    "key_point": getattr(
+                        point,
+                        "key_point",
+                        point.get("key_point") if isinstance(point, dict) else "",
+                    ),
+                    "explanation": getattr(
+                        point,
+                        "explanation",
+                        point.get("explanation") if isinstance(point, dict) else "",
+                    ),
+                    "original_phrase": getattr(
+                        point,
+                        "original_phrase",
+                        point.get("original_phrase") if isinstance(point, dict) else "",
+                    ),
+                    "correction": getattr(
+                        point,
+                        "correction",
+                        point.get("correction") if isinstance(point, dict) else "",
+                    ),
+                }
+            )
 
         # 記錄選中的知識點
         self.logger.info(f"Selected {len(selected_points)} knowledge points for review")
 
         system_prompt = f"""
         你是一位專業的英文教師，正在幫助學生複習。
-        
+
         請使用以下知識點設計一個{length_hint}的中文句子讓學生翻譯：
         {json.dumps(points_info, ensure_ascii=False, indent=2)}
-        
+
         要求：
         - 必須考察到所有提供的知識點
         - 句子要自然、實用，不要生硬堆砌
         - 確保錯誤點能在翻譯中被自然考察到
-        
+
         請以 JSON 格式回覆：
         {{
             "sentence": "要翻譯的中文句子",
             "hint": "給學生的提示（簡潔指出要注意什麼）",
-            "target_point_ids": {[point['id'] for point in points_info]},
-            "target_points_description": "本題考察：{', '.join([p['key_point'] for p in points_info])}",
+            "target_point_ids": {[point["id"] for point in points_info]},
+            "target_points_description": "本題考察：{", ".join([p["key_point"] for p in points_info])}",
             "difficulty_level": {level}
         }}
         """
@@ -437,7 +469,7 @@ class AIService:
                 "sentence": "今天天氣很好。",
                 "hint": "注意時態",
                 "target_point_ids": [],
-                "difficulty_level": level
+                "difficulty_level": level,
             }
 
         result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
@@ -455,46 +487,59 @@ class AIService:
         target_points = []
         for point in selected_points:
             # 安全地獲取屬性
-            point_id = getattr(point, 'id', point.get('id') if isinstance(point, dict) else None)
-            key_point = getattr(point, 'key_point', point.get('key_point') if isinstance(point, dict) else '')
-            mastery_level = getattr(point, 'mastery_level', point.get('mastery_level') if isinstance(point, dict) else 0.0)
+            point_id = getattr(point, "id", point.get("id") if isinstance(point, dict) else None)
+            key_point = getattr(
+                point, "key_point", point.get("key_point") if isinstance(point, dict) else ""
+            )
+            mastery_level = getattr(
+                point,
+                "mastery_level",
+                point.get("mastery_level") if isinstance(point, dict) else 0.0,
+            )
 
             # 處理 category 屬性（可能是枚舉或字串）
-            category = getattr(point, 'category', point.get('category') if isinstance(point, dict) else 'other')
-            category = category.value if hasattr(category, 'value') else str(category)
+            category = getattr(
+                point, "category", point.get("category") if isinstance(point, dict) else "other"
+            )
+            category = category.value if hasattr(category, "value") else str(category)
 
-            target_points.append({
-                "id": point_id,
-                "key_point": key_point,
-                "category": category,
-                "mastery_level": round(mastery_level, 2)
-            })
+            target_points.append(
+                {
+                    "id": point_id,
+                    "key_point": key_point,
+                    "category": category,
+                    "mastery_level": round(mastery_level, 2),
+                }
+            )
 
         return {
             "sentence": result.get("sentence", "今天天氣很好。"),
             "hint": result.get("hint", "注意之前的錯誤"),
-            "target_point_ids": [getattr(p, 'id', p.get('id') if isinstance(p, dict) else None) for p in selected_points],  # 使用實際選中的點
+            "target_point_ids": [
+                getattr(p, "id", p.get("id") if isinstance(p, dict) else None)
+                for p in selected_points
+            ],  # 使用實際選中的點
             "target_points": target_points,  # 完整知識點信息
             "target_points_description": result.get("target_points_description", ""),
             "difficulty_level": result.get("difficulty_level", level),
-            "is_review": True  # 標記為複習題
+            "is_review": True,  # 標記為複習題
         }
 
     def generate_tagged_sentence(
         self,
-        tags: List[Dict[str, str]],
+        tags: list[dict[str, str]],
         level: int = 2,
         length: str = "medium",
-        combination_mode: str = "all"
+        combination_mode: str = "all",
     ) -> dict[str, Any]:
         """基於標籤生成題目
-        
+
         Args:
             tags: 標籤列表 [{"type": "grammar", "id": "GP001", "name": "強調句"}]
             level: 難度等級
             length: 句子長度
             combination_mode: 組合模式 (all/any/focus)
-            
+
         Returns:
             包含句子、提示、覆蓋點等信息
         """
@@ -512,13 +557,15 @@ class AIService:
             tag = tag_manager.get_tag(tag_id)
             if tag and tag_id in tag_manager.patterns_data:
                 pattern = tag_manager.patterns_data[tag_id]
-                tag_details.append({
-                    "id": tag_id,
-                    "pattern": pattern.get("pattern", ""),
-                    "formula": pattern.get("formula", ""),
-                    "core_concept": pattern.get("core_concept", ""),
-                    "examples": pattern.get("examples", [])[:2]  # 只取前2個例句
-                })
+                tag_details.append(
+                    {
+                        "id": tag_id,
+                        "pattern": pattern.get("pattern", ""),
+                        "formula": pattern.get("formula", ""),
+                        "core_concept": pattern.get("core_concept", ""),
+                        "examples": pattern.get("examples", [])[:2],  # 只取前2個例句
+                    }
+                )
 
         if not tag_details:
             return self.generate_practice_sentence(level=level, length=length)
@@ -527,31 +574,31 @@ class AIService:
         length_hint = {
             "short": "簡短句子（10-20字）",
             "medium": "中等長度（20-35字）",
-            "long": "較長句子（35-60字）"
+            "long": "較長句子（35-60字）",
         }.get(length, "中等長度")
 
         # 構建智能 Prompt
         mode_instruction = {
             "all": "必須同時包含並正確展示所有列出的文法句型",
             "any": "選擇其中一個或多個文法句型來構建句子",
-            "focus": "以第一個文法句型為主，其他可選擇性加入"
+            "focus": "以第一個文法句型為主，其他可選擇性加入",
         }.get(combination_mode, "包含所有文法句型")
 
         system_prompt = f"""
         你是專業的英文教師，請設計一個翻譯練習題目。
-        
+
         要求使用的文法句型：
         {json.dumps(tag_details, ensure_ascii=False, indent=2)}
-        
+
         組合要求：{mode_instruction}
-        
+
         題目要求：
         1. 設計一個{length_hint}的中文句子
         2. 難度等級：{level}/5
         3. 必須自然地融入指定的文法句型
         4. 句子要實用、貼近生活或工作場景
         5. 避免生硬堆砌，確保語意流暢
-        
+
         請以 JSON 格式回覆：
         {{
             "sentence": "要翻譯的中文句子",
@@ -569,7 +616,7 @@ class AIService:
                 "sentence": "今天天氣很好。",
                 "hint": "注意句型結構",
                 "covered_points": [],
-                "difficulty_level": level
+                "difficulty_level": level,
             }
 
         result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
@@ -591,13 +638,11 @@ class AIService:
             "tags": tags,
             "combination_mode": combination_mode,
             "difficulty_level": result.get("difficulty_level", level),
-            "is_tagged": True
+            "is_tagged": True,
         }
 
     def generate_tagged_preview(
-        self,
-        tags: List[str],
-        combination_mode: str = "all"
+        self, tags: list[str], combination_mode: str = "all"
     ) -> dict[str, Any]:
         """生成標籤組合的預覽題目"""
         # 轉換標籤格式
@@ -605,14 +650,12 @@ class AIService:
 
         # 生成一個範例題目
         result = self.generate_tagged_sentence(
-            tags=tag_list,
-            level=2,
-            length="medium",
-            combination_mode=combination_mode
+            tags=tag_list, level=2, length="medium", combination_mode=combination_mode
         )
 
         # 計算難度和變化性
         from core.tag_system import tag_manager
+
         complexity_scores = []
         for tag_id in tags:
             tag = tag_manager.get_tag(tag_id)
@@ -633,10 +676,11 @@ class AIService:
 
     def get_last_interaction(self) -> dict[str, Any]:
         """獲取最近一次的 LLM 互動記錄"""
-        return self.last_llm_interaction if self.last_llm_interaction else {
-            "status": "no_data",
-            "message": "尚無 LLM 互動記錄"
-        }
+        return (
+            self.last_llm_interaction
+            if self.last_llm_interaction
+            else {"status": "no_data", "message": "尚無 LLM 互動記錄"}
+        )
 
     def analyze_common_mistakes(self, practice_history: list) -> dict[str, Any]:
         """分析常見錯誤模式"""
@@ -646,8 +690,8 @@ class AIService:
         # 準備最近的錯誤摘要
         recent_mistakes = []
         # 取最近 10 個練習記錄進行分析
-        RECENT_MISTAKES_COUNT = 10
-        for practice in practice_history[-RECENT_MISTAKES_COUNT :]:
+        recent_mistakes_count = 10
+        for practice in practice_history[-recent_mistakes_count:]:
             if not practice.get("is_correct", True):
                 errors = practice.get("feedback", {}).get("error_analysis", [])
                 for error in errors:
@@ -663,7 +707,7 @@ class AIService:
 
         system_prompt = """
         你是一位英語教學專家，請分析學生的錯誤模式並提供學習建議。
-        
+
         請以 JSON 格式回覆：
         {
             "common_patterns": [
@@ -697,25 +741,24 @@ class AIService:
             # AI 返回字串而非 JSON，使用備用回應
             return {"patterns": [], "suggestions": []}
         if isinstance(result, list) and len(result) > 0:
-            result = result[0] if isinstance(result[0], dict) else {"patterns": [], "suggestions": []}
+            result = (
+                result[0] if isinstance(result[0], dict) else {"patterns": [], "suggestions": []}
+            )
         elif not isinstance(result, dict):
             return {"patterns": [], "suggestions": []}
 
         return result
 
     def generate_sentence_for_pattern(
-        self,
-        pattern_data: dict,
-        level: int = 2,
-        length: str = "medium"
+        self, pattern_data: dict, level: int = 2, length: str = "medium"
     ) -> dict[str, Any]:
         """根據特定文法句型生成練習題目
-        
+
         Args:
             pattern_data: 句型資料（包含 pattern, formula, core_concept, examples 等）
             level: 難度等級
             length: 句子長度
-            
+
         Returns:
             包含句子、提示等資訊
         """
@@ -724,7 +767,7 @@ class AIService:
         formula = pattern_data.get("formula", "")
         core_concept = pattern_data.get("core_concept", "")
         examples = pattern_data.get("examples", [])
-        
+
         # 取前3個例句作為參考
         example_text = ""
         for i, ex in enumerate(examples[:3], 1):
@@ -733,37 +776,37 @@ class AIService:
                 en = ex.get("en", "")
                 if zh and en:
                     example_text += f"\n   例{i}. {zh} → {en}"
-        
+
         length_hint = {
             "short": "簡短句子（10-20字）",
             "medium": "中等長度（20-35字）",
-            "long": "較長句子（35-60字）"
+            "long": "較長句子（35-60字）",
         }.get(length, "中等長度")
-        
+
         difficulty_hint = {
             1: "基礎程度",
             2: "中級程度",
             3: "中高級程度",
             4: "高級程度",
-            5: "進階程度"
+            5: "進階程度",
         }.get(level, "中級程度")
-        
+
         system_prompt = f"""
         你是一位專業的英文教師，請根據指定的文法句型生成一個中文練習句子。
-        
+
         目標句型：{pattern_name}
         句型公式：{formula}
         核心概念：{core_concept}
-        
+
         參考例句：{example_text if example_text else "無"}
-        
+
         要求：
         1. 生成一個{length_hint}的中文句子
         2. 難度為{difficulty_hint}
         3. 句子必須能夠自然地使用「{pattern_name}」句型來翻譯
         4. 句子要實用、貼近生活或工作場景
         5. 不要直接複製例句，要有創意
-        
+
         請以 JSON 格式回覆：
         {{
             "sentence": "要翻譯的中文句子",
@@ -771,27 +814,24 @@ class AIService:
             "expected_structure": "預期的英文句型結構（使用 ... 表示可填入的部分）"
         }}
         """
-        
+
         user_prompt = "請生成一個適合練習此文法句型的中文句子。"
-        
+
         if not self.generate_model:
             return {
                 "sentence": "今天天氣很好。",
                 "hint": f"注意使用 {pattern_name} 句型",
-                "expected_structure": ""
+                "expected_structure": "",
             }
-        
+
         result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
-        
+
         # 錯誤處理
         if not isinstance(result, dict):
-            result = {
-                "sentence": "今天天氣很好。",
-                "hint": f"注意使用 {pattern_name} 句型"
-            }
-        
+            result = {"sentence": "今天天氣很好。", "hint": f"注意使用 {pattern_name} 句型"}
+
         return {
             "sentence": result.get("sentence", "今天天氣很好。"),
             "hint": result.get("hint", f"注意使用 {pattern_name} 句型"),
-            "expected_structure": result.get("expected_structure", formula)
+            "expected_structure": result.get("expected_structure", formula),
         }

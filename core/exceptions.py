@@ -1,9 +1,34 @@
 """
 異常處理模組
 提供統一的異常類型和錯誤處理機制
+
+包含功能：
+1. 基礎異常類型
+2. 數據庫相關異常
+3. 異步異常處理裝飾器
+4. 自動重試機制
+5. 降級處理策略
+6. 異常監控和告警
 """
 
-from typing import Any, Optional
+import asyncio
+import functools
+import time
+from enum import Enum
+from typing import Any, Callable, Optional
+
+from core.log_config import get_module_logger
+
+logger = get_module_logger(__name__)
+
+
+class ErrorSeverity(Enum):
+    """錯誤嚴重性級別"""
+
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
 
 
 class LinkerError(Exception):
@@ -169,6 +194,24 @@ class UserInputException(LinkerError):
         )
 
 
+class KnowledgeNotFound(LinkerError):
+    """知識點不存在異常"""
+
+    def __init__(
+        self,
+        point_id: str,
+        message: Optional[str] = None,
+    ):
+        if message is None:
+            message = f"知識點ID '{point_id}' 不存在"
+        super().__init__(
+            message=message,
+            error_code="KNOWLEDGE_NOT_FOUND",
+            details={"point_id": point_id},
+        )
+        self.point_id = point_id
+
+
 # 錯誤處理工具函數
 
 
@@ -315,3 +358,221 @@ def validate_input(
         )
 
     return value
+
+
+# 資料庫和遷移相關異常
+
+
+class DatabaseError(LinkerError):
+    """數據庫操作異常"""
+
+    def __init__(
+        self,
+        message: str,
+        operation: Optional[str] = None,
+        table: Optional[str] = None,
+        query: Optional[str] = None,
+        connection_info: Optional[dict] = None,
+        original_error: Optional[Exception] = None,
+    ):
+        super().__init__(
+            message=message,
+            error_code="DATABASE_ERROR",
+            details={
+                "operation": operation,
+                "table": table,
+                "query": query[:200] if query else None,  # 限制查詢長度
+                "connection_info": connection_info,
+                "original_error": str(original_error) if original_error else None,
+            },
+        )
+        self.operation = operation
+        self.table = table
+        self.original_error = original_error
+
+
+class ConnectionPoolError(DatabaseError):
+    """連接池異常"""
+
+    def __init__(
+        self,
+        message: str,
+        pool_status: Optional[dict] = None,
+        original_error: Optional[Exception] = None,
+    ):
+        super().__init__(
+            message=message,
+            operation="connection_pool",
+            original_error=original_error,
+        )
+        self.error_code = "CONNECTION_POOL_ERROR"
+        self.details.update({"pool_status": pool_status})
+
+
+class MigrationError(LinkerError):
+    """數據遷移異常"""
+
+    def __init__(
+        self,
+        message: str,
+        migration_step: Optional[str] = None,
+        data_source: Optional[str] = None,
+        target_source: Optional[str] = None,
+        records_processed: int = 0,
+        original_error: Optional[Exception] = None,
+    ):
+        super().__init__(
+            message=message,
+            error_code="MIGRATION_ERROR",
+            details={
+                "migration_step": migration_step,
+                "data_source": data_source,
+                "target_source": target_source,
+                "records_processed": records_processed,
+                "original_error": str(original_error) if original_error else None,
+            },
+        )
+
+
+class AsyncOperationError(LinkerError):
+    """異步操作異常"""
+
+    def __init__(
+        self,
+        message: str,
+        operation: str,
+        timeout: Optional[float] = None,
+        original_error: Optional[Exception] = None,
+    ):
+        super().__init__(
+            message=message,
+            error_code="ASYNC_OPERATION_ERROR",
+            details={
+                "operation": operation,
+                "timeout": timeout,
+                "original_error": str(original_error) if original_error else None,
+            },
+        )
+        self.operation = operation
+        self.timeout = timeout
+
+
+class RecoverableError(LinkerError):
+    """可恢復的異常（支持自動重試）"""
+
+    def __init__(
+        self,
+        message: str,
+        retry_count: int = 0,
+        max_retries: int = 3,
+        backoff_delay: float = 1.0,
+        original_error: Optional[Exception] = None,
+    ):
+        super().__init__(
+            message=message,
+            error_code="RECOVERABLE_ERROR",
+            details={
+                "retry_count": retry_count,
+                "max_retries": max_retries,
+                "backoff_delay": backoff_delay,
+                "original_error": str(original_error) if original_error else None,
+            },
+        )
+        self.retry_count = retry_count
+        self.max_retries = max_retries
+        self.backoff_delay = backoff_delay
+
+
+# 重試和恢復機制
+
+
+def with_retry(
+    max_retries: int = 3,
+    backoff_delay: float = 1.0,
+    exceptions: tuple = (Exception,),
+    exponential_backoff: bool = True,
+):
+    """
+    重試裝飾器（同步版本）
+
+    Args:
+        max_retries: 最大重試次數
+        backoff_delay: 初始延遲時間
+        exceptions: 需要重試的異常類型
+        exponential_backoff: 是否使用指數退避
+    """
+
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries + 1):
+                try:
+                    return func(*args, **kwargs)
+                except exceptions as e:
+                    if attempt == max_retries:
+                        # 最後一次重試失敗，拋出RecoverableException
+                        raise RecoverableError(
+                            message=f"函數 {func.__name__} 重試 {max_retries} 次後仍然失敗",
+                            retry_count=attempt,
+                            max_retries=max_retries,
+                            backoff_delay=backoff_delay,
+                            original_error=e,
+                        ) from e
+
+                    # 計算延遲時間
+                    delay = backoff_delay * (2**attempt if exponential_backoff else 1)
+                    logger.warning(
+                        f"函數 {func.__name__} 第 {attempt + 1} 次嘗試失敗，"
+                        f"{delay}秒後重試: {str(e)}"
+                    )
+                    time.sleep(delay)
+
+            return None
+
+        return wrapper
+
+    return decorator
+
+
+def with_async_retry(
+    max_retries: int = 3,
+    backoff_delay: float = 1.0,
+    exceptions: tuple = (Exception,),
+    exponential_backoff: bool = True,
+):
+    """
+    異步重試裝飾器
+
+    Args:
+        max_retries: 最大重試次數
+        backoff_delay: 初始延遲時間
+        exceptions: 需要重試的異常類型
+        exponential_backoff: 是否使用指數退避
+    """
+
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            for attempt in range(max_retries + 1):
+                try:
+                    return await func(*args, **kwargs)
+                except exceptions as e:
+                    if attempt == max_retries:
+                        raise AsyncOperationError(
+                            message=f"函數 {func.__name__} 重試 {max_retries} 次後仍然失敗",
+                            operation=func.__name__,
+                            original_error=e,
+                        ) from e
+
+                    delay = backoff_delay * (2**attempt if exponential_backoff else 1)
+                    logger.warning(
+                        f"異步函數 {func.__name__} 第 {attempt + 1} 次嘗試失敗，"
+                        f"{delay}秒後重試: {str(e)}"
+                    )
+                    await asyncio.sleep(delay)
+
+            return None
+
+        return wrapper
+
+    return decorator

@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from core.log_config import get_module_logger
 
@@ -20,24 +20,27 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 
 class TagType(Enum):
     """標籤類型"""
-    GRAMMAR = "grammar"        # 文法句型 (GP001-GP111)
-    KNOWLEDGE = "knowledge"    # 知識點 (錯誤ID)
-    TOPIC = "topic"           # 主題 (旅遊、商業、日常)
-    DIFFICULTY = "difficulty" # 難度標籤
-    FOCUS = "focus"          # 重點考察 (時態、介係詞等)
+
+    GRAMMAR = "grammar"  # 文法句型 (GP001-GP111)
+    KNOWLEDGE = "knowledge"  # 知識點 (錯誤ID)
+    TOPIC = "topic"  # 主題 (旅遊、商業、日常)
+    DIFFICULTY = "difficulty"  # 難度標籤
+    FOCUS = "focus"  # 重點考察 (時態、介係詞等)
 
 
 class CombinationMode(Enum):
     """標籤組合模式"""
-    ALL = "all"           # 必須包含所有標籤
-    ANY = "any"           # 包含至少一個標籤
-    FOCUS = "focus"       # 重點練習第一個，其他為輔
-    WEIGHTED = "weighted" # 根據掌握度權重選擇
+
+    ALL = "all"  # 必須包含所有標籤
+    ANY = "any"  # 包含至少一個標籤
+    FOCUS = "focus"  # 重點練習第一個，其他為輔
+    WEIGHTED = "weighted"  # 根據掌握度權重選擇
 
 
 @dataclass
 class Tag:
     """標籤資料結構"""
+
     id: str
     type: TagType
     name: str
@@ -47,13 +50,14 @@ class Tag:
     usage_count: int = 0
     success_rate: float = 0.0
     last_practiced: Optional[datetime] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class TagCombination:
     """標籤組合"""
-    tags: List[Tag]
+
+    tags: list[Tag]
     mode: CombinationMode
     name: Optional[str] = None
     description: Optional[str] = None
@@ -65,26 +69,23 @@ class TagRelationship:
     # 相關標籤推薦規則
     RELATED_TAGS = {
         # 強調句型相關
-        'GP001': ['GP002', 'GP015'],  # 強調句 → 倒裝句、被動語態
-        'GP002': ['GP001', 'GP003'],  # 倒裝句 → 強調句、省略句
-
+        "GP001": ["GP002", "GP015"],  # 強調句 → 倒裝句、被動語態
+        "GP002": ["GP001", "GP003"],  # 倒裝句 → 強調句、省略句
         # 時態相關
-        'GP010': ['GP011', 'GP012'],  # 現在完成式 → 過去完成式、完成進行式
-        'GP011': ['GP010', 'GP012'],  # 過去完成式 → 現在完成式、完成進行式
-
+        "GP010": ["GP011", "GP012"],  # 現在完成式 → 過去完成式、完成進行式
+        "GP011": ["GP010", "GP012"],  # 過去完成式 → 現在完成式、完成進行式
         # 條件句相關
-        'GP020': ['GP021', 'GP022'],  # 條件句 → 假設語氣、願望句
-        'GP021': ['GP020', 'GP022'],  # 假設語氣 → 條件句、願望句
-
+        "GP020": ["GP021", "GP022"],  # 條件句 → 假設語氣、願望句
+        "GP021": ["GP020", "GP022"],  # 假設語氣 → 條件句、願望句
         # 比較級相關
-        'GP030': ['GP031', 'GP032'],  # 比較級 → 最高級、同級比較
-        'GP031': ['GP030', 'GP032'],  # 最高級 → 比較級、同級比較
+        "GP030": ["GP031", "GP032"],  # 比較級 → 最高級、同級比較
+        "GP031": ["GP030", "GP032"],  # 最高級 → 比較級、同級比較
     }
 
     # 互斥標籤（不建議一起使用）
     EXCLUSIVE_TAGS = {
-        'GP010': ['GP050'],  # 現在完成式 vs 簡單過去式
-        'GP020': ['GP060'],  # 條件句 vs 直述句
+        "GP010": ["GP050"],  # 現在完成式 vs 簡單過去式
+        "GP020": ["GP060"],  # 條件句 vs 直述句
     }
 
     # 標籤組合模板
@@ -92,28 +93,28 @@ class TagRelationship:
         "時態大師": {
             "tags": ["GP010", "GP011", "GP012"],
             "description": "練習各種完成式時態",
-            "difficulty": 3
+            "difficulty": 3,
         },
         "條件達人": {
             "tags": ["GP020", "GP021", "GP022"],
             "description": "掌握條件句和假設語氣",
-            "difficulty": 4
+            "difficulty": 4,
         },
         "比較專家": {
             "tags": ["GP030", "GP031", "GP032"],
             "description": "精通比較級和最高級",
-            "difficulty": 2
+            "difficulty": 2,
         },
         "強調與倒裝": {
             "tags": ["GP001", "GP002"],
             "description": "學習強調句型和倒裝結構",
-            "difficulty": 3
+            "difficulty": 3,
         },
         "商業英文": {
             "tags": ["GP040", "GP041", "GP042"],
             "description": "商業場景常用句型",
-            "difficulty": 3
-        }
+            "difficulty": 3,
+        },
     }
 
 
@@ -122,17 +123,17 @@ class TagManager:
 
     def __init__(self):
         self.logger = logger
-        self.tags: Dict[str, Tag] = {}
+        self.tags: dict[str, Tag] = {}
         self.patterns_data = self._load_patterns_data()
         self._initialize_grammar_tags()
 
-    def _load_patterns_data(self) -> Dict:
+    def _load_patterns_data(self) -> dict:
         """載入文法句型資料"""
         patterns_file = DATA_DIR / "patterns_enriched_complete.json"
         if patterns_file.exists():
-            with open(patterns_file, encoding='utf-8') as f:
+            with open(patterns_file, encoding="utf-8") as f:
                 data = json.load(f)
-                return {p['id']: p for p in data.get('patterns', [])}
+                return {p["id"]: p for p in data.get("patterns", [])}
         return {}
 
     def _initialize_grammar_tags(self):
@@ -141,25 +142,25 @@ class TagManager:
             tag = Tag(
                 id=pattern_id,
                 type=TagType.GRAMMAR,
-                name=pattern.get('pattern', ''),
-                description=pattern.get('core_concept', ''),
-                category=pattern.get('category', ''),
-                complexity=self._calculate_complexity(pattern)
+                name=pattern.get("pattern", ""),
+                description=pattern.get("core_concept", ""),
+                category=pattern.get("category", ""),
+                complexity=self._calculate_complexity(pattern),
             )
             self.tags[pattern_id] = tag
 
         self.logger.info(f"Initialized {len(self.tags)} grammar tags")
 
-    def _calculate_complexity(self, pattern: Dict) -> int:
+    def _calculate_complexity(self, pattern: dict) -> int:
         """計算句型複雜度 (1-5)"""
         # 基於例句長度、變化數量等因素計算
         complexity = 2  # 預設中等
 
-        if pattern.get('variations'):
-            complexity += min(2, len(pattern['variations']) // 3)
+        if pattern.get("variations"):
+            complexity += min(2, len(pattern["variations"]) // 3)
 
-        if pattern.get('common_errors'):
-            complexity += min(1, len(pattern['common_errors']) // 2)
+        if pattern.get("common_errors"):
+            complexity += min(1, len(pattern["common_errors"]) // 2)
 
         return min(5, max(1, complexity))
 
@@ -167,15 +168,15 @@ class TagManager:
         """獲取標籤"""
         return self.tags.get(tag_id)
 
-    def get_tags_by_type(self, tag_type: TagType) -> List[Tag]:
+    def get_tags_by_type(self, tag_type: TagType) -> list[Tag]:
         """根據類型獲取標籤"""
         return [t for t in self.tags.values() if t.type == tag_type]
 
-    def get_tags_by_category(self, category: str) -> List[Tag]:
+    def get_tags_by_category(self, category: str) -> list[Tag]:
         """根據分類獲取標籤"""
         return [t for t in self.tags.values() if t.category == category]
 
-    def get_related_tags(self, tag_id: str, max_count: int = 3) -> List[Tag]:
+    def get_related_tags(self, tag_id: str, max_count: int = 3) -> list[Tag]:
         """獲取相關標籤"""
         related_ids = TagRelationship.RELATED_TAGS.get(tag_id, [])
         related_tags = []
@@ -187,17 +188,13 @@ class TagManager:
 
         return related_tags
 
-    def validate_combination(self, tag_ids: List[str]) -> Dict[str, Any]:
+    def validate_combination(self, tag_ids: list[str]) -> dict[str, Any]:
         """驗證標籤組合的合理性"""
         warnings = []
         suggestions = []
 
         if not tag_ids:
-            return {
-                "valid": False,
-                "warnings": ["至少需要選擇一個標籤"],
-                "suggestions": []
-            }
+            return {"valid": False, "warnings": ["至少需要選擇一個標籤"], "suggestions": []}
 
         tags = [self.get_tag(tid) for tid in tag_ids if self.get_tag(tid)]
 
@@ -229,7 +226,7 @@ class TagManager:
             "valid": len(warnings) == 0,
             "warnings": warnings,
             "suggestions": suggestions,
-            "complexity_score": sum(complexities) / len(complexities) if complexities else 2
+            "complexity_score": sum(complexities) / len(complexities) if complexities else 2,
         }
 
     def get_template(self, template_name: str) -> Optional[TagCombination]:
@@ -238,16 +235,16 @@ class TagManager:
         if not template:
             return None
 
-        tags = [self.get_tag(tid) for tid in template['tags'] if self.get_tag(tid)]
+        tags = [self.get_tag(tid) for tid in template["tags"] if self.get_tag(tid)]
 
         return TagCombination(
             tags=tags,
             mode=CombinationMode.ALL,
             name=template_name,
-            description=template.get('description')
+            description=template.get("description"),
         )
 
-    def get_all_templates(self) -> Dict[str, TagCombination]:
+    def get_all_templates(self) -> dict[str, TagCombination]:
         """獲取所有模板"""
         templates = {}
         for name in TagRelationship.TEMPLATES:
@@ -256,16 +253,18 @@ class TagManager:
                 templates[name] = template
         return templates
 
-    def search_tags(self, query: str, limit: int = 10) -> List[Tag]:
+    def search_tags(self, query: str, limit: int = 10) -> list[Tag]:
         """搜尋標籤"""
         query = query.lower()
         results = []
 
         for tag in self.tags.values():
             # 搜尋名稱和描述
-            if (query in tag.name.lower() or
-                (tag.description and query in tag.description.lower()) or
-                (tag.category and query in tag.category.lower())):
+            if (
+                query in tag.name.lower()
+                or (tag.description and query in tag.description.lower())
+                or (tag.category and query in tag.category.lower())
+            ):
                 results.append(tag)
 
             if len(results) >= limit:
@@ -286,7 +285,9 @@ class TagManager:
         alpha = 0.1  # 平滑係數
         tag.success_rate = (1 - alpha) * tag.success_rate + alpha * (1.0 if success else 0.0)
 
-        self.logger.info(f"Updated stats for tag {tag_id}: usage={tag.usage_count}, success_rate={tag.success_rate:.2f}")
+        self.logger.info(
+            f"Updated stats for tag {tag_id}: usage={tag.usage_count}, success_rate={tag.success_rate:.2f}"
+        )
 
 
 # 全域實例

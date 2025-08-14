@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ruff format --check ."
+          },
+          {
+            "type": "command",
+            "command": "ruff check ."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -50,21 +50,21 @@ data/*.json → Local storage
 - AI 開發規範 (AI Development Constitution)
 
     1 # Linker 專案 AI 開發最高指導原則 (v1.0)
-    2 
+    2
     3 ## 1. 核心使命 (Core Mission)
-    4 
+    4
     5 你的首要任務是協助開發 Linker 專案，一個由 FastAPI 和 Vanilla JS 驅動的 AI 英語學習平台。你必須嚴格遵守本文件定義的所有規範，以確保程式碼的**一致性、可維護性、可讀性和高品質**。
       **杜絕任何形式的技術債、硬編碼和風格不一致**。
-    6 
+    6
     7 ## 2. 專案架構與技術棧
-    8 
+    8
     9 在進行任何修改前，你必須回顧並理解專案的架構。
-   10 
+   10
    11 *   **後端**: Python 3.9+, FastAPI, Pydantic
    12 *   **前端**: Vanilla JavaScript (ES6+), Jinja2, 模組化 CSS
    13 *   **資料**: 本地 JSON 檔案 (`data/*.json`)，並有向 PostgreSQL 遷移的長期計畫 (`docs/DATABASE_MIGRATION_PLAN.md`)。
    14 *   **品質**: `ruff check .` (風格檢查), `ruff format .` (格式化), `pytest` (單元測試)。
-   15 
+   15
    16 **關鍵目錄結構:**
    17 *   `core/`: 核心業務邏輯 (AI 服務、知識點管理)。**與 Web 層解耦**。
    18 *   `web/`: Web 服務層。
@@ -73,24 +73,24 @@ data/*.json → Local storage
    21     *   `templates/`: Jinja2 HTML 模板。
    22 *   `data/`: 應用程式資料。**絕不直接在程式碼中硬編碼路徑**，應透過配置 (`core/config.py`) 獲取。
    23 *   `docs/`: **你的知識來源**。在不確定時，優先查閱此處文件。
-   24 
+   24
    25 ## 3. 開發黃金律 (The Golden Rules)
-   26 
+   26
    27 ### 3.1. **零硬編碼 (Zero Hardcoding)**
    28 嚴禁在程式碼中出現任何硬編碼的字串、路徑、數字或配置。所有此類值必須定義在：
    29 *   **環境變數** (`.env`) 並由 `core/config.py` 中的 Pydantic `Settings` 類載入。
    30 *   **應用常數** (例如，定義在 `core/constants.py` 或相關模組頂部的大寫變數)。
    31 *   **API 回應模型** (Pydantic Models)。
-   32 
+   32
    33 **錯誤範例**: `file_path = "data/knowledge.json"`
    34 **正確範例**: `file_path = settings.KNOWLEDGE_DATA_PATH`
-   35 
+   35
    36 ### 3.2. **遵循既有模式 (Follow Existing Patterns)**
    37 在添加或修改功能前，**必須**先閱讀相關模組的現有程式碼。你的新程式碼必須與周圍的程式碼在風格、結構和命名上**完全一致**。
    38 *   **新增 API 端點?** -> 參考 `web/routers/knowledge.py` 的結構。
    39 *   **修改知識點邏輯?** -> 參考 `core/knowledge.py` 的方法。
    40 *   **添加前端互動?** -> 參考 `web/static/js/practice-logic.js` 的風格和 `DYNAMIC_STYLING_GUIDE.md`。
-   41 
+   41
    42 ### 3.3. **命名規範 (Naming Conventions)**
    43 *   **Python (後端)**:
    44     *   變數、函式、方法: `snake_case` (e.g., `get_user_data`)。
@@ -107,20 +107,20 @@ data/*.json → Local storage
    55 *   **檔案名稱**:
    56     *   Python: `snake_case.py`。
    57     *   JavaScript/CSS: `kebab-case.js`, `kebab-case.css`。
-   58 
+   58
    59 ### 3.4. **資料模型驅動 (Model-Driven Development)**
    60 所有 API 的請求和回應體都**必須**使用 Pydantic 模型進行定義和驗證。這能確保資料的一致性和類型安全。
    61 *   **位置**: 在相應的 router 檔案中或 `web/models.py` 中定義。
    62 *   **原則**: 清晰、明確，並包含欄位描述。
-   63 
+   63
    64 ### 3.5. **前端樣式與互動 (Frontend Styling & Interaction)**
    65 *   **嚴格遵守 `DYNAMIC_STYLING_GUIDE.md`**。
    66 *   **禁止**直接在 HTML 中寫行內樣式 (`style="..."`)，除非是為了綁定 CSS 自訂屬性 (`--variable`)。
    67 *   **優先使用** `style-utils.js` 提供的工具函式來操作動態樣式。
    68 *   所有新組件的 CSS 都應在 `web/static/css/components/` 中建立獨立檔案，並在 `main.css` 中 `@import`。
-   69 
+   69
    70 ## 4. 工作流程 (Workflow)
-   71 
+   71
    72 1.  **理解需求**: 分析使用者請求。
    73 2.  **情境載入**: 使用你的記憶功能載入相關檔案。
    74     *   **修改 API?** -> `#web/routers/api_knowledge.py`, `#docs/API.md`
@@ -131,9 +131,9 @@ data/*.json → Local storage
    79     *   **執行 `ruff check .` 和 `ruff format .`** 確保程式碼品質。
    80     *   **執行 `pytest`** 確保沒有破壞現有功能。
    81     *   **聲明**: 在回應中明確表示你已完成驗證步驟。
-   82 
+   82
    83 ## 5. 常用指令與參考
-   84 
+   84
    85 *   **啟動開發伺服器**: `./run.sh`
    86 *   **程式碼檢查**: `ruff check .`
    87 *   **程式碼格式化**: `ruff format .`
@@ -142,5 +142,5 @@ data/*.json → Local storage
    90 *   **架構總覽**: `docs/ARCHITECTURE.md`
    91 *   **樣式指南**: `DYNAMIC_STYLING_GUIDE.md`
    92 *   **資料庫遷移計畫**: `docs/DATABASE_MIGRATION_PLAN.md` (在處理資料層時，需考慮此長期目標)
-   93 
+   93
    94 ---

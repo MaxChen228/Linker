@@ -19,7 +19,7 @@ def test_migration():
     # 1. 顯示當前狀態
     print("1. 檢查當前版本狀態：")
     report = manager.get_version_report()
-    for file_path, info in report['files'].items():
+    for file_path, info in report["files"].items():
         print(f"   {Path(file_path).name}:")
         print(f"     - 版本: {info['version']}")
         print(f"     - 需要遷移: {info['needs_migration']}")
@@ -29,7 +29,7 @@ def test_migration():
     patterns_file = Path("data/grammar_patterns.json")
 
     # 載入原始資料
-    with open(patterns_file, encoding='utf-8') as f:
+    with open(patterns_file, encoding="utf-8") as f:
         original_data = json.load(f)
 
     print(f"   原始資料類型: {type(original_data)}")
@@ -62,8 +62,8 @@ def test_migration():
     print(f"   句型數量: {len(v3_1_data.get('patterns', []))}")
 
     # 檢查第一個句型的結構
-    if v3_1_data.get('patterns'):
-        first_pattern = v3_1_data['patterns'][0]
+    if v3_1_data.get("patterns"):
+        first_pattern = v3_1_data["patterns"][0]
         print("   第一個句型結構:")
         print(f"     - id: {first_pattern.get('id')}")
         print(f"     - category: {first_pattern.get('category')}")
@@ -72,11 +72,12 @@ def test_migration():
 
     # 4. 儲存測試結果
     test_output = Path("data/test_migration_result.json")
-    with open(test_output, 'w', encoding='utf-8') as f:
+    with open(test_output, "w", encoding="utf-8") as f:
         json.dump(v3_1_data, f, ensure_ascii=False, indent=2)
     print(f"\n4. 測試結果已儲存到: {test_output}")
 
     return v3_1_data
+
 
 def test_auto_migration():
     """測試自動遷移功能"""
@@ -95,8 +96,9 @@ def test_auto_migration():
     # 再次檢查版本
     print("\n遷移後的版本狀態：")
     report = manager.get_version_report()
-    for file_path, info in report['files'].items():
+    for file_path, info in report["files"].items():
         print(f"  {Path(file_path).name}: v{info['version']} (需要遷移: {info['needs_migration']})")
+
 
 if __name__ == "__main__":
     # 執行測試

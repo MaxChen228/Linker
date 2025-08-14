@@ -1,0 +1,239 @@
+/**
+ * Batch Operations Components
+ * 批量操作相關的組件樣式
+ */
+
+/* Progress Container */
+.batch-progress-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    animation: slideInUp 0.3s ease;
+}
+
+/* Progress Card */
+.batch-progress-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    min-width: 300px;
+    box-shadow: var(--shadow-lg);
+}
+
+/* Progress Header */
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+}
+
+.progress-title {
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+}
+
+.progress-close {
+    background: none;
+    border: none;
+    font-size: var(--text-xl);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+}
+
+/* Progress Bar */
+.progress-bar-wrapper {
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--space-2);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-400), var(--accent-600));
+    transition: width 0.3s ease;
+    width: var(--progress, 0%);
+}
+
+/* Progress Info */
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-default);
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    animation: slideInRight 0.3s ease;
+    max-width: 400px;
+}
+
+.notification-success {
+    background: var(--success-100);
+    border-color: var(--success-300);
+    color: var(--success-700);
+}
+
+.notification-warning {
+    background: var(--warning-100);
+    border-color: var(--warning-300);
+    color: var(--warning-700);
+}
+
+.notification-error {
+    background: var(--error-100);
+    border-color: var(--error-300);
+    color: var(--error-700);
+}
+
+.notification-exit {
+    animation: slideOutRight 0.3s ease !important;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    animation: fadeIn 0.2s ease;
+}
+
+/* Modal Content */
+.modal-content {
+    background: var(--surface-base);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    min-width: 400px;
+    box-shadow: var(--shadow-xl);
+    animation: slideUp 0.3s ease;
+}
+
+.modal-content h3 {
+    margin: 0 0 var(--space-3) 0;
+    color: var(--text-primary);
+}
+
+.modal-description {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-3);
+}
+
+/* Modal Input */
+.modal-input {
+    width: 100%;
+    padding: var(--space-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-base);
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-end;
+}
+
+.modal-btn {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-default);
+    background: var(--surface-base);
+    cursor: pointer;
+    font-size: var(--text-sm);
+    transition: all var(--transition-base);
+}
+
+.modal-btn:hover {
+    background: var(--surface-elevated);
+}
+
+.modal-btn.btn-primary {
+    background: var(--accent-600);
+    color: white;
+    border: none;
+}
+
+.modal-btn.btn-primary:hover {
+    background: var(--accent-700);
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
@@ -23,12 +23,12 @@ DATA_DIR = PROJECT_ROOT / "data"
 class GrammarPattern:
     """文法句型資料結構（統一格式）"""
 
-    id: Optional[str]
-    category: Optional[str]
+    id: str | None
+    category: str | None
     pattern: str
-    explanation: Optional[str]
-    example_zh: Optional[str]
-    example_en: Optional[str]
+    explanation: str | None
+    example_zh: str | None
+    example_en: str | None
 
 
 class GrammarRepository:
@@ -36,7 +36,9 @@ class GrammarRepository:
 
     def __init__(self, grammar_patterns_file: Path | str | None = None):
         self.grammar_patterns_file = (
-            Path(grammar_patterns_file) if grammar_patterns_file else DATA_DIR / "grammar_patterns.json"
+            Path(grammar_patterns_file)
+            if grammar_patterns_file
+            else DATA_DIR / "grammar_patterns.json"
         )
 
     def load_advanced_grammar(self) -> list[GrammarPattern]:
@@ -93,7 +95,9 @@ class ExampleRepository:
         if not bank:
             return []
         by_length = bank.get(length, {})
-        candidates: list[str] = by_length.get(str(difficulty), []) if isinstance(by_length, dict) else []
+        candidates: list[str] = (
+            by_length.get(str(difficulty), []) if isinstance(by_length, dict) else []
+        )
         return list(candidates)
 
 
@@ -102,14 +106,14 @@ class KnowledgeAssets:
 
     def __init__(
         self,
-        grammar_repo: Optional[GrammarRepository] = None,
-        example_repo: Optional[ExampleRepository] = None,
+        grammar_repo: GrammarRepository | None = None,
+        example_repo: ExampleRepository | None = None,
     ):
         self.grammar_repo = grammar_repo or GrammarRepository()
         self.example_repo = example_repo or ExampleRepository()
 
     # 文法查詢
-    def get_grammar_patterns(self, category: Optional[str] = None) -> list[GrammarPattern]:
+    def get_grammar_patterns(self, category: str | None = None) -> list[GrammarPattern]:
         patterns = self.grammar_repo.load_all_grammar()
         if category:
             return [p for p in patterns if (p.category == category)]
@@ -128,5 +132,3 @@ __all__ = [
     "ExampleRepository",
     "KnowledgeAssets",
 ]
-
-

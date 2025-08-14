@@ -1,7 +1,7 @@
 """
 Linker Web Application - Main Entry Point
 """
-import os
+
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -19,6 +19,7 @@ load_dotenv()
 # 初始化模組 logger
 logger = get_module_logger(__name__)
 
+
 def check_and_migrate_versions():
     """啟動時執行版本檢查和遷移"""
     version_manager = VersionManager()
@@ -34,6 +35,7 @@ def check_and_migrate_versions():
     except Exception as e:
         logger.warning(f"版本遷移警告: {e}")
         logger.info("系統將繼續使用現有檔案")
+
 
 def create_app() -> FastAPI:
     """建立並配置 FastAPI 應用"""
@@ -66,6 +68,7 @@ def create_app() -> FastAPI:
     logger.info("Linker Web Application initialized successfully")
 
     return app
+
 
 # 建立應用實例
 app = create_app()

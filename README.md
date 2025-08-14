@@ -49,6 +49,8 @@ export GEMINI_API_KEY="your-api-key"
 - [Technical Architecture](./docs/ARCHITECTURE.md)
 - [API Reference](./docs/API.md)
 - [Deployment Guide](./docs/DEPLOYMENT.md)
+- [Database Migration](./docs/DATABASE_MIGRATION.md)
+- [Dynamic Styling](./docs/DYNAMIC_STYLING.md)
 
 ## License
 

@@ -4,7 +4,6 @@
 """
 
 import sys
-from pathlib import Path
 
 import pytest
 
@@ -22,7 +21,7 @@ class TestEnvironment:
         assert (project_root_path / "core").exists(), "core 目錄應該存在"
         assert (project_root_path / "web").exists(), "web 目錄應該存在"
         assert (project_root_path / "tests").exists(), "tests 目錄應該存在"
-        
+
         # 檢查關鍵檔案存在
         assert (project_root_path / "pyproject.toml").exists(), "pyproject.toml 應該存在"
         assert (project_root_path / "requirements.txt").exists(), "requirements.txt 應該存在"
@@ -30,8 +29,8 @@ class TestEnvironment:
     def test_core_module_import(self):
         """測試核心模組可以正常導入"""
         try:
-            from core import exceptions
-            from core import logger
+            from core import exceptions, logger
+
             assert True, "核心模組導入成功"
         except ImportError as e:
             pytest.fail(f"無法導入核心模組: {e}")
@@ -40,6 +39,7 @@ class TestEnvironment:
         """測試 settings 模組可以正常導入"""
         try:
             from settings import Settings, settings
+
             assert isinstance(settings.display.MAX_DISPLAY_ITEMS, int)
             assert True, "settings 模組導入成功"
         except ImportError as e:
@@ -49,7 +49,7 @@ class TestEnvironment:
         """測試臨時目錄夾具"""
         assert temp_dir.exists(), "臨時目錄應該存在"
         assert temp_dir.is_dir(), "應該是一個目錄"
-        
+
         # 測試可以在臨時目錄中創建檔案
         test_file = temp_dir / "test.txt"
         test_file.write_text("test content")
@@ -58,6 +58,7 @@ class TestEnvironment:
     def test_mock_env_vars(self, mock_env_vars):
         """測試環境變數 mock"""
         import os
+
         assert os.getenv("GEMINI_API_KEY") == "test-api-key"
         assert "GEMINI_GENERATE_MODEL" in mock_env_vars
 
@@ -81,7 +82,7 @@ class TestPytestConfiguration:
         """測試 pytest 標記是否正確註冊"""
         markers = pytestconfig.getini("markers")
         expected_markers = {"slow", "integration", "unit", "ai", "mock"}
-        
+
         # 檢查我們定義的標記是否存在
         for marker in expected_markers:
             assert any(marker in m for m in markers), f"標記 '{marker}' 應該被註冊"

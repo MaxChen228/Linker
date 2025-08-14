@@ -13,3 +13,11 @@ uvicorn[standard]>=0.23.0
 jinja2>=3.1.2
 python-multipart>=0.0.9
 prometheus-fastapi-instrumentator>=7.0.0
+
+# 資料庫支援 (第一階段準備)
+asyncpg>=0.29.0  # PostgreSQL 異步驅動程式
+psycopg2-binary>=2.9.7  # PostgreSQL 同步驅動程式 (備用)
+pydantic-settings>=2.0.0  # 設定管理
+
+# 開發與品質工具
+pre-commit>=3.0.0
