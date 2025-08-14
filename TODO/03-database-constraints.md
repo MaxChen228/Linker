@@ -3,6 +3,8 @@
 ## 優先級: MEDIUM
 ## 預估時間: 8-12 小時
 ## 狀態: 🚧 IN_PROGRESS [@agent-1 at:2025-08-14 16:30]
+## 最後更新: 2025-08-14 19:16
+## 進度: 60% 完成
 
 ### 背景
 當前資料庫 schema 缺少關鍵的外鍵約束和檢查約束，可能導致數據不一致。
@@ -21,7 +23,7 @@
   - [x] 查找重複數據
 
 #### B. 外鍵約束實現 (3小時)
-- [ ] 創建遷移腳本 `add_foreign_keys.sql`
+- [x] 創建遷移腳本 `add_database_constraints.sql`
   ```sql
   -- knowledge_points 表
   ALTER TABLE knowledge_points
@@ -146,3 +148,45 @@ ALTER TABLE knowledge_points DROP CONSTRAINT IF EXISTS uk_knowledge_content;
 - `/Users/chenliangyu/Desktop/linker/core/database/schema.sql`
 - `/Users/chenliangyu/Desktop/linker/scripts/init_database.py`
 - PostgreSQL 文檔: https://www.postgresql.org/docs/current/ddl-constraints.html
+
+### 進度記錄
+
+#### 2025-08-14 19:16 - Agent-1
+**已完成項目：**
+1. ✅ 分析現有 Schema
+   - 審查了 11 個表的結構
+   - 識別出缺少的檢查約束和唯一約束
+   - 創建了詳細的分析報告 `docs/database_constraints_analysis.md`
+
+2. ✅ 數據完整性檢查
+   - 創建了 `scripts/check_data_integrity.sql` 檢查腳本
+   - 發現並修復了 22 個重複記錄（ID 重複和內容重複）
+   - 創建了 `scripts/fix_duplicate_data.py` 自動修復工具
+
+3. ✅ 創建遷移腳本
+   - 完成了 `scripts/add_database_constraints.sql`
+   - 包含 4 個階段：檢查約束、唯一約束、性能索引、外鍵補充
+   - 使用 DO 塊避免重複添加約束
+
+**待完成項目：**
+- [ ] 測試外鍵約束（級聯刪除、引用完整性）
+- [ ] 測試檢查約束（無效數據插入、錯誤訊息）
+- [ ] 測試唯一約束
+- [ ] 分析查詢模式並創建性能索引
+- [ ] 制定遷移執行計劃和備份策略
+
+**關鍵發現：**
+- 現有 schema 已包含大部分外鍵約束，設計良好
+- 主要缺失：category 值域檢查、時間邏輯檢查、統計數據一致性檢查
+- JSON 模式下發現大量測試數據重複（已清理）
+
+**創建的文件：**
+- `docs/database_constraints_analysis.md` - 約束分析報告
+- `scripts/check_data_integrity.sql` - 數據完整性檢查
+- `scripts/add_database_constraints.sql` - 約束添加遷移腳本
+- `scripts/fix_duplicate_data.py` - 重複數據修復工具
+- `data/knowledge.json.backup_20250814_191448` - 數據備份
+
+**Commits：**
+- 158f053: chore: agent-1 claiming task-03 database constraints
+- 0e498fa: feat: 完成資料庫約束任務第一階段
