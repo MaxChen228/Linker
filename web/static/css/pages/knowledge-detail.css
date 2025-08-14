@@ -184,7 +184,7 @@
   align-items: stretch;
 }
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .detail-stats {
     grid-template-columns: 1fr 1fr;
   }
@@ -1014,7 +1014,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .knowledge-detail-container {
     padding: var(--space-4);
   }

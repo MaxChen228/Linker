@@ -1,0 +1,37 @@
+/* ================================================
+   斷點設計令牌 (Breakpoint Design Tokens)
+   ================================================ */
+
+:root {
+  /* 斷點定義 - 基於常用設計系統標準 */
+  --breakpoint-xs: 480px;   /* 超小螢幕：手機直向 */
+  --breakpoint-sm: 640px;   /* 小螢幕：手機橫向 */
+  --breakpoint-md: 768px;   /* 中等螢幕：平板直向 */
+  --breakpoint-lg: 1024px;  /* 大螢幕：平板橫向、小筆電 */
+  --breakpoint-xl: 1280px;  /* 超大螢幕：桌機 */
+  --breakpoint-2xl: 1536px; /* 超超大螢幕：大桌機 */
+  
+  /* 其他常用斷點 */
+  --breakpoint-tablet: 769px;  /* 平板以上 (md + 1px) */
+  --breakpoint-desktop: 1200px; /* 桌機標準 */
+  --breakpoint-wide: 1600px;    /* 寬螢幕 */
+}
+
+/* ================================================
+   使用範例與說明
+   ================================================ 
+
+   基本用法：
+   @media (max-width: var(--breakpoint-md)) {
+     // 768px 以下的樣式
+   }
+
+   @media (min-width: var(--breakpoint-lg)) {
+     // 1024px 以上的樣式  
+   }
+
+   範圍查詢：
+   @media (min-width: var(--breakpoint-md)) and (max-width: var(--breakpoint-lg)) {
+     // 768px 到 1024px 之間的樣式
+   }
+*/

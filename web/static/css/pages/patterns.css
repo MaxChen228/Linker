@@ -268,7 +268,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .patterns-grid {
     grid-template-columns: 1fr;
   }

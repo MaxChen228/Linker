@@ -828,6 +828,193 @@ footer small {
   user-select: auto !important;
 }
 
+/* ========== Dynamic Utilities ========== */
+
+/* Dynamic Progress Utilities */
+.progress-dynamic {
+  width: var(--progress-width, 0%);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.progress-height-dynamic {
+  height: var(--progress-height, 0%);
+  transition: height var(--duration-normal) var(--ease-out);
+}
+
+.progress-circle-dynamic {
+  stroke-dashoffset: var(--progress-offset, 251.2);
+  transition: stroke-dashoffset var(--duration-normal) var(--ease-out);
+}
+
+/* Mastery Level Indicators */
+.mastery-indicator {
+  width: var(--mastery-level, 0%);
+  transition: width var(--duration-slow) var(--ease-out);
+}
+
+.mastery-opacity {
+  opacity: var(--mastery-opacity, 0);
+  transition: opacity var(--duration-normal) var(--ease-in-out);
+}
+
+.mastery-scale {
+  transform: scale(var(--mastery-scale, 1));
+  transition: transform var(--duration-normal) var(--ease-bounce);
+}
+
+/* Dynamic Dimensions */
+.width-dynamic {
+  width: var(--dynamic-width, auto);
+  transition: width var(--duration-normal) var(--ease-in-out);
+}
+
+.height-dynamic {
+  height: var(--dynamic-height, auto);
+  transition: height var(--duration-normal) var(--ease-in-out);
+}
+
+.max-width-dynamic {
+  max-width: var(--dynamic-max-width, none);
+  transition: max-width var(--duration-normal) var(--ease-in-out);
+}
+
+.max-height-dynamic {
+  max-height: var(--dynamic-max-height, none);
+  transition: max-height var(--duration-normal) var(--ease-in-out);
+}
+
+/* Dynamic Positioning */
+.translate-x-dynamic {
+  transform: translateX(var(--translate-x, 0));
+  transition: transform var(--duration-normal) var(--ease-in-out);
+}
+
+.translate-y-dynamic {
+  transform: translateY(var(--translate-y, 0));
+  transition: transform var(--duration-normal) var(--ease-in-out);
+}
+
+.translate-dynamic {
+  transform: translate(var(--translate-x, 0), var(--translate-y, 0));
+  transition: transform var(--duration-normal) var(--ease-in-out);
+}
+
+/* Dynamic Colors */
+.color-dynamic {
+  color: var(--dynamic-color, var(--text-primary));
+  transition: color var(--duration-normal) var(--ease-in-out);
+}
+
+.bg-dynamic {
+  background-color: var(--dynamic-bg, transparent);
+  transition: background-color var(--duration-normal) var(--ease-in-out);
+}
+
+.border-color-dynamic {
+  border-color: var(--dynamic-border-color, var(--border-default));
+  transition: border-color var(--duration-normal) var(--ease-in-out);
+}
+
+/* Dynamic Rotation */
+.rotate-dynamic {
+  transform: rotate(var(--rotation-angle, 0deg));
+  transition: transform var(--duration-normal) var(--ease-in-out);
+}
+
+/* Animation State Utilities */
+.animate-slide-out {
+  animation: slideOutRight var(--duration-normal) var(--ease-in) forwards;
+}
+
+.animate-slide-in {
+  animation: slideInRight var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-slide-out-left {
+  animation: slideOutLeft var(--duration-normal) var(--ease-in) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-slide-out-up {
+  animation: slideOutUp var(--duration-normal) var(--ease-in) forwards;
+}
+
+.animate-slide-in-down {
+  animation: slideInDown var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-fade-out {
+  animation: fadeOut var(--duration-normal) var(--ease-in) forwards;
+}
+
+.animate-scale-out {
+  animation: scaleOut var(--duration-normal) var(--ease-in) forwards;
+}
+
+.animate-bounce-in {
+  animation: bounceIn var(--duration-slow) var(--ease-bounce) forwards;
+}
+
+/* Interactive Animation States */
+.hover-animate:hover {
+  animation: var(--hover-animation, pulse 0.5s ease-in-out);
+}
+
+.focus-animate:focus {
+  animation: var(--focus-animation, pulse 0.3s ease-in-out);
+}
+
+.active-animate:active {
+  animation: var(--active-animation, scaleIn 0.15s ease-out);
+}
+
+/* Performance Optimizations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.animation-fill-both {
+  animation-fill-mode: both;
+}
+
+.animation-fill-forwards {
+  animation-fill-mode: forwards;
+}
+
+.animation-fill-backwards {
+  animation-fill-mode: backwards;
+}
+
+/* ========== Link and Interaction Utilities ========== */
+.link-plain {
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+.link-plain:hover {
+  text-decoration: none !important;
+}
+
+/* ========== Progress Bar Utilities ========== */
+.progress-bar {
+  width: var(--width, 0%);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.mastery-fill {
+  width: var(--width, 0%);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.mastery-indicator {
+  width: var(--width, 0%);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
 /* ========== Print Utilities ========== */
 @media print {
   .no-print {

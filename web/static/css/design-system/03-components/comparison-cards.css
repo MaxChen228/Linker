@@ -259,7 +259,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .error-comparison {
     flex-direction: column;
     gap: var(--space-3);

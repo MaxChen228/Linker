@@ -11,7 +11,7 @@
   gap: var(--space-1);
   
   /* 尺寸 - 預設 medium */
-  height: 24px;
+  height: var(--width-icon);
   padding: 0 var(--space-3);
   
   /* 文字 */
@@ -23,7 +23,7 @@
   
   /* 視覺 */
   border-radius: var(--radius-full);
-  border: 1px solid transparent;
+  border: var(--border-width-thin) solid transparent;
   transition: all 0.2s ease;
   
   /* 預設樣式 */
@@ -311,7 +311,7 @@
 /* 響應式設計                                   */
 /* ============================================ */
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .badge {
     font-size: 0.6875rem;
   }

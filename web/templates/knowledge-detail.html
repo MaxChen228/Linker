@@ -39,7 +39,7 @@
                 <span class="stat-label">掌握度</span>
                 <div class="mastery-display">
                     <div class="mastery-bar">
-                        <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+                        <div class="mastery-fill" style="--width: {{ (point.mastery_level * 100)|int }}%"></div>
                     </div>
                     <span class="mastery-text">{{ (point.mastery_level * 100)|int }}%</span>
                 </div>
@@ -175,7 +175,7 @@
 </div>
 
 <!-- 編輯模態框 -->
-<div id="editModal" class="modal-overlay" style="display: none;">
+<div id="editModal" class="modal-overlay hidden">
     <div class="modal" data-size="lg">
         <div class="modal-header">
             <h2 class="modal-title">編輯知識點</h2>

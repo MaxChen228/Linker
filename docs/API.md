@@ -1,228 +1,327 @@
-# API Reference
+# API Reference (v4.0)
 
-## Base URL
+本文件描述了 Linker 學習平台最新的 API 端點，對應專案版本 v4.0+。
+
+## 基礎 URL
 ```
 http://localhost:8000
 ```
 
-## Authentication
-Currently no authentication required. API keys for Gemini AI are configured server-side.
+## 認證
+所有 API 端點目前皆不需認證。AI 服務的 API 金鑰由後端伺服器透過環境變數管理。
 
-## Endpoints
+---
 
-### Practice Module
+## 練習與批改 (Practice & Grading)
 
-#### Generate Practice Sentence
+核心的練習流程 API。
+
+### 1. 生成練習題目
 ```http
-POST /api/generate
+POST /api/generate-question
 ```
+根據指定模式和條件生成一個新的練習題目。
 
 **Request Body:**
 ```json
 {
-  "difficulty": 1-5,
-  "sentence_length": "short" | "medium" | "long",
-  "mode": "new" | "review",
-  "knowledge_ids": [1, 2, 3]  // Optional, for review mode
+  "mode": "new" | "review" | "pattern",
+  "length": "short" | "medium" | "long",
+  "level": 1 | 2 | 3 | 4 | 5,
+  "pattern_id": "GP001" 
 }
 ```
+- `mode` (string, required): 練習模式。
+  - `new`: 全新題目。
+  - `review`: 根據待複習知識點出題。
+  - `pattern`: 根據指定文法句型出題。
+- `length` (string, required): 句子長度。
+- `level` (integer, required): 難度等級 (1-5)。
+- `pattern_id` (string, optional): 在 `pattern` 模式下指定要練習的句型 ID。若不提供，則隨機選擇。
 
-**Response:**
+**Success Response (200 OK):**
 ```json
 {
-  "sentence": "我今天很忙。",
-  "hint": "注意時態的使用",
-  "difficulty_level": 2,
-  "is_review": false
+  "success": true,
+  "chinese": "這不僅是他的責任，也是他的榮幸。",
+  "hint": "練習句型：Not only... but also...",
+  "target_point_ids": [12, 15],
+  "target_points": [
+    {
+      "id": 12,
+      "key_point": "倒裝結構: Not only...",
+      "category": "systematic",
+      "mastery_level": 0.25
+    }
+  ],
+  "target_points_description": "本題考察：倒裝結構"
 }
 ```
 
-#### Submit Translation
+### 2. 批改翻譯答案
 ```http
-POST /api/submit
+POST /api/grade-answer
 ```
+提交使用者翻譯，由 AI 進行批改、評分並返回詳細分析。
 
 **Request Body:**
 ```json
 {
-  "chinese_sentence": "我今天很忙。",
-  "user_answer": "I am busy today.",
-  "practice_mode": "new"
+  "chinese": "這不僅是他的責任，也是他的榮幸。",
+  "english": "Not only this is his duty, but also his honor.",
+  "mode": "new" | "review" | "pattern",
+  "target_point_ids": [12, 15]
 }
 ```
+- `chinese` (string, required): 原始中文題目。
+- `english` (string, required): 使用者的英文翻譯。
+- `mode` (string, required): 練習模式。
+- `target_point_ids` (array, optional): 在 `review` 模式下，本次練習針對的知識點 ID 列表。
 
-**Response:**
+**Success Response (200 OK):**
 ```json
 {
-  "is_generally_correct": true,
-  "overall_suggestion": "I am very busy today.",
+  "success": true,
+  "score": 85,
+  "is_generally_correct": false,
+  "feedback": "Not only is this his duty, but it is also his honor.",
   "error_analysis": [
     {
-      "category": "enhancement",
-      "key_point_summary": "Missing intensity adverb",
-      "original_phrase": "busy",
-      "correction": "very busy",
-      "explanation": "The Chinese '很' indicates 'very'",
-      "severity": "minor"
+      "category": "systematic",
+      "key_point_summary": "倒裝錯誤: Not only...",
+      "original_phrase": "Not only this is",
+      "correction": "Not only is this",
+      "explanation": "當 'Not only' 放在句首時，其後的主要子句需要使用倒裝結構，即助動詞或be動詞要移到主詞前面。",
+      "severity": "major"
     }
   ]
 }
 ```
 
-### Knowledge Management
+---
 
-#### Get Knowledge Points
+## 知識點管理 (Knowledge Point Management)
+
+管理使用者錯誤記錄所生成的知識點。
+
+### 1. 獲取知識點詳情
 ```http
-GET /api/knowledge
+GET /api/knowledge/{point_id}
 ```
-
-**Query Parameters:**
-- `category`: Filter by error category (systematic/isolated/enhancement/other)
-- `mastery_min`: Minimum mastery level (0.0-1.0)
-- `mastery_max`: Maximum mastery level (0.0-1.0)
-- `limit`: Number of results (default: 50)
-
-**Response:**
+**Success Response (200 OK):**
 ```json
 {
-  "knowledge_points": [
-    {
-      "id": 1,
-      "key_point": "時態錯誤: go → went",
-      "category": "systematic",
-      "mastery_level": 0.3,
-      "mistake_count": 2,
-      "correct_count": 1,
-      "next_review": "2024-01-16T10:00:00"
-    }
-  ],
-  "total": 25
+  "id": 12,
+  "key_point": "倒裝錯誤: Not only...",
+  "category": "systematic",
+  "subtype": "inversion",
+  "explanation": "當 'Not only' 放在句首時...",
+  "original_phrase": "Not only this is",
+  "correction": "Not only is this",
+  "mastery_level": 0.25,
+  "mistake_count": 1,
+  "correct_count": 0,
+  "created_at": "2025-08-13T21:50:00Z",
+  "last_seen": "2025-08-13T21:50:00Z",
+  "next_review": "2025-08-14T21:50:00Z",
+  "is_deleted": false,
+  "tags": ["grammar", "inversion"],
+  "custom_notes": "這個錯誤經常犯，需要特別注意。",
+  "version_history": [...]
 }
 ```
 
-#### Update Knowledge Mastery
+### 2. 編輯知識點
 ```http
-PUT /api/knowledge/{id}/mastery
+PUT /api/knowledge/{point_id}
 ```
-
 **Request Body:**
 ```json
 {
-  "is_correct": true
+  "key_point": "新的重點描述",
+  "explanation": "更新後的詳細解釋",
+  "custom_notes": "新的使用者筆記"
 }
 ```
+*所有欄位均為可選。*
 
-**Response:**
+**Success Response (200 OK):**
 ```json
 {
-  "id": 1,
-  "new_mastery_level": 0.45,
-  "next_review": "2024-01-17T10:00:00"
-}
-```
-
-### Review System
-
-#### Get Review Queue
-```http
-GET /api/review/queue
-```
-
-**Response:**
-```json
-{
-  "review_items": [
-    {
-      "id": 1,
-      "key_point": "時態錯誤: go → went",
-      "priority_score": 0.85,
-      "days_overdue": 2
-    }
-  ],
-  "total_due": 5
-}
-```
-
-#### Generate Review Sentence
-```http
-POST /api/review/generate
-```
-
-**Request Body:**
-```json
-{
-  "knowledge_ids": [1, 2],
-  "difficulty": 3
-}
-```
-
-**Response:**
-```json
-{
-  "sentence": "他昨天去了圖書館。",
-  "hint": "注意過去式動詞變化",
-  "target_points": ["時態錯誤: go → went"],
-  "is_review": true
-}
-```
-
-### System Information
-
-#### Health Check
-```http
-GET /api/health
-```
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "version": "2.5.0",
-  "ai_service": "connected",
-  "data_version": "3.0"
-}
-```
-
-#### Get LLM Interaction Log
-```http
-GET /api/debug/llm
-```
-
-**Response:**
-```json
-{
-  "timestamp": "2024-01-15T12:00:00",
-  "model": "gemini-2.5-flash",
-  "prompt": "...",
-  "response": "...",
-  "duration_ms": 1500
-}
-```
-
-## Error Responses
-
-All endpoints may return error responses in the following format:
-
-```json
-{
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human-readable error message",
-    "details": {}  // Optional additional information
+  "success": true,
+  "message": "知識點已更新",
+  "history": {
+    "timestamp": "2025-08-13T22:00:00Z",
+    "before": { "custom_notes": "..." },
+    "after": { "custom_notes": "新的使用者筆記" },
+    "changed_fields": ["custom_notes"]
   }
 }
 ```
 
-Common error codes:
-- `INVALID_REQUEST`: Malformed request data
-- `AI_SERVICE_ERROR`: Gemini API failure
-- `NOT_FOUND`: Resource not found
-- `INTERNAL_ERROR`: Server error
+### 3. 軟刪除知識點 (移至回收站)
+```http
+DELETE /api/knowledge/{point_id}
+```
+**Request Body:**
+```json
+{
+  "reason": "這個知識點已經掌握了"
+}
+```
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "知識點已移至回收站"
+}
+```
 
-## Rate Limiting
+### 4. 從回收站復原知識點
+```http
+POST /api/knowledge/{point_id}/restore
+```
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "知識點已復原"
+}
+```
 
-Currently no rate limiting implemented. For production deployment, consider adding rate limiting middleware.
+### 5. 獲取回收站列表
+```http
+GET /api/knowledge/trash/list
+```
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "count": 1,
+  "items": [
+    {
+      "id": 10,
+      "key_point": "拼寫錯誤: recieve",
+      "deleted_at": "2025-08-10T10:00:00Z",
+      "deleted_reason": "已掌握"
+    }
+  ]
+}
+```
 
-## WebSocket Support
+### 6. 永久清理回收站
+```http
+POST /api/knowledge/trash/clear?days=30
+```
+永久刪除回收站中超過指定天數的項目。
 
-Not currently implemented. All communication is via REST API.
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "deleted_count": 5,
+  "message": "已永久刪除 5 個超過 30 天的知識點"
+}
+```
+
+### 7. 更新知識點標籤
+```http
+POST /api/knowledge/{point_id}/tags
+```
+**Request Body:**
+```json
+["grammar", "inversion", "C1-level"]
+```
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "標籤已更新",
+  "tags": ["grammar", "inversion", "C1-level"]
+}
+```
+
+### 8. 更新知識點筆記
+```http
+POST /api/knowledge/{point_id}/notes
+```
+**Request Body:**
+```json
+"這是我的自訂筆記內容。"
+```
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "筆記已更新",
+  "notes": "這是我的自訂筆記內容。"
+}
+```
+
+---
+
+## 文法句型 (Grammar Patterns)
+
+### 1. 獲取所有文法句型
+```http
+GET /api/patterns
+```
+獲取所有可用於練習的文法句型摘要列表。
+
+**Success Response (200 OK):**
+```json
+{
+  "success": true,
+  "patterns": [
+    {
+      "id": "GP001",
+      "pattern": "It is ... that ... (強調句)",
+      "category": "句子結構",
+      "formula": "It + be動詞 + 強調部分 + that/who + ...",
+      "core_concept": "用於強調句子中的特定部分，如主詞、受詞或副詞片語。"
+    }
+  ]
+}
+```
+
+---
+
+## 系統與調試 (System & Debug)
+
+### 1. 健康檢查
+```http
+GET /healthz
+```
+**Success Response (200 OK):**
+```json
+{
+  "status": "ok"
+}
+```
+
+### 2. 獲取調試資訊
+```http
+GET /debug-info
+```
+**Success Response (200 OK):**
+```json
+{
+  "environment": "development",
+  "log_level": "DEBUG",
+  "data_dir": "/Users/chenliangyu/Desktop/linker-cli/data",
+  "settings": { ... }
+}
+```
+
+---
+
+## 錯誤回應格式
+所有端點在發生錯誤時，都會回傳標準格式的 JSON。
+
+**Error Response (e.g., 400, 404, 500):**
+```json
+{
+  "detail": "Human-readable error message"
+}
+```
+*FastAPI 預設的錯誤回應格式為 `{"detail": "..."}`。*

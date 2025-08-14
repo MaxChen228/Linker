@@ -53,12 +53,13 @@ def create_app() -> FastAPI:
     app.middleware("http")(access_log_middleware)
 
     # 註冊路由
-    from web.routers import api_knowledge, knowledge, pages, patterns, practice, utils
+    from web.routers import api_knowledge, calendar, knowledge, pages, patterns, practice, utils
 
     app.include_router(pages.router)
     app.include_router(practice.router)
     app.include_router(knowledge.router)
     app.include_router(patterns.router)
+    app.include_router(calendar.router)  # 學習日曆路由
     app.include_router(utils.router)
     app.include_router(api_knowledge.router)  # 新增知識點 API 路由
 

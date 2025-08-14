@@ -14,7 +14,7 @@
   /* 尺寸 - 預設 medium */
   height: var(--btn-height-md);
   padding: var(--btn-padding-md);
-  min-width: 64px;
+  min-width: var(--min-width-button);
   
   /* 文字 */
   font-family: var(--font-sans);
@@ -44,7 +44,7 @@
 
 /* Hover 狀態 */
 .btn:hover:not(:disabled):not([data-loading="true"]) {
-  transform: translateY(-1px);
+  transform: translateY(var(--translate-xs));
 }
 
 /* Active 狀態 */
@@ -305,7 +305,7 @@
   padding: var(--btn-padding-lg);
   font-size: var(--btn-font-lg);
   gap: var(--btn-gap-lg);
-  min-width: 80px;
+  min-width: var(--min-width-button);
 }
 
 .btn[data-size="lg"][data-variant="icon"] {
@@ -330,7 +330,7 @@
   top: 50%;
   left: 50%;
   margin: -8px 0 0 -8px;
-  border: 2px solid currentColor;
+  border: var(--border-width-normal) solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
   animation: var(--animation-spin);
@@ -393,7 +393,7 @@
 }
 
 /* ========== 響應式 ========== */
-@media (max-width: 768px) {
+@media (max-width: var(--max-width-md)) {
   .btn {
     font-size: var(--text-sm);
   }
@@ -415,7 +415,7 @@
   
   .btn[data-loading="true"]::after {
     animation: none;
-    border: 2px solid currentColor;
+    border: var(--border-width-normal) solid currentColor;
     opacity: 0.5;
   }
 }

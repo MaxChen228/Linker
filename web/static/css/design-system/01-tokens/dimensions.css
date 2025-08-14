@@ -1,0 +1,92 @@
+/* ================================================
+   設計令牌 - 尺寸系統 (Dimension Tokens)
+   ================================================ */
+
+:root {
+  /* ================================================
+     容器最大寬度 (Container Max-widths)
+     ================================================ */
+  --max-width-xs: 320px;
+  --max-width-sm: 640px;
+  --max-width-md: 768px;
+  --max-width-lg: 1024px;
+  --max-width-xl: 1280px;
+  --max-width-content: 900px;
+  --max-width-reading: 65ch;
+  
+  /* Aliases for consistency with breakpoints.css */
+  --max-width-mobile: var(--max-width-sm);
+  --max-width-tablet: var(--max-width-md);
+  --max-width-desktop: var(--max-width-lg);
+  
+  /* ================================================
+     特定寬度 (Specific Widths)
+     ================================================ */
+  --width-sidebar: 280px;
+  --width-compact: 80px;
+  --width-icon: 24px;
+  --width-icon-sm: 16px;
+  --width-icon-lg: 32px;
+  --width-button-icon: 40px;
+  
+  /* ================================================
+     高度 (Heights)
+     ================================================ */
+  --height-header: 64px;
+  --height-footer: 80px;
+  --height-button: 40px;
+  --height-button-sm: 32px;
+  --height-button-lg: 48px;
+  --height-input: 40px;
+  --height-input-sm: 32px;
+  --height-input-lg: 48px;
+  --height-nav-item: 44px;
+  
+  /* ================================================
+     邊框寬度 (Border Widths)
+     ================================================ */
+  --border-width-thin: 1px;
+  --border-width-normal: 2px;
+  --border-width-thick: 3px;
+  --border-width-heavy: 4px;
+  
+  /* ================================================
+     變換值 (Transform Values)
+     ================================================ */
+  --translate-xs: 2px;
+  --translate-sm: 4px;
+  --translate-md: 8px;
+  --translate-lg: 16px;
+  --translate-xl: 24px;
+  
+  /* 負值變換 (Negative Transform Values) */
+  --translate-xs-neg: -2px;
+  --translate-sm-neg: -4px;
+  --translate-md-neg: -8px;
+  --translate-lg-neg: -16px;
+  --translate-xl-neg: -24px;
+  
+  /* ================================================
+     最小尺寸 (Minimum Sizes)
+     ================================================ */
+  --min-width-button: 80px;
+  --min-width-input: 120px;
+  --min-height-touch: 44px;
+  --min-height-card: 120px;
+  
+  /* ================================================
+     最大尺寸 (Maximum Sizes)
+     ================================================ */
+  --max-height-dropdown: 300px;
+  --max-width-modal: 600px;
+  --max-width-toast: 400px;
+  
+  /* ================================================
+     間距相關尺寸 (Spacing-related Dimensions)
+     ================================================ */
+  --gap-xs: 4px;
+  --gap-sm: 8px;
+  --gap-md: 16px;
+  --gap-lg: 24px;
+  --gap-xl: 32px;
+}

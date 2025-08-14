@@ -30,7 +30,7 @@
 }
 
 /* Low Performance Mode */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   :root {
     /* Reduce glass blur on mobile for better performance */
     --glass-blur: var(--glass-blur-light);

@@ -360,7 +360,7 @@
 /* 響應式設計                                   */
 /* ============================================ */
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .card {
     padding: var(--space-4);
   }

@@ -6,7 +6,7 @@
    ======================================== */
 
 .pattern-detail-container {
-  max-width: 900px;
+  max-width: var(--max-width-content);
   margin: 0 auto;
   padding: var(--space-8);
 }
@@ -146,7 +146,7 @@
 }
 
 .example-card:hover {
-  transform: translateX(4px);
+  transform: translateX(var(--translate-sm));
   box-shadow: var(--shadow-xs);
   border-color: var(--accent-300);
 }
@@ -158,7 +158,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: var(--border-width-thick);
   border-radius: var(--radius-sm) 0 0 var(--radius-sm);
 }
 
@@ -277,7 +277,7 @@
 
 .variation-item .label {
   flex-shrink: 0;
-  width: 80px;
+  width: var(--width-compact);
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--accent-600);
@@ -365,12 +365,12 @@
 
 .btn-practice:hover {
   background: var(--accent-700);
-  transform: translateY(-2px);
+  transform: translateY(var(--translate-xs-neg));
   box-shadow: var(--shadow-accent-lg);
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .pattern-detail-container {
     padding: var(--space-4);
   }

@@ -1,103 +1,105 @@
-# Technical Architecture
+# Technical Architecture (v4.0)
 
 ## System Overview
 
-Linker is built on a modern, scalable architecture using FastAPI for the backend and Server-Side Rendering (SSR) with Jinja2 templates for the frontend.
+Linker is built on a modern, decoupled architecture. The backend is a **FastAPI-based API service**, and the frontend is a **dynamic, single-page application (SPA)** driven by JavaScript that consumes this API.
 
-```
-┌─────────────────────────────────────────────────┐
-│                   Client Layer                   │
-│            (Browser / Mobile Device)             │
-└─────────────────┬───────────────────────────────┘
-                  │ HTTP/HTTPS
-┌─────────────────▼───────────────────────────────┐
-│                Application Layer                 │
-│                                                  │
-│  ┌──────────────────────────────────────────┐   │
-│  │            FastAPI Server                │   │
-│  │                                          │   │
-│  │  ┌────────────┐  ┌──────────────────┐  │   │
-│  │  │   Routes   │  │    Templates     │  │   │
-│  │  │            │  │   (Jinja2 SSR)   │  │   │
-│  │  └──────┬─────┘  └──────────────────┘  │   │
-│  │         │                               │   │
-│  │  ┌──────▼─────────────────────────┐    │   │
-│  │  │     Business Logic Layer       │    │   │
-│  │  │  ┌──────────┐ ┌─────────────┐ │    │   │
-│  │  │  │AIService │ │KnowledgeMgr │ │    │   │
-│  │  │  └──────────┘ └─────────────┘ │    │   │
-│  │  └─────────────────────────────────┘    │   │
-│  └──────────────────────────────────────────┘   │
-└─────────────────┬───────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────┐
-│                 External Services                │
-│  ┌──────────────────┐  ┌──────────────────┐    │
-│  │  Gemini AI API   │  │  Local Storage   │    │
-│  │  (2.5 Flash/Pro) │  │   (JSON Files)   │    │
-│  └──────────────────┘  └──────────────────┘    │
-└─────────────────────────────────────────────────┘
+This API-first approach provides flexibility, clear separation of concerns, and allows for future clients (e.g., mobile apps) to easily connect.
+
+```mermaid
+graph TD
+    subgraph Client Layer
+        A[Browser - SPA Frontend]
+    end
+
+    subgraph API Layer (FastAPI)
+        B[API Routers]
+        C[Business Logic Layer]
+        D[Data Access Layer]
+    end
+
+    subgraph Core Services
+        E[AI Service]
+        F[Knowledge Manager]
+        G[Tag Manager]
+    end
+
+    subgraph External Services
+        H[Google Gemini API]
+        I[Data Storage]
+    end
+
+    A -- HTTP/JSON --> B
+    B --> C
+    C --> E
+    C --> F
+    C --> G
+    F --> D
+    E -- API Call --> H
+    D -- File I/O --> I[JSON Files]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style H fill:#f69,stroke:#333,stroke-width:2px
 ```
 
 ## Core Components
 
-### 1. Web Layer (`web/`)
-- **FastAPI Application**: Handles HTTP requests and responses
-- **Routers**: Modular route handlers for different features
-- **Templates**: Jinja2 templates for server-side rendering
-- **Static Assets**: CSS design system and JavaScript for interactivity
+### 1. Frontend Layer (`web/static/` & `web/templates/`)
+- **Single-Page Application (SPA) Logic**: The core practice loop is managed by JavaScript (`practice-logic.js`), which dynamically fetches questions and submits answers by calling the backend API.
+- **HTML Skeleton**: Jinja2 templates (`practice.html`, `index.html`) are used to serve the initial HTML structure.
+- **CSS Design System**: A modular and reusable design system (`web/static/css/design-system/`) ensures a consistent and modern UI.
 
-### 2. Core Business Logic (`core/`)
-- **AIService**: Manages Gemini AI API interactions
-- **KnowledgeManager**: Handles knowledge point tracking and review scheduling
-- **ErrorClassifier**: Categorizes translation errors
-- **VersionManager**: Manages data schema migrations
+### 2. Backend API Layer (`web/`)
+- **FastAPI Application (`web/main.py`)**: The main entry point for the application, handling middleware, and startup events.
+- **API Routers (`web/routers/`)**: Modular route handlers for different features (practice, knowledge, patterns). All routes under `/api/` serve JSON data to the frontend.
 
-### 3. Data Layer
-- **JSON Storage**: Lightweight, file-based persistence
-- **Automatic Versioning**: Schema migration on startup
-- **Backup Strategy**: Automatic backups before migrations
+### 3. Core Business Logic (`core/`)
+- **AIService**: Manages all interactions with the Google Gemini API, including generating questions and grading translations. It uses separate models for generation (`gemini-2.5-flash`) and grading (`gemini-2.5-pro`).
+- **KnowledgeManager**: The heart of the learning system. It manages the lifecycle of `KnowledgePoint` objects, including creation from mistakes, mastery level updates, and scheduling for the spaced repetition system.
+- **TagManager**: Manages the grammar pattern tags, providing functionalities like searching, categorization, and validating tag combinations for practice.
+- **ErrorTypeSystem**: A sophisticated system for classifying user errors into four distinct categories (`systematic`, `isolated`, `enhancement`, `other`), which drives the learning and review logic.
+- **VersionManager**: Manages data schema versions and handles automated migrations for all JSON data files upon startup.
+
+### 4. Data Layer (`data/`)
+- **JSON Storage**: All application data (knowledge points, grammar patterns, practice logs) is persisted in local JSON files. This makes the application portable and easy to set up.
+- **Automatic Backups**: The system automatically creates backups of data files before performing version migrations.
+
+## Data Flow: A Typical Practice Loop
+
+1.  The user navigates to the `/practice` page. The FastAPI server returns the static HTML shell.
+2.  The frontend JavaScript (`practice-logic.js`) sends a request to `POST /api/generate-question`.
+3.  The `AIService` generates a new question and returns it as JSON.
+4.  The frontend renders the question in the browser.
+5.  The user types and submits their translation.
+6.  The frontend sends the user's answer to `POST /api/grade-answer`.
+7.  The `AIService` grades the answer. If incorrect, the `KnowledgeManager` creates or updates a corresponding `KnowledgePoint`.
+8.  The API returns the detailed grading result as JSON.
+9.  The frontend dynamically displays the feedback, score, and error analysis.
 
 ## Technology Stack
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|
-| Backend Framework | FastAPI 0.111+ | High-performance async web framework |
-| Template Engine | Jinja2 | Server-side rendering |
-| AI Service | Google Gemini API | Natural language processing |
-| Data Storage | JSON Files | Simple, portable data persistence |
-| CSS Architecture | Design System | Modular, maintainable styling |
+| Backend Framework | FastAPI | High-performance asynchronous API server |
+| Frontend Logic | Vanilla JavaScript (ES6+) | Dynamic UI updates and API communication |
+| Template Engine | Jinja2 | Serving the initial HTML page structure |
+| AI Service | Google Gemini API | Core NLP for generation and grading |
+| Data Storage | JSON Files | Simple, portable, and human-readable data persistence |
+| Code Quality | Ruff | Linting and formatting |
+| Testing | Pytest | Unit and integration testing |
 | Python Version | 3.9+ | Modern Python features |
 
-## Design Patterns
+## Design Principles
 
-### Dependency Injection
-All services are initialized once and injected where needed, ensuring single instances and efficient resource usage.
-
-### Repository Pattern
-Data access is abstracted through manager classes, allowing easy migration to databases if needed.
-
-### Service Layer
-Business logic is separated from web handlers, making the code testable and maintainable.
-
-## Performance Optimizations
-
-1. **Async Operations**: Non-blocking I/O for API calls
-2. **Connection Pooling**: Reused HTTP connections to AI services
-3. **Smart Caching**: Frequently accessed data cached in memory
-4. **Lazy Loading**: Resources loaded only when needed
-
-## Security Considerations
-
-- API keys stored in environment variables
-- Input validation on all user inputs
-- XSS protection through template escaping
-- No sensitive data in client-side code
+- **API-First**: The backend is designed as a standalone API, separating it from the frontend presentation.
+- **Modularity**: The code is organized into distinct, single-responsibility modules (`core`, `web`, `data`).
+- **Dependency Injection**: FastAPI's dependency injection system is used to manage services like `KnowledgeManager` and `AIService`.
+- **Configuration over Code**: Key parameters (model names, log levels) are managed via environment variables or settings files.
 
 ## Scalability Path
 
-The current architecture supports:
-- Horizontal scaling with load balancer
-- Migration to microservices
-- Database integration (PostgreSQL/MongoDB)
-- Container deployment (Docker/Kubernetes)
+The current architecture is designed for easy scaling:
+- **Stateless Backend**: The API is stateless, allowing for horizontal scaling by running multiple instances behind a load balancer.
+- **Database Migration**: The `KnowledgeManager` acts as a repository, allowing the JSON file storage to be swapped with a robust database (e.g., PostgreSQL, MongoDB) with minimal changes to the business logic.
+- **Client Flexibility**: The API-first design allows for the development of new clients, such as a native mobile app, without backend changes.

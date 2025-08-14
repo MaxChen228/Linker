@@ -1,7 +1,7 @@
 # Linker - AI-Powered English Learning Platform
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-green.svg)](https://fastapi.tiangolo.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-green.svg)](https://fastapi.tiangolo.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 An intelligent English translation practice system powered by Google Gemini AI, providing real-time grading, error analysis, and personalized learning tracking.
@@ -23,11 +23,20 @@ export GEMINI_API_KEY="your-api-key"
 
 ## Core Features
 
-- **Dual-Model AI System**: Gemini 2.5 Flash for generation, 2.5 Pro for grading
-- **Smart Error Classification**: Systematic, isolated, enhancement, and other error types
-- **Adaptive Review System**: Spaced repetition algorithm for knowledge retention
-- **Real-time Feedback**: Detailed error analysis with improvement suggestions
-- **Knowledge Management**: Automatic tracking and categorization of learning points
+- **API-First Architecture**: Decoupled backend (FastAPI) and dynamic frontend (Vanilla JS) for a responsive user experience and high scalability.
+- **Dual-Model AI System**: Utilizes Google's Gemini 2.5 Flash for efficient question generation and the more powerful Gemini 2.5 Pro for precise, in-depth grading.
+- **Multiple Practice Modes**:
+  - **New Questions**: For general practice.
+  - **Spaced Repetition**: Intelligently schedules reviews based on your performance.
+  - **Grammar Patterns**: Allows focused practice on specific grammar structures.
+- **Advanced Knowledge Management**: Go beyond simple tracking. You can now:
+  - **Edit** incorrect AI analysis or add your own insights.
+  - **Tag** knowledge points for custom categorization.
+  - **Add Notes** to any learning point.
+  - **Delete** mastered points to clean up your workspace.
+- **Recycle Bin**: Soft-deleted knowledge points are moved to a recycle bin, allowing you to restore them if needed.
+- **Smart Error Classification**: A sophisticated system automatically categorizes errors into **Systematic**, **Isolated**, **Enhancement**, or **Other** types, helping you focus on what matters most.
+- **Robust Data Handling**: Features an automatic data versioning and migration system to ensure data integrity across updates.
 
 ## System Requirements
 

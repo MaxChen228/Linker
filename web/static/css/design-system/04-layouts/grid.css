@@ -45,7 +45,7 @@
 /* ============================================ */
 
 /* 平板尺寸 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .cards-grid,
   .knowledge-cards,
   .patterns-grid {
@@ -64,7 +64,7 @@
 }
 
 /* 大螢幕優化 */
-@media (min-width: 1200px) {
+@media (min-width: var(--breakpoint-desktop)) {
   .cards-grid {
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   }
@@ -79,7 +79,7 @@
 }
 
 /* 超大螢幕優化 */
-@media (min-width: 1600px) {
+@media (min-width: var(--breakpoint-wide)) {
   .cards-grid,
   .knowledge-cards {
     max-width: 1400px;

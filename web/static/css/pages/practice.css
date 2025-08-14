@@ -15,9 +15,9 @@
 
 /* Spinner 樣式 */
 .spinner[data-type="simple"] {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--gray-300);
+  width: var(--space-5);
+  height: var(--space-5);
+  border: var(--space-1) solid var(--gray-300);
   border-top-color: var(--accent-500);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -63,7 +63,7 @@
   width: 90%;
   max-width: 1200px;
   max-height: 90vh;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 20px 60px var(--shadow-color-dark);
   display: flex;
   flex-direction: column;
@@ -82,8 +82,8 @@
 
 .debug-modal-header h2 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
 }
 
 .debug-modal-body {
@@ -104,7 +104,7 @@
   margin: 0 0 15px 0;
   color: var(--text-primary);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   border-bottom: 2px solid var(--border-default);
   padding-bottom: 10px;
 }
@@ -112,14 +112,14 @@
 .debug-section h4 {
   margin: 15px 0 10px 0;
   color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
 }
 
 .debug-info {
   background: var(--surface-base);
-  padding: 15px;
-  border-radius: 6px;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
 }
 
 .info-row {
@@ -134,27 +134,27 @@
 }
 
 .info-label {
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 
 .info-value {
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: var(--text-sm);
   font-family: 'Courier New', monospace;
 }
 
 .info-value.success {
   color: var(--success);
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
 .debug-json, .debug-prompt {
   background: var(--surface-dark);
   color: var(--text-secondary);
-  padding: 15px;
-  border-radius: 6px;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
   overflow-x: auto;
   font-family: 'Courier New', Consolas, monospace;
   font-size: 13px;
@@ -176,12 +176,12 @@
   margin-bottom: 10px;
   padding: 8px 12px;
   background: var(--surface-subtle);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
 }
 
 .prompt-stats span {
-  font-size: 14px;
+  font-size: var(--text-sm);
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -358,7 +358,7 @@
 .param-group select:focus {
   outline: none;
   border-color: var(--accent-400);
-  box-shadow: 0 0 0 3px var(--accent-100);
+  box-shadow: var(--focus-ring);
 }
 
 /* Shuffle button redesign */
@@ -399,7 +399,7 @@
   padding: var(--space-12) var(--space-4);
   background: var(--bg-accent-subtle);
   border-radius: var(--radius-xl);
-  border: 2px dashed var(--border-accent);
+  border: var(--space-1) dashed var(--border-accent);
   animation: var(--animation-pulse-subtle);
 }
 
@@ -499,7 +499,7 @@
   padding: var(--space-4);
   background: var(--surface-subtle);
   border-radius: var(--radius-lg);
-  border-left: 3px solid var(--accent-400);
+  border-left: var(--space-1) solid var(--accent-400);
 }
 
 .question-hint {
@@ -509,7 +509,7 @@
   padding: var(--space-3) var(--space-4);
   background: var(--info-light);
   border-radius: var(--radius);
-  border-left: 3px solid var(--info);
+  border-left: var(--space-1) solid var(--info);
   margin-top: var(--space-4);
   animation: var(--animation-fade-in);
 }
@@ -531,7 +531,7 @@
   padding: var(--space-3) var(--space-4);
   background: var(--warning-light);
   border-radius: var(--radius);
-  border-left: 3px solid var(--warning);
+  border-left: var(--space-1) solid var(--warning);
   animation: var(--animation-highlight);
 }
 
@@ -618,7 +618,7 @@
   outline: none;
   border-color: var(--accent-400);
   background: var(--surface-base);
-  box-shadow: 0 0 0 3px var(--accent-100);
+  box-shadow: var(--focus-ring);
 }
 
 .answer-input::placeholder {
@@ -642,7 +642,7 @@
   padding: var(--space-12) var(--space-4);
   background: var(--surface-elevated);
   border-radius: var(--radius-xl);
-  border: 2px dashed var(--border-default);
+  border: var(--space-1) dashed var(--border-default);
   animation: var(--animation-pulse-subtle);
   color: var(--text-secondary);
   min-height: 200px;
@@ -845,7 +845,7 @@
 }
 
 /* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .practice-container {
     padding: var(--space-6) var(--space-3);
   }

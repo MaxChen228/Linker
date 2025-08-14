@@ -67,34 +67,14 @@
   font-size: var(--text-sm);
 }
 
-.hidden {
-  display: none;
-}
-
-.visible {
-  display: block;
-}
-
-.opacity-0 {
-  opacity: 0;
-}
-
-.opacity-1 {
-  opacity: 1;
-}
-
-.flex {
-  display: flex;
-}
-
 /* Responsive Helpers */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-md)) {
   .hide-mobile {
     display: none;
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: var(--breakpoint-tablet)) {
   .show-mobile {
     display: none;
   }

@@ -1,10 +1,15 @@
 """
 Knowledge management API routes
 """
-from typing import Optional
-from fastapi import APIRouter, HTTPException, Request
+from typing import Optional, List, Dict, Any, Literal
+from fastapi import APIRouter, HTTPException, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from enum import Enum
+import uuid
+import asyncio
+import json
+from datetime import datetime
 
 from web.dependencies import get_knowledge_manager, get_logger
 
@@ -27,6 +32,39 @@ class EditKnowledgeRequest(BaseModel):
 class DeleteKnowledgeRequest(BaseModel):
     """刪除知識點請求"""
     reason: str = ""
+
+
+class BatchOperation(str, Enum):
+    """批量操作類型"""
+    DELETE = "delete"
+    UPDATE = "update"
+    EXPORT = "export"
+    TAG = "tag"
+    RESTORE = "restore"
+
+
+class BatchRequest(BaseModel):
+    """批量操作請求"""
+    operation: BatchOperation
+    ids: List[int]
+    data: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None
+
+
+class BatchProgress(BaseModel):
+    """批量操作進度"""
+    task_id: str
+    status: Literal["pending", "processing", "completed", "failed"]
+    progress: int
+    total: int
+    processed: int
+    errors: List[Dict[str, Any]] = []
+    eta: Optional[str] = None
+    result: Optional[Dict[str, Any]] = None
+
+
+# 批量操作任務存儲
+batch_tasks: Dict[str, BatchProgress] = {}
 
 
 @router.get("/{point_id}")
@@ -184,4 +222,250 @@ async def update_notes(point_id: int, notes: str):
         "success": True,
         "message": "筆記已更新",
         "notes": notes
+    })
+
+
+# ==================== 批量操作 API ====================
+
+async def process_batch_operation(
+    task_id: str,
+    operation: BatchOperation,
+    ids: List[int],
+    data: Optional[Dict[str, Any]],
+    knowledge_manager
+):
+    """異步處理批量操作"""
+    task = batch_tasks[task_id]
+    task.status = "processing"
+    
+    try:
+        if operation == BatchOperation.DELETE:
+            # 批量刪除
+            reason = data.get("reason", "") if data else ""
+            for i, point_id in enumerate(ids):
+                try:
+                    success = knowledge_manager.delete_knowledge_point(point_id, reason)
+                    if not success:
+                        task.errors.append({
+                            "id": point_id,
+                            "error": "刪除失敗"
+                        })
+                except Exception as e:
+                    task.errors.append({
+                        "id": point_id,
+                        "error": str(e)
+                    })
+                
+                task.processed = i + 1
+                task.progress = int((task.processed / task.total) * 100)
+                
+                # 避免阻塞
+                if i % 10 == 0:
+                    await asyncio.sleep(0.1)
+        
+        elif operation == BatchOperation.UPDATE:
+            # 批量更新
+            updates = data or {}
+            for i, point_id in enumerate(ids):
+                try:
+                    history = knowledge_manager.edit_knowledge_point(point_id, updates)
+                    if not history:
+                        task.errors.append({
+                            "id": point_id,
+                            "error": "更新失敗"
+                        })
+                except Exception as e:
+                    task.errors.append({
+                        "id": point_id,
+                        "error": str(e)
+                    })
+                
+                task.processed = i + 1
+                task.progress = int((task.processed / task.total) * 100)
+                
+                if i % 10 == 0:
+                    await asyncio.sleep(0.1)
+        
+        elif operation == BatchOperation.TAG:
+            # 批量添加標籤
+            tags = data.get("tags", []) if data else []
+            for i, point_id in enumerate(ids):
+                try:
+                    point = knowledge_manager.get_knowledge_point(point_id)
+                    if point:
+                        existing_tags = point.tags or []
+                        new_tags = list(set(existing_tags + tags))
+                        knowledge_manager.edit_knowledge_point(point_id, {"tags": new_tags})
+                    else:
+                        task.errors.append({
+                            "id": point_id,
+                            "error": "知識點不存在"
+                        })
+                except Exception as e:
+                    task.errors.append({
+                        "id": point_id,
+                        "error": str(e)
+                    })
+                
+                task.processed = i + 1
+                task.progress = int((task.processed / task.total) * 100)
+                
+                if i % 10 == 0:
+                    await asyncio.sleep(0.1)
+        
+        elif operation == BatchOperation.EXPORT:
+            # 批量導出
+            export_data = []
+            for i, point_id in enumerate(ids):
+                try:
+                    point = knowledge_manager.get_knowledge_point(point_id)
+                    if point:
+                        export_data.append(point.to_dict())
+                    else:
+                        task.errors.append({
+                            "id": point_id,
+                            "error": "知識點不存在"
+                        })
+                except Exception as e:
+                    task.errors.append({
+                        "id": point_id,
+                        "error": str(e)
+                    })
+                
+                task.processed = i + 1
+                task.progress = int((task.processed / task.total) * 100)
+            
+            task.result = {
+                "data": export_data,
+                "format": data.get("format", "json") if data else "json"
+            }
+        
+        elif operation == BatchOperation.RESTORE:
+            # 批量復原
+            for i, point_id in enumerate(ids):
+                try:
+                    success = knowledge_manager.restore_knowledge_point(point_id)
+                    if not success:
+                        task.errors.append({
+                            "id": point_id,
+                            "error": "復原失敗"
+                        })
+                except Exception as e:
+                    task.errors.append({
+                        "id": point_id,
+                        "error": str(e)
+                    })
+                
+                task.processed = i + 1
+                task.progress = int((task.processed / task.total) * 100)
+                
+                if i % 10 == 0:
+                    await asyncio.sleep(0.1)
+        
+        task.status = "completed"
+        task.eta = datetime.now().isoformat()
+        
+    except Exception as e:
+        task.status = "failed"
+        task.errors.append({
+            "error": f"批量操作失敗: {str(e)}"
+        })
+        logger.error(f"批量操作失敗: {e}")
+
+
+@router.post("/batch")
+async def batch_operation(
+    request: BatchRequest,
+    background_tasks: BackgroundTasks
+):
+    """批量操作端點"""
+    knowledge = get_knowledge_manager()
+    
+    # 生成任務 ID
+    task_id = str(uuid.uuid4())
+    
+    # 創建任務記錄
+    task = BatchProgress(
+        task_id=task_id,
+        status="pending",
+        progress=0,
+        total=len(request.ids),
+        processed=0,
+        errors=[]
+    )
+    batch_tasks[task_id] = task
+    
+    # 判斷是否需要異步處理
+    if len(request.ids) > 50 or (request.options and request.options.get("async")):
+        # 異步處理
+        background_tasks.add_task(
+            process_batch_operation,
+            task_id,
+            request.operation,
+            request.ids,
+            request.data,
+            knowledge
+        )
+        
+        return JSONResponse({
+            "success": True,
+            "async": True,
+            "task_id": task_id,
+            "message": f"批量操作已開始，共 {len(request.ids)} 項"
+        })
+    
+    else:
+        # 同步處理
+        await process_batch_operation(
+            task_id,
+            request.operation,
+            request.ids,
+            request.data,
+            knowledge
+        )
+        
+        task = batch_tasks[task_id]
+        
+        return JSONResponse({
+            "success": task.status == "completed",
+            "async": False,
+            "task_id": task_id,
+            "processed": task.processed,
+            "errors": task.errors,
+            "result": task.result
+        })
+
+
+@router.get("/batch/{task_id}/progress")
+async def get_batch_progress(task_id: str):
+    """查詢批量操作進度"""
+    if task_id not in batch_tasks:
+        raise HTTPException(status_code=404, detail="任務不存在")
+    
+    task = batch_tasks[task_id]
+    
+    return JSONResponse(task.dict())
+
+
+@router.delete("/batch/{task_id}")
+async def cancel_batch_operation(task_id: str):
+    """取消批量操作"""
+    if task_id not in batch_tasks:
+        raise HTTPException(status_code=404, detail="任務不存在")
+    
+    task = batch_tasks[task_id]
+    
+    if task.status == "processing":
+        # TODO: 實作取消邏輯
+        return JSONResponse({
+            "success": False,
+            "message": "暫不支援取消進行中的任務"
+        })
+    
+    # 清理已完成的任務
+    del batch_tasks[task_id]
+    
+    return JSONResponse({
+        "success": True,
+        "message": "任務已清理"
     })

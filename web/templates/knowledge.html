@@ -7,6 +7,54 @@
 {% endblock %}
 
 {% block content %}
+  <!-- 批量操作工具列 -->
+  <div class="batch-toolbar" data-mode="normal">
+    <div class="toolbar-content">
+      <!-- 進入選擇模式按鈕 -->
+      <button class="btn btn-select-mode" data-variant="secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <path d="M9 11l3 3L22 4"></path>
+        </svg>
+        批量選擇
+      </button>
+      
+      <!-- 選擇控制 -->
+      <div class="selection-controls">
+        <span class="selection-count">已選 <span>0</span> 項</span>
+        <button class="btn btn-select-all" data-variant="ghost">全選</button>
+        <button class="btn btn-invert" data-variant="ghost">反選</button>
+        <button class="btn btn-clear" data-variant="ghost">清除</button>
+      </div>
+      
+      <!-- 批量操作按鈕 -->
+      <div class="batch-actions">
+        <button class="btn btn-batch-delete" data-variant="danger" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
+          </svg>
+          批量刪除
+        </button>
+        <button class="btn btn-batch-export" data-variant="primary" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          導出
+        </button>
+        <button class="btn btn-batch-tag" data-variant="primary" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          標籤
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- 頁面標題與統計 -->
   <div class="knowledge-header">
     <div class="header-top">
@@ -24,7 +72,7 @@
           <span class="badge-label">平均掌握度</span>
           <span class="badge-value">{{ "%.0f"|format(stats.avg_mastery * 100) }}%</span>
         </div>
-        <a href="/knowledge/trash" class="badge" data-variant="neutral" data-size="xl" style="text-decoration: none; cursor: pointer;">
+        <a href="/knowledge/trash" class="badge link-plain" data-variant="neutral" data-size="xl">
           <span class="badge-label">回收站</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 6h18"></path>
@@ -94,7 +142,8 @@
   <div class="knowledge-grid">
     <!-- 系統性錯誤群組 -->
     {% for group in knowledge_groups %}
-    <div class="knowledge-group-compact" data-category="系統性錯誤" data-mastery-level="{{ group.avg_mastery|default(0) }}" data-search-text="{{ (group.name|default(''))|lower }}">
+    <div class="knowledge-group-compact" data-category="系統性錯誤" data-mastery-level="{{ group.avg_mastery|default(0) }}" data-search-text="{{ (group.name|default(''))|lower }}" data-item-id="group-{{ loop.index }}">
+      <input type="checkbox" class="selection-checkbox" />
       <div class="group-header-compact">
         <h3 class="group-title-compact">{{ group.name }}</h3>
         <div class="group-badges">
@@ -107,7 +156,7 @@
         <a href="/knowledge/{{ point.id }}" class="point-item-compact" data-mastery-level="{{ point.mastery_level }}">
           <span class="point-title-compact">{{ point.key_point[:30] }}{% if point.key_point|length > 30 %}...{% endif %}</span>
           <div class="point-stats-compact">
-            <span class="mastery-indicator" style="width: {{ (point.mastery_level * 100)|int }}%"></span>
+            <span class="mastery-indicator" style="--width: {{ (point.mastery_level * 100)|int }}%"></span>
             <span class="mistake-count">{{ point.mistake_count }}</span>
           </div>
         </a>
@@ -121,10 +170,13 @@
     
     <!-- 單一性錯誤 -->
     {% for point in isolated_points %}
-    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+    <div class="knowledge-card-compact" 
        data-category="單一性錯誤" 
        data-mastery-level="{{ point.mastery_level }}"
-       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}">
+       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}"
+       data-item-id="{{ point.id }}">
+      <input type="checkbox" class="selection-checkbox" />
+      <a href="/knowledge/{{ point.id }}" class="card-link">
       <div class="card-header-compact">
         <div class="card-title-compact">
           <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
@@ -135,22 +187,26 @@
       </div>
       <div class="card-body-compact">
         <div class="mastery-bar-compact">
-          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+          <div class="mastery-fill" style="--width: {{ (point.mastery_level * 100)|int }}%"></div>
         </div>
         <div class="card-stats-compact">
           <span class="stat">錯誤 {{ point.mistake_count }}</span>
           <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
         </div>
       </div>
-    </a>
+      </a>
+    </div>
     {% endfor %}
     
     <!-- 可以更好 -->
     {% for point in enhancement_points %}
-    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+    <div class="knowledge-card-compact" 
        data-category="可以更好" 
        data-mastery-level="{{ point.mastery_level }}"
-       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}">
+       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}"
+       data-item-id="{{ point.id }}">
+      <input type="checkbox" class="selection-checkbox" />
+      <a href="/knowledge/{{ point.id }}" class="card-link">
       <div class="card-header-compact">
         <div class="card-title-compact">
           <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
@@ -161,22 +217,26 @@
       </div>
       <div class="card-body-compact">
         <div class="mastery-bar-compact">
-          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+          <div class="mastery-fill" style="--width: {{ (point.mastery_level * 100)|int }}%"></div>
         </div>
         <div class="card-stats-compact">
           <span class="stat">錯誤 {{ point.mistake_count }}</span>
           <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
         </div>
       </div>
-    </a>
+      </a>
+    </div>
     {% endfor %}
     
     <!-- 其他錯誤 -->
     {% for point in other_points %}
-    <a href="/knowledge/{{ point.id }}" class="knowledge-card-compact" 
+    <div class="knowledge-card-compact" 
        data-category="其他錯誤" 
        data-mastery-level="{{ point.mastery_level }}"
-       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}">
+       data-search-text="{{ (point.key_point|default(''))|lower }} {{ (point.explanation|default(''))|lower }}"
+       data-item-id="{{ point.id }}">
+      <input type="checkbox" class="selection-checkbox" />
+      <a href="/knowledge/{{ point.id }}" class="card-link">
       <div class="card-header-compact">
         <div class="card-title-compact">
           <span class="error-text">{{ point.original_phrase[:20] }}{% if point.original_phrase|length > 20 %}...{% endif %}</span>
@@ -187,19 +247,20 @@
       </div>
       <div class="card-body-compact">
         <div class="mastery-bar-compact">
-          <div class="mastery-fill" style="width: {{ (point.mastery_level * 100)|int }}%"></div>
+          <div class="mastery-fill" style="--width: {{ (point.mastery_level * 100)|int }}%"></div>
         </div>
         <div class="card-stats-compact">
           <span class="stat">錯誤 {{ point.mistake_count }}</span>
           <span class="stat">{{ (point.mastery_level * 100)|int }}%</span>
         </div>
       </div>
-    </a>
+      </a>
+    </div>
     {% endfor %}
   </div>
   
   <!-- 無結果提示 -->
-  <div class="no-results" id="no-knowledge-results" style="display: none;">
+  <div class="no-results hidden" id="no-knowledge-results">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="11" cy="11" r="8"></circle>
       <path d="m21 21-4.35-4.35"></path>
@@ -210,6 +271,9 @@
 {% endblock %}
 
 {% block scripts %}
+<!-- 引入選擇管理器和批量操作 -->
+<script src="/static/js/selection-manager.js"></script>
+<script src="/static/js/batch-operations.js"></script>
 <script>
 // 篩選功能 - 支援組合篩選
 let activeFilters = {
@@ -261,9 +325,63 @@ function applyFilters() {
   }
 }
 
+// 初始化選擇管理器和批量操作
+let selectionManager = null;
+let batchOperations = null;
+
 // 頁面載入完成後初始化
 document.addEventListener('DOMContentLoaded', function() {
   console.log('[知識點頁面] DOM 載入完成，初始化篩選功能');
+  
+  // 初始化選擇管理器
+  selectionManager = new SelectionManager();
+  
+  // 初始化批量操作
+  batchOperations = new BatchOperations(selectionManager);
+  
+  // 監聽選擇變化
+  selectionManager.on('selectionchange', (data) => {
+    console.log('[選擇變化]', data);
+    
+    // 可以在這裡添加批量操作的邏輯
+    if (data.count > 0) {
+      // 啟用批量操作按鈕
+    }
+  });
+  
+  // 綁定批量操作按鈕
+  const batchDeleteBtn = document.querySelector('.btn-batch-delete');
+  if (batchDeleteBtn) {
+    batchDeleteBtn.addEventListener('click', async () => {
+      const selected = selectionManager.getSelectedIds();
+      if (selected.length === 0) return;
+      
+      // 使用批量操作處理器
+      batchOperations.batchDelete();
+    });
+  }
+  
+  const batchExportBtn = document.querySelector('.btn-batch-export');
+  if (batchExportBtn) {
+    batchExportBtn.addEventListener('click', async () => {
+      const selected = selectionManager.getSelectedIds();
+      if (selected.length === 0) return;
+      
+      // 使用批量操作處理器
+      batchOperations.batchExport();
+    });
+  }
+  
+  const batchTagBtn = document.querySelector('.btn-batch-tag');
+  if (batchTagBtn) {
+    batchTagBtn.addEventListener('click', async () => {
+      const selected = selectionManager.getSelectedIds();
+      if (selected.length === 0) return;
+      
+      // 使用批量操作處理器
+      batchOperations.batchTag();
+    });
+  }
   
   // 綁定搜尋功能
   const searchInput = document.getElementById('knowledge-search');

@@ -267,7 +267,7 @@ class BatchOperations {
                     height: 100%;
                     background: linear-gradient(90deg, var(--accent-400), var(--accent-600));
                     transition: width 0.3s ease;
-                    width: 0%;
+                    width: var(--progress, 0%);
                 }
                 
                 .progress-info {
@@ -306,7 +306,7 @@ class BatchOperations {
         const percentage = container.querySelector('.progress-percentage');
         
         if (fill) {
-            fill.style.width = `${progress.progress}%`;
+            fill.style.setProperty('--progress', `${progress.progress}%`);
         }
         
         if (text) {
@@ -499,7 +499,8 @@ class BatchOperations {
         
         // 自動移除
         setTimeout(() => {
-            notification.style.animation = 'slideInRight 0.3s ease reverse';
+            notification.classList.remove('animate-slide-in');
+            notification.classList.add('animate-slide-out');
             setTimeout(() => {
                 notification.remove();
             }, 300);
@@ -577,6 +578,10 @@ class BatchOperations {
                     transform: translateX(0);
                     opacity: 1;
                 }
+            }
+            
+            .notification-exit {
+                animation: slideOutRight 0.3s ease !important;
             }
             
             .modal-overlay {
