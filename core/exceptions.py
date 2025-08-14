@@ -54,7 +54,7 @@ class LinkerError(Exception):
         return f"[{self.error_code}] {self.message}"
 
 
-class APIException(LinkerError):
+class APIError(LinkerError):
     """API調用相關異常"""
 
     def __init__(
@@ -78,7 +78,7 @@ class APIException(LinkerError):
         self.response = response
 
 
-class GeminiAPIException(APIException):
+class GeminiAPIError(APIError):
     """Gemini API 特定異常"""
 
     def __init__(self, message: str, model: Optional[str] = None, prompt: Optional[str] = None):
@@ -87,7 +87,7 @@ class GeminiAPIException(APIException):
         self.details.update({"model": model, "prompt_preview": prompt[:100] if prompt else None})
 
 
-class DataException(LinkerError):
+class DataError(LinkerError):
     """數據處理相關異常"""
 
     def __init__(
@@ -100,7 +100,7 @@ class DataException(LinkerError):
         )
 
 
-class ValidationException(LinkerError):
+class ValidationError(LinkerError):
     """數據驗證異常"""
 
     def __init__(
@@ -117,7 +117,7 @@ class ValidationException(LinkerError):
         )
 
 
-class ConfigException(LinkerError):
+class ConfigError(LinkerError):
     """配置相關異常"""
 
     def __init__(
@@ -130,7 +130,7 @@ class ConfigException(LinkerError):
         )
 
 
-class FileOperationException(LinkerError):
+class FileOperationError(LinkerError):
     """文件操作異常"""
 
     def __init__(
@@ -152,7 +152,7 @@ class FileOperationException(LinkerError):
         self.original_error = original_error
 
 
-class ParseException(LinkerError):
+class ParseError(LinkerError):
     """解析異常（JSON、文本等）"""
 
     def __init__(
@@ -173,7 +173,7 @@ class ParseException(LinkerError):
         )
 
 
-class UserInputException(LinkerError):
+class UserInputError(LinkerError):
     """用戶輸入異常"""
 
     def __init__(
@@ -194,7 +194,7 @@ class UserInputException(LinkerError):
         )
 
 
-class KnowledgeNotFound(LinkerError):
+class KnowledgeNotFoundError(LinkerError):
     """知識點不存在異常"""
 
     def __init__(
@@ -224,11 +224,11 @@ def handle_api_error(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except APIException:
+        except APIError:
             raise  # 直接重新拋出已經是APIException的異常
         except Exception as e:
             # 將其他異常轉換為APIException
-            raise APIException(message=f"API調用失敗: {str(e)}", api_name=func.__name__) from e
+            raise APIError(message=f"API調用失敗: {str(e)}", api_name=func.__name__) from e
 
     return wrapper
 
@@ -245,7 +245,7 @@ def handle_file_operation(operation: str):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except FileOperationException:
+            except FileOperationError:
                 raise  # 直接重新拋出
             except OSError as e:
                 # 嘗試從參數中提取文件路徑
@@ -254,7 +254,7 @@ def handle_file_operation(operation: str):
                     # 假設第一個參數可能是self，第二個是file_path
                     file_path = args[1] if len(args) > 1 else str(args[0])
 
-                raise FileOperationException(
+                raise FileOperationError(
                     message=f"文件{operation}操作失敗",
                     operation=operation,
                     file_path=str(file_path),
@@ -292,7 +292,7 @@ def safe_parse_json(content: str, default: Any = None) -> Any:
     except json.JSONDecodeError as e:
         if default is not None:
             return default
-        raise ParseException(
+        raise ParseError(
             message="JSON解析失敗", parse_type="JSON", content=content, original_error=e
         ) from e
 
@@ -324,7 +324,7 @@ def validate_input(
     """
     # 類型檢查
     if value_type is not None and not isinstance(value, value_type):
-        raise ValidationException(
+        raise ValidationError(
             message=f"{field_name}類型錯誤",
             field=field_name,
             value=value,
@@ -333,7 +333,7 @@ def validate_input(
 
     # 選項檢查
     if valid_options is not None and value not in valid_options:
-        raise ValidationException(
+        raise ValidationError(
             message=f"{field_name}不在有效選項中",
             field=field_name,
             value=value,
@@ -342,7 +342,7 @@ def validate_input(
 
     # 範圍檢查
     if min_value is not None and value < min_value:
-        raise ValidationException(
+        raise ValidationError(
             message=f"{field_name}小於最小值",
             field=field_name,
             value=value,
@@ -350,7 +350,7 @@ def validate_input(
         )
 
     if max_value is not None and value > max_value:
-        raise ValidationException(
+        raise ValidationError(
             message=f"{field_name}大於最大值",
             field=field_name,
             value=value,

@@ -226,7 +226,7 @@ class TestDatabaseConnectionMemoryManagement:
             conn._settings.DATABASE_URL = "postgresql://test"
 
             # 測試失敗清理
-            with pytest.raises(Exception):
+            with pytest.raises(Exception):  # noqa: B017
                 await conn.connect()
 
             # 驗證清理被調用
@@ -360,8 +360,8 @@ class TestDatabaseConnectionPerformance:
         async def create_pool_coro(*args, **kwargs):
             return mock_pool
 
-        with patch("asyncpg.create_pool", side_effect=create_pool_coro):
-            with patch.object(DatabaseSettings, "__init__", lambda self: None):
+        with patch("asyncpg.create_pool", side_effect=create_pool_coro), \
+             patch.object(DatabaseSettings, "__init__", lambda self: None):
                 conn = DatabaseConnection()
                 conn._settings = MagicMock()
                 conn._settings.USE_DATABASE = True

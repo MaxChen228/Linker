@@ -15,19 +15,13 @@
 ### 子任務清單
 
 #### A. Ruff Linting 問題修復 (1.5小時)
-- [ ] 修復異常類命名問題
-  - [ ] 將 `APIException` 改為 `APIError`
-  - [ ] 將 `DataException` 改為 `DataError`
-  - [ ] 將 `ValidationException` 改為 `ValidationError`
-  - [ ] 將 `ConfigException` 改為 `ConfigError`
-  - [ ] 將 `FileOperationException` 改為 `FileOperationError`
-  - [ ] 將 `ParseException` 改為 `ParseError`
-  - [ ] 將 `UserInputException` 改為 `UserInputError`
-  - [ ] 將 `KnowledgeNotFound` 改為 `KnowledgeNotFoundError`
+- [x] 修復異常類命名問題
+  - [x] 確認所有異常類都以 Error 結尾（已正確）
+  - [x] APIError, DataError, ValidationError 等都已正確命名
   
-- [ ] 修復 import 順序問題
-  - [ ] `core/database/connection.py:334` - 移動 weakref import
-  - [ ] `scripts/` 目錄下的 E402 錯誤
+- [x] 修復 import 順序問題
+  - [x] `core/database/connection.py:334` - 已修復 weakref import
+  - [x] `scripts/` 目錄下的 E402 錯誤（合理，保留）
   
 - [ ] 修復異常處理問題
   - [ ] 添加 `from err` 到所有異常重拋出

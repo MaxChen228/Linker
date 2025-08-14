@@ -13,13 +13,48 @@
 # Required
 GEMINI_API_KEY=your-api-key
 
-# Optional
+# Optional - For Database Mode
+USE_DATABASE=true
+DATABASE_URL=postgresql://user:password@host:port/dbname
+
+# Optional - General
 GEMINI_GENERATE_MODEL=gemini-2.5-flash  # Default
 GEMINI_GRADE_MODEL=gemini-2.5-pro       # Default
 LOG_LEVEL=INFO                          # INFO|DEBUG|WARNING|ERROR
 PORT=8000                                # Server port
 HOST=0.0.0.0                            # Bind address
 ```
+
+## Database Configuration
+
+By default, the application runs in JSON mode. To use a PostgreSQL database, follow these steps:
+
+1.  **Set Up PostgreSQL**: Ensure you have a running PostgreSQL server.
+
+2.  **Set Environment Variables**: Set `USE_DATABASE` and `DATABASE_URL` as shown above.
+
+    ```bash
+    export USE_DATABASE=true
+    export DATABASE_URL="postgresql://your_user:your_password@your_host:5432/linker"
+    ```
+
+3.  **Initialize the Database**: Run the initialization script to create all the necessary tables and indexes. This only needs to be done once.
+
+    ```bash
+    python scripts/init_database.py
+    ```
+
+4.  **Run Data Migration (Optional)**: If you have existing data in `data/knowledge.json` that you want to move to the database, run the migration script.
+
+    ```bash
+    python scripts/migrate_data.py
+    ```
+
+5.  **Start the Application**: Run the application as usual. It will now use the database as its backend.
+
+    ```bash
+    ./run.sh
+    ```
 
 ## Deployment Options
 
@@ -70,6 +105,8 @@ docker run -p 8000:8000 -e GEMINI_API_KEY=your-key linker
 
 ### 4. Docker Compose
 
+This is an example for running in database mode.
+
 ```yaml
 version: '3.8'
 services:
@@ -79,8 +116,9 @@ services:
       - "8000:8000"
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - USE_DATABASE=true
+      - DATABASE_URL=${DATABASE_URL} # e.g., postgresql://user:pass@host/db
     volumes:
-      - ./data:/app/data
       - ./logs:/app/logs
     restart: unless-stopped
 ```

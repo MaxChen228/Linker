@@ -12,7 +12,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from core.exceptions import KnowledgeNotFound
+from core.exceptions import KnowledgeNotFoundError
 from web.dependencies import get_knowledge_manager, get_logger
 
 router = APIRouter(prefix="/api/knowledge")
@@ -81,7 +81,7 @@ async def get_knowledge_point(point_id: int):
 
     try:
         point = knowledge.get_knowledge_point(str(point_id))
-    except KnowledgeNotFound as e:
+    except KnowledgeNotFoundError as e:
         return JSONResponse(
             status_code=404,
             content={"error_code": e.error_code, "detail": e.message, "point_id": e.point_id},
@@ -437,3 +437,82 @@ async def cancel_batch_operation(task_id: str):
     del batch_tasks[task_id]
 
     return JSONResponse({"success": True, "message": "任務已清理"})
+
+
+# === 學習推薦系統 API ===
+
+class RecommendationParams(BaseModel):
+    """推薦參數"""
+    include_statistics: bool = True
+    max_priority_points: int = 10
+
+
+@router.get("/recommendations")
+async def get_learning_recommendations(
+    params: RecommendationParams = RecommendationParams()
+):
+    """獲取學習推薦
+
+    根據用戶的學習歷史和掌握度提供個性化推薦
+
+    Returns:
+        包含推薦內容、重點領域、建議難度等信息
+    """
+    km = get_knowledge_manager()
+
+    try:
+        recommendations = km.get_learning_recommendations()
+
+        # 根據參數調整輸出
+        if not params.include_statistics:
+            recommendations.pop('statistics', None)
+
+        if params.max_priority_points < len(recommendations.get('priority_points', [])):
+            recommendations['priority_points'] = recommendations['priority_points'][:params.max_priority_points]
+
+        return JSONResponse({
+            "success": True,
+            "data": recommendations
+        })
+    except Exception as e:
+        logger.error(f"獲取推薦失敗: {e}")
+        raise HTTPException(status_code=500, detail=f"獲取推薦失敗: {str(e)}") from e
+
+
+class DeleteOldPointsRequest(BaseModel):
+    """刪除舊知識點請求"""
+    days_old: int = 30
+    dry_run: bool = True  # 預設為預覽模式
+
+
+@router.post("/maintenance/delete-old-points")
+async def delete_old_knowledge_points(
+    request: DeleteOldPointsRequest
+):
+    """永久刪除舊的已刪除知識點
+
+    清理回收站中超過指定天數的知識點，但保留高價值知識點
+
+    Args:
+        days_old: 刪除多少天前的知識點
+        dry_run: 是否只是預覽不實際刪除
+
+    Returns:
+        刪除統計信息
+    """
+    km = get_knowledge_manager()
+
+    try:
+        result = km.permanent_delete_old_points(
+            days_old=request.days_old,
+            dry_run=request.dry_run
+        )
+
+        return JSONResponse({
+            "success": True,
+            "data": result,
+            "message": "預覽完成" if request.dry_run else "刪除完成"
+        })
+    except Exception as e:
+        logger.error(f"刪除舊知識點失敗: {e}")
+        raise HTTPException(status_code=500, detail=f"刪除失敗: {str(e)}") from e

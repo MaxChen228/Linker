@@ -15,7 +15,7 @@ graph TD
     subgraph API Layer (FastAPI)
         B[API Routers]
         C[Business Logic Layer]
-        D[Data Access Layer]
+        D[Data Access Layer / Adapter]
     end
 
     subgraph Core Services
@@ -24,9 +24,13 @@ graph TD
         G[Tag Manager]
     end
 
+    subgraph Data Storage
+        I[JSON Files]
+        J[PostgreSQL Database]
+    end
+
     subgraph External Services
         H[Google Gemini API]
-        I[Data Storage]
     end
 
     A -- HTTP/JSON --> B
@@ -35,12 +39,14 @@ graph TD
     C --> F
     C --> G
     F --> D
+    D -- selects --> I
+    D -- selects --> J
     E -- API Call --> H
-    D -- File I/O --> I[JSON Files]
 
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#bbf,stroke:#333,stroke-width:2px
     style H fill:#f69,stroke:#333,stroke-width:2px
+    style J fill:#cde,stroke:#333,stroke-width:2px
 ```
 
 ## Core Components
@@ -61,8 +67,10 @@ graph TD
 - **ErrorTypeSystem**: A sophisticated system for classifying user errors into four distinct categories (`systematic`, `isolated`, `enhancement`, `other`), which drives the learning and review logic.
 - **VersionManager**: Manages data schema versions and handles automated migrations for all JSON data files upon startup.
 
-### 4. Data Layer (`data/`)
-- **JSON Storage**: All application data (knowledge points, grammar patterns, practice logs) is persisted in local JSON files. This makes the application portable and easy to set up.
+### 4. Data Layer (`core/database/` & `data/`)
+- **Dual Backend Support**: The system supports two data backends through a sophisticated **Adapter Pattern** (`core/database/adapter.py`).
+  - **JSON Storage**: The default backend uses local JSON files, making the application portable and easy to set up for development.
+  - **PostgreSQL Backend**: For production and scalability, the system can be configured to use a PostgreSQL database, offering higher performance, concurrency, and data integrity.
 - **Automatic Backups**: The system automatically creates backups of data files before performing version migrations.
 
 ## Data Flow: A Typical Practice Loop
@@ -73,7 +81,7 @@ graph TD
 4.  The frontend renders the question in the browser.
 5.  The user types and submits their translation.
 6.  The frontend sends the user's answer to `POST /api/grade-answer`.
-7.  The `AIService` grades the answer. If incorrect, the `KnowledgeManager` creates or updates a corresponding `KnowledgePoint`.
+7.  The `AIService` grades the answer. If incorrect, the `KnowledgeManager` (via the adapter) creates or updates a corresponding `KnowledgePoint` in the configured backend (JSON or PostgreSQL).
 8.  The API returns the detailed grading result as JSON.
 9.  The frontend dynamically displays the feedback, score, and error analysis.
 
@@ -85,7 +93,7 @@ graph TD
 | Frontend Logic | Vanilla JavaScript (ES6+) | Dynamic UI updates and API communication |
 | Template Engine | Jinja2 | Serving the initial HTML page structure |
 | AI Service | Google Gemini API | Core NLP for generation and grading |
-| Data Storage | JSON Files | Simple, portable, and human-readable data persistence |
+| Data Storage | JSON Files / PostgreSQL | Dual-backend support for data persistence |
 | Code Quality | Ruff | Linting and formatting |
 | Testing | Pytest | Unit and integration testing |
 | Python Version | 3.9+ | Modern Python features |
@@ -95,11 +103,11 @@ graph TD
 - **API-First**: The backend is designed as a standalone API, separating it from the frontend presentation.
 - **Modularity**: The code is organized into distinct, single-responsibility modules (`core`, `web`, `data`).
 - **Dependency Injection**: FastAPI's dependency injection system is used to manage services like `KnowledgeManager` and `AIService`.
-- **Configuration over Code**: Key parameters (model names, log levels) are managed via environment variables or settings files.
+- **Configuration over Code**: Key parameters (model names, log levels, database usage) are managed via environment variables or settings files.
 
 ## Scalability Path
 
-The current architecture is designed for easy scaling:
+The current architecture is highly scalable:
 - **Stateless Backend**: The API is stateless, allowing for horizontal scaling by running multiple instances behind a load balancer.
-- **Database Migration**: The `KnowledgeManager` acts as a repository, allowing the JSON file storage to be swapped with a robust database (e.g., PostgreSQL, MongoDB) with minimal changes to the business logic.
+- **Production-Ready Database**: The system's support for PostgreSQL means it is ready for production workloads that require high concurrency and large datasets. The `KnowledgeManagerAdapter` ensures that this powerful backend can be enabled with a simple configuration change.
 - **Client Flexibility**: The API-first design allows for the development of new clients, such as a native mobile app, without backend changes.

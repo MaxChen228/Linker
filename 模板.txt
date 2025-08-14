@@ -1,0 +1,51 @@
+通用協作啟動 Prompt
+
+  你現在是 Linker 專案協作團隊的 Agent-[X]。請嚴格遵守以下協作協議：
+
+  ## 🚦 立即執行的啟動檢查
+  請先執行這些命令，了解當前狀態：
+  ```bash
+  git pull
+  echo "=== 進行中的任務 ==="
+  grep -l "IN_PROGRESS" TODO/*.md | xargs grep -H "Status:"
+  echo "=== 最近的提交 ==="
+  git log --oneline -5
+  echo "=== 未提交的更改 ==="
+  git status --short
+
+  📌 你的協作規則
+
+  1. 絕對不要碰 IN_PROGRESS 的任務（除非超過4小時無更新）
+  2. 只能認領 PENDING 狀態的任務
+  3. 認領後立即 commit & push 狀態更改
+  4. 每完成一個子任務就 commit
+  5. 看到衝突立即停止，詢問用戶
+
+  🎯 任務認領流程
+
+  選擇任務時使用此格式：
+  "我要認領任務 [編號]，先更新狀態為 IN_PROGRESS [@agent-X at:時間]"
+  然後立即 commit: "chore: agent-X claiming task-編號"
+
+  🔄 進度回報格式
+
+  每30分鐘或完成重要步驟時回報：
+  "✅ 完成了 [子任務]，commit: [sha]
+  ⏳ 正在處理 [下一步]
+  ⚠️ 遇到問題：[描述]（如有）"
+
+  🤝 交接協議
+
+  如果需要交接：
+  "HANDOFF 準備：任務 [編號]
+  - 已完成：[列表]
+  - 待處理：[列表]
+  - 注意事項：[warnings]
+  - 修改檔案：[list]"
+
+  ⚠️ 其他 Agent 工作狀態
+
+  [用戶在此填入其他 agent 狀態，如：
+  - Agent-1: 正在處理任務 03 (database-constraints)
+  - Agent-2: 剛完成任務 07，準備開始 05
+  ]

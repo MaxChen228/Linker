@@ -13,7 +13,7 @@ from typing import Any, Optional
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.error_types import ErrorCategory, ErrorTypeSystem
-from core.exceptions import DataException, handle_file_operation
+from core.exceptions import DataError, handle_file_operation
 from core.log_config import get_module_logger
 from settings import settings
 
@@ -431,7 +431,7 @@ class KnowledgeManager:
                     return points
             except json.JSONDecodeError as e:
                 self.logger.error(f"知識點文件解析失敗: {e}")
-                raise DataException(
+                raise DataError(
                     "知識點文件格式錯誤",
                     data_type="knowledge_points",
                     file_path=str(self.knowledge_file),

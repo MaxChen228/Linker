@@ -162,7 +162,7 @@ class DatabaseConnection:
                 classified_error = classify_database_error(e)
                 self._logger.error(f"建立資料庫連線池失敗: {classified_error}")
                 await self._cleanup_failed_pool()
-                raise classified_error
+                raise classified_error from e
 
     async def disconnect(self) -> None:
         """安全關閉資料庫連線池"""
@@ -331,8 +331,6 @@ class DatabaseConnection:
 
 
 # 線程安全的全域實例管理，使用弱引用避免記憶體洩漏
-import weakref
-
 _db_connection_lock = threading.Lock()
 _db_connection_ref: Optional[weakref.ReferenceType] = None
 

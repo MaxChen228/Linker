@@ -36,6 +36,7 @@ export GEMINI_API_KEY="your-api-key"
   - **Delete** mastered points to clean up your workspace.
 - **Recycle Bin**: Soft-deleted knowledge points are moved to a recycle bin, allowing you to restore them if needed.
 - **Smart Error Classification**: A sophisticated system automatically categorizes errors into **Systematic**, **Isolated**, **Enhancement**, or **Other** types, helping you focus on what matters most.
+- **Production-Ready Database Backend**: Officially supports PostgreSQL for enhanced performance, data integrity, and scalability. A complete migration system from JSON to PostgreSQL is included.
 - **Robust Data Handling**: Features an automatic data versioning and migration system to ensure data integrity across updates.
 
 ## System Requirements
@@ -59,3 +60,5 @@ MIT License - See [LICENSE](LICENSE) file for details.
 ## Support
 
 For issues and questions, please use the [GitHub Issues](https://github.com/yourusername/linker-cli/issues) page.
+
+<!-- Hook detection test -->

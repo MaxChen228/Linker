@@ -477,6 +477,396 @@ class KnowledgeManagerAdapter:
         self.logger.warning("資料庫模式下請使用 import_from_json_async")
         return False
 
+    # === 缺失的同步方法實現 ===
+
+    def get_active_points(self) -> list[KnowledgePoint]:
+        """獲取所有活躍（未刪除）的知識點"""
+        if self._legacy_manager:
+            # JSON 模式
+            return [p for p in self._legacy_manager.knowledge_points if not p.is_deleted]
+        else:
+            # 資料庫模式 - 使用快取
+            if self._cache_dirty:
+                self.logger.warning("資料庫模式下建議使用 get_active_points_async")
+            return [p for p in self._knowledge_points_cache if not p.is_deleted]
+
+    def get_deleted_points(self) -> list[KnowledgePoint]:
+        """獲取回收站中的知識點"""
+        if self._legacy_manager:
+            # JSON 模式
+            return [p for p in self._legacy_manager.knowledge_points if p.is_deleted]
+        else:
+            # 資料庫模式 - 使用快取
+            return [p for p in self._knowledge_points_cache if p.is_deleted]
+
+    def get_points_by_category(self, category: str) -> list[KnowledgePoint]:
+        """按分類獲取知識點"""
+        if self._legacy_manager:
+            # JSON 模式
+            return [p for p in self._legacy_manager.knowledge_points
+                   if p.category.value == category and not p.is_deleted]
+        else:
+            # 資料庫模式 - 使用快取
+            return [p for p in self._knowledge_points_cache
+                   if p.category.value == category and not p.is_deleted]
+
+    def edit_knowledge_point(self, point_id: int, **kwargs) -> bool:
+        """編輯知識點（同步版本）"""
+        if self._legacy_manager:
+            # JSON 模式
+            for point in self._legacy_manager.knowledge_points:
+                if point.id == point_id:
+                    for key, value in kwargs.items():
+                        if hasattr(point, key):
+                            setattr(point, key, value)
+                    point.last_modified = datetime.now().isoformat()
+                    self._legacy_manager._save_knowledge()
+                    return True
+            return False
+        else:
+            # 資料庫模式 - 需要異步操作
+            self.logger.warning("資料庫模式下請使用 edit_knowledge_point_async 或 update_knowledge_point_async")
+            # 嘗試更新快取
+            for point in self._knowledge_points_cache:
+                if point.id == point_id:
+                    for key, value in kwargs.items():
+                        if hasattr(point, key):
+                            setattr(point, key, value)
+                    point.last_modified = datetime.now().isoformat()
+                    self._cache_dirty = True
+                    return True
+            return False
+
+    def delete_knowledge_point(self, point_id: int, reason: str = "") -> bool:
+        """刪除知識點（軟刪除）"""
+        if self._legacy_manager:
+            # JSON 模式
+            return self._legacy_manager.delete_knowledge_point(point_id, reason)
+        else:
+            # 資料庫模式
+            self.logger.warning("資料庫模式下請使用 delete_knowledge_point_async")
+            # 更新快取
+            for point in self._knowledge_points_cache:
+                if point.id == point_id:
+                    point.is_deleted = True
+                    point.deleted_at = datetime.now().isoformat()
+                    point.deleted_reason = reason
+                    self._cache_dirty = True
+                    return True
+            return False
+
+    def restore_knowledge_point(self, point_id: int) -> bool:
+        """恢復已刪除的知識點"""
+        if self._legacy_manager:
+            # JSON 模式
+            for point in self._legacy_manager.knowledge_points:
+                if point.id == point_id and point.is_deleted:
+                    point.is_deleted = False
+                    point.deleted_at = ""
+                    point.deleted_reason = ""
+                    self._legacy_manager._save_knowledge()
+                    return True
+            return False
+        else:
+            # 資料庫模式
+            self.logger.warning("資料庫模式下請使用 restore_knowledge_point_async")
+            # 更新快取
+            for point in self._knowledge_points_cache:
+                if point.id == point_id and point.is_deleted:
+                    point.is_deleted = False
+                    point.deleted_at = ""
+                    point.deleted_reason = ""
+                    self._cache_dirty = True
+                    return True
+            return False
+
+    def save_mistake(self, feedback: dict) -> bool:
+        """保存錯誤為知識點"""
+        if self._legacy_manager:
+            # JSON 模式
+            return self._legacy_manager.save_mistake(feedback)
+        else:
+            # 資料庫模式 - 簡化實現
+            self.logger.warning("資料庫模式下請使用 save_mistake_async")
+            return False
+
+    def get_all_mistakes(self) -> list[dict]:
+        """獲取所有錯誤記錄（以字典格式）"""
+        if self._legacy_manager:
+            # JSON 模式 - 調用原始方法
+            if hasattr(self._legacy_manager, 'get_all_mistakes'):
+                return self._legacy_manager.get_all_mistakes()
+            else:
+                # 簡化實現：轉換知識點為錯誤格式
+                mistakes = []
+                for point in self._legacy_manager.knowledge_points:
+                    if not point.is_deleted:
+                        mistakes.append({
+                            'id': point.id,
+                            'key_point': point.key_point,
+                            'category': point.category.value,
+                            'original_error': point.original_error,
+                            'mastery_level': point.mastery_level,
+                            'mistake_count': point.mistake_count
+                        })
+                return mistakes
+        else:
+            # 資料庫模式 - 從快取轉換
+            mistakes = []
+            for point in self._knowledge_points_cache:
+                if not point.is_deleted:
+                    mistakes.append({
+                        'id': point.id,
+                        'key_point': point.key_point,
+                        'category': point.category.value,
+                        'original_error': point.original_error,
+                        'mastery_level': point.mastery_level,
+                        'mistake_count': point.mistake_count
+                    })
+            return mistakes
+
+    def update_knowledge_point(self, point_id: int, **kwargs) -> bool:
+        """更新知識點（同 edit_knowledge_point）"""
+        return self.edit_knowledge_point(point_id, **kwargs)
+
+    # === 學習推薦系統 ===
+
+    def get_learning_recommendations(self) -> dict[str, Any]:
+        """獲取學習推薦
+
+        根據用戶的錯誤模式、掌握度和複習進度生成個性化推薦
+
+        Returns:
+            包含推薦信息的字典：
+            - recommendations: 推薦描述列表
+            - focus_areas: 重點學習領域
+            - suggested_difficulty: 建議難度等級
+            - next_review_count: 待複習知識點數量
+            - priority_points: 優先學習的知識點列表
+        """
+        from collections import defaultdict
+        from datetime import datetime
+
+        # 獲取所有活躍知識點
+        active_points = self.get_active_points()
+
+        if not active_points:
+            return {
+                'recommendations': ['開始第一次練習，建立學習基礎'],
+                'focus_areas': [],
+                'suggested_difficulty': 1,
+                'next_review_count': 0,
+                'priority_points': []
+            }
+
+        # 統計分析
+        low_mastery_points = []  # 低掌握度知識點（< 0.3）
+        medium_mastery_points = []  # 中等掌握度（0.3-0.7）
+        due_for_review = []  # 待複習的點
+        category_stats = defaultdict(lambda: {'count': 0, 'avg_mastery': 0, 'points': []})
+
+        now = datetime.now()
+
+        for point in active_points:
+            # 掌握度分類
+            if point.mastery_level < 0.3:
+                low_mastery_points.append(point)
+            elif point.mastery_level < 0.7:
+                medium_mastery_points.append(point)
+
+            # 檢查是否需要複習
+            if point.next_review:
+                review_date = datetime.fromisoformat(point.next_review)
+                if review_date <= now:
+                    due_for_review.append(point)
+
+            # 統計各類別
+            category = point.category.value
+            category_stats[category]['count'] += 1
+            category_stats[category]['avg_mastery'] += point.mastery_level
+            category_stats[category]['points'].append(point)
+
+        # 計算各類別平均掌握度
+        for _category, stats in category_stats.items():
+            if stats['count'] > 0:
+                stats['avg_mastery'] /= stats['count']
+
+        # 生成推薦
+        recommendations = []
+        focus_areas = []
+
+        # 1. 優先處理低掌握度的系統性錯誤
+        systematic_low = [p for p in low_mastery_points if p.category.value == 'systematic']
+        if systematic_low:
+            recommendations.append(
+                f'重點練習文法規則錯誤 ({len(systematic_low)} 個知識點待加強)'
+            )
+            focus_areas.append('systematic')
+
+        # 2. 處理待複習的知識點
+        if len(due_for_review) > 5:
+            recommendations.append(
+                f'有 {len(due_for_review)} 個知識點需要複習，建議優先完成'
+            )
+
+        # 3. 根據類別統計提供建議
+        weakest_category = min(
+            category_stats.items(),
+            key=lambda x: x[1]['avg_mastery']
+        ) if category_stats else None
+
+        if weakest_category and weakest_category[1]['avg_mastery'] < 0.5:
+            category_name = weakest_category[0]
+            category_chinese = {
+                'systematic': '文法規則',
+                'isolated': '個別詞彙',
+                'enhancement': '表達優化',
+                'other': '其他'
+            }.get(category_name, category_name)
+
+            recommendations.append(
+                f'加強「{category_chinese}」類型的練習 (平均掌握度 {weakest_category[1]["avg_mastery"]:.1%})'
+            )
+            if category_name not in focus_areas:
+                focus_areas.append(category_name)
+
+        # 4. 根據最近錯誤提供具體建議
+        recent_mistakes = sorted(
+            [p for p in active_points if p.mistake_count > 2],
+            key=lambda x: x.last_seen,
+            reverse=True
+        )[:5]
+
+        if recent_mistakes:
+            common_subtypes = defaultdict(int)
+            for point in recent_mistakes:
+                common_subtypes[point.subtype] += 1
+
+            most_common = max(common_subtypes.items(), key=lambda x: x[1])
+            if most_common[1] >= 2:
+                recommendations.append(f'複習「{most_common[0]}」相關知識點')
+
+        # 5. 確定建議難度
+        avg_mastery = sum(p.mastery_level for p in active_points) / len(active_points)
+        if avg_mastery < 0.3:
+            suggested_difficulty = 1  # 簡單
+        elif avg_mastery < 0.6:
+            suggested_difficulty = 2  # 中等
+        else:
+            suggested_difficulty = 3  # 困難
+
+        # 6. 選擇優先學習的知識點（最多10個）
+        priority_points = []
+
+        # 優先順序：待複習 > 低掌握度系統性 > 低掌握度其他 > 中等掌握度
+        for point in due_for_review[:3]:
+            if point not in priority_points:
+                priority_points.append(point)
+
+        for point in systematic_low[:3]:
+            if point not in priority_points:
+                priority_points.append(point)
+
+        for point in low_mastery_points[:4]:
+            if point not in priority_points and len(priority_points) < 10:
+                priority_points.append(point)
+
+        # 如果沒有具體推薦，提供一般性建議
+        if not recommendations:
+            if avg_mastery > 0.7:
+                recommendations.append('整體掌握度良好，建議挑戰更高難度的內容')
+            else:
+                recommendations.append('持續練習以提升整體掌握度')
+
+        return {
+            'recommendations': recommendations[:3],  # 最多3條推薦
+            'focus_areas': focus_areas[:2],  # 最多2個重點領域
+            'suggested_difficulty': suggested_difficulty,
+            'next_review_count': len(due_for_review),
+            'priority_points': [
+                {
+                    'id': p.id,
+                    'key_point': p.key_point,
+                    'mastery_level': p.mastery_level,
+                    'category': p.category.value
+                } for p in priority_points
+            ],
+            'statistics': {
+                'total_points': len(active_points),
+                'low_mastery_count': len(low_mastery_points),
+                'average_mastery': avg_mastery,
+                'due_for_review': len(due_for_review)
+            }
+        }
+
+    def permanent_delete_old_points(self, days_old: int = 30, dry_run: bool = False) -> dict[str, Any]:
+        """永久刪除舊的已刪除知識點
+
+        Args:
+            days_old: 刪除多少天前的知識點（預設30天）
+            dry_run: 是否只是預覽，不實際刪除
+
+        Returns:
+            刪除結果統計
+        """
+        from datetime import datetime, timedelta
+
+        cutoff_date = datetime.now() - timedelta(days=days_old)
+        deleted_points = self.get_deleted_points()
+
+        points_to_delete = []
+        points_to_keep = []
+
+        for point in deleted_points:
+            if point.deleted_at:
+                deleted_date = datetime.fromisoformat(point.deleted_at)
+                if deleted_date < cutoff_date:
+                    # 檢查是否為高價值知識點（掌握度低或錯誤次數多）
+                    if point.mastery_level < 0.3 or point.mistake_count > 5:
+                        points_to_keep.append({
+                            'id': point.id,
+                            'key_point': point.key_point,
+                            'reason': 'high_value',
+                            'mastery_level': point.mastery_level,
+                            'mistake_count': point.mistake_count
+                        })
+                    else:
+                        points_to_delete.append(point)
+
+        result = {
+            'scanned': len(deleted_points),
+            'eligible_for_deletion': len(points_to_delete),
+            'preserved_high_value': len(points_to_keep),
+            'dry_run': dry_run,
+            'cutoff_date': cutoff_date.isoformat(),
+            'deleted_ids': [],
+            'preserved_points': points_to_keep
+        }
+
+        if not dry_run and points_to_delete:
+            # 實際執行刪除
+            if self._legacy_manager:
+                # JSON 模式
+                original_count = len(self._legacy_manager.knowledge_points)
+                self._legacy_manager.knowledge_points = [
+                    p for p in self._legacy_manager.knowledge_points
+                    if p not in points_to_delete
+                ]
+                self._legacy_manager._save_knowledge()
+                result['deleted_ids'] = [p.id for p in points_to_delete]
+                result['final_count'] = len(self._legacy_manager.knowledge_points)
+                result['deleted_count'] = original_count - result['final_count']
+
+                self.logger.info(
+                    f"永久刪除了 {result['deleted_count']} 個舊知識點"
+                )
+            else:
+                # 資料庫模式
+                self.logger.warning("資料庫模式下請使用 permanent_delete_old_points_async")
+                result['error'] = "Database mode requires async method"
+
+        return result
+
     # 資源清理
 
     async def cleanup(self) -> None:

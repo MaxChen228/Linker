@@ -201,8 +201,8 @@ async def get_day_details(date_str: str):
     """獲取特定日期的詳細資料"""
     try:
         target_date = datetime.fromisoformat(date_str).date()
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid date format")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail="Invalid date format") from e
 
     km = KnowledgeManager()
     knowledge_points = km.knowledge_points

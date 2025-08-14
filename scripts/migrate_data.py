@@ -9,7 +9,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 # 添加專案根目錄到 Python 路徑
 project_root = Path(__file__).parent.parent
@@ -59,7 +59,7 @@ class DataMigrator:
         if self.db_connection:
             await self.db_connection.disconnect()
 
-    def load_json_data(self, json_file: Path) -> Optional[Dict[str, Any]]:
+    def load_json_data(self, json_file: Path) -> Optional[dict[str, Any]]:
         """載入 JSON 資料"""
         try:
             if not json_file.exists():
@@ -78,7 +78,7 @@ class DataMigrator:
             logger.error(f"載入 JSON 檔案失敗: {e}")
             return None
 
-    def json_to_knowledge_point(self, point_data: Dict[str, Any]) -> Optional[KnowledgePoint]:
+    def json_to_knowledge_point(self, point_data: dict[str, Any]) -> Optional[KnowledgePoint]:
         """將 JSON 資料轉換為 KnowledgePoint 物件"""
         try:
             # 處理原始錯誤
@@ -135,7 +135,7 @@ class DataMigrator:
             return None
 
     async def migrate_knowledge_points(
-        self, json_data: Dict[str, Any], batch_size: int = 10
+        self, json_data: dict[str, Any], batch_size: int = 10
     ) -> bool:
         """遷移知識點資料"""
         if not self.repository:
@@ -156,7 +156,7 @@ class DataMigrator:
 
             logger.info(f"處理第 {batch_num}/{total_batches} 批次 ({len(batch)} 個知識點)...")
 
-            async with self.repository.transaction() as conn:
+            async with self.repository.transaction():
                 for point_data in batch:
                     try:
                         # 轉換資料
@@ -191,7 +191,7 @@ class DataMigrator:
         self.stats["end_time"] = datetime.now()
         return True
 
-    async def verify_migration(self, json_data: Dict[str, Any]) -> bool:
+    async def verify_migration(self, json_data: dict[str, Any]) -> bool:
         """驗證遷移結果"""
         logger.info("開始驗證遷移結果...")
 
@@ -287,10 +287,7 @@ async def main():
     args = parser.parse_args()
 
     # 確定 JSON 檔案路徑
-    if args.json_file:
-        json_file = Path(args.json_file)
-    else:
-        json_file = DATA_DIR / "knowledge.json"
+    json_file = Path(args.json_file) if args.json_file else DATA_DIR / "knowledge.json"
 
     migrator = DataMigrator()
 

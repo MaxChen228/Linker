@@ -29,7 +29,7 @@ class TestEnvironment:
     def test_core_module_import(self):
         """測試核心模組可以正常導入"""
         try:
-            from core import exceptions, logger
+            from core import exceptions, logger  # noqa: F401
 
             assert True, "核心模組導入成功"
         except ImportError as e:
@@ -38,9 +38,10 @@ class TestEnvironment:
     def test_settings_import(self):
         """測試 settings 模組可以正常導入"""
         try:
-            from settings import Settings, settings
+            from settings import Settings, settings  # noqa: F401
 
             assert isinstance(settings.display.MAX_DISPLAY_ITEMS, int)
+            assert Settings is not None  # 使用 Settings 以避免未使用警告
             assert True, "settings 模組導入成功"
         except ImportError as e:
             pytest.fail(f"無法導入 settings 模組: {e}")
