@@ -3,16 +3,16 @@
 提供各種錯誤情況下的降級處理策略
 
 包含功能：
-1. 資料庫降級到 JSON 策略
-2. 快取降級策略
-3. 網路錯誤降級策略
-4. 並發錯誤降級策略
-5. 降級管理器
-6. 降級結果驗證
+1. 快取降級策略
+2. 網路錯誤降級策略
+3. 並發錯誤降級策略
+4. 降級管理器
+5. 降級結果驗證
+
+注意：DatabaseToJsonFallback 已在 TASK-30B 中移除（純資料庫架構）
 """
 
 from typing import Any, Optional, Callable, Dict
-import json
 import asyncio
 from datetime import datetime, timedelta
 

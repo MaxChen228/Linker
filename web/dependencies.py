@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 
 from core.ai_service import AIService
 from core.config import DATA_DIR
-from core.database.adapter import KnowledgeManagerAdapter, get_knowledge_manager_async
+from core.database.simplified_adapter import KnowledgeManagerAdapter, get_knowledge_manager_async
 from core.knowledge_assets import KnowledgeAssets
 from core.log_config import get_module_logger
 

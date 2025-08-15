@@ -120,7 +120,7 @@ class DatabaseKnowledgeManager:
                 return result
         
         return await self._cache_manager.get_or_compute_async(
-            cache_key, _add, ttl=60, category=CacheCategories.KNOWLEDGE_POINTS
+            cache_key, _add, ttl=60
         )
     
     async def get_knowledge_point(self, point_id: int) -> Optional[KnowledgePoint]:
@@ -132,7 +132,7 @@ class DatabaseKnowledgeManager:
                 return await repo.find_by_id(point_id)
         
         return await self._cache_manager.get_or_compute_async(
-            cache_key, _get, ttl=300, category=CacheCategories.KNOWLEDGE_POINTS
+            cache_key, _get, ttl=300
         )
     
     async def get_all_knowledge_points(self, include_deleted: bool = False) -> list[KnowledgePoint]:
@@ -145,7 +145,7 @@ class DatabaseKnowledgeManager:
                 return await repo.find_all(**filters)
         
         return await self._cache_manager.get_or_compute_async(
-            cache_key, _get_all, ttl=60, category=CacheCategories.KNOWLEDGE_POINTS
+            cache_key, _get_all, ttl=60
         )
     
     async def update_knowledge_point(self, point: KnowledgePoint) -> bool:
@@ -204,7 +204,7 @@ class DatabaseKnowledgeManager:
                 return await repo.search(keyword, limit)
         
         return await self._cache_manager.get_or_compute_async(
-            cache_key, _search, ttl=180, category=CacheCategories.SEARCH_RESULTS
+            cache_key, _search, ttl=180
         )
     
     async def get_review_candidates(self, limit: int = 20) -> list[KnowledgePoint]:
@@ -216,7 +216,7 @@ class DatabaseKnowledgeManager:
                 return await repo.find_due_for_review(limit)
         
         return await self._cache_manager.get_or_compute_async(
-            cache_key, _get_candidates, ttl=120, category=CacheCategories.REVIEW_CANDIDATES
+            cache_key, _get_candidates, ttl=120
         )
     
     async def get_knowledge_by_category(
@@ -230,7 +230,7 @@ class DatabaseKnowledgeManager:
                 return await repo.find_by_category(category, subtype)
         
         return await self._cache_manager.get_or_compute_async(
-            cache_key, _get_by_category, ttl=300, category=CacheCategories.KNOWLEDGE_POINTS
+            cache_key, _get_by_category, ttl=300
         )
     
     # ========== 統計操作 ==========
@@ -244,7 +244,7 @@ class DatabaseKnowledgeManager:
                 return await repo.get_statistics()
         
         return await self._cache_manager.get_or_compute_async(
-            cache_key, _get_stats, ttl=60, category=CacheCategories.STATISTICS
+            cache_key, _get_stats, ttl=60
         )
     
     # ========== 學習記錄操作 ==========
