@@ -162,6 +162,7 @@ def calculate_study_intensity(daily_record: dict) -> str:
 
 
 @router.get("/", response_class=HTMLResponse)
+@router.get("", response_class=HTMLResponse)  # 修復 307 重定向：同時支持 /calendar 和 /calendar/
 async def calendar_page(request: Request, year: Optional[int] = None, month: Optional[int] = None):
     """日曆主頁面"""
     # 默認顯示當前月份
