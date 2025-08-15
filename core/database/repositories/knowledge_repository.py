@@ -587,7 +587,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 COUNT(*) FILTER (WHERE mastery_level >= 0.8 AND is_deleted = FALSE) as mastered,
                 COUNT(*) FILTER (WHERE mastery_level < 0.3 AND is_deleted = FALSE) as struggling,
                 COUNT(*) FILTER (WHERE next_review <= NOW() AND is_deleted = FALSE) as due_review,
-                AVG(mastery_level) FILTER (WHERE is_deleted = FALSE) as avg_mastery,
+                CAST(AVG(mastery_level) FILTER (WHERE is_deleted = FALSE) AS FLOAT) as avg_mastery,
                 COUNT(DISTINCT category) FILTER (WHERE is_deleted = FALSE) as categories_count
             FROM knowledge_points
         """
