@@ -1,0 +1,50 @@
+/* ===================================
+   Design System - Error Display Components
+   錯誤和範例顯示組件
+   =================================== */
+
+/* Error Header Component */
+.error-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+/* Examples Display Component */
+.examples {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  background: var(--surface-subtle);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-mono);
+  font-size: var(--text-sm);
+}
+
+.examples .zh {
+  color: var(--text-secondary);
+}
+
+.examples .en {
+  color: var(--text-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .examples {
+    background: var(--surface-elevated);
+    border: var(--border-width-thin) solid var(--border-light);
+  }
+  
+  .examples .zh {
+    color: var(--text-secondary);
+  }
+  
+  .examples .en {
+    color: var(--text-accent);
+  }
+}

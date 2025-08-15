@@ -1029,3 +1029,63 @@ footer small {
     page-break-after: always;
   }
 }
+
+/* ========== Additional Utility Classes (Migrated) ========== */
+
+/* Muted Text - alias for existing text-muted */
+.muted {
+  color: var(--text-muted) !important;
+  font-size: var(--text-sm) !important;
+}
+
+/* Gradient Text Effect */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Focus Ring for Accessibility */
+.focus-ring {
+  outline: var(--border-width-normal) solid var(--primary) !important;
+  outline-offset: var(--border-width-normal) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Accessibility - Screen Reader Only */
+.visually-hidden {
+  position: absolute !important;
+  width: var(--border-width-thin) !important;
+  height: var(--border-width-thin) !important;
+  padding: 0 !important;
+  margin: calc(-1 * var(--border-width-thin)) !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
+
+/* Responsive Utilities */
+@media (max-width: var(--breakpoint-md)) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: var(--breakpoint-tablet)) {
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+/* Dark Mode Adjustments for New Utilities */
+@media (prefers-color-scheme: dark) {
+  .focus-ring {
+    outline-color: var(--primary) !important;
+  }
+  
+  .muted {
+    color: var(--text-muted) !important;
+  }
+}

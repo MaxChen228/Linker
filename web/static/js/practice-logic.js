@@ -824,9 +824,10 @@ class PracticeSystem {
      */
     async updateDailyLimitStatus() {
         try {
-            const response = await this.fetchAPI(apiEndpoints.getUrl('knowledgeDailyLimitStatus'), {}, 'GET');
-            if (response) {
-                this.dailyLimitStatus = response;
+            const response = await fetch(apiEndpoints.getUrl('knowledgeDailyLimitStatus'));
+            if (response.ok) {
+                const data = await response.json();
+                this.dailyLimitStatus = data;
                 this.updateDailyLimitDisplay();
             }
         } catch (error) {
@@ -929,7 +930,7 @@ class PracticeSystem {
      */
     async saveKnowledgePointWithLimit(point) {
         try {
-            const response = await this.fetchAPI(apiEndpoints.getUrl('knowledgeSaveWithLimit'), point, 'POST');
+            const response = await this.fetchAPI(apiEndpoints.getUrl('knowledgeSaveWithLimit'), point);
             
             if (response.success) {
                 // 更新限額狀態

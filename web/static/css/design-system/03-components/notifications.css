@@ -1,0 +1,90 @@
+/* ===================================
+   Design System - Notification Components
+   通知和Toast組件系統
+   =================================== */
+
+/* Base Toast Notification - 右下角標準位置 */
+.toast {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-base);
+  border: var(--border-width-thin) solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  transform: translateY(var(--offset-toast));
+  opacity: 0;
+  transition: var(--transition-all);
+  z-index: var(--z-toast);
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Toast Variants */
+.toast-success {
+  border-color: var(--success);
+  background: var(--success-subtle);
+}
+
+.toast-error {
+  border-color: var(--error);
+  background: var(--error-subtle);
+}
+
+/* Alternative Toast - 底部中央位置 (用於特殊頁面) */
+.toast-center {
+  position: fixed;
+  bottom: var(--space-8);
+  left: 50%;
+  transform: translateX(-50%) translateY(6.25rem /* 100px */);
+  background: var(--surface);
+  border: var(--border-width-thin) solid var(--border);
+  border-radius: var(--radius-full);
+  padding: var(--space-3) var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-toast);
+}
+
+.toast-center.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Notification Components */
+.notification-toast {
+  /* 使用標準toast樣式 */
+  @extend .toast;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .toast {
+    background: var(--surface-elevated);
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .toast-success {
+    background: var(--success-subtle);
+    border-color: var(--success);
+  }
+  
+  .toast-error {
+    background: var(--error-subtle);
+    border-color: var(--error);
+  }
+  
+  .toast-center {
+    background: var(--surface-elevated);
+    border-color: var(--border-light);
+  }
+}

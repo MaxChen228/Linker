@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Linker{% endblock %}</title>
-  <!-- 設計系統 - 包含所有基礎樣式和組件 -->
+  <!-- 設計系統 - 包含所有基礎樣式 -->
   <link rel="stylesheet" href="/static/css/design-system/index.css" />
+  <!-- 保留的精簡組件樣式 -->
+  <link rel="stylesheet" href="/static/css/components.css" />
   <!-- 4. 頁面專屬樣式 -->
   {% block styles %}{% endblock %}
 </head>

@@ -1,0 +1,39 @@
+/* ===================================
+   Design System - Empty State Components
+   空狀態顯示組件
+   =================================== */
+
+/* Empty State Component */
+.empty-state {
+  text-align: center;
+  padding: var(--space-12) var(--space-6);
+  color: var(--text-secondary);
+}
+
+.empty-state svg {
+  width: var(--space-16);
+  height: var(--space-16);
+  margin: 0 auto var(--space-4);
+  opacity: var(--opacity-empty-icon);
+}
+
+.empty-state h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-2);
+}
+
+.empty-state p {
+  font-size: var(--text-base);
+  margin-bottom: var(--space-6);
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .empty-state {
+    color: var(--text-secondary);
+  }
+  
+  .empty-state svg {
+    opacity: var(--opacity-empty-icon-dark);
+  }
+}
