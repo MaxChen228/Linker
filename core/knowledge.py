@@ -12,9 +12,12 @@ from typing import Any, Optional
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from core.cache_manager import UnifiedCacheManager, CacheCategories
 from core.error_types import ErrorCategory, ErrorTypeSystem
 from core.exceptions import DataError, handle_file_operation
 from core.log_config import get_module_logger
+from core.error_handler import ErrorHandler, with_error_handling
+from core.fallback_strategies import get_fallback_manager
 from settings import settings
 
 
@@ -400,6 +403,13 @@ class KnowledgeManager:
 
         self.logger = get_module_logger(__name__)
         self.settings = settings
+        
+        # TASK-20D: 統一錯誤處理體系
+        self._error_handler = ErrorHandler(mode="json")
+        self._fallback_manager = get_fallback_manager()
+        
+        # 統一快取管理器
+        self._cache_manager = UnifiedCacheManager(default_ttl=300)  # 5分鐘預設 TTL
 
         self.knowledge_points: list[KnowledgePoint] = self._load_knowledge()
         self.practice_history = self._load_practice_log()
@@ -565,6 +575,9 @@ class KnowledgeManager:
         elif practice_mode == "review":
             # 複習模式下答對：更新相關知識點的掌握度
             self._process_correct_review(chinese_sentence, user_answer, feedback)
+        
+        # 清除相關快取（不論是否出錯，都可能影響統計）
+        self._invalidate_caches()
 
     def _process_correct_review(
         self, chinese_sentence: str, user_answer: str, feedback: dict[str, Any]
@@ -588,6 +601,7 @@ class KnowledgeManager:
             point.review_examples.append(review_example)
             point.update_mastery(is_correct=True)
             self._save_knowledge()
+            self._invalidate_caches()
 
     def _process_error(
         self,
@@ -733,8 +747,23 @@ class KnowledgeManager:
 
     def get_due_points(self) -> list[KnowledgePoint]:
         """獲取需要複習的知識點"""
-        now = datetime.now().isoformat()
-        return [p for p in self.knowledge_points if p.next_review <= now]
+        now = datetime.now()
+        due_points = []
+        
+        for p in self.knowledge_points:
+            if p.next_review:
+                try:
+                    review_date = datetime.fromisoformat(p.next_review)
+                    # 確保兩個 datetime 都是 offset-naive
+                    if review_date.tzinfo is not None:
+                        review_date = review_date.replace(tzinfo=None)
+                    if review_date <= now:
+                        due_points.append(p)
+                except (ValueError, TypeError):
+                    # 如果解析失敗，跳過此點
+                    continue
+        
+        return due_points
 
     def get_review_candidates(self, max_points: int = 5) -> list[KnowledgePoint]:
         """獲取適合複習的知識點（單一性錯誤和可以更好類別）
@@ -920,88 +949,260 @@ class KnowledgeManager:
 
         return deleted_count
 
+    @with_error_handling(operation="get_statistics", mode="json")
     def get_statistics(self) -> dict[str, Any]:
-        """獲取統計資料"""
-        total_practices = len(self.practice_history)
-        correct_count = sum(1 for p in self.practice_history if p.get("is_correct", False))
+        """獲取統計資料（使用統一快取管理器）
 
-        # 分類統計
-        category_stats = {
-            ErrorCategory.SYSTEMATIC: 0,
-            ErrorCategory.ISOLATED: 0,
-            ErrorCategory.ENHANCEMENT: 0,
-            ErrorCategory.OTHER: 0,
-        }
+        TASK-20A: 統一快取管理系統
+        TASK-20D: 添加統一錯誤處理
+        使用 UnifiedCacheManager 提供快取統計
+        """
+        try:
+            result = self._cache_manager.get_or_compute(
+                key=f"{CacheCategories.STATISTICS}:json",
+                compute_func=self._compute_statistics,
+                ttl=60  # 統計快取1分鐘
+            )
+            
+            # 更新降級快取
+            self._update_fallback_cache('get_statistics', result)
+            return result
+            
+        except Exception as e:
+            # 統一錯誤處理
+            return self._handle_error_with_fallback(e, "get_statistics")
+    
+    def _compute_statistics(self) -> dict[str, Any]:
+        """計算統計資料（JSON 模式）"""
+        from core.statistics_utils import UnifiedStatistics
 
-        subtype_stats = {}
+        # 提取統一格式的練習記錄
+        practice_records = UnifiedStatistics.extract_json_practice_records(self)
+
+        # 標準化處理
+        practice_records = UnifiedStatistics.normalize_practice_records(practice_records)
+
+        # 使用統一邏輯計算統計
+        stats = UnifiedStatistics.calculate_practice_statistics(
+            knowledge_points=self.knowledge_points,
+            practice_records=practice_records,
+            include_original_errors=True,
+        )
+
+        self.logger.debug(
+            f"JSON 統計計算完成: 練習{stats['total_practices']}, 正確{stats['correct_count']}, 知識點{stats['knowledge_points']}"
+        )
+
+        return stats
+    
+    def _invalidate_caches(self) -> None:
+        """清除相關快取"""
+        # 清除統計快取
+        self._cache_manager.invalidate(CacheCategories.STATISTICS)
+        # 清除複習候選快取
+        self._cache_manager.invalidate(CacheCategories.REVIEW_CANDIDATES)
+        # 清除知識點快取
+        self._cache_manager.invalidate(CacheCategories.KNOWLEDGE_POINTS)
+        # 清除搜索結果快取
+        self._cache_manager.invalidate(CacheCategories.SEARCH_RESULTS)
+        
+        self.logger.debug("已清除相關快取")
+
+    def get_learning_recommendations(self) -> dict[str, Any]:
+        """獲取學習建議
+
+        Returns:
+            包含推薦信息的字典：
+            - recommendations: 推薦描述列表
+            - focus_areas: 重點學習領域
+            - suggested_difficulty: 建議難度等級
+            - next_review_count: 待複習知識點數量
+            - priority_points: 優先學習的知識點列表
+        """
+        from collections import defaultdict
+
+        # 如果沒有知識點，返回初始建議
+        if not self.knowledge_points:
+            return {
+                "recommendations": ["開始第一次練習，建立學習基礎"],
+                "focus_areas": [],
+                "suggested_difficulty": 1,
+                "next_review_count": 0,
+                "priority_points": [],
+                "statistics": {},
+            }
+
+        # 統計分析
+        low_mastery_points = []  # 低掌握度知識點（< 0.3）
+        medium_mastery_points = []  # 中等掌握度（0.3-0.7）
+        due_for_review = self.get_due_points()  # 待複習的點
+        category_stats = defaultdict(lambda: {"count": 0, "avg_mastery": 0, "points": []})
 
         for point in self.knowledge_points:
-            category_stats[point.category] += 1
-            if point.subtype not in subtype_stats:
-                subtype_stats[point.subtype] = 0
-            subtype_stats[point.subtype] += 1
+            # 掌握度分類
+            if point.mastery_level < 0.3:
+                low_mastery_points.append(point)
+            elif point.mastery_level < 0.7:
+                medium_mastery_points.append(point)
 
-        # 平均掌握度
-        if self.knowledge_points:
-            avg_mastery = sum(p.mastery_level for p in self.knowledge_points) / len(
-                self.knowledge_points
-            )
+            # 統計各類別
+            category = point.category.value
+            category_stats[category]["count"] += 1
+            category_stats[category]["avg_mastery"] += point.mastery_level
+            category_stats[category]["points"].append(point)
+
+        # 計算各類別平均掌握度
+        for _category, stats in category_stats.items():
+            if stats["count"] > 0:
+                stats["avg_mastery"] /= stats["count"]
+
+        # 生成推薦
+        recommendations = []
+        focus_areas = []
+
+        # 1. 優先處理低掌握度的系統性錯誤
+        systematic_low = [p for p in low_mastery_points if p.category.value == "systematic"]
+        if systematic_low:
+            recommendations.append(f"重點練習文法規則錯誤 ({len(systematic_low)} 個知識點待加強)")
+            focus_areas.append("systematic")
+
+        # 2. 處理待複習的知識點
+        if len(due_for_review) > 5:
+            recommendations.append(f"有 {len(due_for_review)} 個知識點需要複習，建議優先完成")
+
+        # 3. 根據類別統計提供建議
+        if category_stats:
+            weakest_category = min(category_stats.items(), key=lambda x: x[1]["avg_mastery"])
+            if weakest_category[1]["avg_mastery"] < 0.5:
+                category_name = weakest_category[0]
+                category_chinese = {
+                    "systematic": "文法規則",
+                    "isolated": "個別詞彙",
+                    "enhancement": "表達優化",
+                    "other": "其他",
+                }.get(category_name, category_name)
+
+                recommendations.append(
+                    f"加強「{category_chinese}」類型的練習 (平均掌握度 {weakest_category[1]['avg_mastery']:.1%})"
+                )
+                if category_name not in focus_areas:
+                    focus_areas.append(category_name)
+
+        # 如果沒有特別的推薦，給出一般建議
+        if not recommendations:
+            if len(self.knowledge_points) < 10:
+                recommendations.append("繼續累積練習，建立更多知識點")
+            else:
+                recommendations.append("保持練習頻率，鞏固已學知識")
+
+        # 確定建議難度
+        avg_mastery = sum(p.mastery_level for p in self.knowledge_points) / len(
+            self.knowledge_points
+        )
+        if avg_mastery < 0.3:
+            suggested_difficulty = 1
+        elif avg_mastery < 0.6:
+            suggested_difficulty = 2
         else:
-            avg_mastery = 0.0
+            suggested_difficulty = 3
 
-        return {
-            "total_practices": total_practices,
-            "correct_count": correct_count,
-            "mistake_count": total_practices - correct_count,
-            "accuracy": correct_count / total_practices if total_practices > 0 else 0,
-            "knowledge_points": len(self.knowledge_points),
-            "avg_mastery": avg_mastery,
-            "category_distribution": {
-                cat.to_chinese(): count for cat, count in category_stats.items() if count > 0
-            },
-            "subtype_distribution": subtype_stats,
-            "due_reviews": len(self.get_due_points()),
+        # 選擇優先學習的知識點（最多10個）
+        priority_points = sorted(
+            low_mastery_points + medium_mastery_points,
+            key=lambda p: (p.mastery_level, -p.mistake_count),
+        )[:10]
+
+        # 統計信息
+        statistics = {
+            "total_points": len(self.knowledge_points),
+            "low_mastery_count": len(low_mastery_points),
+            "medium_mastery_count": len(medium_mastery_points),
+            "average_mastery": avg_mastery,
+            "category_distribution": {cat: stats["count"] for cat, stats in category_stats.items()},
         }
 
-    def get_learning_recommendations(self) -> list[dict]:
-        """獲取學習建議"""
-        recommendations = []
-
-        # 分析各類別的知識點
-        for category in ErrorCategory:
-            points = self.get_points_by_category(category)
-            if not points:
-                continue
-
-            # 計算該類別的平均掌握度
-            avg_mastery = sum(p.mastery_level for p in points) / len(points)
-
-            # 找出最常見的子類型
-            subtype_counts = {}
-            for point in points:
-                if point.subtype not in subtype_counts:
-                    subtype_counts[point.subtype] = 0
-                subtype_counts[point.subtype] += 1
-
-            if subtype_counts:
-                most_common_subtype = max(subtype_counts.items(), key=lambda x: x[1])
-                subtype_obj = self.type_system.get_subtype_by_name(most_common_subtype[0])
-
-                recommendation = {
-                    "category": category.to_chinese(),
-                    "priority": category.get_priority(),
-                    "point_count": len(points),
-                    "avg_mastery": avg_mastery,
-                    "focus_area": subtype_obj.chinese_name
-                    if subtype_obj
-                    else most_common_subtype[0],
-                    "advice": self.type_system.get_learning_advice(
-                        category, most_common_subtype[0]
-                    ),
+        return {
+            "recommendations": recommendations,
+            "focus_areas": focus_areas,
+            "suggested_difficulty": suggested_difficulty,
+            "next_review_count": len(due_for_review),
+            "priority_points": [
+                {
+                    "id": p.id,
+                    "key_point": p.key_point,
+                    "mastery_level": p.mastery_level,
+                    "category": p.category.value,
+                    "mistake_count": p.mistake_count,
                 }
-                recommendations.append(recommendation)
+                for p in priority_points
+            ],
+            "statistics": statistics,
+        }
 
-        # 按優先級排序
-        recommendations.sort(key=lambda x: x["priority"])
-
-        return recommendations
+    # TASK-20D: 統一錯誤處理輔助方法
+    def _update_fallback_cache(self, method_name: str, result: Any) -> None:
+        """更新降級快取"""
+        try:
+            # 找到快取降級策略並更新快取
+            cache_strategy = None
+            for strategy in self._fallback_manager.strategies:
+                if hasattr(strategy, 'update_cache'):
+                    cache_strategy = strategy
+                    break
+            
+            if cache_strategy and result is not None:
+                # 建立方法引用
+                method_func = getattr(self, method_name, None)
+                if method_func:
+                    cache_strategy.update_cache(method_func, (self,), {}, result)
+                    
+        except Exception as e:
+            self.logger.warning(f"更新降級快取失敗: {e}")
+    
+    def _handle_error_with_fallback(self, error: Exception, operation: str) -> Any:
+        """統一錯誤處理和降級邏輯"""
+        try:
+            # 使用統一錯誤處理器
+            error_response = self._error_handler.handle_error(error, operation)
+            
+            # JSON 模式通常不需要降級，但可以返回安全的默認值
+            self.logger.warning(f"JSON 模式錯誤處理: {operation} - {error}")
+            
+            # 根據操作類型返回安全的默認值
+            return self._get_safe_default_for_operation(operation)
+            
+        except Exception as fallback_error:
+            self.logger.error(f"錯誤處理失敗: {fallback_error}")
+            return self._get_safe_default_for_operation(operation)
+    
+    def _get_safe_default_for_operation(self, operation: str) -> Any:
+        """根據操作獲取安全的默認值"""
+        defaults = {
+            'get_statistics': {
+                'total_practices': 0,
+                'correct_count': 0,
+                'knowledge_points': 0,
+                'avg_mastery': 0.0,
+                'category_distribution': {},
+                'due_reviews': 0,
+                '_json_error_fallback': True,
+                '_operation': operation
+            },
+            'get_knowledge_points': [],
+            'get_all_knowledge_points': [],
+            'get_review_candidates': [],
+            'search_knowledge_points': [],
+            'get_knowledge_point': None,
+            'add_knowledge_point': False,
+            'edit_knowledge_point': None,
+            'delete_knowledge_point': False,
+            'restore_knowledge_point': None,
+        }
+        
+        result = defaults.get(operation, None)
+        if isinstance(result, dict):
+            result = result.copy()
+            result['_json_error_fallback'] = True
+            result['_operation'] = operation
+        
+        return result

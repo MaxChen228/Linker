@@ -4,6 +4,7 @@
 {% block styles %}
 <link rel="stylesheet" href="/static/css/pages/practice.css" />
 <link rel="stylesheet" href="/static/css/pages/practice-queue.css" />
+<link rel="stylesheet" href="/static/css/design-system/03-components/recommendation-cards.css" />
 {% endblock %}
 
 {% block content %}
@@ -76,6 +77,42 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/recommendation-card.js"></script>
 <script src="/static/js/practice-queue-persistence.js"></script>
 <script src="/static/js/practice-logic.js"></script>
+<script>
+    // 初始化推薦卡片浮動組件
+    document.addEventListener('DOMContentLoaded', () => {
+        const recommendationCard = new RecommendationCard('practice-recommendations', {
+            position: 'bottom-left', // 練習頁面放左下角避免干擾
+            size: 'default'
+        });
+        
+        // 監聽推薦練習事件
+        document.addEventListener('recommendation-practice', (event) => {
+            const { difficulty, mode } = event.detail;
+            
+            // 更新練習參數
+            const levelSelect = document.getElementById('level-select');
+            const modeSelect = document.getElementById('mode-select');
+            
+            if (levelSelect) {
+                levelSelect.value = difficulty.toString();
+            }
+            
+            if (modeSelect && mode) {
+                modeSelect.value = mode;
+            }
+            
+            // 自動添加一題到佇列
+            const addButton = document.getElementById('add-question-btn');
+            if (addButton) {
+                addButton.click();
+            }
+        });
+        
+        // 將推薦組件保存到全域以便其他腳本使用
+        window.practiceRecommendationCard = recommendationCard;
+    });
+</script>
 {% endblock %}

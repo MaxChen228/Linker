@@ -3,6 +3,7 @@
 
 {% block styles %}
 <link rel="stylesheet" href="/static/css/pages/index.css" />
+<link rel="stylesheet" href="/static/css/design-system/03-components/recommendation-cards.css" />
 {% endblock %}
 
 {% block content %}
@@ -107,6 +108,30 @@
     </div>
   </section>
   {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/recommendation-card.js"></script>
+<script>
+    // 初始化推薦卡片浮動組件
+    document.addEventListener('DOMContentLoaded', () => {
+        const recommendationCard = new RecommendationCard('home-recommendations', {
+            position: 'bottom-right',
+            size: 'default'
+        });
+        
+        // 監聽推薦練習事件 - 跳轉到練習頁面
+        document.addEventListener('recommendation-practice', (event) => {
+            const { difficulty, mode } = event.detail;
+            
+            // 跳轉到練習頁面並帶上參數
+            window.location.href = `/practice?mode=${mode}&level=${difficulty}`;
+        });
+        
+        // 將推薦組件保存到全域以便其他腳本使用
+        window.homeRecommendationCard = recommendationCard;
+    });
+</script>
 {% endblock %}
 
 

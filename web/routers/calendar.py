@@ -12,7 +12,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from core.knowledge import KnowledgeManager
+from web.dependencies import get_knowledge_manager
 
 router = APIRouter(prefix="/calendar", tags=["calendar"])
 templates = Jinja2Templates(directory="web/templates")
@@ -53,7 +53,7 @@ def save_calendar_data(data: dict):
 
 def get_month_calendar_data(year: int, month: int) -> dict:
     """獲取指定月份的日曆資料"""
-    km = KnowledgeManager()
+    km = get_knowledge_manager()
     knowledge_points = km.knowledge_points
     calendar_data = load_calendar_data()
 
@@ -204,7 +204,7 @@ async def get_day_details(date_str: str):
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Invalid date format") from e
 
-    km = KnowledgeManager()
+    km = get_knowledge_manager()
     knowledge_points = km.knowledge_points
     calendar_data = load_calendar_data()
 

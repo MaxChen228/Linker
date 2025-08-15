@@ -15,13 +15,13 @@ from typing import Any, Optional
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from core.config import DATA_DIR
-from core.database.connection import get_database_connection
-from core.database.exceptions import DatabaseError
-from core.database.repositories.knowledge_repository import KnowledgePointRepository
-from core.error_types import ErrorCategory
-from core.knowledge import KnowledgePoint, OriginalError, ReviewExample
-from core.log_config import get_module_logger
+from core.config import DATA_DIR  # noqa: E402
+from core.database.connection import get_database_connection  # noqa: E402
+from core.database.exceptions import DatabaseError  # noqa: E402
+from core.database.repositories.knowledge_repository import KnowledgePointRepository  # noqa: E402
+from core.error_types import ErrorCategory  # noqa: E402
+from core.knowledge import KnowledgePoint, OriginalError, ReviewExample  # noqa: E402
+from core.log_config import get_module_logger  # noqa: E402
 
 logger = get_module_logger("migrate_data")
 
@@ -102,6 +102,43 @@ class DataMigrator:
                 )
                 review_examples.append(review_example)
 
+            # 處理時間數據：確保所有時間都是從 JSON 原始數據來的
+            created_at_str = point_data.get("created_at", datetime.now().isoformat())
+            last_seen_str = point_data.get("last_seen", datetime.now().isoformat())
+            next_review_str = point_data.get("next_review", "")
+            last_modified_str = point_data.get("last_modified", datetime.now().isoformat())
+
+            # 處理時間約束問題：確保 next_review >= last_seen
+            # 如果 next_review 存在但早於 last_seen，則重新計算 next_review
+            if last_seen_str and next_review_str:
+                try:
+                    from datetime import timedelta
+
+                    last_seen_dt = datetime.fromisoformat(last_seen_str.replace("Z", "+00:00"))
+                    next_review_dt = datetime.fromisoformat(next_review_str.replace("Z", "+00:00"))
+
+                    if next_review_dt < last_seen_dt:
+                        logger.warning(
+                            f"修復時間約束問題 - ID {point_data.get('id')}: next_review < last_seen"
+                        )
+                        # 重新計算 next_review：根據掌握度設定複習間隔
+                        mastery_level = float(point_data.get("mastery_level", 0.0))
+                        if mastery_level < 0.3:
+                            # 低掌握度：1天後複習
+                            next_review_dt = last_seen_dt + timedelta(days=1)
+                        elif mastery_level < 0.7:
+                            # 中等掌握度：3天後複習
+                            next_review_dt = last_seen_dt + timedelta(days=3)
+                        else:
+                            # 高掌握度：7天後複習
+                            next_review_dt = last_seen_dt + timedelta(days=7)
+
+                        next_review_str = next_review_dt.isoformat()
+                        logger.info(f"重新設定 next_review 為: {next_review_str}")
+                except ValueError:
+                    logger.warning(f"時間格式錯誤 - ID {point_data.get('id')}: 清空 next_review")
+                    next_review_str = ""
+
             # 建立 KnowledgePoint
             knowledge_point = KnowledgePoint(
                 id=point_data.get("id", 0),
@@ -116,16 +153,16 @@ class DataMigrator:
                 mastery_level=float(point_data.get("mastery_level", 0.0)),
                 mistake_count=int(point_data.get("mistake_count", 1)),
                 correct_count=int(point_data.get("correct_count", 0)),
-                created_at=point_data.get("created_at", datetime.now().isoformat()),
-                last_seen=point_data.get("last_seen", datetime.now().isoformat()),
-                next_review=point_data.get("next_review", ""),
+                created_at=created_at_str,
+                last_seen=last_seen_str,
+                next_review=next_review_str,
                 is_deleted=point_data.get("is_deleted", False),
                 deleted_at=point_data.get("deleted_at", ""),
                 deleted_reason=point_data.get("deleted_reason", ""),
                 tags=point_data.get("tags", []),
                 custom_notes=point_data.get("custom_notes", ""),
                 version_history=point_data.get("version_history", []),
-                last_modified=point_data.get("last_modified", datetime.now().isoformat()),
+                last_modified=last_modified_str,
             )
 
             return knowledge_point

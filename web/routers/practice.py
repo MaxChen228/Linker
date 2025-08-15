@@ -12,9 +12,11 @@ from web.dependencies import (
     get_ai_service,
     get_knowledge_assets,
     get_knowledge_manager,
+    get_knowledge_manager_async_dependency,
     get_logger,
     get_templates,
 )
+from web.models.validation import GenerateQuestionRequest, GradeAnswerRequest
 
 router = APIRouter()
 logger = get_logger()
@@ -43,20 +45,17 @@ def practice_page(request: Request):
 
 
 @router.post("/api/grade-answer", response_class=JSONResponse)
-async def grade_answer_api(request: Request):
+async def grade_answer_api(request: GradeAnswerRequest):
     """API 端點：批改答案"""
     ai = get_ai_service()
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
     try:
-        data = await request.json()
-        chinese = data.get("chinese", "")
-        english = data.get("english", "")
-        mode = data.get("mode", "new")
-        target_point_ids = data.get("target_point_ids", [])
-
-        if not chinese or not english:
-            return JSONResponse({"success": False, "error": "缺少必要參數"}, status_code=400)
+        # 輸入已通過 Pydantic 驗證
+        chinese = request.chinese
+        english = request.english
+        mode = request.mode
+        target_point_ids = request.target_point_ids
 
         # 1. 使用 AI 進行批改
         result = ai.grade_translation(chinese=chinese, english=english)
@@ -85,15 +84,27 @@ async def grade_answer_api(request: Request):
 
         # 3. 保存錯誤記錄
         if not is_correct:
-            knowledge.save_mistake(
-                chinese_sentence=chinese, user_answer=english, feedback=result, practice_mode=mode
-            )
+            # 使用異步方法確保資料庫模式正常工作
+            if hasattr(knowledge, '_save_mistake_async'):
+                await knowledge._save_mistake_async(
+                    chinese_sentence=chinese, user_answer=english, feedback=result, practice_mode=mode
+                )
+            else:
+                knowledge.save_mistake(
+                    chinese_sentence=chinese, user_answer=english, feedback=result, practice_mode=mode
+                )
         # 4. 如果是複習答對，也記錄下來
         elif mode == "review" and target_point_ids:
             for point_id in target_point_ids:
-                knowledge.add_review_success(
-                    knowledge_point_id=point_id, chinese_sentence=chinese, user_answer=english
-                )
+                # 使用異步方法
+                if hasattr(knowledge, 'add_review_success_async'):
+                    await knowledge.add_review_success_async(
+                        knowledge_point_id=point_id, chinese_sentence=chinese, user_answer=english
+                    )
+                else:
+                    knowledge.add_review_success(
+                        knowledge_point_id=point_id, chinese_sentence=chinese, user_answer=english
+                    )
 
         # 5. 計算分數
         score = 100
@@ -127,18 +138,18 @@ async def grade_answer_api(request: Request):
 
 
 @router.post("/api/generate-question", response_class=JSONResponse)
-async def generate_question_api(request: Request):
+async def generate_question_api(request: GenerateQuestionRequest):
     """API 端點：生成單個題目（支援並行調用）"""
     ai = get_ai_service()
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
     assets = get_knowledge_assets()
 
     try:
-        data = await request.json()
-        mode = data.get("mode", "new")
-        length = data.get("length", "short")
-        level = data.get("level", 1)
-        pattern_id = data.get("pattern_id")  # 新增的參數
+        # 輸入已通過 Pydantic 驗證
+        mode = request.mode
+        length = request.length
+        level = request.level
+        pattern_id = request.pattern_id
 
         logger.info(
             f"API: Generating question - mode={mode}, length={length}, level={level}, pattern_id={pattern_id}"

@@ -36,12 +36,12 @@ class TestLearningRecommendations:
                     chinese_sentence="我昨天去那裡",
                     user_answer="I go there yesterday",
                     correct_answer="I went there yesterday",
-                    timestamp=now.isoformat()
+                    timestamp=now.isoformat(),
                 ),
                 mastery_level=0.2,
                 mistake_count=5,
                 correct_count=1,
-                next_review=past_due
+                next_review=past_due,
             ),
             # 中等掌握度個別錯誤
             KnowledgePoint(
@@ -56,12 +56,12 @@ class TestLearningRecommendations:
                     chinese_sentence="這是必要的",
                     user_answer="This is necesary",
                     correct_answer="This is necessary",
-                    timestamp=now.isoformat()
+                    timestamp=now.isoformat(),
                 ),
                 mastery_level=0.5,
                 mistake_count=3,
                 correct_count=3,
-                next_review=future
+                next_review=future,
             ),
             # 高掌握度優化建議
             KnowledgePoint(
@@ -76,12 +76,12 @@ class TestLearningRecommendations:
                     chinese_sentence="獲得許可",
                     user_answer="get permission",
                     correct_answer="obtain permission",
-                    timestamp=now.isoformat()
+                    timestamp=now.isoformat(),
                 ),
                 mastery_level=0.8,
                 mistake_count=1,
                 correct_count=5,
-                next_review=future
+                next_review=future,
             ),
             # 待複習的低掌握度點
             KnowledgePoint(
@@ -96,12 +96,12 @@ class TestLearningRecommendations:
                     chinese_sentence="一個蘋果",
                     user_answer="a apple",
                     correct_answer="an apple",
-                    timestamp=now.isoformat()
+                    timestamp=now.isoformat(),
                 ),
                 mastery_level=0.15,
                 mistake_count=4,
                 correct_count=0,
-                next_review=past_due
+                next_review=past_due,
             ),
         ]
 
@@ -127,7 +127,7 @@ class TestLearningRecommendations:
                         "chinese_sentence": p.original_error.chinese_sentence,
                         "user_answer": p.original_error.user_answer,
                         "correct_answer": p.original_error.correct_answer,
-                        "timestamp": datetime.now().isoformat()
+                        "timestamp": datetime.now().isoformat(),
                     },
                     "review_examples": [],
                     "mastery_level": p.mastery_level,
@@ -142,13 +142,13 @@ class TestLearningRecommendations:
                     "tags": [],
                     "custom_notes": "",
                     "version_history": [],
-                    "last_modified": datetime.now().isoformat()
+                    "last_modified": datetime.now().isoformat(),
                 }
                 for p in mock_knowledge_points
-            ]
+            ],
         }
 
-        with open(data_file, 'w', encoding='utf-8') as f:
+        with open(data_file, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
         # 創建適配器
@@ -160,48 +160,48 @@ class TestLearningRecommendations:
         recommendations = adapter_with_mock_data.get_learning_recommendations()
 
         # 驗證返回結構
-        assert 'recommendations' in recommendations
-        assert 'focus_areas' in recommendations
-        assert 'suggested_difficulty' in recommendations
-        assert 'next_review_count' in recommendations
-        assert 'priority_points' in recommendations
-        assert 'statistics' in recommendations
+        assert "recommendations" in recommendations
+        assert "focus_areas" in recommendations
+        assert "suggested_difficulty" in recommendations
+        assert "next_review_count" in recommendations
+        assert "priority_points" in recommendations
+        assert "statistics" in recommendations
 
         # 驗證推薦內容
-        assert len(recommendations['recommendations']) > 0
-        assert len(recommendations['recommendations']) <= 3
+        assert len(recommendations["recommendations"]) > 0
+        assert len(recommendations["recommendations"]) <= 3
 
         # 驗證重點領域
-        assert 'systematic' in recommendations['focus_areas']
+        assert "systematic" in recommendations["focus_areas"]
 
         # 驗證統計數據
-        stats = recommendations['statistics']
-        assert stats['total_points'] == 4
-        assert stats['low_mastery_count'] == 2
-        assert stats['due_for_review'] == 2
+        stats = recommendations["statistics"]
+        assert stats["total_points"] == 4
+        assert stats["low_mastery_count"] == 2
+        assert stats["due_for_review"] == 2
 
         # 驗證優先學習點
-        priority_points = recommendations['priority_points']
+        priority_points = recommendations["priority_points"]
         assert len(priority_points) > 0
-        assert priority_points[0]['mastery_level'] < 0.3
+        assert priority_points[0]["mastery_level"] < 0.3
 
     def test_get_recommendations_empty_data(self, temp_dir):
         """測試無數據時的推薦生成"""
         # 創建空的知識庫文件
         data_file = temp_dir / "knowledge.json"
         data = {"version": "4.0", "knowledge_points": []}
-        with open(data_file, 'w', encoding='utf-8') as f:
+        with open(data_file, "w", encoding="utf-8") as f:
             json.dump(data, f)
 
         adapter = KnowledgeManagerAdapter(use_database=False, data_dir=str(temp_dir))
         recommendations = adapter.get_learning_recommendations()
 
         # 驗證返回默認推薦
-        assert recommendations['recommendations'][0] == '開始第一次練習，建立學習基礎'
-        assert recommendations['focus_areas'] == []
-        assert recommendations['suggested_difficulty'] == 1
-        assert recommendations['next_review_count'] == 0
-        assert recommendations['priority_points'] == []
+        assert recommendations["recommendations"][0] == "開始第一次練習，建立學習基礎"
+        assert recommendations["focus_areas"] == []
+        assert recommendations["suggested_difficulty"] == 1
+        assert recommendations["next_review_count"] == 0
+        assert recommendations["priority_points"] == []
 
     def test_permanent_delete_old_points_dry_run(self, adapter_with_mock_data):
         """測試預覽模式刪除舊知識點"""
@@ -228,11 +228,11 @@ class TestLearningRecommendations:
         result = adapter.permanent_delete_old_points(days_old=30, dry_run=True)
 
         # 驗證結果
-        assert result['dry_run']
-        assert result['scanned'] == 3
-        assert result['eligible_for_deletion'] == 1  # 只有 points[0]
-        assert result['preserved_high_value'] == 1  # points[2] 因為低掌握度被保留
-        assert len(result['deleted_ids']) == 0  # 預覽模式不實際刪除
+        assert result["dry_run"]
+        assert result["scanned"] == 3
+        assert result["eligible_for_deletion"] == 1  # 只有 points[0]
+        assert result["preserved_high_value"] == 1  # points[2] 因為低掌握度被保留
+        assert len(result["deleted_ids"]) == 0  # 預覽模式不實際刪除
 
     def test_permanent_delete_old_points_actual(self, adapter_with_mock_data):
         """測試實際刪除舊知識點"""
@@ -252,10 +252,10 @@ class TestLearningRecommendations:
         result = adapter.permanent_delete_old_points(days_old=30, dry_run=False)
 
         # 驗證結果
-        assert not result['dry_run']
-        assert result['eligible_for_deletion'] == 1
-        assert len(result['deleted_ids']) == 1
-        assert points[0].id in result['deleted_ids']
+        assert not result["dry_run"]
+        assert result["eligible_for_deletion"] == 1
+        assert len(result["deleted_ids"]) == 1
+        assert points[0].id in result["deleted_ids"]
 
         # 驗證實際被刪除
         final_count = len(adapter._legacy_manager.knowledge_points)
@@ -302,12 +302,12 @@ class TestRecommendationAlgorithm:
                     chinese_sentence="我昨天去那裡",
                     user_answer="I go there yesterday",
                     correct_answer="I went there yesterday",
-                    timestamp=now.isoformat()
+                    timestamp=now.isoformat(),
                 ),
                 mastery_level=0.2,
                 mistake_count=5,
                 correct_count=1,
-                next_review=past_due
+                next_review=past_due,
             ),
         ]
         return points
@@ -332,7 +332,7 @@ class TestRecommendationAlgorithm:
                         "chinese_sentence": p.original_error.chinese_sentence,
                         "user_answer": p.original_error.user_answer,
                         "correct_answer": p.original_error.correct_answer,
-                        "timestamp": datetime.now().isoformat()
+                        "timestamp": datetime.now().isoformat(),
                     },
                     "review_examples": [],
                     "mastery_level": p.mastery_level,
@@ -347,13 +347,13 @@ class TestRecommendationAlgorithm:
                     "tags": [],
                     "custom_notes": "",
                     "version_history": [],
-                    "last_modified": datetime.now().isoformat()
+                    "last_modified": datetime.now().isoformat(),
                 }
                 for p in mock_knowledge_points
-            ]
+            ],
         }
 
-        with open(data_file, 'w', encoding='utf-8') as f:
+        with open(data_file, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
         # 創建適配器
@@ -363,19 +363,19 @@ class TestRecommendationAlgorithm:
     def test_priority_calculation(self, adapter_with_mock_data):
         """測試優先級計算"""
         recommendations = adapter_with_mock_data.get_learning_recommendations()
-        priority_points = recommendations['priority_points']
+        priority_points = recommendations["priority_points"]
 
         # 驗證優先級排序（待複習 > 低掌握度系統性 > 其他）
         if len(priority_points) > 1:
             # 第一個應該是低掌握度或待複習的
-            assert priority_points[0]['mastery_level'] < 0.3
+            assert priority_points[0]["mastery_level"] < 0.3
 
             # 系統性錯誤應該優先
-            systematic_points = [p for p in priority_points if p['category'] == 'systematic']
+            systematic_points = [p for p in priority_points if p["category"] == "systematic"]
             if systematic_points:
                 # 至少有一個系統性錯誤在前3個
-                top_3_categories = [p['category'] for p in priority_points[:3]]
-                assert 'systematic' in top_3_categories
+                top_3_categories = [p["category"] for p in priority_points[:3]]
+                assert "systematic" in top_3_categories
 
     def test_difficulty_suggestion(self):
         """測試難度建議邏輯"""

@@ -360,19 +360,21 @@ class TestDatabaseConnectionPerformance:
         async def create_pool_coro(*args, **kwargs):
             return mock_pool
 
-        with patch("asyncpg.create_pool", side_effect=create_pool_coro), \
-             patch.object(DatabaseSettings, "__init__", lambda self: None):
-                conn = DatabaseConnection()
-                conn._settings = MagicMock()
-                conn._settings.USE_DATABASE = True
+        with (
+            patch("asyncpg.create_pool", side_effect=create_pool_coro),
+            patch.object(DatabaseSettings, "__init__", lambda self: None),
+        ):
+            conn = DatabaseConnection()
+            conn._settings = MagicMock()
+            conn._settings.USE_DATABASE = True
 
-                # 快速循環
-                for _ in range(10):
-                    await conn.connect()
-                    await conn.disconnect()
+            # 快速循環
+            for _ in range(10):
+                await conn.connect()
+                await conn.disconnect()
 
-                # 最終狀態應該是斷開
-                assert not conn.is_connected
+            # 最終狀態應該是斷開
+            assert not conn.is_connected
 
     async def test_connection_under_stress(self, mock_db_connection):
         """測試壓力下的連線行為"""

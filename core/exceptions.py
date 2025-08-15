@@ -14,8 +14,9 @@
 import asyncio
 import functools
 import time
+from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 from core.log_config import get_module_logger
 
@@ -29,6 +30,19 @@ class ErrorSeverity(Enum):
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
+    INFO = "info"  # 新增：僅信息性錯誤
+
+
+class ErrorCategory(Enum):
+    """錯誤分類 - 用於統一錯誤處理"""
+    SYSTEM = "system"           # 系統錯誤
+    DATABASE = "database"       # 資料庫錯誤
+    FILE_IO = "file_io"        # 文件IO錯誤
+    NETWORK = "network"        # 網路錯誤
+    VALIDATION = "validation"  # 數據驗證錯誤
+    BUSINESS = "business"      # 業務邏輯錯誤
+    CONCURRENCY = "concurrency" # 並發錯誤
+    UNKNOWN = "unknown"        # 未知錯誤
 
 
 class LinkerError(Exception):
@@ -41,12 +55,47 @@ class LinkerError(Exception):
         self,
         message: str,
         error_code: Optional[str] = None,
-        details: Optional[dict[str, Any]] = None,
+        details: Optional[Dict[str, Any]] = None,
+        category: ErrorCategory = ErrorCategory.UNKNOWN,
+        severity: ErrorSeverity = ErrorSeverity.MEDIUM,
+        user_message: Optional[str] = None,
+        recovery_suggestions: Optional[list[str]] = None,
     ):
         super().__init__(message)
         self.message = message
         self.error_code = error_code or "UNKNOWN_ERROR"
         self.details = details or {}
+        self.category = category
+        self.severity = severity
+        self.user_message = user_message or self._generate_user_message()
+        self.recovery_suggestions = recovery_suggestions or []
+        self.timestamp = datetime.now().isoformat()
+
+    def _generate_user_message(self) -> str:
+        """生成用戶友好的錯誤訊息"""
+        user_messages = {
+            ErrorCategory.DATABASE: "資料庫暫時無法連接，請稍後再試",
+            ErrorCategory.FILE_IO: "文件操作失敗，請檢查文件權限",
+            ErrorCategory.NETWORK: "網路連接異常，請檢查網路設置",
+            ErrorCategory.VALIDATION: "輸入的數據格式不正確",
+            ErrorCategory.BUSINESS: "操作不符合業務規則",
+            ErrorCategory.CONCURRENCY: "系統忙碌中，請稍後再試",
+            ErrorCategory.SYSTEM: "系統發生錯誤，請聯繫管理員"
+        }
+        return user_messages.get(self.category, "系統發生未知錯誤")
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """轉換為字典格式"""
+        return {
+            "error_code": self.error_code,
+            "message": self.message,
+            "user_message": self.user_message,
+            "category": self.category.value,
+            "severity": self.severity.value,
+            "details": self.details,
+            "recovery_suggestions": self.recovery_suggestions,
+            "timestamp": self.timestamp
+        }
 
     def __str__(self):
         if self.details:
@@ -374,18 +423,23 @@ class DatabaseError(LinkerError):
         query: Optional[str] = None,
         connection_info: Optional[dict] = None,
         original_error: Optional[Exception] = None,
+        **kwargs
     ):
-        super().__init__(
-            message=message,
-            error_code="DATABASE_ERROR",
-            details={
-                "operation": operation,
-                "table": table,
-                "query": query[:200] if query else None,  # 限制查詢長度
-                "connection_info": connection_info,
-                "original_error": str(original_error) if original_error else None,
-            },
-        )
+        kwargs.setdefault('category', ErrorCategory.DATABASE)
+        kwargs.setdefault('severity', ErrorSeverity.HIGH)
+        kwargs.setdefault('error_code', "DATABASE_ERROR")
+        
+        details = kwargs.get('details', {})
+        details.update({
+            "operation": operation,
+            "table": table,
+            "query": query[:200] if query else None,  # 限制查詢長度
+            "connection_info": connection_info,
+            "original_error": str(original_error) if original_error else None,
+        })
+        kwargs['details'] = details
+        
+        super().__init__(message=message, **kwargs)
         self.operation = operation
         self.table = table
         self.original_error = original_error
@@ -576,3 +630,69 @@ def with_async_retry(
         return wrapper
 
     return decorator
+
+
+# 統一錯誤處理體系的新異常類
+
+class UnifiedError(LinkerError):
+    """統一錯誤類 - 所有新的錯誤處理都應使用此類或其子類"""
+    
+    def __init__(
+        self,
+        message: str,
+        error_code: str,
+        category: ErrorCategory = ErrorCategory.UNKNOWN,
+        severity: ErrorSeverity = ErrorSeverity.MEDIUM,
+        details: Optional[Dict[str, Any]] = None,
+        user_message: Optional[str] = None,
+        recovery_suggestions: Optional[list[str]] = None
+    ):
+        super().__init__(
+            message=message,
+            error_code=error_code,
+            details=details,
+            category=category,
+            severity=severity,
+            user_message=user_message,
+            recovery_suggestions=recovery_suggestions
+        )
+
+
+class SystemError(UnifiedError):
+    """系統錯誤"""
+    def __init__(self, message: str, error_code: str = "SYSTEM_ERROR", **kwargs):
+        kwargs.setdefault('category', ErrorCategory.SYSTEM)
+        kwargs.setdefault('severity', ErrorSeverity.CRITICAL)
+        super().__init__(message, error_code, **kwargs)
+
+
+class FileIOError(UnifiedError):
+    """文件IO錯誤"""
+    def __init__(self, message: str, error_code: str = "FILE_ERROR", **kwargs):
+        kwargs.setdefault('category', ErrorCategory.FILE_IO)
+        kwargs.setdefault('severity', ErrorSeverity.MEDIUM)
+        super().__init__(message, error_code, **kwargs)
+
+
+class NetworkError(UnifiedError):
+    """網路錯誤"""
+    def __init__(self, message: str, error_code: str = "NETWORK_ERROR", **kwargs):
+        kwargs.setdefault('category', ErrorCategory.NETWORK)
+        kwargs.setdefault('severity', ErrorSeverity.MEDIUM)
+        super().__init__(message, error_code, **kwargs)
+
+
+class BusinessLogicError(UnifiedError):
+    """業務邏輯錯誤"""
+    def __init__(self, message: str, error_code: str = "BUSINESS_ERROR", **kwargs):
+        kwargs.setdefault('category', ErrorCategory.BUSINESS)
+        kwargs.setdefault('severity', ErrorSeverity.LOW)
+        super().__init__(message, error_code, **kwargs)
+
+
+class ConcurrencyError(UnifiedError):
+    """並發錯誤"""
+    def __init__(self, message: str, error_code: str = "CONCURRENCY_ERROR", **kwargs):
+        kwargs.setdefault('category', ErrorCategory.CONCURRENCY)
+        kwargs.setdefault('severity', ErrorSeverity.MEDIUM)
+        super().__init__(message, error_code, **kwargs)

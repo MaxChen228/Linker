@@ -10,21 +10,25 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from core.error_types import ErrorCategory, ErrorTypeSystem
-from web.dependencies import get_knowledge_manager, get_templates
+from web.dependencies import get_knowledge_manager, get_knowledge_manager_async_dependency, get_templates
 
 router = APIRouter()
 
 
 @router.get("/knowledge", response_class=HTMLResponse)
-def knowledge_points(
+async def knowledge_points(
     request: Request, category: Optional[str] = None, mastery: Optional[str] = None
 ):
     """知識點瀏覽頁面"""
     templates = get_templates()
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取所有未刪除的知識點
-    all_points = knowledge.get_active_points()
+    if hasattr(knowledge, 'get_knowledge_points_async'):
+        all_points = await knowledge.get_knowledge_points_async()
+        all_points = [p for p in all_points if not p.is_deleted]
+    else:
+        all_points = knowledge.get_active_points()
 
     # 根據類別篩選
     if category:
@@ -83,7 +87,10 @@ def knowledge_points(
     knowledge_groups.sort(key=lambda x: x["total_mistakes"], reverse=True)
 
     # 獲取統計資料
-    stats = knowledge.get_statistics()
+    if hasattr(knowledge, 'get_statistics_async'):
+        stats = await knowledge.get_statistics_async()
+    else:
+        stats = knowledge.get_statistics()
 
     # 計算各類別統計
     category_counts = {
@@ -126,13 +133,17 @@ def knowledge_points(
 
 
 @router.get("/knowledge/trash", response_class=HTMLResponse)
-def knowledge_trash(request: Request):
+async def knowledge_trash(request: Request):
     """知識點回收站頁面"""
     templates = get_templates()
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取所有已刪除的知識點
-    deleted_points = knowledge.get_deleted_points()
+    if hasattr(knowledge, 'get_knowledge_points_async'):
+        all_points = await knowledge.get_knowledge_points_async()
+        deleted_points = [p for p in all_points if p.is_deleted]
+    else:
+        deleted_points = knowledge.get_deleted_points()
 
     # 按刪除時間排序（最新的在前）
     deleted_points.sort(key=lambda x: x.deleted_at, reverse=True)
@@ -180,13 +191,16 @@ def knowledge_trash(request: Request):
 
 
 @router.get("/knowledge/{point_id}", response_class=HTMLResponse)
-def knowledge_detail(request: Request, point_id: str):
+async def knowledge_detail(request: Request, point_id: str):
     """知識點詳情頁面"""
     templates = get_templates()
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取指定的知識點
-    point = knowledge.get_knowledge_point(point_id)
+    if hasattr(knowledge, 'get_knowledge_point_async'):
+        point = await knowledge.get_knowledge_point_async(point_id)
+    else:
+        point = knowledge.get_knowledge_point(point_id)
 
     if not point:
         # 如果找不到知識點，重定向到知識點列表頁

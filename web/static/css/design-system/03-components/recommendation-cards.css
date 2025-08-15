@@ -1,0 +1,678 @@
+/* ============================================ */
+/* 學習推薦卡片組件                              */
+/* ============================================ */
+
+/* ============================================ */
+/* 浮動觸發按鈕                                 */
+/* ============================================ */
+
+/* 推薦觸發按鈕 */
+.recommendation-trigger {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-600);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  z-index: var(--z-floating, 100);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 確保可訪問性 */
+  outline-offset: 4px;
+}
+
+.recommendation-trigger:hover {
+  background: var(--accent-700);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--shadow-xl);
+}
+
+.recommendation-trigger:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.recommendation-trigger:focus-visible {
+  outline: 2px solid var(--accent-300);
+}
+
+.recommendation-trigger-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+
+.recommendation-trigger:hover .recommendation-trigger-icon {
+  transform: scale(1.1);
+}
+
+/* 位置變體 */
+.recommendation-trigger[data-position="top-right"] {
+  top: var(--space-6);
+  right: var(--space-6);
+  bottom: auto;
+}
+
+.recommendation-trigger[data-position="bottom-left"] {
+  bottom: var(--space-6);
+  left: var(--space-6);
+  right: auto;
+}
+
+/* 尺寸變體 */
+.recommendation-trigger[data-size="sm"] {
+  width: 48px;
+  height: 48px;
+}
+
+.recommendation-trigger[data-size="lg"] {
+  width: 64px;
+  height: 64px;
+}
+
+/* ============================================ */
+/* 浮動推薦模態框                               */
+/* ============================================ */
+
+/* 推薦模態框遮罩 */
+.recommendation-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal, 1000);
+  padding: var(--space-4);
+  opacity: 0;
+  visibility: hidden;
+  transition: 
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.recommendation-modal-overlay[data-visible="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 推薦模態框容器 */
+.recommendation-modal {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl);
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 確保可訪問性 */
+  outline: none;
+}
+
+.recommendation-modal-overlay[data-visible="true"] .recommendation-modal {
+  transform: translateY(0) scale(1);
+}
+
+/* 模態框頭部 */
+.recommendation-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+
+.recommendation-modal-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text);
+  margin: 0;
+}
+
+.recommendation-modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recommendation-modal-close:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.recommendation-modal-close:focus-visible {
+  outline: 2px solid var(--accent-300);
+  outline-offset: 2px;
+}
+
+/* 模態框內容區域 */
+.recommendation-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6);
+}
+
+/* 推薦卡片容器 - 調整為模態框內樣式 */
+.recommendation-container {
+  margin: 0;
+  padding: 0;
+}
+
+/* 在模態框內的推薦卡片調整 */
+.recommendation-modal .recommendation-card {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* 推薦卡片主體 */
+.recommendation-card {
+  position: relative;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* 裝飾性漸變背景 */
+.recommendation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-500) 0%,
+    var(--accent-400) 50%,
+    var(--accent-300) 100%
+  );
+  opacity: 0.8;
+}
+
+/* 頭部區域 */
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.recommendation-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent-100), var(--accent-50));
+  border-radius: var(--radius);
+  flex-shrink: 0;
+}
+
+.recommendation-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--accent-600);
+}
+
+.recommendation-title-group {
+  flex: 1;
+}
+
+.recommendation-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.recommendation-subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* 推薦內容區 */
+.recommendation-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* 推薦列表 */
+.recommendation-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recommendation-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.recommendation-item:hover {
+  background: var(--surface);
+}
+
+.recommendation-item-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.recommendation-item-content {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.recommendation-item-text {
+  color: var(--text);
+  font-size: var(--text-base);
+  margin: 0;
+}
+
+.recommendation-item-meta {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+/* 重點領域標籤區 */
+.focus-areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.focus-area-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: var(--space-2);
+}
+
+.focus-area-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--accent-50);
+  color: var(--accent-700);
+  border: 1px solid var(--accent-200);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  transition: all 0.2s ease;
+}
+
+.focus-area-tag:hover {
+  background: var(--accent-100);
+  border-color: var(--accent-300);
+  transform: translateY(-1px);
+}
+
+/* 統計資訊區 */
+.recommendation-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: linear-gradient(to bottom, var(--bg), transparent);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-4);
+}
+
+.recommendation-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.recommendation-stat-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--accent-600);
+}
+
+.recommendation-stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* 行動按鈕區 */
+.recommendation-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+.recommendation-action {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background: var(--accent-600);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.recommendation-action:hover {
+  background: var(--accent-700);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.recommendation-action:active {
+  transform: translateY(0);
+}
+
+.recommendation-action[data-variant="secondary"] {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.recommendation-action[data-variant="secondary"]:hover {
+  background: var(--bg);
+  border-color: var(--accent-200);
+}
+
+/* 載入狀態 */
+.recommendation-card[data-loading="true"] {
+  position: relative;
+  min-height: 200px;
+}
+
+.recommendation-card[data-loading="true"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* 空狀態 */
+.recommendation-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.recommendation-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--space-4);
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.recommendation-empty-text {
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  margin: 0;
+}
+
+/* 錯誤類別徽章 */
+.error-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.error-type-badge[data-type="systematic"] {
+  background: var(--error-50);
+  color: var(--error-700);
+  border: 1px solid var(--error-200);
+}
+
+.error-type-badge[data-type="isolated"] {
+  background: var(--warning-50);
+  color: var(--warning-700);
+  border: 1px solid var(--warning-200);
+}
+
+.error-type-badge[data-type="enhancement"] {
+  background: var(--success-50);
+  color: var(--success-700);
+  border: 1px solid var(--success-200);
+}
+
+/* 優先級指示器 */
+.priority-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.priority-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.priority-indicator[data-priority="high"] {
+  color: var(--error-500);
+}
+
+.priority-indicator[data-priority="medium"] {
+  color: var(--warning-500);
+}
+
+.priority-indicator[data-priority="low"] {
+  color: var(--success-500);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  /* 觸發按鈕在移動設備上的調整 */
+  .recommendation-trigger {
+    width: 48px;
+    height: 48px;
+    bottom: var(--space-4);
+    right: var(--space-4);
+  }
+  
+  /* 模態框在移動設備上的調整 */
+  .recommendation-modal-overlay {
+    padding: var(--space-2);
+    align-items: flex-end;
+  }
+  
+  .recommendation-modal {
+    max-height: 90vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    transform: translateY(100%);
+  }
+  
+  .recommendation-modal-overlay[data-visible="true"] .recommendation-modal {
+    transform: translateY(0);
+  }
+  
+  .recommendation-modal-header,
+  .recommendation-modal-content {
+    padding: var(--space-4);
+  }
+  
+  /* 原有推薦卡片的響應式 */
+  .recommendation-card {
+    padding: var(--space-4);
+  }
+  
+  .recommendation-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .recommendation-actions {
+    flex-direction: column;
+  }
+  
+  .recommendation-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 小螢幕上的進一步調整 */
+  .recommendation-trigger {
+    width: 44px;
+    height: 44px;
+    bottom: var(--space-3);
+    right: var(--space-3);
+  }
+  
+  .recommendation-modal {
+    max-height: 95vh;
+  }
+}
+
+/* 橫向模式調整 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .recommendation-modal {
+    max-height: 90vh;
+  }
+  
+  .recommendation-modal-content {
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* 暗色模式支援 */
+@media (prefers-color-scheme: dark) {
+  /* 觸發按鈕暗色模式 */
+  .recommendation-trigger {
+    background: var(--accent-500);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(var(--accent-400-rgb), 0.3);
+  }
+  
+  .recommendation-trigger:hover {
+    background: var(--accent-600);
+    box-shadow: var(--shadow-xl), 0 0 25px rgba(var(--accent-400-rgb), 0.4);
+  }
+  
+  /* 模態框暗色模式 */
+  .recommendation-modal-overlay {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  
+  .recommendation-modal {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-dark);
+  }
+  
+  .recommendation-modal-header {
+    background: var(--surface-dark);
+    border-bottom-color: var(--border-dark);
+  }
+  
+  .recommendation-modal-close:hover {
+    background: var(--bg-dark);
+  }
+  
+  /* 原有推薦卡片暗色模式 */
+  .recommendation-card {
+    background: var(--surface-dark);
+    border-color: var(--border-dark);
+  }
+  
+  .recommendation-item {
+    background: var(--bg-dark);
+  }
+  
+  .recommendation-item:hover {
+    background: var(--surface-dark);
+  }
+  
+  .focus-area-tag {
+    background: rgba(var(--accent-400-rgb), 0.1);
+    color: var(--accent-300);
+    border-color: rgba(var(--accent-400-rgb), 0.3);
+  }
+  
+  .recommendation-action[data-variant="secondary"] {
+    background: var(--surface-dark);
+    border-color: var(--border-dark);
+  }
+}

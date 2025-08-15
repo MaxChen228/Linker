@@ -59,15 +59,26 @@ def validate_config() -> tuple[bool, list[str], list[str]]:
 
     # 檢查資料庫模式設定
     if USE_DATABASE:
-        if not DATABASE_URL or DATABASE_URL == "postgresql://postgres:password@localhost:5432/linker":
-            warnings.append("⚠️  USE_DATABASE=true 但 DATABASE_URL 使用預設值，將嘗試自動降級到 JSON 模式")
+        if (
+            not DATABASE_URL
+            or DATABASE_URL == "postgresql://postgres:password@localhost:5432/linker"
+        ):
+            warnings.append(
+                "⚠️  USE_DATABASE=true 但 DATABASE_URL 使用預設值，將嘗試自動降級到 JSON 模式"
+            )
 
         # 檢查 adapter 是否已修復
         try:
             from core.database.adapter import KnowledgeManagerAdapter
+
             adapter = KnowledgeManagerAdapter(use_database=False)
-            required_methods = ['get_active_points', 'get_deleted_points', 'edit_knowledge_point',
-                              'delete_knowledge_point', 'restore_knowledge_point']
+            required_methods = [
+                "get_active_points",
+                "get_deleted_points",
+                "edit_knowledge_point",
+                "delete_knowledge_point",
+                "restore_knowledge_point",
+            ]
             missing_methods = [m for m in required_methods if not hasattr(adapter, m)]
             if missing_methods:
                 warnings.append(f"⚠️  Database adapter 缺少方法: {', '.join(missing_methods)}")
@@ -83,7 +94,7 @@ def validate_config() -> tuple[bool, list[str], list[str]]:
             errors.append(f"❌ 無法創建資料目錄 {DATA_DIR}: {e}")
 
     # 檢查日誌級別
-    valid_log_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+    valid_log_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     if LOG_LEVEL not in valid_log_levels:
         warnings.append(f"⚠️  無效的 LOG_LEVEL: {LOG_LEVEL}，使用預設值 INFO")
 
@@ -194,19 +205,19 @@ def switch_storage_mode(mode: str) -> bool:
     """
     global USE_DATABASE
 
-    if mode not in ['json', 'database']:
+    if mode not in ["json", "database"]:
         print(f"❌ 無效的模式: {mode}，請使用 'json' 或 'database'")
         return False
 
-    if mode == 'database':
+    if mode == "database":
         # 檢查資料庫健康狀態
         is_healthy, message = check_database_health()
         if not is_healthy:
             print(f"❌ 無法切換到資料庫模式: {message}")
             return False
 
-    USE_DATABASE = (mode == 'database')
-    os.environ['USE_DATABASE'] = str(USE_DATABASE).lower()
+    USE_DATABASE = mode == "database"
+    os.environ["USE_DATABASE"] = str(USE_DATABASE).lower()
 
     print(f"✅ 已切換到 {mode} 模式")
     return True
@@ -222,18 +233,20 @@ def get_config_summary() -> dict:
     db_healthy, db_message = check_database_health() if USE_DATABASE else (True, "N/A")
 
     return {
-        'storage_mode': 'database' if USE_DATABASE else 'json',
-        'data_directory': str(DATA_DIR),
-        'log_level': LOG_LEVEL,
-        'dev_mode': DEV_MODE,
-        'dual_write': ENABLE_DUAL_WRITE,
-        'config_valid': is_valid,
-        'error_count': len(errors),
-        'warning_count': len(warnings),
-        'database_healthy': db_healthy,
-        'database_message': db_message,
-        'api_key_set': bool(os.getenv('GEMINI_API_KEY') and
-                           os.getenv('GEMINI_API_KEY') != 'your_gemini_api_key_here')
+        "storage_mode": "database" if USE_DATABASE else "json",
+        "data_directory": str(DATA_DIR),
+        "log_level": LOG_LEVEL,
+        "dev_mode": DEV_MODE,
+        "dual_write": ENABLE_DUAL_WRITE,
+        "config_valid": is_valid,
+        "error_count": len(errors),
+        "warning_count": len(warnings),
+        "database_healthy": db_healthy,
+        "database_message": db_message,
+        "api_key_set": bool(
+            os.getenv("GEMINI_API_KEY")
+            and os.getenv("GEMINI_API_KEY") != "your_gemini_api_key_here"
+        ),
     }
 
 

@@ -32,11 +32,16 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
             KnowledgePoint 物件
         """
         # 建構原始錯誤
+        # 安全處理可能為 NULL 的時間戳
+        oe_timestamp = row.get("oe_timestamp")
+        if oe_timestamp is None:
+            oe_timestamp = datetime.now()
+        
         original_error = OriginalError(
             chinese_sentence=row.get("oe_chinese", ""),
             user_answer=row.get("oe_user_answer", ""),
             correct_answer=row.get("oe_correct_answer", ""),
-            timestamp=row.get("oe_timestamp", datetime.now()).isoformat(),
+            timestamp=oe_timestamp.isoformat() if oe_timestamp else datetime.now().isoformat(),
         )
 
         # 建構複習例句列表
@@ -77,7 +82,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
             tags=row.get("tags", []) or [],
             custom_notes=row.get("custom_notes", "") or "",
             version_history=[],  # 需要時才載入
-            last_modified=row["last_modified"].isoformat(),
+            last_modified=row["last_modified"].isoformat() if row.get("last_modified") else datetime.now().isoformat(),
         )
 
     async def find_by_id(self, id: int) -> Optional[KnowledgePoint]:
@@ -111,7 +116,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
             LEFT JOIN review_examples re ON kp.id = re.knowledge_point_id
             LEFT JOIN knowledge_point_tags kpt ON kp.id = kpt.knowledge_point_id
             LEFT JOIN tags t ON kpt.tag_id = t.id
-            WHERE kp.id = $1 AND kp.is_deleted = FALSE
+            WHERE kp.id = $1
             GROUP BY kp.id, oe.chinese_sentence, oe.user_answer, oe.correct_answer, oe.timestamp
         """
 
@@ -178,14 +183,32 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
         """
         async with self.transaction() as conn:
             try:
-                # 1. 插入主表
+                # 1. 插入主表（包含時間欄位以支援遷移）
                 kp_query = """
                     INSERT INTO knowledge_points
                     (key_point, category, subtype, explanation, original_phrase, correction,
-                     mastery_level, mistake_count, correct_count, next_review, custom_notes)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-                    RETURNING id, created_at, last_seen, last_modified
+                     mastery_level, mistake_count, correct_count, created_at, last_seen, 
+                     next_review, custom_notes, last_modified)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                    RETURNING id
                 """
+                # 解析時間字串為 datetime 物件
+                created_at = (
+                    datetime.fromisoformat(entity.created_at)
+                    if entity.created_at
+                    else datetime.now()
+                )
+                last_seen = (
+                    datetime.fromisoformat(entity.last_seen) if entity.last_seen else datetime.now()
+                )
+                next_review = (
+                    datetime.fromisoformat(entity.next_review) if entity.next_review else None
+                )
+                last_modified = (
+                    datetime.fromisoformat(entity.last_modified)
+                    if entity.last_modified
+                    else datetime.now()
+                )
 
                 kp_row = await conn.fetchrow(
                     kp_query,
@@ -198,19 +221,18 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                     entity.mastery_level,
                     entity.mistake_count,
                     entity.correct_count,
-                    datetime.fromisoformat(entity.next_review) if entity.next_review else None,
+                    created_at,
+                    last_seen,
+                    next_review,
                     entity.custom_notes,
+                    last_modified,
                 )
 
-                # 更新實體的 ID 和時間戳
+                # 更新實體的 ID（時間欄位已在上面設定）
                 entity.id = kp_row["id"]
-                entity.created_at = (
-                    kp_row["created_at"].isoformat() if kp_row["created_at"] else None
-                )
-                entity.last_seen = kp_row["last_seen"].isoformat() if kp_row["last_seen"] else None
-                entity.last_modified = (
-                    kp_row["last_modified"].isoformat() if kp_row["last_modified"] else None
-                )
+                entity.created_at = created_at.isoformat() if created_at else None
+                entity.last_seen = last_seen.isoformat() if last_seen else None
+                entity.last_modified = last_modified.isoformat() if last_modified else None
 
                 # 2. 插入原始錯誤
                 if entity.original_error:
@@ -365,6 +387,37 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 return False
             except Exception as e:
                 self._handle_database_error(e, f"delete({id})")
+                raise
+
+    async def restore(self, id: int) -> bool:
+        """恢復已刪除的知識點
+
+        Args:
+            id: 知識點 ID
+
+        Returns:
+            是否成功恢復
+        """
+        query = """
+            UPDATE knowledge_points
+            SET is_deleted = FALSE,
+                deleted_at = NULL,
+                deleted_reason = ''
+            WHERE id = $1 AND is_deleted = TRUE
+            RETURNING id
+        """
+
+        async with self.connection() as conn:
+            try:
+                result = await conn.fetchval(query, id)
+                if result:
+                    self.logger.info(f"成功恢復知識點 {id}")
+                    return True
+                else:
+                    self.logger.warning(f"知識點 {id} 不存在或未被刪除")
+                    return False
+            except Exception as e:
+                self._handle_database_error(e, f"restore({id})")
                 raise
 
     async def find_due_for_review(self, limit: int = 20) -> list[KnowledgePoint]:

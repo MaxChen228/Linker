@@ -678,5 +678,197 @@
       ]
     },
     "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T21:05:54.165241",
+    "chinese_sentence": "我昨天去了学校",
+    "user_answer": "I went to school yesterday",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T21:55:12.834812",
+    "chinese_sentence": "測試句子",
+    "user_answer": "錯誤答案",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "error_analysis": [
+        {
+          "key_point_summary": "測試錯誤",
+          "category": "systematic",
+          "original_phrase": "test phrase",
+          "correction": "corrected phrase",
+          "explanation": "test explanation",
+          "severity": "major"
+        }
+      ],
+      "overall_suggestion": "test correction"
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T21:56:03.748589",
+    "chinese_sentence": "我昨天去學校",
+    "user_answer": "I go to school yesterday",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "error_analysis": [
+        {
+          "key_point_summary": "時態錯誤",
+          "category": "systematic",
+          "original_phrase": "go yesterday",
+          "correction": "went yesterday",
+          "explanation": "過去時態錯誤",
+          "severity": "major"
+        }
+      ],
+      "overall_suggestion": "I went to school yesterday"
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T22:22:13.098972",
+    "chinese_sentence": "這是測試句子。",
+    "user_answer": "This is test sentence.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "This is a test sentence.",
+      "error_analysis": [
+        {
+          "key_point_summary": "冠詞使用錯誤",
+          "original_phrase": "test sentence",
+          "correction": "a test sentence",
+          "explanation": "可數名詞需要冠詞",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T22:23:06.771008",
+    "chinese_sentence": "這是快速測試。",
+    "user_answer": "This is quick test.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "This is a quick test.",
+      "error_analysis": [
+        {
+          "key_point_summary": "冠詞使用測試",
+          "original_phrase": "quick test",
+          "correction": "a quick test",
+          "explanation": "測試冠詞使用",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T22:33:00.490768",
+    "chinese_sentence": "性能測試句子",
+    "user_answer": "性能測試答案",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "性能測試建議",
+      "error_analysis": [
+        {
+          "key_point_summary": "性能測試知識點",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T22:33:23.415089",
+    "chinese_sentence": "性能測試句子",
+    "user_answer": "性能測試答案",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "性能測試建議",
+      "error_analysis": [
+        {
+          "key_point_summary": "性能測試知識點",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T22:43:59.158677",
+    "chinese_sentence": "為了確保專案順利進行，團隊成員不僅要密切合作，還要及時應對任何突發狀況。",
+    "user_answer": "To ensure the smooth progress on the project, team members mustn't only work closely together but also respond to every emergencies on a timely manner.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "To ensure the smooth progress of the project, team members must not only work closely together but also respond promptly to any emergencies.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "文法結構錯誤: mustn't only → must not only",
+          "original_phrase": "mustn't only",
+          "correction": "must not only",
+          "explanation": "mustn't 是 must not 的縮寫，意思是「絕不能、禁止」，這完全改變了原句「不僅要...」的肯定語氣。正確的結構是「not only... but also...」，助動詞 must 應該放在 not only 之前，形成「must not only...」的結構，表示「不僅必須...」。",
+          "severity": "major"
+        },
+        {
+          "category": "systematic",
+          "key_point_summary": "名詞單複數錯誤: every emergencies → every emergency",
+          "original_phrase": "every emergencies",
+          "correction": "every emergency",
+          "explanation": "限定詞 every 後面必須接單數可數名詞，因此 emergencies (複數) 應改為 emergency (單數)。若要表達「任何」突發狀況，也可以使用 any emergencies 或 any emergency。",
+          "severity": "major"
+        },
+        {
+          "category": "isolated",
+          "key_point_summary": "介系詞搭配錯誤: on a timely manner → in a timely manner",
+          "original_phrase": "on a timely manner",
+          "correction": "in a timely manner",
+          "explanation": "「in a timely manner」是一個固定的片語，意思是「及時地」。這裡的介系詞固定使用 in，而不是 on。這屬於需要記憶的慣用語法。",
+          "severity": "minor"
+        },
+        {
+          "category": "enhancement",
+          "key_point_summary": "介系詞搭配: progress on → progress of",
+          "original_phrase": "progress on the project",
+          "correction": "progress of the project",
+          "explanation": "雖然「progress on the project」可以理解，但當要表達「某事物的進展」時，使用「progress of the project」更為標準和自然，更能體現兩者間的從屬關係。",
+          "severity": "minor"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-14T23:15:12.112699",
+    "chinese_sentence": "我需要完成這個任務",
+    "user_answer": "I need finish this task",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "I need to finish this task.",
+      "error_analysis": [
+        {
+          "category": "systematic",
+          "key_point_summary": "動詞結構錯誤: need finish → need to finish",
+          "original_phrase": "need finish",
+          "correction": "need to finish",
+          "explanation": "在英文文法中，當動詞 'need' 後面要接另一個動詞來表達「需要做某事」時，第二個動詞必須使用不定詞形式（to + 原形動詞）。例如：'I need to go'（我需要走）、'She needs to study'（她需要學習）。直接將兩個動詞 'need' 和 'finish' 放在一起是錯誤的用法。",
+          "severity": "major"
+        }
+      ]
+    },
+    "practice_mode": "new"
   }
 ]

@@ -17,52 +17,37 @@ from pathlib import Path
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 
+
 def check_environment():
     """檢查環境變數配置"""
     print("\n📋 環境變數檢查")
     print("-" * 40)
 
     env_vars = {
-        'GEMINI_API_KEY': {
-            'required': True,
-            'default': None,
-            'sensitive': True
+        "GEMINI_API_KEY": {"required": True, "default": None, "sensitive": True},
+        "USE_DATABASE": {"required": False, "default": "false", "sensitive": False},
+        "DATABASE_URL": {
+            "required": False,
+            "default": "postgresql://postgres:password@localhost:5432/linker",
+            "sensitive": True,
         },
-        'USE_DATABASE': {
-            'required': False,
-            'default': 'false',
-            'sensitive': False
-        },
-        'DATABASE_URL': {
-            'required': False,
-            'default': 'postgresql://postgres:password@localhost:5432/linker',
-            'sensitive': True
-        },
-        'LOG_LEVEL': {
-            'required': False,
-            'default': 'INFO',
-            'sensitive': False
-        },
-        'DATA_DIR': {
-            'required': False,
-            'default': './data',
-            'sensitive': False
-        }
+        "LOG_LEVEL": {"required": False, "default": "INFO", "sensitive": False},
+        "DATA_DIR": {"required": False, "default": "./data", "sensitive": False},
     }
 
     has_errors = False
 
     for var, config in env_vars.items():
-        value = os.getenv(var, config['default'])
+        value = os.getenv(var, config["default"])
 
-        if config['required'] and not value:
+        if config["required"] and not value:
             print(f"❌ {var}: 未設置（必填）")
             has_errors = True
         elif not value:
             print(f"⚠️  {var}: 未設置（使用預設值: {config['default']}）")
-        elif config['sensitive']:
+        elif config["sensitive"]:
             # 不顯示敏感資訊的完整值
-            if value == config['default']:
+            if value == config["default"]:
                 print(f"⚠️  {var}: 使用預設值（請修改）")
             else:
                 masked = value[:4] + "*" * (min(len(value) - 4, 20))
@@ -79,22 +64,22 @@ def check_dependencies():
     print("-" * 40)
 
     required_packages = [
-        ('fastapi', 'FastAPI'),
-        ('uvicorn', 'Uvicorn'),
-        ('pydantic', 'Pydantic'),
-        ('jinja2', 'Jinja2'),
-        ('google.generativeai', 'Google Generative AI'),
-        ('asyncpg', 'AsyncPG (PostgreSQL)'),
-        ('dotenv', 'Python-dotenv')
+        ("fastapi", "FastAPI"),
+        ("uvicorn", "Uvicorn"),
+        ("pydantic", "Pydantic"),
+        ("jinja2", "Jinja2"),
+        ("google.generativeai", "Google Generative AI"),
+        ("asyncpg", "AsyncPG (PostgreSQL)"),
+        ("dotenv", "Python-dotenv"),
     ]
 
     has_errors = False
 
     for package, name in required_packages:
         try:
-            if '.' in package:
+            if "." in package:
                 # 處理子模組
-                parts = package.split('.')
+                parts = package.split(".")
                 __import__(parts[0])
                 module = sys.modules[parts[0]]
                 for part in parts[1:]:
@@ -121,7 +106,7 @@ def check_file_system():
         (project_root / ".env", ".env 配置檔", False),
         (project_root / ".env.example", ".env.example 範本", False),
         (project_root / "web" / "templates", "模板目錄", True),
-        (project_root / "web" / "static", "靜態檔案目錄", True)
+        (project_root / "web" / "static", "靜態檔案目錄", True),
     ]
 
     has_errors = False
@@ -231,11 +216,11 @@ def main():
 
     # 執行所有檢查
     results = {
-        '環境變數': check_environment(),
-        '依賴套件': check_dependencies(),
-        '檔案系統': check_file_system(),
-        '配置驗證': check_configuration(),
-        '資料庫連線': check_database()
+        "環境變數": check_environment(),
+        "依賴套件": check_dependencies(),
+        "檔案系統": check_file_system(),
+        "配置驗證": check_configuration(),
+        "資料庫連線": check_database(),
     }
 
     # 總結

@@ -1,0 +1,104 @@
+{
+  "timestamp": "2025-08-14T20:43:42.303793",
+  "duration": 11.794306993484497,
+  "summary": {
+    "total_tests": 17,
+    "passed": 16,
+    "failed": 1,
+    "success_rate": 94.11764705882352
+  },
+  "results": {
+    "data_integrity_count": {
+      "success": false,
+      "details": "資料庫: 34, JSON: 3, 差異: 1033.3%",
+      "timestamp": "2025-08-14T20:43:30.525573"
+    },
+    "data_integrity_required_fields": {
+      "success": true,
+      "details": "0 個空的 key_point",
+      "timestamp": "2025-08-14T20:43:30.526457"
+    },
+    "data_integrity_foreign_keys": {
+      "success": true,
+      "details": "0 個無效外鍵",
+      "timestamp": "2025-08-14T20:43:30.527770"
+    },
+    "api_get__api_knowledge_recommendations": {
+      "success": true,
+      "details": "狀態碼: 200, 預期: 200",
+      "timestamp": "2025-08-14T20:43:30.532972"
+    },
+    "api_get__api_knowledge_1": {
+      "success": true,
+      "details": "狀態碼: 200, 預期: 200",
+      "timestamp": "2025-08-14T20:43:30.535046"
+    },
+    "api_get__api_patterns": {
+      "success": true,
+      "details": "狀態碼: 200, 預期: 200",
+      "timestamp": "2025-08-14T20:43:30.543023"
+    },
+    "api_get__calendar_api_stats_streak": {
+      "success": true,
+      "details": "狀態碼: 200, 預期: 200",
+      "timestamp": "2025-08-14T20:43:30.545194"
+    },
+    "api_post__api_generate-question": {
+      "success": true,
+      "details": "狀態碼: 200, 預期: 200",
+      "timestamp": "2025-08-14T20:43:37.358427"
+    },
+    "web_ui_": {
+      "success": true,
+      "details": "狀態碼: 200",
+      "timestamp": "2025-08-14T20:43:37.365665"
+    },
+    "web_ui_practice": {
+      "success": true,
+      "details": "狀態碼: 200",
+      "timestamp": "2025-08-14T20:43:37.370368"
+    },
+    "web_ui_knowledge": {
+      "success": true,
+      "details": "狀態碼: 200",
+      "timestamp": "2025-08-14T20:43:37.376347"
+    },
+    "web_ui_patterns": {
+      "success": true,
+      "details": "狀態碼: 200",
+      "timestamp": "2025-08-14T20:43:37.395468"
+    },
+    "performance_single_query": {
+      "success": true,
+      "details": "查詢時間: 0.004s",
+      "timestamp": "2025-08-14T20:43:37.399994"
+    },
+    "performance_concurrent": {
+      "success": true,
+      "details": "5 個併發請求時間: 0.020s, 全部成功: True",
+      "timestamp": "2025-08-14T20:43:37.420114"
+    },
+    "error_handling__api_knowledge_999": {
+      "success": true,
+      "details": "狀態碼: 404, 預期: 404",
+      "timestamp": "2025-08-14T20:43:37.424091"
+    },
+    "error_handling__api_generate-question": {
+      "success": true,
+      "details": "狀態碼: 200, 預期: 200",
+      "timestamp": "2025-08-14T20:43:42.298398"
+    },
+    "error_handling__nonexistent": {
+      "success": true,
+      "details": "狀態碼: 404, 預期: 404",
+      "timestamp": "2025-08-14T20:43:42.303704"
+    }
+  },
+  "errors": [
+    "data_integrity_count: 資料庫: 34, JSON: 3, 差異: 1033.3%"
+  ],
+  "status": "FAIL",
+  "recommendations": [
+    "重新執行數據遷移並檢查數據一致性"
+  ]
+}
