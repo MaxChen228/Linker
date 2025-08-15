@@ -9,6 +9,7 @@ from typing import Any, Optional
 
 from core.cache_manager import UnifiedCacheManager, CacheCategories
 from core.database.connection import get_database_connection
+from core.database.database_manager import DatabaseKnowledgeManager, create_database_manager
 from core.database.repositories.knowledge_repository import KnowledgePointRepository
 # Temporarily use the backup JSON version until full migration is complete
 from core.knowledge_json_backup import KnowledgeManager as LegacyKnowledgeManager

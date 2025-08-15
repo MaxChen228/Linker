@@ -8,14 +8,10 @@ from pathlib import Path
 from fastapi.templating import Jinja2Templates
 
 from core.ai_service import AIService
-from core.config import DATA_DIR, USE_DATABASE
-from core.knowledge import KnowledgeManager
+from core.config import DATA_DIR
+from core.database.adapter import KnowledgeManagerAdapter, get_knowledge_manager_async
 from core.knowledge_assets import KnowledgeAssets
 from core.log_config import get_module_logger
-
-# 條件導入資料庫適配器
-if USE_DATABASE:
-    from core.database.adapter import KnowledgeManagerAdapter, get_knowledge_manager_async
 
 # 初始化模組 logger
 logger = get_module_logger(__name__)
@@ -63,9 +59,9 @@ def get_ai_service():
 
 
 def get_knowledge_manager():
-    """獲取知識管理器（支援資料庫/JSON 雙模式，線程安全）
+    """獲取知識管理器（純資料庫模式，線程安全）
 
-    注意：這是同步版本，資料庫模式下功能受限。
+    注意：這是同步版本，功能受限。
     建議使用 get_knowledge_manager_async_dependency() 用於異步路由。
     """
     global _knowledge
@@ -73,35 +69,27 @@ def get_knowledge_manager():
         with _knowledge_lock:
             # 雙重檢查鎖定模式
             if _knowledge is None:
-                if USE_DATABASE:
-                    logger.info("使用資料庫模式初始化知識管理器")
-                    _knowledge = KnowledgeManagerAdapter(use_database=True)
-                else:
-                    logger.info("使用 JSON 模式初始化知識管理器")
-                    _knowledge = KnowledgeManager(data_dir=str(DATA_DIR))
+                logger.info("初始化知識管理器（資料庫模式）")
+                _knowledge = KnowledgeManagerAdapter(use_database=True)
     return _knowledge
 
 
 async def get_knowledge_manager_async_dependency():
-    """獲取知識管理器（異步版本，支援完整資料庫功能）
+    """獲取知識管理器（異步版本，純資料庫模式）
 
     用於 FastAPI 異步路由的依賴注入。
-    確保資料庫模式下的完整功能支援。
+    提供完整的資料庫功能支援。
     """
     global _knowledge
     if _knowledge is None:
         with _knowledge_lock:
             # 雙重檢查鎖定模式
             if _knowledge is None:
-                if USE_DATABASE:
-                    logger.info("使用資料庫模式異步初始化知識管理器")
-                    _knowledge = await get_knowledge_manager_async(use_database=True)
-                else:
-                    logger.info("使用 JSON 模式初始化知識管理器")
-                    _knowledge = KnowledgeManager(data_dir=str(DATA_DIR))
+                logger.info("異步初始化知識管理器（資料庫模式）")
+                _knowledge = await get_knowledge_manager_async(use_database=True)
 
-    # 確保資料庫模式已完全初始化
-    if USE_DATABASE and hasattr(_knowledge, "_ensure_initialized"):
+    # 確保資料庫已完全初始化
+    if hasattr(_knowledge, "_ensure_initialized"):
         await _knowledge._ensure_initialized()
 
     return _knowledge
