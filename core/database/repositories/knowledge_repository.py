@@ -10,7 +10,7 @@ import asyncpg
 
 from core.database.base import BaseRepository
 from core.error_types import ErrorCategory
-from core.knowledge import KnowledgePoint, OriginalError, ReviewExample
+from core.models import KnowledgePoint, OriginalError, ReviewExample
 
 
 class KnowledgePointRepository(BaseRepository[KnowledgePoint]):

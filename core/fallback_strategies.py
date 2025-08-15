@@ -39,86 +39,8 @@ class FallbackStrategy:
         return self.__class__.__name__
 
 
-class DatabaseToJsonFallback(FallbackStrategy):
-    """資料庫模式降級到 JSON 模式"""
-
-    def can_handle(self, error_category: ErrorCategory, severity: ErrorSeverity) -> bool:
-        return error_category == ErrorCategory.DATABASE and severity in [
-            ErrorSeverity.HIGH,
-            ErrorSeverity.MEDIUM,
-            ErrorSeverity.CRITICAL,
-        ]
-
-    def execute(self, original_func: Callable, *args, **kwargs) -> Any:
-        """降級到 JSON 模式執行"""
-        try:
-            # 嘗試切換到 JSON 模式
-            if args and hasattr(args[0], "_legacy_manager") and args[0]._legacy_manager:
-                # 使用 JSON 模式的對應方法
-                method_name = original_func.__name__.replace("_async", "").replace("async_", "")
-                json_method = getattr(args[0]._legacy_manager, method_name, None)
-
-                if json_method:
-                    self.logger.info(f"降級執行: {method_name} -> JSON 模式")
-                    if asyncio.iscoroutinefunction(original_func):
-                        # 如果原方法是異步的，但 JSON 方法是同步的
-                        result = json_method(*args[1:], **kwargs)
-                        return result
-                    else:
-                        return json_method(*args[1:], **kwargs)
-
-            # 如果無法降級，返回默認值
-            return self._get_default_result(original_func.__name__)
-
-        except Exception as e:
-            self.logger.error(f"降級策略執行失敗: {e}")
-            return self._get_default_result(original_func.__name__)
-
-    def _get_default_result(self, method_name: str) -> Any:
-        """獲取方法的默認返回值"""
-        defaults = {
-            "get_statistics": {
-                "total_practices": 0,
-                "correct_count": 0,
-                "knowledge_points": 0,
-                "avg_mastery": 0.0,
-                "category_distribution": {},
-                "due_reviews": 0,
-                "_fallback": True,
-                "_fallback_reason": "database_unavailable",
-            },
-            "get_statistics_async": {
-                "total_practices": 0,
-                "correct_count": 0,
-                "knowledge_points": 0,
-                "avg_mastery": 0.0,
-                "category_distribution": {},
-                "due_reviews": 0,
-                "_fallback": True,
-                "_fallback_reason": "database_unavailable",
-            },
-            "get_knowledge_points": [],
-            "get_all_knowledge_points": [],
-            "get_review_candidates": [],
-            "search_knowledge_points": [],
-            "get_knowledge_point": None,
-            "add_knowledge_point": False,
-            "edit_knowledge_point": None,
-            "delete_knowledge_point": False,
-            "restore_knowledge_point": None,
-        }
-
-        # 移除方法名中的 async 前綴或後綴來匹配默認值
-        clean_method_name = method_name.replace("async_", "").replace("_async", "")
-        default_result = defaults.get(clean_method_name, None)
-
-        # 如果是字典類型的結果，添加降級標記
-        if isinstance(default_result, dict):
-            default_result = default_result.copy()
-            default_result["_fallback"] = True
-            default_result["_fallback_strategy"] = self.get_strategy_name()
-
-        return default_result
+# TASK-30B: DatabaseToJsonFallback removed - pure database architecture
+# No longer fallback to JSON mode since JSON backend is completely removed
 
 
 class CacheFallback(FallbackStrategy):
@@ -367,7 +289,7 @@ class FallbackManager:
 
     def __init__(self):
         self.strategies = [
-            DatabaseToJsonFallback(),
+            # DatabaseToJsonFallback removed - pure database architecture
             CacheFallback(),
             NetworkRetryFallback(),
             GracefulDegradationFallback(),  # 最後的降級策略

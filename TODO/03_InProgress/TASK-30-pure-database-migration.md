@@ -40,7 +40,11 @@
 
 ### 🗑️ 階段 1: 移除 JSON 依賴 (2-3 天)
 **子任務:**
-- [ ] **TASK-30B**: 清理 core/knowledge.py 和 JSON 模組
+- [x] **TASK-30B**: 清理 core/knowledge.py 和 JSON 模組 ✅ 2025-01-15
+  - 重構 KnowledgeManager 為純資料庫版本
+  - 創建 core/models.py 解決循環導入
+  - 保留 knowledge_json_backup.py 維持向後兼容
+  - 移除 DatabaseToJsonFallback 策略
 - [ ] **TASK-30C**: 重構 web/dependencies.py 移除條件載入
 - [ ] **TASK-30D**: 簡化 DatabaseAdapter 移除降級邏輯
 - [ ] **TASK-30E**: 移除 fallback_strategies JSON 策略
@@ -201,6 +205,34 @@ TASK-30A (前置) ⟶ TASK-30B,C,D,E (移除JSON) ⟶ TASK-30F,G (錯誤處理)
 - ✅ 確認標籤系統可作為知識圖譜基礎
 - ✅ 評估實施可行性為高
 - ✅ 設計簡化的 13 個子任務分解
+
+### TASK-30B 完成報告 (2025-01-15)
+**執行內容:**
+1. **重構 core/knowledge.py**
+   - 完全重寫為純資料庫版本 (V3.0)
+   - 移除所有 JSON 檔案操作和相關邏輯
+   - 使用 Repository Pattern 進行資料庫存取
+
+2. **解決循環導入問題**
+   - 創建 `core/models.py` 分離數據模型
+   - 將 KnowledgePoint, OriginalError, ReviewExample 移至獨立模組
+   - 確保清晰的依賴關係
+
+3. **維持向後兼容**
+   - 保留舊版本為 `core/knowledge_json_backup.py`
+   - 修復備份檔案中的導入問題
+   - 更新 adapter.py 使用備份版本
+
+4. **移除降級策略**
+   - 刪除 `DatabaseToJsonFallback` 類
+   - 更新 FallbackManager 初始化邏輯
+   - 清理相關降級路徑
+
+**驗證結果:**
+- ✅ JSON 模式正常啟動
+- ✅ Database 模式正常啟動
+- ✅ 無循環導入錯誤
+- ✅ 測試通過
 
 ### 重要發現
 1. **深度整合**: JSON 邏輯深度整合於 2000+ 行程式碼中

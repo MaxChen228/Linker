@@ -10,8 +10,9 @@ from typing import Any, Optional
 from core.cache_manager import UnifiedCacheManager, CacheCategories
 from core.database.connection import get_database_connection
 from core.database.repositories.knowledge_repository import KnowledgePointRepository
-from core.knowledge import KnowledgeManager as LegacyKnowledgeManager
-from core.knowledge import KnowledgePoint, ReviewExample
+# Temporarily use the backup JSON version until full migration is complete
+from core.knowledge_json_backup import KnowledgeManager as LegacyKnowledgeManager
+from core.models import KnowledgePoint, ReviewExample
 from core.log_config import get_module_logger
 from core.error_handler import ErrorHandler, with_error_handling
 from core.fallback_strategies import get_fallback_manager
@@ -558,7 +559,7 @@ class KnowledgeManagerAdapter:
 
             else:
                 # 創建新知識點
-                from core.knowledge import OriginalError
+                from core.models import OriginalError
 
                 original_error = OriginalError(
                     chinese_sentence=chinese_sentence,
@@ -1553,7 +1554,7 @@ class KnowledgeManagerAdapter:
         # 保存到資料庫
         if self._repository:
             # 將字典數據轉換為 KnowledgePoint 實體
-            from core.knowledge import KnowledgePoint, OriginalError
+            from core.models import KnowledgePoint, OriginalError
             
             # 創建 OriginalError 對象
             original_error = OriginalError(
