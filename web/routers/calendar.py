@@ -12,7 +12,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from web.dependencies import get_knowledge_manager
+from web.dependencies import get_async_knowledge_service  # TASK-31: 使用純異步服務
 
 router = APIRouter(prefix="/calendar", tags=["calendar"])
 templates = Jinja2Templates(directory="web/templates")
@@ -51,10 +51,10 @@ def save_calendar_data(data: dict):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def get_month_calendar_data(year: int, month: int) -> dict:
+async def get_month_calendar_data(year: int, month: int) -> dict:
     """獲取指定月份的日曆資料"""
-    km = get_knowledge_manager()
-    knowledge_points = km.knowledge_points
+    km = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge_points = await km.get_knowledge_points_async()
     calendar_data = load_calendar_data()
 
     # 計算月份的第一天和最後一天
@@ -172,7 +172,7 @@ async def calendar_page(request: Request, year: Optional[int] = None, month: Opt
         month = now.month
 
     # 獲取月份資料
-    month_data = get_month_calendar_data(year, month)
+    month_data = await get_month_calendar_data(year, month)  # TASK-31: 調用異步函數
 
     # 計算上一月和下一月
     prev_month = month - 1 if month > 1 else 12
@@ -204,8 +204,8 @@ async def get_day_details(date_str: str):
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Invalid date format") from e
 
-    km = get_knowledge_manager()
-    knowledge_points = km.knowledge_points
+    km = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge_points = await km.get_knowledge_points_async()
     calendar_data = load_calendar_data()
 
     # 獲取該日的待複習知識點

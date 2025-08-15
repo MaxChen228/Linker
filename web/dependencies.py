@@ -9,7 +9,8 @@ from fastapi.templating import Jinja2Templates
 
 from core.ai_service import AIService
 from core.config import DATA_DIR
-from core.database.simplified_adapter import KnowledgeManagerAdapter, get_knowledge_manager_async
+# TASK-31: 舊的適配器已廢棄，不再導入
+# from core.database.simplified_adapter import KnowledgeManagerAdapter, get_knowledge_manager_async
 from core.knowledge_assets import KnowledgeAssets
 from core.log_config import get_module_logger
 from core.services import AsyncKnowledgeService, get_service_registry
@@ -62,38 +63,31 @@ def get_ai_service():
 def get_knowledge_manager():
     """獲取知識管理器（純資料庫模式，線程安全）
 
-    注意：這是同步版本，功能受限。
-    建議使用 get_knowledge_manager_async_dependency() 用於異步路由。
+    ⚠️ 已廢棄 (TASK-31)：請使用 get_async_knowledge_service() 替代
+    原因：依賴已廢棄的 SimplifiedDatabaseAdapter
     """
-    global _knowledge
-    if _knowledge is None:
-        with _knowledge_lock:
-            # 雙重檢查鎖定模式
-            if _knowledge is None:
-                logger.info("初始化知識管理器（資料庫模式）")
-                _knowledge = KnowledgeManagerAdapter(use_database=True)
-    return _knowledge
+    import warnings
+    warnings.warn(
+        "get_knowledge_manager() 已廢棄。請使用 get_async_knowledge_service() 替代。",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    raise RuntimeError("get_knowledge_manager() 已廢棄，請使用 get_async_knowledge_service() 替代")
 
 
 async def get_knowledge_manager_async_dependency():
     """獲取知識管理器（異步版本，純資料庫模式）
 
-    用於 FastAPI 異步路由的依賴注入。
-    提供完整的資料庫功能支援。
+    ⚠️ 已廢棄 (TASK-31)：請使用 get_async_knowledge_service() 替代
+    原因：依賴已廢棄的 SimplifiedDatabaseAdapter
     """
-    global _knowledge
-    if _knowledge is None:
-        with _knowledge_lock:
-            # 雙重檢查鎖定模式
-            if _knowledge is None:
-                logger.info("異步初始化知識管理器（資料庫模式）")
-                _knowledge = await get_knowledge_manager_async(use_database=True)
-
-    # 確保資料庫已完全初始化
-    if hasattr(_knowledge, "_ensure_initialized"):
-        await _knowledge._ensure_initialized()
-
-    return _knowledge
+    import warnings
+    warnings.warn(
+        "get_knowledge_manager_async_dependency() 已廢棄。請使用 get_async_knowledge_service() 替代。",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    raise RuntimeError("get_knowledge_manager_async_dependency() 已廢棄，請使用 get_async_knowledge_service() 替代")
 
 
 def get_knowledge_assets():

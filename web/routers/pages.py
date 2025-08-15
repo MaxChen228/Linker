@@ -9,8 +9,6 @@ from fastapi.responses import HTMLResponse
 
 from web.dependencies import (
     get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
-    get_knowledge_manager,
-    get_knowledge_manager_async_dependency,  # 保留以備向後相容
     get_templates,
 )
 
