@@ -700,18 +700,45 @@ class KnowledgeManagerAdapter:
         return False
 
     def export_to_json(self, filepath: str) -> None:
-        """匯出到 JSON（用於備份和遷移）"""
+        """匯出到 JSON（用於備份和遷移，資料庫優先）"""
         try:
+            # 資料庫模式優先（用戶要求資料庫作為主要方式）
+            if self.use_database:
+                # 使用快取中的數據
+                knowledge_points = self._knowledge_points_cache
+                if not knowledge_points and not self._cache_dirty:
+                    # 如果快取為空且不需要更新，嘗試重新載入
+                    try:
+                        import asyncio
+                        if asyncio.get_running_loop():
+                            self.logger.warning("資料庫模式下建議使用異步方法匯出")
+                        else:
+                            loop = asyncio.get_event_loop()
+                            loop.run_until_complete(self._load_cache_from_database_async())
+                            knowledge_points = self._knowledge_points_cache
+                    except (RuntimeError, Exception) as e:
+                        self.logger.warning(f"無法重新載入快取: {e}")
+                        # 降級到legacy模式
+                        if self._legacy_manager:
+                            knowledge_points = self._legacy_manager.knowledge_points
+                        else:
+                            knowledge_points = []
+            else:
+                # JSON 模式降級
+                knowledge_points = self._legacy_manager.knowledge_points if self._legacy_manager else []
+
             data = {
                 "version": "4.0",
                 "last_updated": datetime.now().isoformat(),
-                "data": [kp.to_dict() for kp in self.knowledge_points],
+                "data": [kp.to_dict() for kp in knowledge_points],
+                "mode": "database" if self.use_database else "json",
+                "source": "cache" if self.use_database else "legacy"
             }
 
             with open(filepath, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
 
-            self.logger.info(f"成功匯出 {len(data['data'])} 個知識點到 {filepath}")
+            self.logger.info(f"成功匯出 {len(data['data'])} 個知識點到 {filepath} (模式: {data['mode']})")
 
         except Exception as e:
             self.logger.error(f"匯出失敗: {e}")
@@ -720,28 +747,64 @@ class KnowledgeManagerAdapter:
     # 向後兼容的同步 API（功能受限，僅支援 JSON 模式）
     @property
     def knowledge_points(self) -> list[KnowledgePoint]:
-        """獲取所有知識點（同步版本，僅用於向後兼容）"""
-        if self._legacy_manager:
-            return self._legacy_manager.knowledge_points
-        elif self.use_database and self._repository:
-            # 資料庫模式下，如果未初始化，返回快取
+        """獲取所有知識點（同步版本，資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database:
+            # 資料庫模式 - 返回快取中的數據
             return self._knowledge_points_cache
-        return []
+        elif self._legacy_manager:
+            # JSON 模式降級
+            return self._legacy_manager.knowledge_points
+        else:
+            return []
 
     def get_knowledge_point(self, point_id: str) -> Optional[KnowledgePoint]:
-        """根據 ID 獲取知識點（同步版本，僅用於向後兼容）"""
+        """根據 ID 獲取知識點（同步版本，資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database:
+            try:
+                # 嘗試從快取中查找
+                try:
+                    id_int = int(point_id)
+                except (ValueError, TypeError):
+                    self.logger.warning(f"無效的知識點 ID: {point_id}")
+                    return None
+                
+                for point in self._knowledge_points_cache:
+                    if point.id == id_int:
+                        return point
+                
+                # 如果快取中沒有且未初始化，嘗試異步查詢
+                if not self._initialization_complete:
+                    import asyncio
+                    try:
+                        loop = asyncio.get_event_loop()
+                        if loop.is_running():
+                            # 循環正在運行，使用快取結果
+                            self.logger.warning(f"知識點 {point_id} 未在快取中找到，建議使用 get_knowledge_point_async")
+                            return None
+                        else:
+                            return loop.run_until_complete(self.get_knowledge_point_async(point_id))
+                    except RuntimeError:
+                        return asyncio.run(self.get_knowledge_point_async(point_id))
+                
+                return None
+            except Exception as e:
+                self.logger.error(f"資料庫查詢知識點失敗: {e}")
+                # 降級到legacy模式
+                if self._legacy_manager:
+                    self.logger.warning("降級到JSON模式查詢知識點")
+                    return self._legacy_manager.get_knowledge_point(point_id)
+                return None
+        
+        # JSON 模式降級
         if self._legacy_manager:
             return self._legacy_manager.get_knowledge_point(point_id)
-        # 資料庫模式下不支援同步操作
-        self.logger.warning("同步方法在資料庫模式下不支援，請使用異步版本")
         return None
 
     def get_review_candidates(self, max_points: int = 5) -> list[KnowledgePoint]:
-        """獲取適合複習的知識點（同步版本，支援資料庫模式）"""
-        if self._legacy_manager:
-            return self._legacy_manager.get_review_candidates(max_points=max_points)
-
-        # 資料庫模式下，嘗試使用異步方法
+        """獲取適合複習的知識點（同步版本，資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
         if self.use_database:
             try:
                 # 如果未初始化，嘗試觸發初始化
@@ -763,9 +826,16 @@ class KnowledgeManagerAdapter:
                     # 已初始化，使用快取
                     return self._get_cached_review_candidates(max_points)
             except Exception as e:
-                self.logger.error(f"獲取複習候選失敗: {e}")
+                self.logger.error(f"資料庫獲取複習候選失敗: {e}")
+                # 降級到legacy模式
+                if self._legacy_manager:
+                    self.logger.warning("降級到JSON模式獲取複習候選")
+                    return self._legacy_manager.get_review_candidates(max_points=max_points)
                 return []
 
+        # 如果不是資料庫模式，使用legacy
+        if self._legacy_manager:
+            return self._legacy_manager.get_review_candidates(max_points=max_points)
         return []
 
     def get_due_points(self) -> list[KnowledgePoint]:
@@ -775,13 +845,45 @@ class KnowledgeManagerAdapter:
     def add_review_success(
         self, knowledge_point_id: int, chinese_sentence: str, user_answer: str
     ) -> None:
-        """為知識點添加複習成功記錄（同步版本，僅用於向後兼容）"""
+        """為知識點添加複習成功記錄（同步版本，資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database:
+            try:
+                # 嘗試使用異步方法
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        # 循環正在運行，建議使用異步方法
+                        self.logger.warning("資料庫模式下建議使用 add_review_success_async")
+                        return
+                    else:
+                        loop.run_until_complete(
+                            self.add_review_success_async(knowledge_point_id, chinese_sentence, user_answer)
+                        )
+                        return
+                except RuntimeError:
+                    asyncio.run(
+                        self.add_review_success_async(knowledge_point_id, chinese_sentence, user_answer)
+                    )
+                    return
+            except Exception as e:
+                self.logger.error(f"資料庫添加複習記錄失敗: {e}")
+                # 降級到legacy模式
+                if self._legacy_manager:
+                    self.logger.warning("降級到JSON模式添加複習記錄")
+                    self._legacy_manager.add_review_success(
+                        knowledge_point_id, chinese_sentence, user_answer
+                    )
+                return
+        
+        # JSON 模式降級
         if self._legacy_manager:
             self._legacy_manager.add_review_success(
                 knowledge_point_id, chinese_sentence, user_answer
             )
         else:
-            self.logger.warning("資料庫模式下請使用 add_review_success_async")
+            self.logger.warning("無可用的知識管理器")
 
     @with_error_handling(operation="get_statistics", mode="auto")
     def get_statistics(self) -> dict[str, Any]:
@@ -792,13 +894,7 @@ class KnowledgeManagerAdapter:
         同步版本使用統一快取，確保與異步方法一致
         """
         try:
-            if self._legacy_manager:
-                result = self._legacy_manager.get_statistics()
-                # 更新快取以供降級使用
-                self._update_fallback_cache("get_statistics", result)
-                return result
-
-            # 資料庫模式下，使用統一快取管理器
+            # 資料庫模式優先（用戶要求資料庫作為主要方式）
             if self.use_database:
                 result = self._cache_manager.get_or_compute(
                     key=f"{CacheCategories.STATISTICS}:sync",
@@ -806,6 +902,12 @@ class KnowledgeManagerAdapter:
                     ttl=60,  # 統計快取1分鐘
                 )
                 # 更新降級快取
+                self._update_fallback_cache("get_statistics", result)
+                return result
+
+            # 如果不是資料庫模式，使用legacy
+            if self._legacy_manager:
+                result = self._legacy_manager.get_statistics()
                 self._update_fallback_cache("get_statistics", result)
                 return result
 
@@ -1051,9 +1153,47 @@ class KnowledgeManagerAdapter:
         return due_points[:max_points]
 
     def search_knowledge_points(self, keyword: str) -> list[KnowledgePoint]:
-        """搜索知識點（同步版本，僅用於向後兼容）"""
+        """搜索知識點（同步版本，資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database:
+            try:
+                # 嘗試使用異步搜索
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        # 循環正在運行，使用快取搜索
+                        keyword_lower = keyword.lower()
+                        results = [
+                            point for point in self._knowledge_points_cache
+                            if not point.is_deleted and (
+                                keyword_lower in point.key_point.lower()
+                                or keyword_lower in point.explanation.lower()
+                                or keyword_lower in point.original_phrase.lower()
+                                or keyword_lower in point.correction.lower()
+                            )
+                        ]
+                        return results
+                    else:
+                        return loop.run_until_complete(self.search_knowledge_points_async(keyword))
+                except RuntimeError:
+                    return asyncio.run(self.search_knowledge_points_async(keyword))
+            except Exception as e:
+                self.logger.error(f"資料庫搜索失敗: {e}")
+                # 降級到legacy模式
+                if self._legacy_manager:
+                    self.logger.warning("降級到JSON模式搜索知識點")
+                    return [
+                        point
+                        for point in self._legacy_manager.knowledge_points
+                        if keyword.lower() in point.key_point.lower()
+                        or keyword.lower() in point.explanation.lower()
+                        or keyword.lower() in point.original_phrase.lower()
+                    ]
+                return []
+        
+        # JSON 模式降級
         if self._legacy_manager:
-            # LegacyKnowledgeManager 可能沒有此方法，使用簡單過濾
             return [
                 point
                 for point in self._legacy_manager.knowledge_points
@@ -1061,55 +1201,160 @@ class KnowledgeManagerAdapter:
                 or keyword.lower() in point.explanation.lower()
                 or keyword.lower() in point.original_phrase.lower()
             ]
-        self.logger.warning("資料庫模式下請使用 search_knowledge_points_async")
         return []
 
     def import_from_json(self, filepath: str) -> bool:
-        """從 JSON 匯入（同步版本，僅用於向後兼容）"""
+        """從 JSON 匯入（同步版本，資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database:
+            try:
+                # 嘗試使用異步匯入
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        # 循環正在運行，建議使用異步方法
+                        self.logger.warning("資料庫模式下建議使用 import_from_json_async")
+                        return False
+                    else:
+                        return loop.run_until_complete(self.import_from_json_async(filepath))
+                except RuntimeError:
+                    return asyncio.run(self.import_from_json_async(filepath))
+            except Exception as e:
+                self.logger.error(f"資料庫匯入失敗: {e}")
+                return False
+        
+        # JSON 模式不支援匯入功能
         if self._legacy_manager:
             self.logger.error("JSON 模式不支援匯入功能")
             return False
-        self.logger.warning("資料庫模式下請使用 import_from_json_async")
         return False
 
     # === 缺失的同步方法實現 ===
 
     def get_active_points(self) -> list[KnowledgePoint]:
-        """獲取所有活躍（未刪除）的知識點"""
-        if self._legacy_manager:
-            # JSON 模式
-            return [p for p in self._legacy_manager.knowledge_points if not p.is_deleted]
-        else:
-            # 資料庫模式 - 使用快取
+        """獲取所有活躍（未刪除）的知識點（資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database:
             if self._cache_dirty:
                 self.logger.warning("資料庫模式下建議使用 get_active_points_async")
             return [p for p in self._knowledge_points_cache if not p.is_deleted]
+        elif self._legacy_manager:
+            # JSON 模式降級
+            return [p for p in self._legacy_manager.knowledge_points if not p.is_deleted]
+        else:
+            return []
 
     def get_deleted_points(self) -> list[KnowledgePoint]:
-        """獲取回收站中的知識點"""
+        """獲取回收站中的知識點（資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database:
+            try:
+                # 嘗試使用異步方法獲取已刪除的知識點
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        # 循環正在運行，使用快取查詢
+                        deleted_points = [p for p in self._knowledge_points_cache if p.is_deleted]
+                        return deleted_points
+                    else:
+                        return loop.run_until_complete(self.get_deleted_points_async())
+                except RuntimeError:
+                    return asyncio.run(self.get_deleted_points_async())
+            except Exception as e:
+                self.logger.error(f"資料庫查詢已刪除知識點失敗: {e}")
+                # 降級到legacy模式
+                if self._legacy_manager:
+                    self.logger.warning("降級到JSON模式獲取回收站知識點")
+                    return [p for p in self._legacy_manager.knowledge_points if p.is_deleted]
+                return []
+        
+        # JSON 模式降級
         if self._legacy_manager:
-            # JSON 模式
             return [p for p in self._legacy_manager.knowledge_points if p.is_deleted]
         else:
-            # 資料庫模式 - 使用快取
-            return [p for p in self._knowledge_points_cache if p.is_deleted]
+            return []
+
+    async def get_deleted_points_async(self) -> list[KnowledgePoint]:
+        """異步獲取回收站中的知識點（資料庫優先）"""
+        await self._ensure_initialized()
+        
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database and self._repository:
+            # 資料庫模式 - 直接查詢已刪除的知識點
+            try:
+                deleted_points = await self._repository.find_all(is_deleted=True)
+                self.logger.debug(f"查詢到 {len(deleted_points)} 個回收站知識點")
+                return deleted_points
+            except Exception as e:
+                self.logger.error(f"查詢回收站知識點失敗: {e}")
+                # 降級到legacy模式
+                if self._legacy_manager:
+                    self.logger.warning("降級到JSON模式獲取回收站知識點")
+                    return [p for p in self._legacy_manager.knowledge_points if p.is_deleted]
+                return []
+        elif self._legacy_manager:
+            # JSON 模式降級
+            return [p for p in self._legacy_manager.knowledge_points if p.is_deleted]
+        else:
+            return []
+
+    async def get_active_points_async(self) -> list[KnowledgePoint]:
+        """異步獲取所有活躍（未刪除）的知識點（資料庫優先）"""
+        await self._ensure_initialized()
+        
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database and self._repository:
+            try:
+                active_points = await self._repository.find_all(is_deleted=False)
+                self.logger.debug(f"查詢到 {len(active_points)} 個活躍知識點")
+                return active_points
+            except Exception as e:
+                self.logger.error(f"查詢活躍知識點失敗: {e}")
+                # 降級到legacy模式
+                if self._legacy_manager:
+                    self.logger.warning("降級到JSON模式獲取活躍知識點")
+                    return [p for p in self._legacy_manager.knowledge_points if not p.is_deleted]
+                return []
+        elif self._legacy_manager:
+            # JSON 模式降級
+            return [p for p in self._legacy_manager.knowledge_points if not p.is_deleted]
+        else:
+            return []
 
     def get_points_by_category(self, category: str) -> list[KnowledgePoint]:
-        """按分類獲取知識點"""
+        """按分類獲取知識點（資料庫優先）"""
+        # 資料庫模式優先（用戶要求資料庫作為主要方式）
+        if self.use_database:
+            try:
+                # 使用快取進行分類過濾
+                return [
+                    p
+                    for p in self._knowledge_points_cache
+                    if p.category.value == category and not p.is_deleted
+                ]
+            except Exception as e:
+                self.logger.error(f"資料庫按分類查詢失敗: {e}")
+                # 降級到legacy模式
+                if self._legacy_manager:
+                    self.logger.warning("降級到JSON模式按分類查詢")
+                    return [
+                        p
+                        for p in self._legacy_manager.knowledge_points
+                        if p.category.value == category and not p.is_deleted
+                    ]
+                return []
+        
+        # JSON 模式降級
         if self._legacy_manager:
-            # JSON 模式
             return [
                 p
                 for p in self._legacy_manager.knowledge_points
                 if p.category.value == category and not p.is_deleted
             ]
         else:
-            # 資料庫模式 - 使用快取
-            return [
-                p
-                for p in self._knowledge_points_cache
-                if p.category.value == category and not p.is_deleted
-            ]
+            return []
 
     def edit_knowledge_point(self, point_id: int, updates: dict = None, **kwargs) -> Optional[dict]:
         """編輯知識點（同步版本）
@@ -1216,6 +1461,144 @@ class KnowledgeManagerAdapter:
                     self._cache_dirty = True
                     return True
             return False
+
+    def add_knowledge_point_from_error(
+        self, chinese_sentence: str, user_answer: str, error: dict, correct_answer: str
+    ) -> int:
+        """從錯誤信息創建知識點（用於手動確認功能）
+        
+        Args:
+            chinese_sentence: 中文句子
+            user_answer: 用戶答案
+            error: 錯誤分析數據
+            correct_answer: 正確答案
+            
+        Returns:
+            新創建的知識點ID
+        """
+        if self._legacy_manager:
+            # JSON 模式：直接調用原方法
+            return self._legacy_manager.add_knowledge_point_from_error(
+                chinese_sentence, user_answer, error, correct_answer
+            )
+        else:
+            # 資料庫模式：需要異步操作
+            import asyncio
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # 如果在異步上下文中，創建任務
+                    future = asyncio.ensure_future(
+                        self._add_knowledge_point_from_error_async(
+                            chinese_sentence, user_answer, error, correct_answer
+                        )
+                    )
+                    # 返回臨時 ID（實際 ID 會在異步操作完成後確定）
+                    return len(self._knowledge_points_cache) + 1
+                else:
+                    return loop.run_until_complete(
+                        self._add_knowledge_point_from_error_async(
+                            chinese_sentence, user_answer, error, correct_answer
+                        )
+                    )
+            except RuntimeError:
+                return asyncio.run(
+                    self._add_knowledge_point_from_error_async(
+                        chinese_sentence, user_answer, error, correct_answer
+                    )
+                )
+    
+    async def _add_knowledge_point_from_error_async(
+        self, chinese_sentence: str, user_answer: str, error: dict, correct_answer: str
+    ) -> int:
+        """異步版本：從錯誤信息創建知識點"""
+        from datetime import datetime
+        from core.error_types import ErrorCategory
+        
+        # 處理 category - 確保是字符串（資料庫存儲為字符串）
+        category_str = error.get("category", "other")
+        if not isinstance(category_str, str):
+            category_str = category_str.value if hasattr(category_str, "value") else "other"
+            
+        # 創建知識點數據
+        point_data = {
+            "key_point": error.get("key_point_summary", "未知錯誤"),
+            "original_phrase": error.get("original_phrase", user_answer),
+            "correction": error.get("correction", correct_answer),
+            "explanation": error.get("explanation", ""),
+            "category": category_str,
+            "subtype": error.get("subtype", "general"),
+            "mastery_level": 0.1,
+            "mistake_count": 1,
+            "correct_count": 0,
+            "last_seen": datetime.now().isoformat(),
+            "next_review": datetime.now().isoformat(),
+            "created_at": datetime.now().isoformat(),
+            "is_deleted": False,
+            "deleted_reason": "",
+            "deleted_at": "",
+            "custom_notes": "",
+            "tags": [],
+            "review_examples": [],
+            "version_history": [],
+            "last_modified": datetime.now().isoformat(),
+            "original_error": {
+                "chinese_sentence": chinese_sentence,
+                "user_answer": user_answer,
+                "correct_answer": correct_answer,
+                "timestamp": datetime.now().isoformat(),
+            }
+        }
+        
+        # 保存到資料庫
+        if self._repository:
+            # 將字典數據轉換為 KnowledgePoint 實體
+            from core.knowledge import KnowledgePoint, OriginalError
+            
+            # 創建 OriginalError 對象
+            original_error = OriginalError(
+                chinese_sentence=chinese_sentence,
+                user_answer=user_answer,
+                correct_answer=correct_answer,
+                timestamp=datetime.now().isoformat()
+            )
+            
+            # 創建 KnowledgePoint 實體
+            point = KnowledgePoint(
+                id=0,  # 資料庫會自動分配 ID
+                key_point=point_data["key_point"],
+                original_phrase=point_data["original_phrase"],
+                correction=point_data["correction"],
+                explanation=point_data["explanation"],
+                category=ErrorCategory.from_string(category_str),
+                subtype=point_data["subtype"],
+                mastery_level=point_data["mastery_level"],
+                mistake_count=point_data["mistake_count"],
+                correct_count=point_data["correct_count"],
+                last_seen=point_data["last_seen"],
+                next_review=point_data["next_review"],
+                created_at=point_data["created_at"],
+                is_deleted=point_data["is_deleted"],
+                deleted_reason=point_data["deleted_reason"],
+                deleted_at=point_data["deleted_at"],
+                custom_notes=point_data["custom_notes"],
+                tags=point_data["tags"],
+                review_examples=point_data["review_examples"],
+                version_history=point_data["version_history"],
+                last_modified=point_data["last_modified"],
+                original_error=original_error
+            )
+            
+            # 調用正確的 create 方法
+            created_point = await self._repository.create(point)
+            
+            # 更新快取
+            await self._load_cache_from_database_async()
+            
+            return created_point.id
+        else:
+            self.logger.error("Repository not initialized")
+            return -1
 
     def save_mistake(
         self,
@@ -1348,7 +1731,200 @@ class KnowledgeManagerAdapter:
         from datetime import datetime
 
         # 獲取所有活躍知識點
-        active_points = self.get_active_points()
+        if self._legacy_manager:
+            # JSON 模式
+            active_points = self.get_active_points()
+        else:
+            # 資料庫模式 - 建議使用異步版本
+            self.logger.warning("資料庫模式下建議使用 get_learning_recommendations_async")
+            # 使用事件循環橋接
+            import asyncio
+            try:
+                if asyncio.get_running_loop():
+                    future = asyncio.run_coroutine_threadsafe(
+                        self.get_active_points_async(),
+                        asyncio.get_running_loop()
+                    )
+                    active_points = future.result(timeout=30)
+                else:
+                    active_points = asyncio.run(self.get_active_points_async())
+            except Exception as e:
+                self.logger.error(f"無法獲取活躍知識點: {e}")
+                active_points = []
+
+        if not active_points:
+            return {
+                "recommendations": ["開始第一次練習，建立學習基礎"],
+                "focus_areas": [],
+                "suggested_difficulty": 1,
+                "next_review_count": 0,
+                "priority_points": [],
+            }
+
+        # 統計分析
+        low_mastery_points = []  # 低掌握度知識點（< 0.3）
+        medium_mastery_points = []  # 中等掌握度（0.3-0.7）
+        due_for_review = []  # 待複習的點
+        category_stats = defaultdict(lambda: {"count": 0, "avg_mastery": 0, "points": []})
+
+        now = datetime.now()
+
+        for point in active_points:
+            # 掌握度分類
+            if point.mastery_level < 0.3:
+                low_mastery_points.append(point)
+            elif point.mastery_level < 0.7:
+                medium_mastery_points.append(point)
+
+            # 檢查是否需要複習
+            if point.next_review:
+                try:
+                    review_date = datetime.fromisoformat(point.next_review)
+                    # 確保兩個 datetime 都是 offset-naive 或都是 offset-aware
+                    if review_date.tzinfo is not None:
+                        # 如果 review_date 有時區，移除時區資訊
+                        review_date = review_date.replace(tzinfo=None)
+                    if review_date <= now:
+                        due_for_review.append(point)
+                except (ValueError, TypeError):
+                    # 如果解析失敗，跳過此點
+                    continue
+
+            # 統計各類別
+            category = point.category.value
+            category_stats[category]["count"] += 1
+            category_stats[category]["avg_mastery"] += point.mastery_level
+            category_stats[category]["points"].append(point)
+
+        # 計算各類別平均掌握度
+        for _category, stats in category_stats.items():
+            if stats["count"] > 0:
+                stats["avg_mastery"] /= stats["count"]
+
+        # 生成推薦
+        recommendations = []
+        focus_areas = []
+
+        # 1. 優先處理低掌握度的系統性錯誤
+        systematic_low = [p for p in low_mastery_points if p.category.value == "systematic"]
+        if systematic_low:
+            recommendations.append(f"重點練習文法規則錯誤 ({len(systematic_low)} 個知識點待加強)")
+            focus_areas.append("systematic")
+
+        # 2. 處理待複習的知識點
+        if len(due_for_review) > 5:
+            recommendations.append(f"有 {len(due_for_review)} 個知識點需要複習，建議優先完成")
+
+        # 3. 根據類別統計提供建議
+        weakest_category = (
+            min(category_stats.items(), key=lambda x: x[1]["avg_mastery"])
+            if category_stats
+            else None
+        )
+
+        if weakest_category and weakest_category[1]["avg_mastery"] < 0.5:
+            category_name = weakest_category[0]
+            category_chinese = {
+                "systematic": "文法規則",
+                "isolated": "個別詞彙",
+                "enhancement": "表達優化",
+                "other": "其他",
+            }.get(category_name, category_name)
+
+            recommendations.append(
+                f"加強「{category_chinese}」類型的練習 (平均掌握度 {weakest_category[1]['avg_mastery']:.1%})"
+            )
+            if category_name not in focus_areas:
+                focus_areas.append(category_name)
+
+        # 4. 根據最近錯誤提供具體建議
+        recent_mistakes = sorted(
+            [p for p in active_points if p.mistake_count > 2],
+            key=lambda x: x.last_seen,
+            reverse=True,
+        )[:5]
+
+        if recent_mistakes:
+            common_subtypes = defaultdict(int)
+            for point in recent_mistakes:
+                common_subtypes[point.subtype] += 1
+
+            most_common = max(common_subtypes.items(), key=lambda x: x[1])
+            if most_common[1] >= 2:
+                recommendations.append(f"複習「{most_common[0]}」相關知識點")
+
+        # 5. 確定建議難度
+        avg_mastery = sum(p.mastery_level for p in active_points) / len(active_points)
+        if avg_mastery < 0.3:
+            suggested_difficulty = 1  # 簡單
+        elif avg_mastery < 0.6:
+            suggested_difficulty = 2  # 中等
+        else:
+            suggested_difficulty = 3  # 困難
+
+        # 6. 選擇優先學習的知識點（最多10個）
+        priority_points = []
+
+        # 優先順序：待複習 > 低掌握度系統性 > 低掌握度其他 > 中等掌握度
+        for point in due_for_review[:3]:
+            if point not in priority_points:
+                priority_points.append(point)
+
+        for point in systematic_low[:3]:
+            if point not in priority_points:
+                priority_points.append(point)
+
+        for point in low_mastery_points[:4]:
+            if point not in priority_points and len(priority_points) < 10:
+                priority_points.append(point)
+
+        # 如果沒有具體推薦，提供一般性建議
+        if not recommendations:
+            if avg_mastery > 0.7:
+                recommendations.append("整體掌握度良好，建議挑戰更高難度的內容")
+            else:
+                recommendations.append("持續練習以提升整體掌握度")
+
+        return {
+            "recommendations": recommendations[:3],  # 最多3條推薦
+            "focus_areas": focus_areas[:2],  # 最多2個重點領域
+            "suggested_difficulty": suggested_difficulty,
+            "next_review_count": len(due_for_review),
+            "priority_points": [
+                {
+                    "id": p.id,
+                    "key_point": p.key_point,
+                    "mastery_level": p.mastery_level,
+                    "category": p.category.value,
+                }
+                for p in priority_points
+            ],
+            "statistics": {
+                "total_points": len(active_points),
+                "low_mastery_count": len(low_mastery_points),
+                "average_mastery": avg_mastery,
+                "due_for_review": len(due_for_review),
+            },
+        }
+
+    async def get_learning_recommendations_async(self) -> dict[str, Any]:
+        """獲取學習推薦（異步版本）
+
+        根據用戶的錯誤模式、掌握度和複習進度生成個性化推薦
+
+        Returns:
+            包含推薦信息的字典：
+            - recommendations: 推薦描述列表
+            - focus_areas: 重點學習領域
+            - suggested_difficulty: 建議難度等級
+            - next_review_count: 待複習知識點數量
+            - priority_points: 優先學習的知識點列表
+        """
+        from collections import defaultdict
+        from datetime import datetime
+
+        # 獲取所有活躍知識點（使用異步方法）
+        active_points = await self.get_active_points_async()
 
         if not active_points:
             return {
@@ -1520,7 +2096,22 @@ class KnowledgeManagerAdapter:
         from datetime import datetime, timedelta
 
         cutoff_date = datetime.now() - timedelta(days=days_old)
-        deleted_points = self.get_deleted_points()
+        # 這個方法是同步的，需要在同步上下文中運行異步查詢
+        import asyncio
+        try:
+            if asyncio.get_running_loop():
+                # 已在異步上下文中，使用 run_coroutine_threadsafe
+                future = asyncio.run_coroutine_threadsafe(
+                    self.get_deleted_points_async(),
+                    asyncio.get_running_loop()
+                )
+                deleted_points = future.result(timeout=30)
+            else:
+                # 沒有運行的事件循環，直接運行
+                deleted_points = asyncio.run(self.get_deleted_points_async())
+        except Exception as e:
+            self.logger.error(f"無法獲取已刪除的知識點: {e}")
+            deleted_points = []
 
         points_to_delete = []
         points_to_keep = []

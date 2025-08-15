@@ -439,6 +439,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
             WHERE next_review <= $1
                 AND is_deleted = FALSE
                 AND mastery_level < 0.9
+                AND category IN ('isolated', 'enhancement')
             ORDER BY next_review ASC, mastery_level ASC
             LIMIT $2
         """

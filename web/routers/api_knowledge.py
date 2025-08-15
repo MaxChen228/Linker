@@ -13,7 +13,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from core.exceptions import KnowledgeNotFoundError
-from web.dependencies import get_knowledge_manager, get_logger
+from web.dependencies import get_knowledge_manager, get_knowledge_manager_async_dependency, get_logger
 from web.models.validation import (
     DeleteOldPointsRequest,
     EnhancedBatchRequest,
@@ -104,10 +104,10 @@ async def get_learning_recommendations(params: RecommendationParams = Recommenda
     Returns:
         包含推薦內容、重點領域、建議難度等信息
     """
-    km = get_knowledge_manager()
+    km = await get_knowledge_manager_async_dependency()
 
     try:
-        recommendations = km.get_learning_recommendations()
+        recommendations = await km.get_learning_recommendations_async()
 
         # 根據參數調整輸出
         if not params.include_statistics:
@@ -127,8 +127,8 @@ async def get_learning_recommendations(params: RecommendationParams = Recommenda
 @router.get("/trash/list")
 async def get_trash_list():
     """獲取回收站中的知識點列表"""
-    knowledge = get_knowledge_manager()
-    deleted_points = knowledge.get_deleted_points()
+    knowledge = await get_knowledge_manager_async_dependency()
+    deleted_points = await knowledge.get_deleted_points_async()
 
     # 轉換為字典列表
     trash_items = []
@@ -155,7 +155,7 @@ async def get_trash_list():
 @router.post("/trash/clear")
 async def clear_old_trash(days: int = 30):
     """清理超過指定天數的回收站項目"""
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
     deleted_count = knowledge.permanent_delete_old_points(days)
 
@@ -173,7 +173,16 @@ async def clear_old_trash(days: int = 30):
 @router.post("/batch")
 async def batch_operation(request: EnhancedBatchRequest, background_tasks: BackgroundTasks):
     """批量操作端點"""
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
+
+    # 將字符串操作轉換為枚舉
+    try:
+        operation_enum = BatchOperation(request.operation)
+    except ValueError:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"不支持的操作類型: {request.operation}"
+        )
 
     # 生成任務 ID
     task_id = str(uuid.uuid4())
@@ -195,7 +204,7 @@ async def batch_operation(request: EnhancedBatchRequest, background_tasks: Backg
         background_tasks.add_task(
             process_batch_operation,
             task_id,
-            request.operation,
+            operation_enum,
             request.ids,
             request.data,
             knowledge,
@@ -213,7 +222,7 @@ async def batch_operation(request: EnhancedBatchRequest, background_tasks: Backg
     else:
         # 同步處理
         await process_batch_operation(
-            task_id, request.operation, request.ids, request.data, knowledge
+            task_id, operation_enum, request.ids, request.data, knowledge
         )
 
         task = batch_tasks[task_id]
@@ -274,7 +283,7 @@ async def delete_old_knowledge_points(request: DeleteOldPointsRequest):
     Returns:
         刪除統計信息
     """
-    km = get_knowledge_manager()
+    km = await get_knowledge_manager_async_dependency()
 
     try:
         result = km.permanent_delete_old_points(days_old=request.days_old, dry_run=request.dry_run)
@@ -297,7 +306,7 @@ async def delete_old_knowledge_points(request: DeleteOldPointsRequest):
 @router.get("/{point_id}")
 async def get_knowledge_point(point_id: int):
     """獲取單個知識點詳情"""
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
     try:
         point = knowledge.get_knowledge_point(str(point_id))
@@ -336,7 +345,7 @@ async def edit_knowledge_point(
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
 ):
     """編輯知識點"""
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
     # 過濾掉 None 值
     updates = {k: v for k, v in request.dict().items() if v is not None}
@@ -344,7 +353,7 @@ async def edit_knowledge_point(
     if not updates:
         raise HTTPException(status_code=400, detail="沒有提供要更新的內容")
 
-    history = knowledge.edit_knowledge_point(point_id, updates)
+    history = await knowledge.edit_knowledge_point_async(point_id, updates)
 
     if not history:
         raise HTTPException(status_code=404, detail="知識點不存在或已被刪除")
@@ -360,9 +369,9 @@ async def delete_knowledge_point(
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
 ):
     """軟刪除知識點"""
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
-    success = knowledge.delete_knowledge_point(point_id, request.reason)
+    success = await knowledge.delete_knowledge_point_async(point_id, request.reason)
 
     if not success:
         raise HTTPException(status_code=404, detail="知識點不存在或已被刪除")
@@ -377,9 +386,9 @@ async def restore_knowledge_point(
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
 ):
     """復原刪除的知識點"""
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
-    success = knowledge.restore_knowledge_point(point_id)
+    success = await knowledge.restore_knowledge_point_async(point_id)
 
     if not success:
         raise HTTPException(status_code=404, detail="找不到已刪除的知識點")
@@ -394,9 +403,9 @@ async def update_tags(
     request: TagsRequest, point_id: int = Path(..., ge=1, le=1000000, description="知識點ID")
 ):
     """更新知識點標籤"""
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
-    history = knowledge.edit_knowledge_point(point_id, {"tags": request.tags})
+    history = await knowledge.edit_knowledge_point_async(point_id, {"tags": request.tags})
 
     if not history:
         raise HTTPException(status_code=404, detail="知識點不存在或已被刪除")
@@ -409,9 +418,9 @@ async def update_notes(
     request: NotesRequest, point_id: int = Path(..., ge=1, le=1000000, description="知識點ID")
 ):
     """更新知識點筆記"""
-    knowledge = get_knowledge_manager()
+    knowledge = await get_knowledge_manager_async_dependency()
 
-    history = knowledge.edit_knowledge_point(point_id, {"custom_notes": request.notes})
+    history = await knowledge.edit_knowledge_point_async(point_id, {"custom_notes": request.notes})
 
     if not history:
         raise HTTPException(status_code=404, detail="知識點不存在或已被刪除")
@@ -439,7 +448,7 @@ async def process_batch_operation(
             reason = data.get("reason", "") if data else ""
             for i, point_id in enumerate(ids):
                 try:
-                    success = knowledge_manager.delete_knowledge_point(point_id, reason)
+                    success = await knowledge_manager.delete_knowledge_point_async(point_id, reason)
                     if not success:
                         task.errors.append({"id": point_id, "error": "刪除失敗"})
                 except Exception as e:
@@ -457,7 +466,7 @@ async def process_batch_operation(
             updates = data or {}
             for i, point_id in enumerate(ids):
                 try:
-                    history = knowledge_manager.edit_knowledge_point(point_id, updates)
+                    history = await knowledge_manager.edit_knowledge_point_async(point_id, updates)
                     if not history:
                         task.errors.append({"id": point_id, "error": "更新失敗"})
                 except Exception as e:
@@ -474,11 +483,11 @@ async def process_batch_operation(
             tags = data.get("tags", []) if data else []
             for i, point_id in enumerate(ids):
                 try:
-                    point = knowledge_manager.get_knowledge_point(point_id)
+                    point = await knowledge_manager.get_knowledge_point_async(point_id)
                     if point:
                         existing_tags = point.tags or []
                         new_tags = list(set(existing_tags + tags))
-                        knowledge_manager.edit_knowledge_point(point_id, {"tags": new_tags})
+                        await knowledge_manager.edit_knowledge_point_async(point_id, {"tags": new_tags})
                     else:
                         task.errors.append({"id": point_id, "error": "知識點不存在"})
                 except Exception as e:
@@ -495,7 +504,7 @@ async def process_batch_operation(
             export_data = []
             for i, point_id in enumerate(ids):
                 try:
-                    point = knowledge_manager.get_knowledge_point(point_id)
+                    point = await knowledge_manager.get_knowledge_point_async(point_id)
                     if point:
                         export_data.append(point.to_dict())
                     else:
@@ -515,7 +524,7 @@ async def process_batch_operation(
             # 批量復原
             for i, point_id in enumerate(ids):
                 try:
-                    success = knowledge_manager.restore_knowledge_point(point_id)
+                    success = await knowledge_manager.restore_knowledge_point_async(point_id)
                     if not success:
                         task.errors.append({"id": point_id, "error": "復原失敗"})
                 except Exception as e:

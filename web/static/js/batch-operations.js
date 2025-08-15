@@ -1,5 +1,5 @@
 /**
- * 批量操作處理器
+ * 批量操作處理器 v1.1 - 修復群組ID問題
  * 處理批量操作的 API 調用、進度追蹤、錯誤處理等
  */
 
@@ -8,6 +8,34 @@ class BatchOperations {
         this.selection = selectionManager;
         this.activeTasks = new Map();
         this.progressPollers = new Map();
+        
+        // 版本確認日誌
+        console.log('[BatchOperations v1.1] 已載入修復版本 - 群組ID過濾功能已啟用');
+    }
+    
+    /**
+     * 過濾並解析有效的知識點ID
+     * 排除群組ID (group-*) 和其他無效ID
+     */
+    parseValidIds(selectedIds) {
+        return selectedIds
+            .filter(id => {
+                // 排除群組ID
+                if (String(id).startsWith('group-')) {
+                    console.log('[BatchOperations] 排除群組ID:', id);
+                    return false;
+                }
+                return true;
+            })
+            .map(id => parseInt(id, 10))
+            .filter(id => {
+                // 排除NaN和負數
+                if (isNaN(id) || id <= 0) {
+                    console.log('[BatchOperations] 排除無效ID:', id);
+                    return false;
+                }
+                return true;
+            });
     }
     
     /**
@@ -21,7 +49,19 @@ class BatchOperations {
             return;
         }
         
-        const confirmMsg = `確定要刪除 ${selectedIds.length} 個知識點嗎？\n這些知識點將被移至回收站，可以在回收站中復原。\n\n請輸入刪除原因（選填）：`;
+        // 過濾有效ID
+        const validIds = this.parseValidIds(selectedIds);
+        
+        if (validIds.length === 0) {
+            this.showNotification('所選項目中沒有有效的知識點', 'warning');
+            return;
+        }
+        
+        if (validIds.length < selectedIds.length) {
+            console.log(`[BatchOperations] 過濾後: ${validIds.length}/${selectedIds.length} 個有效ID`);
+        }
+        
+        const confirmMsg = `確定要刪除 ${validIds.length} 個知識點嗎？\n這些知識點將被移至回收站，可以在回收站中復原。\n\n請輸入刪除原因（選填）：`;
         const reason = prompt(confirmMsg);
         
         if (reason === null) {
@@ -36,9 +76,9 @@ class BatchOperations {
                 },
                 body: JSON.stringify({
                     operation: 'delete',
-                    ids: selectedIds.map(id => parseInt(id)),
+                    ids: validIds,
                     data: { reason },
-                    options: { async: selectedIds.length > 20 }
+                    options: { async: validIds.length > 20 }
                 })
             });
             
@@ -69,6 +109,18 @@ class BatchOperations {
             return;
         }
         
+        // 過濾有效ID
+        const validIds = this.parseValidIds(selectedIds);
+        
+        if (validIds.length === 0) {
+            this.showNotification('所選項目中沒有有效的知識點', 'warning');
+            return;
+        }
+        
+        if (validIds.length < selectedIds.length) {
+            console.log(`[BatchOperations] 導出過濾後: ${validIds.length}/${selectedIds.length} 個有效ID`);
+        }
+        
         try {
             const response = await fetch('/api/knowledge/batch', {
                 method: 'POST',
@@ -77,7 +129,7 @@ class BatchOperations {
                 },
                 body: JSON.stringify({
                     operation: 'export',
-                    ids: selectedIds.map(id => parseInt(id)),
+                    ids: validIds,
                     data: { format },
                     options: { async: false } // 導出通常同步處理
                 })
@@ -108,6 +160,18 @@ class BatchOperations {
             return;
         }
         
+        // 過濾有效ID
+        const validIds = this.parseValidIds(selectedIds);
+        
+        if (validIds.length === 0) {
+            this.showNotification('所選項目中沒有有效的知識點', 'warning');
+            return;
+        }
+        
+        if (validIds.length < selectedIds.length) {
+            console.log(`[BatchOperations] 標籤過濾後: ${validIds.length}/${selectedIds.length} 個有效ID`);
+        }
+        
         // 顯示標籤對話框
         const tags = await this.showTagDialog();
         
@@ -123,9 +187,9 @@ class BatchOperations {
                 },
                 body: JSON.stringify({
                     operation: 'tag',
-                    ids: selectedIds.map(id => parseInt(id)),
+                    ids: validIds,
                     data: { tags },
-                    options: { async: selectedIds.length > 30 }
+                    options: { async: validIds.length > 30 }
                 })
             });
             

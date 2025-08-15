@@ -198,7 +198,7 @@ class EnhancedDeleteKnowledgeRequest(BaseModel):
 class EnhancedBatchRequest(BaseModel):
     """增強的批量操作請求驗證模型"""
 
-    operation: str = Field(..., pattern="^(delete|update|restore)$", description="批量操作類型")
+    operation: str = Field(..., pattern="^(delete|update|restore|export|tag)$", description="批量操作類型")
     ids: List[int] = Field(
         ...,
         min_items=1,
@@ -206,6 +206,7 @@ class EnhancedBatchRequest(BaseModel):
         description="知識點ID列表",
     )
     data: Optional[dict] = Field(None, description="操作相關數據")
+    options: Optional[dict] = Field(None, description="操作選項")
 
     @field_validator("ids")
     @classmethod

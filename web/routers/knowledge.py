@@ -28,7 +28,9 @@ async def knowledge_points(
     knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取所有未刪除的知識點
-    if hasattr(knowledge, "get_knowledge_points_async"):
+    if hasattr(knowledge, "get_active_points_async"):
+        all_points = await knowledge.get_active_points_async()
+    elif hasattr(knowledge, "get_knowledge_points_async"):
         all_points = await knowledge.get_knowledge_points_async()
         all_points = [p for p in all_points if not p.is_deleted]
     else:
@@ -112,7 +114,12 @@ async def knowledge_points(
 
     # 獲取複習佇列（可以複習的知識點）
     review_queue = knowledge.get_review_candidates(max_points=20)
-    due_points = knowledge.get_due_points()  # 已到期的知識點
+    
+    # 統一使用資料庫數據源避免統計不一致（修復：總知識點 vs 待複習數量矛盾）
+    if hasattr(knowledge, "get_review_candidates_async"):
+        due_points = await knowledge.get_review_candidates_async(max_points=100)
+    else:
+        due_points = knowledge.get_due_points()  # JSON模式降級選項
 
     # 獲取當前時間供模板使用
     now = datetime.now().isoformat()
@@ -146,7 +153,9 @@ async def knowledge_trash(request: Request):
     knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取所有已刪除的知識點
-    if hasattr(knowledge, "get_knowledge_points_async"):
+    if hasattr(knowledge, "get_deleted_points_async"):
+        deleted_points = await knowledge.get_deleted_points_async()
+    elif hasattr(knowledge, "get_knowledge_points_async"):
         all_points = await knowledge.get_knowledge_points_async()
         deleted_points = [p for p in all_points if p.is_deleted]
     else:
@@ -204,10 +213,15 @@ async def knowledge_detail(request: Request, point_id: str):
     knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取指定的知識點
+    try:
+        point_id_int = int(point_id)
+    except ValueError:
+        return RedirectResponse(url="/knowledge", status_code=303)
+        
     if hasattr(knowledge, "get_knowledge_point_async"):
-        point = await knowledge.get_knowledge_point_async(point_id)
+        point = await knowledge.get_knowledge_point_async(point_id_int)
     else:
-        point = knowledge.get_knowledge_point(point_id)
+        point = knowledge.get_knowledge_point(point_id_int)
 
     if not point:
         # 如果找不到知識點，重定向到知識點列表頁
@@ -221,7 +235,7 @@ async def knowledge_detail(request: Request, point_id: str):
     ):  # 檢查最近50個錯誤
         if mistake.get("knowledge_points"):
             for kp in mistake["knowledge_points"]:
-                if kp.get("id") == point_id:
+                if kp.get("id") == point_id_int:
                     # 添加必要的字段以兼容模板
                     if "feedback" in mistake:
                         mistake["correct_answer"] = mistake["feedback"].get(

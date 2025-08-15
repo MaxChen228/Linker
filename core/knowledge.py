@@ -1100,7 +1100,7 @@ class KnowledgeManager:
                 medium_mastery_points.append(point)
 
             # 統計各類別
-            category = point.category.value
+            category = point.category if isinstance(point.category, str) else point.category.value
             category_stats[category]["count"] += 1
             category_stats[category]["avg_mastery"] += point.mastery_level
             category_stats[category]["points"].append(point)
