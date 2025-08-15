@@ -7,7 +7,11 @@ from datetime import datetime
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
-from web.dependencies import get_knowledge_manager, get_knowledge_manager_async_dependency, get_templates
+from web.dependencies import (
+    get_knowledge_manager,
+    get_knowledge_manager_async_dependency,
+    get_templates,
+)
 
 router = APIRouter()
 
@@ -19,19 +23,21 @@ async def home(request: Request):
     knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取複習列表（最多顯示10個）
-    if hasattr(knowledge, 'get_review_candidates_async'):
+    if hasattr(knowledge, "get_review_candidates_async"):
         review_queue = await knowledge.get_review_candidates_async(max_points=10)
     else:
         review_queue = knowledge.get_review_candidates(max_points=10)
 
     # 修正統計資料，讓「待複習」顯示實際可複習的數量
-    if hasattr(knowledge, 'get_statistics_async'):
+    if hasattr(knowledge, "get_statistics_async"):
         stats = await knowledge.get_statistics_async()
     else:
         stats = knowledge.get_statistics()
     # 計算實際可複習的知識點數量（單一性錯誤和可以更好類別中已到期的）
-    if hasattr(knowledge, 'get_review_candidates_async'):
-        reviewable_points = await knowledge.get_review_candidates_async(max_points=100)  # 獲取所有可複習的
+    if hasattr(knowledge, "get_review_candidates_async"):
+        reviewable_points = await knowledge.get_review_candidates_async(
+            max_points=100
+        )  # 獲取所有可複習的
     else:
         reviewable_points = knowledge.get_review_candidates(max_points=100)  # 獲取所有可複習的
     stats["due_reviews"] = len(reviewable_points)  # 覆蓋原本的統計

@@ -42,6 +42,176 @@
   to { transform: translateX(100%); opacity: 0; } 
 }
 
+/* ========== 知識點確認功能樣式 ========== */
+.confirmation-section {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 2px solid var(--border-light);
+}
+
+.confirmation-label {
+  font-size: var(--text-md);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.pending-points-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.pending-point {
+  padding: var(--space-4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-white);
+  transition: all 0.3s ease;
+}
+
+.pending-point:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--accent-300);
+}
+
+.pending-point.confirmed {
+  background: linear-gradient(135deg, 
+    rgba(72, 187, 120, 0.05) 0%, 
+    rgba(72, 187, 120, 0.02) 100%);
+  border-color: var(--success-400);
+  opacity: 0.8;
+}
+
+.pending-point.ignored {
+  background: var(--gray-50);
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.point-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-light);
+}
+
+.btn-confirm-point,
+.btn-ignore-point {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: var(--font-medium);
+}
+
+.btn-confirm-point {
+  background: var(--success-500);
+  color: white;
+}
+
+.btn-confirm-point:hover {
+  background: var(--success-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-ignore-point {
+  background: var(--gray-100);
+  color: var(--text-secondary);
+  border-color: var(--gray-300);
+}
+
+.btn-ignore-point:hover {
+  background: var(--gray-200);
+  border-color: var(--gray-400);
+}
+
+.batch-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-4);
+}
+
+.btn-confirm-all,
+.btn-ignore-all {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: var(--font-semibold);
+}
+
+.btn-confirm-all {
+  background: var(--accent-500);
+  color: white;
+}
+
+.btn-confirm-all:hover {
+  background: var(--accent-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-ignore-all {
+  background: var(--bg-white);
+  color: var(--text-secondary);
+  border: 2px solid var(--border-default);
+}
+
+.btn-ignore-all:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-400);
+}
+
+.status-confirmed,
+.status-ignored {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  width: 100%;
+  justify-content: center;
+}
+
+.status-confirmed {
+  background: var(--success-100);
+  color: var(--success-700);
+}
+
+.status-ignored {
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+
+/* 動畫效果 */
+@keyframes confirmPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pending-point.confirmed {
+  animation: confirmPulse 0.3s ease;
+}
+
 /* ========== LLM 調試模態窗口 ========== */
 .debug-modal {
   display: none;

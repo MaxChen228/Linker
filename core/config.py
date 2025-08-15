@@ -147,6 +147,10 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 # Development mode
 DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
 
+# Practice configuration
+AUTO_SAVE_KNOWLEDGE_POINTS = os.getenv("AUTO_SAVE_KNOWLEDGE_POINTS", "false").lower() == "true"
+SHOW_CONFIRMATION_UI = os.getenv("SHOW_CONFIRMATION_UI", "true").lower() == "true"
+
 # Only create directory if we have permission
 with contextlib.suppress(PermissionError):
     DATA_DIR.mkdir(exist_ok=True, parents=True)

@@ -64,7 +64,7 @@ def get_ai_service():
 
 def get_knowledge_manager():
     """獲取知識管理器（支援資料庫/JSON 雙模式，線程安全）
-    
+
     注意：這是同步版本，資料庫模式下功能受限。
     建議使用 get_knowledge_manager_async_dependency() 用於異步路由。
     """
@@ -84,7 +84,7 @@ def get_knowledge_manager():
 
 async def get_knowledge_manager_async_dependency():
     """獲取知識管理器（異步版本，支援完整資料庫功能）
-    
+
     用於 FastAPI 異步路由的依賴注入。
     確保資料庫模式下的完整功能支援。
     """
@@ -99,11 +99,11 @@ async def get_knowledge_manager_async_dependency():
                 else:
                     logger.info("使用 JSON 模式初始化知識管理器")
                     _knowledge = KnowledgeManager(data_dir=str(DATA_DIR))
-    
+
     # 確保資料庫模式已完全初始化
-    if USE_DATABASE and hasattr(_knowledge, '_ensure_initialized'):
+    if USE_DATABASE and hasattr(_knowledge, "_ensure_initialized"):
         await _knowledge._ensure_initialized()
-    
+
     return _knowledge
 
 

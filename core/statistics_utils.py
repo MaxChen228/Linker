@@ -285,7 +285,7 @@ class UnifiedStatistics:
 
         # 按時間戳排序
         import contextlib
-        
+
         with contextlib.suppress(Exception):
             unique_records.sort(
                 key=lambda r: datetime.fromisoformat(r.timestamp.replace("Z", "+00:00"))

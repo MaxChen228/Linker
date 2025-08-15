@@ -348,3 +348,51 @@ def validate_task_id(task_id: str) -> str:
         raise ValueError("任務ID包含不安全字符")
 
     return task_id
+
+
+class PendingKnowledgePoint(BaseModel):
+    """待確認的知識點數據模型"""
+
+    id: str = Field(..., description="臨時ID")
+    chinese_sentence: str = Field(..., min_length=1, max_length=1000, description="中文句子")
+    user_answer: str = Field(..., min_length=1, max_length=2000, description="用戶答案")
+    error: dict = Field(..., description="錯誤分析數據")
+    correct_answer: str = Field(..., max_length=2000, description="正確答案")
+
+    @field_validator("error")
+    @classmethod
+    def validate_error_data(cls, v):
+        """驗證錯誤數據結構"""
+        if not isinstance(v, dict):
+            raise ValueError("錯誤數據必須是字典")
+
+        # 檢查必要的字段
+        if "key_point_summary" not in v:
+            raise ValueError("錯誤數據缺少 key_point_summary")
+
+        return v
+
+
+class ConfirmKnowledgeRequest(BaseModel):
+    """確認知識點請求驗證模型"""
+
+    confirmed_points: List[PendingKnowledgePoint] = Field(
+        ..., max_items=50, description="要確認的知識點列表"
+    )
+
+    @field_validator("confirmed_points")
+    @classmethod
+    def validate_points(cls, v):
+        """驗證知識點列表"""
+        if v is None:
+            return []
+
+        # 去重（基於ID）
+        seen_ids = set()
+        unique_points = []
+        for point in v:
+            if point.id not in seen_ids:
+                seen_ids.add(point.id)
+                unique_points.append(point)
+
+        return unique_points

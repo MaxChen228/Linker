@@ -90,6 +90,10 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "integration: 整合測試，測試多個組件的交互")
     config.addinivalue_line("markers", "unit: 單元測試，測試單一組件的功能")
     config.addinivalue_line("markers", "ai: 涉及 AI 服務的測試，可能需要 API 密鑰")
+    config.addinivalue_line("markers", "stress: 壓力測試，測試系統在高負載下的表現")
+    config.addinivalue_line("markers", "memory_intensive: 記憶體密集型測試")
+    config.addinivalue_line("markers", "asyncio: 非同步測試")
+    config.addinivalue_line("markers", "e2e: 端對端測試")
 
 
 def pytest_collection_modifyitems(config, items):

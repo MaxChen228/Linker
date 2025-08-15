@@ -16,19 +16,19 @@ from core.database.connection import get_database_connection
 
 async def check_null_timestamps():
     """檢查資料庫中的 NULL 時間戳"""
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("檢查資料庫中的 NULL 時間戳")
-    print("="*60)
-    
+    print("=" * 60)
+
     db_connection = get_database_connection()
-    
+
     try:
         pool = await db_connection.connect()
         if not pool:
             print("❌ 無法連接到資料庫")
             return
-        
+
         async with pool.acquire() as conn:
             # 檢查 knowledge_points 表
             print("\n1. 檢查 knowledge_points 表：")
@@ -45,22 +45,22 @@ async def check_null_timestamps():
                 LIMIT 10
             """
             rows = await conn.fetch(query)
-            
+
             if rows:
                 print(f"   ⚠️ 發現 {len(rows)} 個知識點有 NULL 時間戳：")
                 for row in rows:
                     print(f"      ID {row['id']}: {row['key_point'][:30]}...")
-                    if row['created_null']:
+                    if row["created_null"]:
                         print(f"         - created_at 為 NULL")
-                    if row['seen_null']:
+                    if row["seen_null"]:
                         print(f"         - last_seen 為 NULL")
-                    if row['review_null']:
+                    if row["review_null"]:
                         print(f"         - next_review 為 NULL")
-                    if row['modified_null']:
+                    if row["modified_null"]:
                         print(f"         - last_modified 為 NULL")
             else:
                 print("   ✅ 沒有發現 NULL 時間戳")
-            
+
             # 檢查 original_errors 表
             print("\n2. 檢查 original_errors 表：")
             query = """
@@ -71,14 +71,14 @@ async def check_null_timestamps():
                 LIMIT 10
             """
             rows = await conn.fetch(query)
-            
+
             if rows:
                 print(f"   ⚠️ 發現 {len(rows)} 個原始錯誤有 NULL 時間戳：")
                 for row in rows:
                     print(f"      知識點 ID {row['knowledge_point_id']}: timestamp 為 NULL")
             else:
                 print("   ✅ 沒有發現 NULL 時間戳")
-            
+
             # 檢查 ID 22 的具體情況
             print("\n3. 檢查 ID 22 的知識點：")
             query = """
@@ -95,7 +95,7 @@ async def check_null_timestamps():
                 WHERE kp.id = 22
             """
             row = await conn.fetchrow(query)
-            
+
             if row:
                 print(f"   知識點 ID 22: {row['key_point'][:50]}...")
                 print(f"      created_at: {row['created_at']}")
@@ -105,13 +105,13 @@ async def check_null_timestamps():
                 print(f"      oe_timestamp: {row['oe_timestamp']}")
             else:
                 print("   ❌ 找不到 ID 22 的知識點")
-            
+
     finally:
         await db_connection.disconnect()
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("檢查完成")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
 
 
 async def main():
@@ -121,6 +121,7 @@ async def main():
     except Exception as e:
         print(f"\n❌ 發生錯誤: {e}")
         import traceback
+
         traceback.print_exc()
 
 

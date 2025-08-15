@@ -403,11 +403,11 @@ class KnowledgeManager:
 
         self.logger = get_module_logger(__name__)
         self.settings = settings
-        
+
         # TASK-20D: 統一錯誤處理體系
         self._error_handler = ErrorHandler(mode="json")
         self._fallback_manager = get_fallback_manager()
-        
+
         # 統一快取管理器
         self._cache_manager = UnifiedCacheManager(default_ttl=300)  # 5分鐘預設 TTL
 
@@ -536,6 +536,60 @@ class KnowledgeManager:
         with open(self.practice_log, "w", encoding="utf-8") as f:
             json.dump(self.practice_history, f, ensure_ascii=False, indent=2)
 
+    def add_knowledge_point_from_error(
+        self, chinese_sentence: str, user_answer: str, error: dict, correct_answer: str
+    ) -> int:
+        """從錯誤信息創建知識點（用於手動確認功能）
+        
+        Args:
+            chinese_sentence: 中文句子
+            user_answer: 用戶答案
+            error: 錯誤分析數據
+            correct_answer: 正確答案
+            
+        Returns:
+            新創建的知識點ID
+        """
+        from datetime import datetime
+        
+        # 創建新的知識點
+        point_id = self._get_next_id()
+        from core.error_types import ErrorCategory
+        
+        # 處理 category - 確保是枚舉類型
+        category_str = error.get("category", "other")
+        try:
+            category = ErrorCategory(category_str) if isinstance(category_str, str) else category_str
+        except ValueError:
+            category = ErrorCategory.OTHER
+            
+        point = KnowledgePoint(
+            id=point_id,
+            key_point=error.get("key_point_summary", "未知錯誤"),
+            original_phrase=error.get("original_phrase", user_answer),
+            correction=error.get("correction", correct_answer),
+            explanation=error.get("explanation", ""),
+            category=category,
+            subtype=error.get("subtype", "general"),
+            mastery_level=0.1,
+            mistake_count=1,
+            correct_count=0,
+            last_seen=datetime.now().isoformat(),
+            next_review=datetime.now().isoformat(),
+            created_at=datetime.now().isoformat(),
+            original_error=OriginalError(
+                chinese_sentence=chinese_sentence,
+                user_answer=user_answer,
+                correct_answer=correct_answer,
+                timestamp=datetime.now().isoformat()
+            )
+        )
+        
+        self.knowledge_points.append(point)
+        self._save_knowledge()
+        
+        return point_id
+
     def save_mistake(
         self,
         chinese_sentence: str,
@@ -575,7 +629,7 @@ class KnowledgeManager:
         elif practice_mode == "review":
             # 複習模式下答對：更新相關知識點的掌握度
             self._process_correct_review(chinese_sentence, user_answer, feedback)
-        
+
         # 清除相關快取（不論是否出錯，都可能影響統計）
         self._invalidate_caches()
 
@@ -749,7 +803,7 @@ class KnowledgeManager:
         """獲取需要複習的知識點"""
         now = datetime.now()
         due_points = []
-        
+
         for p in self.knowledge_points:
             if p.next_review:
                 try:
@@ -762,7 +816,7 @@ class KnowledgeManager:
                 except (ValueError, TypeError):
                     # 如果解析失敗，跳過此點
                     continue
-        
+
         return due_points
 
     def get_review_candidates(self, max_points: int = 5) -> list[KnowledgePoint]:
@@ -961,17 +1015,17 @@ class KnowledgeManager:
             result = self._cache_manager.get_or_compute(
                 key=f"{CacheCategories.STATISTICS}:json",
                 compute_func=self._compute_statistics,
-                ttl=60  # 統計快取1分鐘
+                ttl=60,  # 統計快取1分鐘
             )
-            
+
             # 更新降級快取
-            self._update_fallback_cache('get_statistics', result)
+            self._update_fallback_cache("get_statistics", result)
             return result
-            
+
         except Exception as e:
             # 統一錯誤處理
             return self._handle_error_with_fallback(e, "get_statistics")
-    
+
     def _compute_statistics(self) -> dict[str, Any]:
         """計算統計資料（JSON 模式）"""
         from core.statistics_utils import UnifiedStatistics
@@ -994,7 +1048,7 @@ class KnowledgeManager:
         )
 
         return stats
-    
+
     def _invalidate_caches(self) -> None:
         """清除相關快取"""
         # 清除統計快取
@@ -1005,7 +1059,7 @@ class KnowledgeManager:
         self._cache_manager.invalidate(CacheCategories.KNOWLEDGE_POINTS)
         # 清除搜索結果快取
         self._cache_manager.invalidate(CacheCategories.SEARCH_RESULTS)
-        
+
         self.logger.debug("已清除相關快取")
 
     def get_learning_recommendations(self) -> dict[str, Any]:
@@ -1146,63 +1200,63 @@ class KnowledgeManager:
             # 找到快取降級策略並更新快取
             cache_strategy = None
             for strategy in self._fallback_manager.strategies:
-                if hasattr(strategy, 'update_cache'):
+                if hasattr(strategy, "update_cache"):
                     cache_strategy = strategy
                     break
-            
+
             if cache_strategy and result is not None:
                 # 建立方法引用
                 method_func = getattr(self, method_name, None)
                 if method_func:
                     cache_strategy.update_cache(method_func, (self,), {}, result)
-                    
+
         except Exception as e:
             self.logger.warning(f"更新降級快取失敗: {e}")
-    
+
     def _handle_error_with_fallback(self, error: Exception, operation: str) -> Any:
         """統一錯誤處理和降級邏輯"""
         try:
             # 使用統一錯誤處理器
             error_response = self._error_handler.handle_error(error, operation)
-            
+
             # JSON 模式通常不需要降級，但可以返回安全的默認值
             self.logger.warning(f"JSON 模式錯誤處理: {operation} - {error}")
-            
+
             # 根據操作類型返回安全的默認值
             return self._get_safe_default_for_operation(operation)
-            
+
         except Exception as fallback_error:
             self.logger.error(f"錯誤處理失敗: {fallback_error}")
             return self._get_safe_default_for_operation(operation)
-    
+
     def _get_safe_default_for_operation(self, operation: str) -> Any:
         """根據操作獲取安全的默認值"""
         defaults = {
-            'get_statistics': {
-                'total_practices': 0,
-                'correct_count': 0,
-                'knowledge_points': 0,
-                'avg_mastery': 0.0,
-                'category_distribution': {},
-                'due_reviews': 0,
-                '_json_error_fallback': True,
-                '_operation': operation
+            "get_statistics": {
+                "total_practices": 0,
+                "correct_count": 0,
+                "knowledge_points": 0,
+                "avg_mastery": 0.0,
+                "category_distribution": {},
+                "due_reviews": 0,
+                "_json_error_fallback": True,
+                "_operation": operation,
             },
-            'get_knowledge_points': [],
-            'get_all_knowledge_points': [],
-            'get_review_candidates': [],
-            'search_knowledge_points': [],
-            'get_knowledge_point': None,
-            'add_knowledge_point': False,
-            'edit_knowledge_point': None,
-            'delete_knowledge_point': False,
-            'restore_knowledge_point': None,
+            "get_knowledge_points": [],
+            "get_all_knowledge_points": [],
+            "get_review_candidates": [],
+            "search_knowledge_points": [],
+            "get_knowledge_point": None,
+            "add_knowledge_point": False,
+            "edit_knowledge_point": None,
+            "delete_knowledge_point": False,
+            "restore_knowledge_point": None,
         }
-        
+
         result = defaults.get(operation, None)
         if isinstance(result, dict):
             result = result.copy()
-            result['_json_error_fallback'] = True
-            result['_operation'] = operation
-        
+            result["_json_error_fallback"] = True
+            result["_operation"] = operation
+
         return result

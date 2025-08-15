@@ -1,0 +1,253 @@
+{
+  "version": "4.0",
+  "last_updated": "2025-08-15T13:52:00.193087",
+  "data": [
+    {
+      "id": 1,
+      "key_point": "更新後的知識點描述",
+      "category": "other",
+      "subtype": "test",
+      "explanation": "test",
+      "original_phrase": "test",
+      "correction": "test",
+      "original_error": {
+        "chinese_sentence": "test",
+        "user_answer": "test",
+        "correct_answer": "test",
+        "timestamp": "2024-01-01T00:00:00"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-15T13:20:28.041422",
+      "last_seen": "2025-08-15T13:20:28.041425",
+      "next_review": "2025-08-16T13:20:28.041431",
+      "is_deleted": false,
+      "deleted_at": "",
+      "deleted_reason": "",
+      "tags": [
+        "批量",
+        "測試"
+      ],
+      "custom_notes": "批量更新筆記",
+      "version_history": [
+        {
+          "timestamp": "2025-08-15T13:52:00.187825",
+          "before": {
+            "key_point": "Test",
+            "explanation": "test",
+            "original_phrase": "test",
+            "correction": "test",
+            "category": "other",
+            "subtype": "test",
+            "tags": [],
+            "custom_notes": ""
+          },
+          "after": {
+            "key_point": "更新後的知識點描述",
+            "explanation": "test",
+            "original_phrase": "test",
+            "correction": "test",
+            "category": "other",
+            "subtype": "test",
+            "tags": [
+              "重要",
+              "語法"
+            ],
+            "custom_notes": "添加自定義筆記"
+          },
+          "changed_fields": [
+            "key_point",
+            "custom_notes",
+            "tags"
+          ]
+        },
+        {
+          "timestamp": "2025-08-15T13:52:00.191849",
+          "before": {
+            "key_point": "更新後的知識點描述",
+            "explanation": "test",
+            "original_phrase": "test",
+            "correction": "test",
+            "category": "other",
+            "subtype": "test",
+            "tags": [
+              "重要",
+              "語法"
+            ],
+            "custom_notes": "添加自定義筆記"
+          },
+          "after": {
+            "key_point": "更新後的知識點描述",
+            "explanation": "test",
+            "original_phrase": "test",
+            "correction": "test",
+            "category": "other",
+            "subtype": "test",
+            "tags": [
+              "批量",
+              "測試"
+            ],
+            "custom_notes": "批量更新筆記"
+          },
+          "changed_fields": [
+            "custom_notes",
+            "tags"
+          ]
+        }
+      ],
+      "last_modified": "2025-08-15T13:52:00.191849"
+    },
+    {
+      "id": 2,
+      "key_point": "測試錯誤: test phrase",
+      "category": "systematic",
+      "subtype": "preposition",
+      "explanation": "test explanation",
+      "original_phrase": "test phrase",
+      "correction": "corrected phrase",
+      "original_error": {
+        "chinese_sentence": "測試句子",
+        "user_answer": "錯誤答案",
+        "correct_answer": "test correction",
+        "timestamp": "2025-08-15T13:22:27.666023"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 4,
+      "correct_count": 0,
+      "created_at": "2025-08-15T13:22:27.666040",
+      "last_seen": "2025-08-15T13:36:13.400970",
+      "next_review": "2025-08-16T13:36:13.400975",
+      "is_deleted": false,
+      "deleted_at": "",
+      "deleted_reason": "",
+      "tags": [
+        "批量",
+        "測試"
+      ],
+      "custom_notes": "批量更新筆記",
+      "version_history": [
+        {
+          "timestamp": "2025-08-15T13:52:00.193083",
+          "before": {
+            "key_point": "測試錯誤: test phrase",
+            "explanation": "test explanation",
+            "original_phrase": "test phrase",
+            "correction": "corrected phrase",
+            "category": "systematic",
+            "subtype": "preposition",
+            "tags": [],
+            "custom_notes": ""
+          },
+          "after": {
+            "key_point": "測試錯誤: test phrase",
+            "explanation": "test explanation",
+            "original_phrase": "test phrase",
+            "correction": "corrected phrase",
+            "category": "systematic",
+            "subtype": "preposition",
+            "tags": [
+              "批量",
+              "測試"
+            ],
+            "custom_notes": "批量更新筆記"
+          },
+          "changed_fields": [
+            "custom_notes",
+            "tags"
+          ]
+        }
+      ],
+      "last_modified": "2025-08-15T13:52:00.193083"
+    },
+    {
+      "id": 1,
+      "key_point": "Test",
+      "category": "other",
+      "subtype": "test",
+      "explanation": "test",
+      "original_phrase": "test",
+      "correction": "test",
+      "original_error": {
+        "chinese_sentence": "test",
+        "user_answer": "test",
+        "correct_answer": "test",
+        "timestamp": "2024-01-01T00:00:00"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-15T13:29:24.597177",
+      "last_seen": "2025-08-15T13:29:24.597178",
+      "next_review": "2025-08-16T13:29:24.597184",
+      "is_deleted": false,
+      "deleted_at": "",
+      "deleted_reason": "",
+      "tags": [],
+      "custom_notes": "",
+      "version_history": [],
+      "last_modified": "2025-08-15T13:29:24.597177"
+    },
+    {
+      "id": 1,
+      "key_point": "Test",
+      "category": "other",
+      "subtype": "test",
+      "explanation": "test",
+      "original_phrase": "test",
+      "correction": "test",
+      "original_error": {
+        "chinese_sentence": "test",
+        "user_answer": "test",
+        "correct_answer": "test",
+        "timestamp": "2024-01-01T00:00:00"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-15T13:32:49.030410",
+      "last_seen": "2025-08-15T13:32:49.030411",
+      "next_review": "2025-08-16T13:32:49.030419",
+      "is_deleted": false,
+      "deleted_at": "",
+      "deleted_reason": "",
+      "tags": [],
+      "custom_notes": "",
+      "version_history": [],
+      "last_modified": "2025-08-15T13:32:49.030410"
+    },
+    {
+      "id": 1,
+      "key_point": "Test",
+      "category": "other",
+      "subtype": "test",
+      "explanation": "test",
+      "original_phrase": "test",
+      "correction": "test",
+      "original_error": {
+        "chinese_sentence": "test",
+        "user_answer": "test",
+        "correct_answer": "test",
+        "timestamp": "2024-01-01T00:00:00"
+      },
+      "review_examples": [],
+      "mastery_level": 0.0,
+      "mistake_count": 1,
+      "correct_count": 0,
+      "created_at": "2025-08-15T13:36:15.880009",
+      "last_seen": "2025-08-15T13:36:15.880011",
+      "next_review": "2025-08-16T13:36:15.880017",
+      "is_deleted": false,
+      "deleted_at": "",
+      "deleted_reason": "",
+      "tags": [],
+      "custom_notes": "",
+      "version_history": [],
+      "last_modified": "2025-08-15T13:36:15.880009"
+    }
+  ]
+}

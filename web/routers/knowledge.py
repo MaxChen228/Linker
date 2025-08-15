@@ -10,7 +10,11 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from core.error_types import ErrorCategory, ErrorTypeSystem
-from web.dependencies import get_knowledge_manager, get_knowledge_manager_async_dependency, get_templates
+from web.dependencies import (
+    get_knowledge_manager,
+    get_knowledge_manager_async_dependency,
+    get_templates,
+)
 
 router = APIRouter()
 
@@ -24,7 +28,7 @@ async def knowledge_points(
     knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取所有未刪除的知識點
-    if hasattr(knowledge, 'get_knowledge_points_async'):
+    if hasattr(knowledge, "get_knowledge_points_async"):
         all_points = await knowledge.get_knowledge_points_async()
         all_points = [p for p in all_points if not p.is_deleted]
     else:
@@ -34,7 +38,7 @@ async def knowledge_points(
     if category:
         try:
             cat_enum = ErrorCategory.from_string(category)
-            all_points = [p for p in all_points if p.category == cat_enum]
+            all_points = [p for p in all_points if (p.category if isinstance(p.category, str) else p.category.value) == category]
         except (ValueError, KeyError, AttributeError):
             pass
 
@@ -56,14 +60,17 @@ async def knowledge_points(
     type_system = ErrorTypeSystem()
 
     for point in all_points:
-        if point.category.value == "systematic":
+        # 處理 category 可能是字符串或枚舉的情況
+        category_value = point.category if isinstance(point.category, str) else point.category.value
+        
+        if category_value == "systematic":
             # 系統性錯誤按subtype分組
             subtype_obj = type_system.get_subtype_by_name(point.subtype)
             group_name = subtype_obj.chinese_name if subtype_obj else point.subtype
             systematic_groups[group_name].append(point)
-        elif point.category.value == "isolated":
+        elif category_value == "isolated":
             isolated_points.append(point)
-        elif point.category.value == "enhancement":
+        elif category_value == "enhancement":
             enhancement_points.append(point)
         else:
             other_points.append(point)
@@ -87,7 +94,7 @@ async def knowledge_points(
     knowledge_groups.sort(key=lambda x: x["total_mistakes"], reverse=True)
 
     # 獲取統計資料
-    if hasattr(knowledge, 'get_statistics_async'):
+    if hasattr(knowledge, "get_statistics_async"):
         stats = await knowledge.get_statistics_async()
     else:
         stats = knowledge.get_statistics()
@@ -139,7 +146,7 @@ async def knowledge_trash(request: Request):
     knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取所有已刪除的知識點
-    if hasattr(knowledge, 'get_knowledge_points_async'):
+    if hasattr(knowledge, "get_knowledge_points_async"):
         all_points = await knowledge.get_knowledge_points_async()
         deleted_points = [p for p in all_points if p.is_deleted]
     else:
@@ -197,7 +204,7 @@ async def knowledge_detail(request: Request, point_id: str):
     knowledge = await get_knowledge_manager_async_dependency()
 
     # 獲取指定的知識點
-    if hasattr(knowledge, 'get_knowledge_point_async'):
+    if hasattr(knowledge, "get_knowledge_point_async"):
         point = await knowledge.get_knowledge_point_async(point_id)
     else:
         point = knowledge.get_knowledge_point(point_id)
@@ -261,7 +268,10 @@ async def knowledge_detail(request: Request, point_id: str):
         "id": point.id,
         "title": point.key_point,  # 保留 key_point 作為描述性標題
         "key_point": point.key_point,
-        "category": {"value": point.category.value, "chinese_name": point.category.to_chinese()},
+        "category": {
+            "value": point.category if isinstance(point.category, str) else point.category.value,
+            "chinese_name": ErrorCategory.from_string(point.category if isinstance(point.category, str) else point.category.value).to_chinese()
+        },
         "subtype": point.subtype,
         "description": point.explanation,  # 使用 explanation 作為 description
         "original_phrase": point.original_phrase,  # 錯誤片段

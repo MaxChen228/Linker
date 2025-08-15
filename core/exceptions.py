@@ -35,14 +35,15 @@ class ErrorSeverity(Enum):
 
 class ErrorCategory(Enum):
     """錯誤分類 - 用於統一錯誤處理"""
-    SYSTEM = "system"           # 系統錯誤
-    DATABASE = "database"       # 資料庫錯誤
-    FILE_IO = "file_io"        # 文件IO錯誤
-    NETWORK = "network"        # 網路錯誤
+
+    SYSTEM = "system"  # 系統錯誤
+    DATABASE = "database"  # 資料庫錯誤
+    FILE_IO = "file_io"  # 文件IO錯誤
+    NETWORK = "network"  # 網路錯誤
     VALIDATION = "validation"  # 數據驗證錯誤
-    BUSINESS = "business"      # 業務邏輯錯誤
-    CONCURRENCY = "concurrency" # 並發錯誤
-    UNKNOWN = "unknown"        # 未知錯誤
+    BUSINESS = "business"  # 業務邏輯錯誤
+    CONCURRENCY = "concurrency"  # 並發錯誤
+    UNKNOWN = "unknown"  # 未知錯誤
 
 
 class LinkerError(Exception):
@@ -80,10 +81,10 @@ class LinkerError(Exception):
             ErrorCategory.VALIDATION: "輸入的數據格式不正確",
             ErrorCategory.BUSINESS: "操作不符合業務規則",
             ErrorCategory.CONCURRENCY: "系統忙碌中，請稍後再試",
-            ErrorCategory.SYSTEM: "系統發生錯誤，請聯繫管理員"
+            ErrorCategory.SYSTEM: "系統發生錯誤，請聯繫管理員",
         }
         return user_messages.get(self.category, "系統發生未知錯誤")
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """轉換為字典格式"""
         return {
@@ -94,7 +95,7 @@ class LinkerError(Exception):
             "severity": self.severity.value,
             "details": self.details,
             "recovery_suggestions": self.recovery_suggestions,
-            "timestamp": self.timestamp
+            "timestamp": self.timestamp,
         }
 
     def __str__(self):
@@ -423,22 +424,24 @@ class DatabaseError(LinkerError):
         query: Optional[str] = None,
         connection_info: Optional[dict] = None,
         original_error: Optional[Exception] = None,
-        **kwargs
+        **kwargs,
     ):
-        kwargs.setdefault('category', ErrorCategory.DATABASE)
-        kwargs.setdefault('severity', ErrorSeverity.HIGH)
-        kwargs.setdefault('error_code', "DATABASE_ERROR")
-        
-        details = kwargs.get('details', {})
-        details.update({
-            "operation": operation,
-            "table": table,
-            "query": query[:200] if query else None,  # 限制查詢長度
-            "connection_info": connection_info,
-            "original_error": str(original_error) if original_error else None,
-        })
-        kwargs['details'] = details
-        
+        kwargs.setdefault("category", ErrorCategory.DATABASE)
+        kwargs.setdefault("severity", ErrorSeverity.HIGH)
+        kwargs.setdefault("error_code", "DATABASE_ERROR")
+
+        details = kwargs.get("details", {})
+        details.update(
+            {
+                "operation": operation,
+                "table": table,
+                "query": query[:200] if query else None,  # 限制查詢長度
+                "connection_info": connection_info,
+                "original_error": str(original_error) if original_error else None,
+            }
+        )
+        kwargs["details"] = details
+
         super().__init__(message=message, **kwargs)
         self.operation = operation
         self.table = table
@@ -634,9 +637,10 @@ def with_async_retry(
 
 # 統一錯誤處理體系的新異常類
 
+
 class UnifiedError(LinkerError):
     """統一錯誤類 - 所有新的錯誤處理都應使用此類或其子類"""
-    
+
     def __init__(
         self,
         message: str,
@@ -645,7 +649,7 @@ class UnifiedError(LinkerError):
         severity: ErrorSeverity = ErrorSeverity.MEDIUM,
         details: Optional[Dict[str, Any]] = None,
         user_message: Optional[str] = None,
-        recovery_suggestions: Optional[list[str]] = None
+        recovery_suggestions: Optional[list[str]] = None,
     ):
         super().__init__(
             message=message,
@@ -654,45 +658,50 @@ class UnifiedError(LinkerError):
             category=category,
             severity=severity,
             user_message=user_message,
-            recovery_suggestions=recovery_suggestions
+            recovery_suggestions=recovery_suggestions,
         )
 
 
 class SystemError(UnifiedError):
     """系統錯誤"""
+
     def __init__(self, message: str, error_code: str = "SYSTEM_ERROR", **kwargs):
-        kwargs.setdefault('category', ErrorCategory.SYSTEM)
-        kwargs.setdefault('severity', ErrorSeverity.CRITICAL)
+        kwargs.setdefault("category", ErrorCategory.SYSTEM)
+        kwargs.setdefault("severity", ErrorSeverity.CRITICAL)
         super().__init__(message, error_code, **kwargs)
 
 
 class FileIOError(UnifiedError):
     """文件IO錯誤"""
+
     def __init__(self, message: str, error_code: str = "FILE_ERROR", **kwargs):
-        kwargs.setdefault('category', ErrorCategory.FILE_IO)
-        kwargs.setdefault('severity', ErrorSeverity.MEDIUM)
+        kwargs.setdefault("category", ErrorCategory.FILE_IO)
+        kwargs.setdefault("severity", ErrorSeverity.MEDIUM)
         super().__init__(message, error_code, **kwargs)
 
 
 class NetworkError(UnifiedError):
     """網路錯誤"""
+
     def __init__(self, message: str, error_code: str = "NETWORK_ERROR", **kwargs):
-        kwargs.setdefault('category', ErrorCategory.NETWORK)
-        kwargs.setdefault('severity', ErrorSeverity.MEDIUM)
+        kwargs.setdefault("category", ErrorCategory.NETWORK)
+        kwargs.setdefault("severity", ErrorSeverity.MEDIUM)
         super().__init__(message, error_code, **kwargs)
 
 
 class BusinessLogicError(UnifiedError):
     """業務邏輯錯誤"""
+
     def __init__(self, message: str, error_code: str = "BUSINESS_ERROR", **kwargs):
-        kwargs.setdefault('category', ErrorCategory.BUSINESS)
-        kwargs.setdefault('severity', ErrorSeverity.LOW)
+        kwargs.setdefault("category", ErrorCategory.BUSINESS)
+        kwargs.setdefault("severity", ErrorSeverity.LOW)
         super().__init__(message, error_code, **kwargs)
 
 
 class ConcurrencyError(UnifiedError):
     """並發錯誤"""
+
     def __init__(self, message: str, error_code: str = "CONCURRENCY_ERROR", **kwargs):
-        kwargs.setdefault('category', ErrorCategory.CONCURRENCY)
-        kwargs.setdefault('severity', ErrorSeverity.MEDIUM)
+        kwargs.setdefault("category", ErrorCategory.CONCURRENCY)
+        kwargs.setdefault("severity", ErrorSeverity.MEDIUM)
         super().__init__(message, error_code, **kwargs)

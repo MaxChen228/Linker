@@ -36,7 +36,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
         oe_timestamp = row.get("oe_timestamp")
         if oe_timestamp is None:
             oe_timestamp = datetime.now()
-        
+
         original_error = OriginalError(
             chinese_sentence=row.get("oe_chinese", ""),
             user_answer=row.get("oe_user_answer", ""),
@@ -82,7 +82,9 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
             tags=row.get("tags", []) or [],
             custom_notes=row.get("custom_notes", "") or "",
             version_history=[],  # 需要時才載入
-            last_modified=row["last_modified"].isoformat() if row.get("last_modified") else datetime.now().isoformat(),
+            last_modified=row["last_modified"].isoformat()
+            if row.get("last_modified")
+            else datetime.now().isoformat(),
         )
 
     async def find_by_id(self, id: int) -> Optional[KnowledgePoint]:

@@ -505,36 +505,254 @@ class PracticeSystem {
         const score = (result && typeof result.score === 'number') ? result.score : 0;
         const scoreColor = score >= 80 ? '#48bb78' : score >= 60 ? '#ed8936' : '#f56565';
         
-        const errorList = (result.error_analysis || []).map(e => `
-            <li class="error-analysis-item">
-                <div class="error-header">
-                    <div class="error-title">${this.escapeHtml(e.key_point_summary)}</div>
-                    ${e.category ? `<span class="badge" data-variant="${e.category === 'systematic' ? 'error' : e.category === 'isolated' ? 'warning' : e.category === 'enhancement' ? 'info' : 'neutral'}" data-size="sm">${e.category === 'systematic' ? '系統性錯誤' : e.category === 'isolated' ? '單一性錯誤' : e.category === 'enhancement' ? '可以更好' : '其他錯誤'}</span>` : ''}
-                </div>
-                ${e.explanation ? `<p class="error-explanation">${this.escapeHtml(e.explanation)}</p>` : ''}
-                ${e.original_phrase || e.correction ? `<div class="error-examples">
-                        ${e.original_phrase ? `<div class="error-original">原：${this.escapeHtml(e.original_phrase)}</div>` : ''}
-                        ${e.correction ? `<div class="error-correction">正：${this.escapeHtml(e.correction)}</div>` : ''}
-                    </div>` : ''}
-            </li>
-        `).join('');
+        // 檢查是否有待確認的知識點
+        const pendingPoints = result.pending_knowledge_points || [];
+        const showConfirmationUI = !result.auto_save && pendingPoints.length > 0;
+        
+        if (showConfirmationUI) {
+            // 渲染待確認的知識點介面
+            const pendingList = pendingPoints.map((point, index) => {
+                const e = point.error;
+                return `
+                    <li class="pending-point" data-point-id="${point.id}" data-index="${index}">
+                        <div class="error-analysis-item">
+                            <div class="error-header">
+                                <div class="error-title">${this.escapeHtml(e.key_point_summary)}</div>
+                                ${e.category ? `<span class="badge" data-variant="${e.category === 'systematic' ? 'error' : e.category === 'isolated' ? 'warning' : e.category === 'enhancement' ? 'info' : 'neutral'}" data-size="sm">${e.category === 'systematic' ? '系統性錯誤' : e.category === 'isolated' ? '單一性錯誤' : e.category === 'enhancement' ? '可以更好' : '其他錯誤'}</span>` : ''}
+                            </div>
+                            ${e.explanation ? `<p class="error-explanation">${this.escapeHtml(e.explanation)}</p>` : ''}
+                            ${e.original_phrase || e.correction ? `<div class="error-examples">
+                                    ${e.original_phrase ? `<div class="error-original">原：${this.escapeHtml(e.original_phrase)}</div>` : ''}
+                                    ${e.correction ? `<div class="error-correction">正：${this.escapeHtml(e.correction)}</div>` : ''}
+                                </div>` : ''}
+                        </div>
+                        <div class="point-actions">
+                            <button class="btn btn-confirm-point" data-variant="success" data-size="sm" data-point-id="${point.id}">
+                                ✓ 加入知識庫
+                            </button>
+                            <button class="btn btn-ignore-point" data-variant="neutral" data-size="sm" data-point-id="${point.id}">
+                                × 忽略
+                            </button>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+            
+            this.elements.sandboxContent.innerHTML = `
+                <section class="card result-section">
+                    <h2 class="result-score ${score >= 80 ? 'score-high' : score >= 60 ? 'score-medium' : 'score-low'}">批改結果 (${score}%)</h2>
+                    <div class="result-content">
+                        <div class="feedback-section">
+                            <div class="feedback-label">建議：</div>
+                            <div class="feedback-content">${this.escapeHtml(result.feedback)}</div>
+                        </div>
+                        <div class="confirmation-section">
+                            <div class="confirmation-label">請確認是否將以下錯誤加入知識庫：</div>
+                            <ul class="pending-points-list">${pendingList}</ul>
+                            <div class="batch-actions">
+                                <button class="btn btn-confirm-all" data-variant="primary" data-size="sm">全部加入</button>
+                                <button class="btn btn-ignore-all" data-variant="secondary" data-size="sm">全部忽略</button>
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button id="retry-btn" class="btn" data-variant="secondary">重新作答</button>
+                            <button id="next-btn" class="btn" data-variant="primary">下一題</button>
+                        </div>
+                    </div>
+                </section>
+            `;
+            
+            // 儲存待確認點到當前題目
+            this.updateQuestionState(question.id, { pendingPoints: pendingPoints });
+            
+            // 綁定確認/忽略按鈕事件
+            this.bindConfirmationEvents(question.id);
+        } else {
+            // 傳統的錯誤列表展示（自動保存模式）
+            const errorList = (result.error_analysis || []).map(e => `
+                <li class="error-analysis-item">
+                    <div class="error-header">
+                        <div class="error-title">${this.escapeHtml(e.key_point_summary)}</div>
+                        ${e.category ? `<span class="badge" data-variant="${e.category === 'systematic' ? 'error' : e.category === 'isolated' ? 'warning' : e.category === 'enhancement' ? 'info' : 'neutral'}" data-size="sm">${e.category === 'systematic' ? '系統性錯誤' : e.category === 'isolated' ? '單一性錯誤' : e.category === 'enhancement' ? '可以更好' : '其他錯誤'}</span>` : ''}
+                    </div>
+                    ${e.explanation ? `<p class="error-explanation">${this.escapeHtml(e.explanation)}</p>` : ''}
+                    ${e.original_phrase || e.correction ? `<div class="error-examples">
+                            ${e.original_phrase ? `<div class="error-original">原：${this.escapeHtml(e.original_phrase)}</div>` : ''}
+                            ${e.correction ? `<div class="error-correction">正：${this.escapeHtml(e.correction)}</div>` : ''}
+                        </div>` : ''}
+                </li>
+            `).join('');
 
-        this.elements.sandboxContent.innerHTML = `
-            <section class="card result-section">
-                <h2 class="result-score ${score >= 80 ? 'score-high' : score >= 60 ? 'score-medium' : 'score-low'}">批改結果 (${score}%)</h2>
-                <div class="result-content">
-                    <div class="feedback-section">
-                        <div class="feedback-label">建議：</div>
-                        <div class="feedback-content">${this.escapeHtml(result.feedback)}</div>
+            this.elements.sandboxContent.innerHTML = `
+                <section class="card result-section">
+                    <h2 class="result-score ${score >= 80 ? 'score-high' : score >= 60 ? 'score-medium' : 'score-low'}">批改結果 (${score}%)</h2>
+                    <div class="result-content">
+                        <div class="feedback-section">
+                            <div class="feedback-label">建議：</div>
+                            <div class="feedback-content">${this.escapeHtml(result.feedback)}</div>
+                        </div>
+                        ${errorList ? `<div class="error-analysis-section"><div class="error-analysis-label">錯誤分析：</div><ul class="error-analysis-list">${errorList}</ul></div>` : ''}
+                        <div class="result-actions">
+                            <button id="retry-btn" class="btn" data-variant="secondary">重新作答</button>
+                            <button id="next-btn" class="btn" data-variant="primary">下一題</button>
+                        </div>
                     </div>
-                    ${errorList ? `<div class="error-analysis-section"><div class="error-analysis-label">錯誤分析：</div><ul class="error-analysis-list">${errorList}</ul></div>` : ''}
-                    <div class="result-actions">
-                        <button id="retry-btn" class="btn" data-variant="secondary">重新作答</button>
-                        <button id="next-btn" class="btn" data-variant="primary">下一題</button>
-                    </div>
-                </div>
-            </section>
-        `;
+                </section>
+            `;
+        }
+    }
+    
+    /**
+     * 綁定確認/忽略按鈕的事件處理
+     * @param {string} questionId - 題目ID
+     * @returns {void}
+     */
+    bindConfirmationEvents(questionId) {
+        // 單個確認按鈕
+        document.querySelectorAll('.btn-confirm-point').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const pointId = e.target.dataset.pointId;
+                await this.confirmSinglePoint(questionId, pointId);
+            });
+        });
+        
+        // 單個忽略按鈕
+        document.querySelectorAll('.btn-ignore-point').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const pointId = e.target.dataset.pointId;
+                this.ignoreSinglePoint(questionId, pointId);
+            });
+        });
+        
+        // 全部確認按鈕
+        const confirmAllBtn = document.querySelector('.btn-confirm-all');
+        if (confirmAllBtn) {
+            confirmAllBtn.addEventListener('click', async () => {
+                await this.confirmAllPoints(questionId);
+            });
+        }
+        
+        // 全部忽略按鈕
+        const ignoreAllBtn = document.querySelector('.btn-ignore-all');
+        if (ignoreAllBtn) {
+            ignoreAllBtn.addEventListener('click', () => {
+                this.ignoreAllPoints(questionId);
+            });
+        }
+    }
+    
+    /**
+     * 確認單個知識點
+     * @param {string} questionId - 題目ID
+     * @param {string} pointId - 知識點ID
+     * @returns {Promise<void>}
+     */
+    async confirmSinglePoint(questionId, pointId) {
+        const question = this.questionQueue.find(q => q.id === questionId);
+        if (!question || !question.pendingPoints) return;
+        
+        const point = question.pendingPoints.find(p => p.id === pointId);
+        if (!point) return;
+        
+        // 調用API確認知識點
+        const response = await this.fetchAPI('/api/confirm-knowledge-points', {
+            confirmed_points: [point]
+        });
+        
+        if (response.success) {
+            // 更新UI狀態
+            const pointElement = document.querySelector(`[data-point-id="${pointId}"]`);
+            if (pointElement) {
+                pointElement.classList.add('confirmed');
+                pointElement.querySelector('.point-actions').innerHTML = '<span class="status-confirmed">✓ 已加入</span>';
+            }
+            this.showNotification('已加入知識庫', 'success');
+            
+            // 從待確認列表移除
+            question.pendingPoints = question.pendingPoints.filter(p => p.id !== pointId);
+            this.updateQuestionState(questionId, { pendingPoints: question.pendingPoints });
+        } else {
+            this.showNotification('確認失敗，請重試', 'error');
+        }
+    }
+    
+    /**
+     * 忽略單個知識點
+     * @param {string} questionId - 題目ID
+     * @param {string} pointId - 知識點ID
+     * @returns {void}
+     */
+    ignoreSinglePoint(questionId, pointId) {
+        const question = this.questionQueue.find(q => q.id === questionId);
+        if (!question || !question.pendingPoints) return;
+        
+        // 更新UI狀態
+        const pointElement = document.querySelector(`[data-point-id="${pointId}"]`);
+        if (pointElement) {
+            pointElement.classList.add('ignored');
+            pointElement.querySelector('.point-actions').innerHTML = '<span class="status-ignored">× 已忽略</span>';
+        }
+        
+        // 從待確認列表移除
+        question.pendingPoints = question.pendingPoints.filter(p => p.id !== pointId);
+        this.updateQuestionState(questionId, { pendingPoints: question.pendingPoints });
+        
+        this.showNotification('已忽略此知識點', 'info');
+    }
+    
+    /**
+     * 確認所有知識點
+     * @param {string} questionId - 題目ID
+     * @returns {Promise<void>}
+     */
+    async confirmAllPoints(questionId) {
+        const question = this.questionQueue.find(q => q.id === questionId);
+        if (!question || !question.pendingPoints || question.pendingPoints.length === 0) return;
+        
+        // 調用API確認所有知識點
+        const response = await this.fetchAPI('/api/confirm-knowledge-points', {
+            confirmed_points: question.pendingPoints
+        });
+        
+        if (response.success) {
+            // 更新所有點的UI狀態
+            document.querySelectorAll('.pending-point').forEach(elem => {
+                elem.classList.add('confirmed');
+                elem.querySelector('.point-actions').innerHTML = '<span class="status-confirmed">✓ 已加入</span>';
+            });
+            
+            this.showNotification(`已加入 ${response.confirmed_count} 個知識點`, 'success');
+            
+            // 清空待確認列表
+            question.pendingPoints = [];
+            this.updateQuestionState(questionId, { pendingPoints: [] });
+        } else {
+            this.showNotification('批量確認失敗，請重試', 'error');
+        }
+    }
+    
+    /**
+     * 忽略所有知識點
+     * @param {string} questionId - 題目ID
+     * @returns {void}
+     */
+    ignoreAllPoints(questionId) {
+        const question = this.questionQueue.find(q => q.id === questionId);
+        if (!question || !question.pendingPoints) return;
+        
+        const count = question.pendingPoints.length;
+        
+        // 更新所有點的UI狀態
+        document.querySelectorAll('.pending-point').forEach(elem => {
+            elem.classList.add('ignored');
+            elem.querySelector('.point-actions').innerHTML = '<span class="status-ignored">× 已忽略</span>';
+        });
+        
+        // 清空待確認列表
+        question.pendingPoints = [];
+        this.updateQuestionState(questionId, { pendingPoints: [] });
+        
+        this.showNotification(`已忽略 ${count} 個知識點`, 'info');
     }
     
     // ========================================================================

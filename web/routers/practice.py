@@ -16,7 +16,11 @@ from web.dependencies import (
     get_logger,
     get_templates,
 )
-from web.models.validation import GenerateQuestionRequest, GradeAnswerRequest
+from web.models.validation import (
+    GenerateQuestionRequest,
+    GradeAnswerRequest,
+    ConfirmKnowledgeRequest,
+)
 
 router = APIRouter()
 logger = get_logger()
@@ -47,6 +51,13 @@ def practice_page(request: Request):
 @router.post("/api/grade-answer", response_class=JSONResponse)
 async def grade_answer_api(request: GradeAnswerRequest):
     """API 端點：批改答案"""
+    import os
+    
+    # Read configuration dynamically to allow runtime changes
+    AUTO_SAVE_KNOWLEDGE_POINTS = os.getenv("AUTO_SAVE_KNOWLEDGE_POINTS", "false").lower() == "true"
+    SHOW_CONFIRMATION_UI = os.getenv("SHOW_CONFIRMATION_UI", "true").lower() == "true"
+    import uuid
+
     ai = get_ai_service()
     knowledge = await get_knowledge_manager_async_dependency()
 
@@ -82,22 +93,44 @@ async def grade_answer_api(request: GradeAnswerRequest):
             for point_id in target_point_ids:
                 knowledge.update_knowledge_point(point_id, is_correct)
 
-        # 3. 保存錯誤記錄
+        # 3. 根據配置決定是自動保存還是返回待確認點
+        pending_knowledge_points = []
+
         if not is_correct:
-            # 使用異步方法確保資料庫模式正常工作
-            if hasattr(knowledge, '_save_mistake_async'):
-                await knowledge._save_mistake_async(
-                    chinese_sentence=chinese, user_answer=english, feedback=result, practice_mode=mode
-                )
+            if AUTO_SAVE_KNOWLEDGE_POINTS:
+                # 舊邏輯：自動保存錯誤記錄
+                if hasattr(knowledge, "_save_mistake_async"):
+                    await knowledge._save_mistake_async(
+                        chinese_sentence=chinese,
+                        user_answer=english,
+                        feedback=result,
+                        practice_mode=mode,
+                    )
+                else:
+                    knowledge.save_mistake(
+                        chinese_sentence=chinese,
+                        user_answer=english,
+                        feedback=result,
+                        practice_mode=mode,
+                    )
             else:
-                knowledge.save_mistake(
-                    chinese_sentence=chinese, user_answer=english, feedback=result, practice_mode=mode
-                )
+                # 新邏輯：生成待確認的知識點數據
+                for error in result.get("error_analysis", []):
+                    pending_knowledge_points.append(
+                        {
+                            "id": f"temp_{uuid.uuid4().hex[:8]}",
+                            "error": error,
+                            "chinese_sentence": chinese,
+                            "user_answer": english,
+                            "correct_answer": result.get("overall_suggestion", ""),
+                        }
+                    )
+
         # 4. 如果是複習答對，也記錄下來
         elif mode == "review" and target_point_ids:
             for point_id in target_point_ids:
                 # 使用異步方法
-                if hasattr(knowledge, 'add_review_success_async'):
+                if hasattr(knowledge, "add_review_success_async"):
                     await knowledge.add_review_success_async(
                         knowledge_point_id=point_id, chinese_sentence=chinese, user_answer=english
                     )
@@ -121,20 +154,99 @@ async def grade_answer_api(request: GradeAnswerRequest):
         score = max(0, min(100, score))
 
         # 6. 回傳完整結果
-        return JSONResponse(
-            {
-                "success": True,
-                "score": score,
-                "is_generally_correct": is_correct,
-                "feedback": result.get("overall_suggestion", ""),
-                "error_analysis": result.get("error_analysis", []),
-                "detailed_feedback": result.get("detailed_feedback", ""),
-            }
-        )
+        response_data = {
+            "success": True,
+            "score": score,
+            "is_generally_correct": is_correct,
+            "feedback": result.get("overall_suggestion", ""),
+            "error_analysis": result.get("error_analysis", []),
+            "detailed_feedback": result.get("detailed_feedback", ""),
+        }
+
+        # 添加待確認點和配置標記
+        logger.info(f"Config check - SHOW_CONFIRMATION_UI: {SHOW_CONFIRMATION_UI}, AUTO_SAVE_KNOWLEDGE_POINTS: {AUTO_SAVE_KNOWLEDGE_POINTS}")
+        logger.info(f"Pending points count: {len(pending_knowledge_points)}")
+        
+        if SHOW_CONFIRMATION_UI and not AUTO_SAVE_KNOWLEDGE_POINTS:
+            response_data["pending_knowledge_points"] = pending_knowledge_points
+            response_data["auto_save"] = False
+        else:
+            response_data["auto_save"] = AUTO_SAVE_KNOWLEDGE_POINTS
+
+        return JSONResponse(response_data)
 
     except Exception as e:
         logger.error(f"Error in grade_answer_api: {e}", exc_info=True)
         return JSONResponse({"success": False, "error": "批改時發生內部錯誤"}, status_code=500)
+
+
+@router.post("/api/confirm-knowledge-points", response_class=JSONResponse)
+async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
+    """API 端點：確認並保存選中的知識點"""
+    knowledge = await get_knowledge_manager_async_dependency()
+
+    try:
+        confirmed_ids = []
+
+        for point_data in request.confirmed_points:
+            # 為每個錯誤創建知識點
+            error = point_data.error
+
+            # 調用現有的 _process_error 邏輯或直接添加知識點
+            if hasattr(knowledge, "add_knowledge_point_from_error"):
+                point_id = knowledge.add_knowledge_point_from_error(
+                    chinese_sentence=point_data.chinese_sentence,
+                    user_answer=point_data.user_answer,
+                    error=error,
+                    correct_answer=point_data.correct_answer,
+                )
+            else:
+                # 如果方法不存在，使用現有的添加知識點邏輯
+                from datetime import datetime
+                from core.knowledge import KnowledgePoint
+
+                point = KnowledgePoint(
+                    id=knowledge._get_next_id()
+                    if hasattr(knowledge, "_get_next_id")
+                    else len(knowledge.knowledge_points) + 1,
+                    key_point=error.get("key_point_summary", "未知錯誤"),
+                    original_phrase=error.get("original_phrase", point_data.user_answer),
+                    correction=error.get("correction", point_data.correct_answer),
+                    explanation=error.get("explanation", ""),
+                    category=error.get("category", "other"),
+                    subtype=error.get("subtype", "general"),
+                    mastery_level=0.1,
+                    mistake_count=1,
+                    correct_count=0,
+                    last_seen=datetime.now().isoformat(),
+                    next_review=datetime.now().isoformat(),
+                    created_at=datetime.now().isoformat(),
+                    original_error={
+                        "chinese_sentence": point_data.chinese_sentence,
+                        "user_answer": point_data.user_answer,
+                        "correct_answer": point_data.correct_answer,
+                        "timestamp": datetime.now().isoformat(),
+                    },
+                )
+
+                if hasattr(knowledge, "knowledge_points"):
+                    knowledge.knowledge_points.append(point)
+                    point_id = point.id
+                else:
+                    # 使用適配器的方法
+                    point_id = await knowledge.add_knowledge_point_async(point)
+
+            confirmed_ids.append(point_id)
+
+        logger.info(f"Confirmed {len(confirmed_ids)} knowledge points: {confirmed_ids}")
+
+        return JSONResponse(
+            {"success": True, "confirmed_count": len(confirmed_ids), "point_ids": confirmed_ids}
+        )
+
+    except Exception as e:
+        logger.error(f"Error in confirm_knowledge_points: {e}", exc_info=True)
+        return JSONResponse({"success": False, "error": "確認知識點時發生錯誤"}, status_code=500)
 
 
 @router.post("/api/generate-question", response_class=JSONResponse)

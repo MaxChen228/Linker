@@ -1,0 +1,318 @@
+[
+  {
+    "timestamp": "2025-08-15T13:22:27.665237",
+    "chinese_sentence": "測試句子",
+    "user_answer": "錯誤答案",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "error_analysis": [
+        {
+          "key_point_summary": "測試錯誤",
+          "category": "systematic",
+          "original_phrase": "test phrase",
+          "correction": "corrected phrase",
+          "explanation": "test explanation",
+          "severity": "major"
+        }
+      ],
+      "overall_suggestion": "test correction"
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:32:01.582924",
+    "chinese_sentence": "測試句子",
+    "user_answer": "錯誤答案",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "error_analysis": [
+        {
+          "key_point_summary": "測試錯誤",
+          "category": "systematic",
+          "original_phrase": "test phrase",
+          "correction": "corrected phrase",
+          "explanation": "test explanation",
+          "severity": "major"
+        }
+      ],
+      "overall_suggestion": "test correction"
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:32:46.498552",
+    "chinese_sentence": "測試句子",
+    "user_answer": "錯誤答案",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "error_analysis": [
+        {
+          "key_point_summary": "測試錯誤",
+          "category": "systematic",
+          "original_phrase": "test phrase",
+          "correction": "corrected phrase",
+          "explanation": "test explanation",
+          "severity": "major"
+        }
+      ],
+      "overall_suggestion": "test correction"
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:36:13.400663",
+    "chinese_sentence": "測試句子",
+    "user_answer": "錯誤答案",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "error_analysis": [
+        {
+          "key_point_summary": "測試錯誤",
+          "category": "systematic",
+          "original_phrase": "test phrase",
+          "correction": "corrected phrase",
+          "explanation": "test explanation",
+          "severity": "major"
+        }
+      ],
+      "overall_suggestion": "test correction"
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.176767",
+    "chinese_sentence": "我喜歡讀書。",
+    "user_answer": "I like reading books.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "I like reading books.",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.183494",
+    "chinese_sentence": "我明天會去上班。",
+    "user_answer": "I will go to work tomorrow.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "I will go to work tomorrow.",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.206400",
+    "chinese_sentence": "她正在學習中文。",
+    "user_answer": "She learning Chinese.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "She is learning Chinese.",
+      "error_analysis": [
+        {
+          "key_point_summary": "現在進行時結構錯誤",
+          "original_phrase": "learning",
+          "correction": "is learning",
+          "explanation": "現在進行時需要be動詞",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.209844",
+    "chinese_sentence": "今天天氣很好。",
+    "user_answer": "The weather is good today.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "The weather is good today.",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.233582",
+    "chinese_sentence": "她很聰明。",
+    "user_answer": "She is very smart.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "She is very smart.",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.233944",
+    "chinese_sentence": "昨天下雨了。",
+    "user_answer": "Yesterday was rain.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "It rained yesterday.",
+      "error_analysis": [
+        {
+          "key_point": "動詞時態",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.235107",
+    "chinese_sentence": "昨天下雨了。",
+    "user_answer": "Yesterday was rain.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "It rained yesterday.",
+      "error_analysis": [
+        {
+          "key_point": "動詞時態",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.236321",
+    "chinese_sentence": "她很聰明。",
+    "user_answer": "She is very smart.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "She is very smart.",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.236735",
+    "chinese_sentence": "昨天下雨了。",
+    "user_answer": "Yesterday was rain.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "It rained yesterday.",
+      "error_analysis": [
+        {
+          "key_point": "動詞時態",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.237981",
+    "chinese_sentence": "她很聰明。",
+    "user_answer": "She is very smart.",
+    "is_correct": true,
+    "feedback": {
+      "is_generally_correct": true,
+      "overall_suggestion": "She is very smart.",
+      "error_analysis": []
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.238440",
+    "chinese_sentence": "昨天下雨了。",
+    "user_answer": "Yesterday was rain.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "It rained yesterday.",
+      "error_analysis": [
+        {
+          "key_point": "動詞時態",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.239760",
+    "chinese_sentence": "昨天下雨了。",
+    "user_answer": "Yesterday was rain.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "It rained yesterday.",
+      "error_analysis": [
+        {
+          "key_point": "動詞時態",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.241062",
+    "chinese_sentence": "我喜歡吃蘋果。",
+    "user_answer": "I like eat apple.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "I like eating apples.",
+      "error_analysis": [
+        {
+          "key_point": "動名詞用法",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:00.242391",
+    "chinese_sentence": "昨天下雨了。",
+    "user_answer": "Yesterday was rain.",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "overall_suggestion": "It rained yesterday.",
+      "error_analysis": [
+        {
+          "key_point": "動詞時態",
+          "category": "systematic"
+        }
+      ]
+    },
+    "practice_mode": "new"
+  },
+  {
+    "timestamp": "2025-08-15T13:52:02.630399",
+    "chinese_sentence": "測試句子",
+    "user_answer": "錯誤答案",
+    "is_correct": false,
+    "feedback": {
+      "is_generally_correct": false,
+      "error_analysis": [
+        {
+          "key_point_summary": "測試錯誤",
+          "category": "systematic",
+          "original_phrase": "test phrase",
+          "correction": "corrected phrase",
+          "explanation": "test explanation",
+          "severity": "major"
+        }
+      ],
+      "overall_suggestion": "test correction"
+    },
+    "practice_mode": "new"
+  }
+]
