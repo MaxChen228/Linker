@@ -114,8 +114,7 @@ class DatabaseKnowledgeManager:
                 result = await repo.create(knowledge_point)
                 
                 # 清除相關快取
-                self._cache_manager.clear_category(CacheCategories.KNOWLEDGE_POINTS)
-                self._cache_manager.clear_category(CacheCategories.STATISTICS)
+                # TODO: 實現 clear_category 方法
                 
                 return result
         
@@ -155,8 +154,7 @@ class DatabaseKnowledgeManager:
                 await repo.update(point)
                 
                 # 清除相關快取
-                self._cache_manager.clear_category(CacheCategories.KNOWLEDGE_POINTS)
-                self._cache_manager.clear_category(CacheCategories.STATISTICS)
+                # TODO: 實現 clear_category 方法
                 
                 return True
         except Exception as e:
@@ -170,8 +168,7 @@ class DatabaseKnowledgeManager:
                 result = await repo.delete(point_id, reason)
                 
                 # 清除相關快取
-                self._cache_manager.clear_category(CacheCategories.KNOWLEDGE_POINTS)
-                self._cache_manager.clear_category(CacheCategories.STATISTICS)
+                # TODO: 實現 clear_category 方法
                 
                 return result
         except Exception as e:
@@ -185,8 +182,7 @@ class DatabaseKnowledgeManager:
                 result = await repo.restore(point_id)
                 
                 # 清除相關快取
-                self._cache_manager.clear_category(CacheCategories.KNOWLEDGE_POINTS)
-                self._cache_manager.clear_category(CacheCategories.STATISTICS)
+                # TODO: 實現 clear_category 方法
                 
                 return result
         except Exception as e:

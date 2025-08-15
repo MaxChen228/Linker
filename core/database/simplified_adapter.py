@@ -486,53 +486,142 @@ class SimplifiedDatabaseAdapter:
     
     def add_knowledge_point_from_error(
         self,
-        error_info: dict,
-        analysis: dict,
         chinese_sentence: str,
         user_answer: str,
+        error: dict,
         correct_answer: str,
-    ) -> Optional[KnowledgePoint]:
-        """從錯誤添加知識點（同步）"""
-        manager = self._get_sync_manager()
-        try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            result = loop.run_until_complete(
-                manager.add_knowledge_point(
-                    error_info, analysis, chinese_sentence, user_answer, correct_answer
+    ) -> int:
+        """從錯誤添加知識點（保持向後兼容的簽名）
+        
+        Args:
+            chinese_sentence: 中文句子
+            user_answer: 用戶答案
+            error: 錯誤分析數據（包含 key_point_summary, original_phrase, correction, explanation, category, subtype）
+            correct_answer: 正確答案
+            
+        Returns:
+            新創建的知識點ID
+        """
+        # 從 error dict 提取信息
+        error_info = {
+            "error_pattern": error.get("key_point_summary", "未知錯誤"),
+            "error_phrase": error.get("original_phrase", user_answer),
+            "correction": error.get("correction", correct_answer),
+            "category": error.get("category", "other"),
+            "subtype": error.get("subtype", "general"),
+        }
+        analysis = {
+            "explanation": error.get("explanation", "")
+        }
+        
+        # 在同步方法中，我們需要在新的線程中運行異步操作
+        import concurrent.futures
+        import threading
+        
+        result_container = [None]
+        exception_container = [None]
+        
+        def run_async():
+            try:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                manager = DatabaseKnowledgeManager()
+                result = loop.run_until_complete(
+                    manager.add_knowledge_point(
+                        error_info, analysis, chinese_sentence, user_answer, correct_answer
+                    )
                 )
-            )
-            self._cache_dirty = True
-            return result
-        except Exception as e:
-            self.logger.error(f"從錯誤添加知識點失敗: {e}")
-            return None
+                result_container[0] = result
+            except Exception as e:
+                exception_container[0] = e
+        
+        thread = threading.Thread(target=run_async)
+        thread.start()
+        thread.join(timeout=10)  # 10秒超時
+        
+        if exception_container[0]:
+            self.logger.error(f"從錯誤添加知識點失敗: {exception_container[0]}")
+            return 0
+        
+        result = result_container[0]
+        self._cache_dirty = True
+        return result.id if result else 0
+    
+    async def _save_mistake_async(
+        self,
+        chinese_sentence: str,
+        user_answer: str,
+        feedback: dict[str, Any],
+        practice_mode: str = "new",
+    ) -> bool:
+        """異步保存錯誤"""
+        # 從 feedback 提取錯誤信息
+        if not feedback.get("has_errors", False):
+            return False
+            
+        # 提取第一個錯誤（如果有多個）
+        errors = feedback.get("errors", [])
+        if not errors:
+            return False
+            
+        error = errors[0] if isinstance(errors, list) else errors
+        
+        # 確保已初始化
+        await self._ensure_initialized()
+        
+        # 調用資料庫管理器
+        result = await self._db_manager.add_knowledge_point(
+            error_info={
+                "error_pattern": error.get("key_point_summary", "未知錯誤"),
+                "error_phrase": error.get("original_phrase", user_answer),
+                "correction": error.get("correction", feedback.get("correct_answer", "")),
+                "category": error.get("category", "other"),
+                "subtype": error.get("subtype", "general"),
+            },
+            analysis={"explanation": error.get("explanation", "")},
+            chinese_sentence=chinese_sentence,
+            user_answer=user_answer,
+            correct_answer=feedback.get("correct_answer", "")
+        )
+        return result is not None
     
     def save_mistake(
         self,
-        error_pattern: str,
-        error_phrase: str,
-        correction: str,
-        explanation: str,
-        category: str,
         chinese_sentence: str,
         user_answer: str,
-        correct_answer: str,
+        feedback: dict[str, Any],
+        practice_mode: str = "new",
     ) -> bool:
-        """保存錯誤（同步）"""
-        error_info = {
-            "error_pattern": error_pattern,
-            "error_phrase": error_phrase,
-            "correction": correction,
-            "category": category,
-            "subtype": "",
-        }
-        analysis = {"explanation": explanation}
+        """保存錯誤（保持向後兼容的簽名）
         
+        Args:
+            chinese_sentence: 中文句子
+            user_answer: 用戶答案
+            feedback: AI 反饋數據（包含錯誤分析）
+            practice_mode: 練習模式
+            
+        Returns:
+            是否成功保存
+        """
+        # 從 feedback 提取錯誤信息
+        if not feedback.get("has_errors", False):
+            return False
+            
+        # 提取第一個錯誤（如果有多個）
+        errors = feedback.get("errors", [])
+        if not errors:
+            return False
+            
+        error = errors[0] if isinstance(errors, list) else errors
+        
+        # 調用 add_knowledge_point_from_error
         result = self.add_knowledge_point_from_error(
-            error_info, analysis, chinese_sentence, user_answer, correct_answer
+            chinese_sentence=chinese_sentence,
+            user_answer=user_answer,
+            error=error,
+            correct_answer=feedback.get("correct_answer", "")
         )
-        return result is not None
+        return result > 0
     
     def get_all_mistakes(self) -> list[dict]:
         """獲取所有錯誤（同步）"""
