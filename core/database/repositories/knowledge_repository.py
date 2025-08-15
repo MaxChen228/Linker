@@ -576,26 +576,59 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 raise
 
     async def get_statistics(self) -> dict[str, Any]:
-        """獲取知識點統計資料
+        """獲取知識點統計資料 - 修復字段名匹配前端期望
 
         Returns:
-            包含各項統計指標的字典
+            包含各項統計指標的字典，字段名匹配前端模板
         """
-        query = """
+        # 知識點統計
+        knowledge_query = """
             SELECT
-                COUNT(*) FILTER (WHERE is_deleted = FALSE) as total_active,
+                COUNT(*) FILTER (WHERE is_deleted = FALSE) as knowledge_points,
                 COUNT(*) FILTER (WHERE mastery_level >= 0.8 AND is_deleted = FALSE) as mastered,
                 COUNT(*) FILTER (WHERE mastery_level < 0.3 AND is_deleted = FALSE) as struggling,
-                COUNT(*) FILTER (WHERE next_review <= NOW() AND is_deleted = FALSE) as due_review,
+                COUNT(*) FILTER (WHERE next_review <= NOW() AND is_deleted = FALSE) as due_reviews,
                 CAST(AVG(mastery_level) FILTER (WHERE is_deleted = FALSE) AS FLOAT) as avg_mastery,
                 COUNT(DISTINCT category) FILTER (WHERE is_deleted = FALSE) as categories_count
             FROM knowledge_points
         """
+        
+        # 練習記錄統計（從 review_examples 表計算）
+        practice_query = """
+            SELECT
+                COUNT(*) as total_practices,
+                COUNT(*) FILTER (WHERE is_correct = TRUE) as correct_count
+            FROM review_examples
+        """
 
         async with self.connection() as conn:
             try:
-                row = await conn.fetchrow(query)
-                return dict(row) if row else {}
+                # 獲取知識點統計
+                knowledge_row = await conn.fetchrow(knowledge_query)
+                knowledge_stats = dict(knowledge_row) if knowledge_row else {}
+                
+                # 獲取練習記錄統計
+                try:
+                    practice_row = await conn.fetchrow(practice_query)
+                    practice_stats = dict(practice_row) if practice_row else {"total_practices": 0, "correct_count": 0}
+                except Exception:
+                    # 如果 review_examples 表不存在，返回默認值
+                    practice_stats = {"total_practices": 0, "correct_count": 0}
+                
+                # 合併統計結果，確保字段名匹配前端期望
+                stats = {
+                    "knowledge_points": knowledge_stats.get("knowledge_points", 0),
+                    "total_practices": practice_stats.get("total_practices", 0),
+                    "correct_count": practice_stats.get("correct_count", 0),
+                    "due_reviews": knowledge_stats.get("due_reviews", 0),
+                    "mastered": knowledge_stats.get("mastered", 0),
+                    "struggling": knowledge_stats.get("struggling", 0),
+                    "avg_mastery": knowledge_stats.get("avg_mastery", 0.0),
+                    "categories_count": knowledge_stats.get("categories_count", 0),
+                }
+                
+                return stats
+                
             except Exception as e:
                 self._handle_database_error(e, "get_statistics")
                 raise
