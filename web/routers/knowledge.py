@@ -11,8 +11,9 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from core.error_types import ErrorCategory, ErrorTypeSystem
 from web.dependencies import (
+    get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
     get_knowledge_manager,
-    get_knowledge_manager_async_dependency,
+    get_knowledge_manager_async_dependency,  # 保留以備向後相容
     get_templates,
 )
 
@@ -25,7 +26,7 @@ async def knowledge_points(
 ):
     """知識點瀏覽頁面"""
     templates = get_templates()
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     # 獲取所有未刪除的知識點
     if hasattr(knowledge, "get_active_points_async"):
@@ -113,7 +114,7 @@ async def knowledge_points(
     categories = ["系統性錯誤", "單一性錯誤", "可以更好", "其他錯誤"]
 
     # 獲取複習佇列（可以複習的知識點）
-    review_queue = knowledge.get_review_candidates(max_points=20)
+    review_queue = await knowledge.get_review_candidates(max_points=20)  # TASK-31: 添加 await
     
     # 統一使用資料庫數據源避免統計不一致（修復：總知識點 vs 待複習數量矛盾）
     if hasattr(knowledge, "get_review_candidates_async"):
@@ -150,7 +151,7 @@ async def knowledge_points(
 async def knowledge_trash(request: Request):
     """知識點回收站頁面"""
     templates = get_templates()
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     # 獲取所有已刪除的知識點
     if hasattr(knowledge, "get_deleted_points_async"):
@@ -210,7 +211,7 @@ async def knowledge_trash(request: Request):
 async def knowledge_detail(request: Request, point_id: str):
     """知識點詳情頁面"""
     templates = get_templates()
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     # 獲取指定的知識點
     try:
@@ -229,7 +230,13 @@ async def knowledge_detail(request: Request, point_id: str):
 
     # 獲取相關的錯誤記錄（最近的10個）
     related_mistakes = []
-    all_mistakes = knowledge.get_all_mistakes()
+    # TASK-31: AsyncKnowledgeService 暫時不提供 get_all_mistakes，返回空列表
+    if hasattr(knowledge, 'get_all_mistakes_async'):
+        all_mistakes = await knowledge.get_all_mistakes_async()
+    elif hasattr(knowledge, 'get_all_mistakes'):
+        all_mistakes = knowledge.get_all_mistakes()
+    else:
+        all_mistakes = []
     for mistake in (
         all_mistakes[-50:] if len(all_mistakes) > 50 else all_mistakes
     ):  # 檢查最近50個錯誤

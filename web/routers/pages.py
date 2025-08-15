@@ -8,8 +8,9 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
 from web.dependencies import (
+    get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
     get_knowledge_manager,
-    get_knowledge_manager_async_dependency,
+    get_knowledge_manager_async_dependency,  # 保留以備向後相容
     get_templates,
 )
 
@@ -20,7 +21,7 @@ router = APIRouter()
 async def home(request: Request):
     """主頁路由"""
     templates = get_templates()
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     # 獲取複習列表（最多顯示10個）
     if hasattr(knowledge, "get_review_candidates_async"):
@@ -49,8 +50,9 @@ async def home(request: Request):
             {
                 "id": point.id,
                 "key_point": point.key_point,
-                "category": point.category.to_chinese(),
-                "category_value": point.category.value,
+                # TASK-31: 處理 ErrorCategory 可能是 enum 或字符串
+                "category": point.category.to_chinese() if hasattr(point.category, 'to_chinese') else point.category,
+                "category_value": point.category.value if hasattr(point.category, 'value') else point.category,
                 "mastery_level": round(point.mastery_level * 100),
                 "mistake_count": point.mistake_count,
                 "next_review": point.next_review,
