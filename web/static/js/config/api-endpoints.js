@@ -34,6 +34,8 @@ class ApiEndpointManager {
             knowledgeRestore: '/api/knowledge/{id}/restore',
             knowledgeTrashClear: '/api/knowledge/trash/clear',
             knowledgeDailyLimitStatus: '/api/knowledge/daily-limit/status',
+            knowledgeDailyLimitConfig: '/api/knowledge/daily-limit/config',
+            knowledgeDailyLimitStats: '/api/knowledge/daily-limit/stats',
             knowledgeSaveWithLimit: '/api/knowledge/save-with-limit',
             
             // ========== 日曆相關API ==========
@@ -273,6 +275,27 @@ if (apiEndpoints.getConfig().isDevelopment) {
 // 便捷的全局方法（向後兼容）
 export const API_ENDPOINTS = apiEndpoints.endpoints;
 export const getApiUrl = (name, params) => apiEndpoints.getUrl(name, params);
+
+// TASK-32: 為 settings.js 添加 UPPER_SNAKE_CASE 別名支持
+// 這樣 settings.js 可以使用 apiEndpoints.KNOWLEDGE_DAILY_LIMIT_CONFIG 格式
+Object.defineProperties(apiEndpoints, {
+    'KNOWLEDGE_DAILY_LIMIT_STATUS': {
+        get() { return this.getUrl('knowledgeDailyLimitStatus'); },
+        enumerable: true
+    },
+    'KNOWLEDGE_DAILY_LIMIT_CONFIG': {
+        get() { return this.getUrl('knowledgeDailyLimitConfig'); },
+        enumerable: true
+    },
+    'KNOWLEDGE_DAILY_LIMIT_STATS': {
+        get() { return this.getUrl('knowledgeDailyLimitStats'); },
+        enumerable: true
+    },
+    'KNOWLEDGE_SAVE_WITH_LIMIT': {
+        get() { return this.getUrl('knowledgeSaveWithLimit'); },
+        enumerable: true
+    }
+});
 
 // 預設配置常量
 export const API_CONFIG = {

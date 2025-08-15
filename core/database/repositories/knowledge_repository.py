@@ -146,8 +146,15 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
         Returns:
             符合條件的知識點列表
         """
-        # 設定預設過濾條件
-        filters.setdefault("is_deleted", False)
+        # 檢查是否要包含已刪除記錄
+        include_deleted = filters.pop("include_deleted", False)
+        
+        if include_deleted:
+            # 包含已刪除記錄，不添加is_deleted過濾條件
+            pass
+        elif "is_deleted" not in filters:
+            # 默認只查詢未刪除記錄
+            filters["is_deleted"] = False
 
         # 構建基礎查詢
         base_query = """

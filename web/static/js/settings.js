@@ -12,6 +12,7 @@ class SettingsManager {
             limit_enabled: false
         };
         this.hasUnsavedChanges = false;
+        this.isInitializing = false; // 防止初始化時觸發變更檢測
         
         this.initializeElements();
         this.bindEvents();
@@ -114,6 +115,11 @@ class SettingsManager {
      * 標記為已更改
      */
     markAsChanged() {
+        // 防止在初始化期間觸發變更檢測
+        if (this.isInitializing) {
+            return;
+        }
+        
         this.hasUnsavedChanges = true;
         this.saveButton.disabled = false;
         this.saveButton.querySelector('#save-btn-text').textContent = '儲存設定*';
@@ -148,11 +154,15 @@ class SettingsManager {
      * 更新配置UI
      */
     updateConfigUI() {
+        // 設置初始化標誌，防止觸發變更檢測
+        this.isInitializing = true;
+        
         this.limitEnabledToggle.checked = this.config.limit_enabled;
         this.syncLimitInputs(this.config.daily_limit);
         this.handleToggleChange(); // 更新UI狀態
         
-        // 重置未保存標記
+        // 清除初始化標誌並重置未保存標記
+        this.isInitializing = false;
         this.hasUnsavedChanges = false;
         this.saveButton.disabled = true;
         this.saveButton.querySelector('#save-btn-text').textContent = '儲存設定';
@@ -231,6 +241,7 @@ class SettingsManager {
             const result = await response.json();
             
             if (result.success) {
+                // 更新配置並重置變更標記
                 this.config = newConfig;
                 this.hasUnsavedChanges = false;
                 this.saveButton.disabled = true;

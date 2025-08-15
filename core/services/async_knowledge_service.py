@@ -135,7 +135,10 @@ class AsyncKnowledgeService(BaseAsyncService):
         """獲取已刪除知識點"""
         await self.initialize()
         all_points = await self._db_manager.get_all_knowledge_points(include_deleted=True)
-        return [p for p in all_points if p.is_deleted]
+        deleted_points = [p for p in all_points if p.is_deleted]
+        
+            
+        return deleted_points
     
     async def permanent_delete_old_points(
         self, days_old: int = 30, dry_run: bool = False

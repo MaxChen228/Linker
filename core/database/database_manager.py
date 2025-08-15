@@ -115,7 +115,8 @@ class DatabaseKnowledgeManager:
                 
                 if result:
                     # 清除相關快取
-                    self._cache_manager.invalidate("all_points")  # 清除知識點列表緩存
+                    self._cache_manager.invalidate("all_points_False")  # 清除主頁面緩存
+                    self._cache_manager.invalidate("all_points_True")   # 清除回收站緩存  
                     self._cache_manager.invalidate("statistics")  # 清除統計緩存
                 
                 return result
@@ -142,7 +143,12 @@ class DatabaseKnowledgeManager:
         
         async def _get_all():
             async with self._db_operation("獲取所有知識點") as repo:
-                filters = {} if include_deleted else {"is_deleted": False}
+                if include_deleted:
+                    # 明確指示要包含已刪除記錄
+                    filters = {"include_deleted": True}
+                else:
+                    # 只查詢未刪除記錄
+                    filters = {"is_deleted": False}
                 return await repo.find_all(**filters)
         
         return await self._cache_manager.get_or_compute_async(
@@ -157,7 +163,8 @@ class DatabaseKnowledgeManager:
                 
                 # 清除相關快取
                 self._cache_manager.invalidate(f"point_{point.id}")  # 清除單個知識點緩存
-                self._cache_manager.invalidate("all_points")  # 清除知識點列表緩存
+                self._cache_manager.invalidate("all_points_False")  # 清除主頁面緩存
+                self._cache_manager.invalidate("all_points_True")   # 清除回收站緩存  
                 self._cache_manager.invalidate("statistics")  # 清除統計緩存
                 
                 return True
@@ -174,7 +181,8 @@ class DatabaseKnowledgeManager:
                 if result:
                     # 清除相關快取
                     self._cache_manager.invalidate(f"point_{point_id}")  # 清除單個知識點緩存
-                    self._cache_manager.invalidate("all_points")  # 清除知識點列表緩存
+                    self._cache_manager.invalidate("all_points_False")  # 清除主頁面緩存
+                    self._cache_manager.invalidate("all_points_True")   # 清除回收站緩存  
                     self._cache_manager.invalidate("statistics")  # 清除統計緩存
                 
                 return result
@@ -191,7 +199,8 @@ class DatabaseKnowledgeManager:
                 if result:
                     # 清除相關快取
                     self._cache_manager.invalidate(f"point_{point_id}")  # 清除單個知識點緩存
-                    self._cache_manager.invalidate("all_points")  # 清除知識點列表緩存
+                    self._cache_manager.invalidate("all_points_False")  # 清除主頁面緩存
+                    self._cache_manager.invalidate("all_points_True")   # 清除回收站緩存  
                     self._cache_manager.invalidate("statistics")  # 清除統計緩存
                 
                 return result
@@ -295,7 +304,8 @@ class DatabaseKnowledgeManager:
                 # 清除相關快取
                 cache_key = f"point_{point_id}"
                 self._cache_manager.invalidate(cache_key)
-                self._cache_manager.invalidate("all_points")  # 清除知識點列表緩存
+                self._cache_manager.invalidate("all_points_False")  # 清除主頁面緩存
+                self._cache_manager.invalidate("all_points_True")   # 清除回收站緩存  
                 self._cache_manager.invalidate("statistics")  # 清除統計緩存
                 
                 return result
