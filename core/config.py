@@ -181,16 +181,24 @@ def check_database_health() -> tuple[bool, str]:
             except Exception as e:
                 return False, f"資料庫連線失敗: {e}"
 
-        # 在新的事件循環中執行
+        # 安全地執行異步測試
         try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            result = loop.run_until_complete(test_connection())
-            loop.close()
-            return result
+            # 先檢查是否有運行中的事件循環
+            loop = asyncio.get_running_loop()
+            # 如果在異步上下文中，無法直接執行
+            return False, "無法在異步上下文中執行同步健康檢查"
         except RuntimeError:
-            # 如果已有事件循環在運行
-            return False, "無法在現有事件循環中測試資料庫連線"
+            # 沒有運行中的事件循環，可以安全創建新的
+            loop = None
+            try:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                result = loop.run_until_complete(test_connection())
+                return result
+            finally:
+                if loop:
+                    loop.close()
+                    asyncio.set_event_loop(None)
 
     except ImportError:
         return False, "資料庫模組未安裝"

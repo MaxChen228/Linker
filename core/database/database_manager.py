@@ -316,14 +316,37 @@ class DatabaseKnowledgeManager:
     # ========== 同步相容方法（供舊程式碼使用）==========
     
     def get_active_points(self) -> list[KnowledgePoint]:
-        """同步獲取活躍知識點（相容舊 API）"""
+        """同步獲取活躍知識點（相容舊 API）
+        
+        ⚠️ 已廢棄：此方法使用 asyncio.new_event_loop() 會導致事件循環衝突。
+        請使用異步版本 get_all_knowledge_points(include_deleted=False)。
+        """
+        import warnings
+        warnings.warn(
+            "get_active_points() 已廢棄。"
+            "請使用異步方法 get_all_knowledge_points(include_deleted=False)。"
+            "原因：同步方法中的 asyncio.new_event_loop() 導致事件循環衝突。",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        
+        # 嘗試在現有事件循環中執行
         try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            return loop.run_until_complete(self.get_all_knowledge_points(include_deleted=False))
-        except Exception as e:
-            self.logger.error(f"同步獲取活躍知識點失敗: {e}")
+            loop = asyncio.get_running_loop()
+            # 如果有運行中的循環，無法直接執行異步代碼
+            self.logger.error("無法在異步上下文中調用同步方法 get_active_points()")
             return []
+        except RuntimeError:
+            # 沒有運行中的循環，創建新的（僅用於相容性，不推薦）
+            try:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                return loop.run_until_complete(self.get_all_knowledge_points(include_deleted=False))
+            except Exception as e:
+                self.logger.error(f"同步獲取活躍知識點失敗: {e}")
+                return []
+            finally:
+                loop.close()
     
     # ========== 資源管理 ==========
     
@@ -334,15 +357,31 @@ class DatabaseKnowledgeManager:
             self.logger.info("資料庫連線已關閉")
     
     def __del__(self):
-        """清理資源"""
+        """清理資源
+        
+        注意：__del__ 方法中處理異步清理是複雜的，
+        應該依賴應用程式的正常關閉流程來調用 close()。
+        """
         if hasattr(self, "_db_connection") and self._db_connection:
+            # 記錄警告，提醒使用正確的清理方式
+            if hasattr(self, "logger"):
+                self.logger.warning(
+                    "DatabaseKnowledgeManager 正在通過 __del__ 清理。"
+                    "建議在應用關閉時顯式調用 await close()。"
+                )
+            
+            # 嘗試安全地清理資源
             try:
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    loop.create_task(self.close())
-                else:
-                    loop.run_until_complete(self.close())
-            except:
+                # 檢查是否有運行中的事件循環
+                loop = asyncio.get_running_loop()
+                # 如果有，創建清理任務
+                loop.create_task(self.close())
+            except RuntimeError:
+                # 沒有運行中的循環，無法執行異步清理
+                # 資源將在進程結束時由系統回收
+                pass
+            except Exception:
+                # 忽略其他異常，避免在 __del__ 中拋出錯誤
                 pass
 
 

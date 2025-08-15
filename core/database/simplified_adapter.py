@@ -1,11 +1,16 @@
 """
-簡化的資料庫適配器 - TASK-30D
+簡化的資料庫適配器 - TASK-30D [已廢棄]
 純資料庫實現，移除所有 JSON 相關邏輯
 提供與原 KnowledgeManagerAdapter 相同的公開 API
+
+⚠️ 警告：此類已廢棄 (TASK-31)
+原因：同步方法中使用 asyncio.new_event_loop() 導致事件循環衝突
+替代方案：使用 core.services.AsyncKnowledgeService
 """
 
 import asyncio
 import json
+import warnings
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
@@ -18,10 +23,13 @@ from core.models import KnowledgePoint, OriginalError, ReviewExample
 
 
 class SimplifiedDatabaseAdapter:
-    """簡化的資料庫適配器
+    """簡化的資料庫適配器 [已廢棄]
     
     這是 TASK-30D 的核心實現，提供與原 KnowledgeManagerAdapter 相同的 API，
     但內部完全使用資料庫，移除所有 JSON 降級邏輯。
+    
+    ⚠️ 已廢棄：使用 core.services.AsyncKnowledgeService 替代
+    問題：同步方法使用 asyncio.new_event_loop() 導致 FastAPI 事件循環衝突
     """
     
     def __init__(self, use_database: bool = True, data_dir: Optional[str] = None):
@@ -31,6 +39,15 @@ class SimplifiedDatabaseAdapter:
             use_database: 保留參數以維持 API 兼容性（始終使用資料庫）
             data_dir: 保留參數以維持 API 兼容性（不再使用）
         """
+        # 發出廢棄警告
+        warnings.warn(
+            "SimplifiedDatabaseAdapter 已廢棄 (TASK-31)。"
+            "請使用 core.services.AsyncKnowledgeService 替代。"
+            "原因：同步方法中的 asyncio.new_event_loop() 導致事件循環衝突。",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        
         self.logger = get_module_logger(__name__)
         self._db_manager: Optional[DatabaseKnowledgeManager] = None
         self._cache_manager = UnifiedCacheManager(default_ttl=300)
@@ -41,7 +58,7 @@ class SimplifiedDatabaseAdapter:
         self._knowledge_points_cache: list[KnowledgePoint] = []
         self._cache_dirty = True
         
-        self.logger.info("初始化簡化資料庫適配器")
+        self.logger.warning("初始化簡化資料庫適配器 [已廢棄]")
     
     # ========== 初始化方法 ==========
     
