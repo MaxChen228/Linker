@@ -55,7 +55,7 @@ def create_app() -> FastAPI:
     app.middleware("http")(access_log_middleware)
 
     # 註冊路由
-    from web.routers import api_knowledge, calendar, knowledge, pages, patterns, practice, utils
+    from web.routers import api_knowledge, calendar, knowledge, pages, patterns, practice, utils, test_async
 
     app.include_router(pages.router)
     app.include_router(practice.router)
@@ -64,6 +64,7 @@ def create_app() -> FastAPI:
     app.include_router(calendar.router)  # 學習日曆路由
     app.include_router(utils.router)
     app.include_router(api_knowledge.router)  # 新增知識點 API 路由
+    app.include_router(test_async.router)  # TASK-31 測試異步服務層
 
     logger.info("Linker Web Application initialized successfully")
 

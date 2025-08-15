@@ -128,7 +128,6 @@ pip install -e ".[dev]"             # Development dependencies
 ### When Making Changes:
 
 1. **理解需求** - Analyze the request thoroughly
-2. **載入情境** - Load relevant files using memory feature
 3. **遵循模式** - Follow existing patterns in the codebase
 4. **執行驗證** - Run linting, formatting, and tests
 5. **明確聲明** - Explicitly state validation completion
