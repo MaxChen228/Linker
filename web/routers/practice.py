@@ -10,9 +10,10 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 from web.dependencies import (
     get_ai_service,
+    get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
     get_knowledge_assets,
     get_knowledge_manager,
-    get_knowledge_manager_async_dependency,
+    get_knowledge_manager_async_dependency,  # 保留以備向後相容
     get_logger,
     get_templates,
 )
@@ -59,7 +60,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
     import uuid
 
     ai = get_ai_service()
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     try:
         # 輸入已通過 Pydantic 驗證
@@ -91,7 +92,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
         is_correct = result.get("is_generally_correct", False)
         if mode == "review" and target_point_ids:
             for point_id in target_point_ids:
-                knowledge.update_knowledge_point(point_id, is_correct)
+                await knowledge.update_knowledge_point(point_id, is_correct)  # TASK-31: 添加 await
 
         # 3. 根據配置決定是自動保存還是返回待確認點
         pending_knowledge_points = []
@@ -183,7 +184,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
 @router.post("/api/confirm-knowledge-points", response_class=JSONResponse)
 async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
     """API 端點：確認並保存選中的知識點"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     try:
         confirmed_ids = []
@@ -194,7 +195,7 @@ async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
 
             # 調用現有的 _process_error 邏輯或直接添加知識點
             if hasattr(knowledge, "add_knowledge_point_from_error"):
-                point_id = knowledge.add_knowledge_point_from_error(
+                point_id = await knowledge.add_knowledge_point_from_error(  # TASK-31: 添加 await
                     chinese_sentence=point_data.chinese_sentence,
                     user_answer=point_data.user_answer,
                     error=error,
@@ -253,7 +254,7 @@ async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
 async def generate_question_api(request: GenerateQuestionRequest):
     """API 端點：生成單個題目（支援並行調用）"""
     ai = get_ai_service()
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
     assets = get_knowledge_assets()
 
     try:
@@ -268,7 +269,7 @@ async def generate_question_api(request: GenerateQuestionRequest):
         )
 
         if mode == "review":
-            review_points = knowledge.get_review_candidates(max_points=5)
+            review_points = await knowledge.get_review_candidates(max_points=5)  # TASK-31: 添加 await
             if not review_points:
                 return JSONResponse({"success": False, "error": "沒有待複習的知識點"})
 

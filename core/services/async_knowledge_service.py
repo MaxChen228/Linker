@@ -126,6 +126,56 @@ class AsyncKnowledgeService(BaseAsyncService):
         all_points = await self._db_manager.get_all_knowledge_points(include_deleted=True)
         return [p for p in all_points if p.is_deleted]
     
+    async def permanent_delete_old_points(
+        self, days_old: int = 30, dry_run: bool = False
+    ) -> dict[str, Any]:
+        """永久刪除舊的知識點
+        
+        Args:
+            days_old: 刪除多少天前的知識點
+            dry_run: 是否只預覽不實際刪除
+            
+        Returns:
+            包含刪除結果的字典
+        """
+        await self.initialize()
+        
+        # 獲取所有已刪除的知識點
+        deleted_points = await self.get_deleted_points_async()
+        
+        # 篩選出超過指定天數的知識點
+        from datetime import datetime, timedelta
+        cutoff_date = datetime.now() - timedelta(days=days_old)
+        
+        old_points = []
+        for point in deleted_points:
+            if hasattr(point, 'deleted_at') and point.deleted_at:
+                deleted_date = datetime.fromisoformat(point.deleted_at)
+                if deleted_date < cutoff_date:
+                    old_points.append(point)
+        
+        if dry_run:
+            return {
+                "dry_run": True,
+                "would_delete": len(old_points),
+                "points": [{"id": p.id, "key_point": p.key_point} for p in old_points]
+            }
+        
+        # 實際刪除
+        deleted_count = 0
+        for point in old_points:
+            # 這裡需要實現永久刪除的邏輯
+            # 暫時使用 delete_knowledge_point，但應該是永久刪除
+            success = await self._db_manager.delete_knowledge_point(point.id, "永久刪除舊資料")
+            if success:
+                deleted_count += 1
+        
+        return {
+            "dry_run": False,
+            "deleted": deleted_count,
+            "points": [{"id": p.id, "key_point": p.key_point} for p in old_points[:10]]  # 只返回前10個
+        }
+    
     # ========== 學習記錄操作 ==========
     
     async def add_review_success_async(

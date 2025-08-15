@@ -13,7 +13,12 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from core.exceptions import KnowledgeNotFoundError
-from web.dependencies import get_knowledge_manager, get_knowledge_manager_async_dependency, get_logger
+from web.dependencies import (
+    get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
+    get_knowledge_manager,
+    get_knowledge_manager_async_dependency,  # 保留以備向後相容
+    get_logger,
+)
 from web.models.validation import (
     DeleteOldPointsRequest,
     EnhancedBatchRequest,
@@ -104,7 +109,7 @@ async def get_learning_recommendations(params: RecommendationParams = Recommenda
     Returns:
         包含推薦內容、重點領域、建議難度等信息
     """
-    km = await get_knowledge_manager_async_dependency()
+    km = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     try:
         recommendations = await km.get_learning_recommendations_async()
@@ -127,7 +132,7 @@ async def get_learning_recommendations(params: RecommendationParams = Recommenda
 @router.get("/trash/list")
 async def get_trash_list():
     """獲取回收站中的知識點列表"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
     deleted_points = await knowledge.get_deleted_points_async()
 
     # 轉換為字典列表
@@ -155,9 +160,9 @@ async def get_trash_list():
 @router.post("/trash/clear")
 async def clear_old_trash(days: int = 30):
     """清理超過指定天數的回收站項目"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
-    deleted_count = knowledge.permanent_delete_old_points(days)
+    deleted_count = await knowledge.permanent_delete_old_points(days)  # TASK-31: 添加 await
 
     logger.info(f"清理回收站：永久刪除了 {deleted_count} 個知識點")
 
@@ -173,7 +178,7 @@ async def clear_old_trash(days: int = 30):
 @router.post("/batch")
 async def batch_operation(request: EnhancedBatchRequest, background_tasks: BackgroundTasks):
     """批量操作端點"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     # 將字符串操作轉換為枚舉
     try:
@@ -283,10 +288,10 @@ async def delete_old_knowledge_points(request: DeleteOldPointsRequest):
     Returns:
         刪除統計信息
     """
-    km = await get_knowledge_manager_async_dependency()
+    km = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     try:
-        result = km.permanent_delete_old_points(days_old=request.days_old, dry_run=request.dry_run)
+        result = await km.permanent_delete_old_points(days_old=request.days_old, dry_run=request.dry_run)  # TASK-31: 添加 await
 
         return JSONResponse(
             {
@@ -306,10 +311,10 @@ async def delete_old_knowledge_points(request: DeleteOldPointsRequest):
 @router.get("/{point_id}")
 async def get_knowledge_point(point_id: int):
     """獲取單個知識點詳情"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     try:
-        point = knowledge.get_knowledge_point(str(point_id))
+        point = await knowledge.get_knowledge_point_async(str(point_id))  # TASK-31: 使用異步方法
     except KnowledgeNotFoundError as e:
         return JSONResponse(
             status_code=404,
@@ -336,7 +341,13 @@ async def get_knowledge_point(point_id: int):
             },
         )
 
-    return JSONResponse(point.to_dict())
+    # TASK-31: KnowledgePoint 是 dataclass，需要處理 ErrorCategory Enum 序列化
+    from dataclasses import asdict
+    point_dict = asdict(point)
+    # ErrorCategory 是 Enum，需要轉換為字符串
+    if 'category' in point_dict and hasattr(point_dict['category'], 'value'):
+        point_dict['category'] = point_dict['category'].value
+    return JSONResponse(point_dict)
 
 
 @router.put("/{point_id}")
@@ -345,7 +356,7 @@ async def edit_knowledge_point(
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
 ):
     """編輯知識點"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     # 過濾掉 None 值
     updates = {k: v for k, v in request.dict().items() if v is not None}
@@ -369,7 +380,7 @@ async def delete_knowledge_point(
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
 ):
     """軟刪除知識點"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     success = await knowledge.delete_knowledge_point_async(point_id, request.reason)
 
@@ -386,7 +397,7 @@ async def restore_knowledge_point(
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
 ):
     """復原刪除的知識點"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     success = await knowledge.restore_knowledge_point_async(point_id)
 
@@ -403,7 +414,7 @@ async def update_tags(
     request: TagsRequest, point_id: int = Path(..., ge=1, le=1000000, description="知識點ID")
 ):
     """更新知識點標籤"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     history = await knowledge.edit_knowledge_point_async(point_id, {"tags": request.tags})
 
@@ -418,7 +429,7 @@ async def update_notes(
     request: NotesRequest, point_id: int = Path(..., ge=1, le=1000000, description="知識點ID")
 ):
     """更新知識點筆記"""
-    knowledge = await get_knowledge_manager_async_dependency()
+    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
 
     history = await knowledge.edit_knowledge_point_async(point_id, {"custom_notes": request.notes})
 
