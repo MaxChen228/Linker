@@ -6,7 +6,7 @@
 /* ========== Local Custom Properties ========== */
 :root {
   /* Container sizes */
-  --container-max-width: 1200px;
+  --container-max-width: var(--max-width-xl);
   
   /* Gradient positions */
   --gradient-start: 0%;
@@ -15,7 +15,7 @@
 
 /* ========== 容器佈局 ========== */
 .calendar-container {
-  max-width: var(--container-max-width, 1200px);
+  max-width: var(--container-max-width, 75rem); /* 1200px */
   margin: 0 auto;
   padding: var(--space-6);
 }
@@ -47,7 +47,7 @@
   background: var(--surface-elevated);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
 }
 
 .nav-button {
@@ -57,7 +57,7 @@
   width: var(--space-10);
   height: var(--space-10);
   background: var(--surface-base);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   text-decoration: none;
@@ -68,7 +68,7 @@
 .nav-button:hover {
   background: var(--hover-bg);
   border-color: var(--border-default);
-  transform: translateY(-1px);
+  transform: translateY(calc(-1 * var(--border-width-thin)));
 }
 
 .nav-icon {
@@ -110,7 +110,7 @@
 
 .stat-card {
   background: var(--surface-base);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   text-align: center;
@@ -118,7 +118,7 @@
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(calc(var(--space-1) * -0.5));
   box-shadow: var(--shadow-md);
 }
 
@@ -160,7 +160,7 @@
 /* ========== 日曆網格 ========== */
 .calendar-grid {
   background: var(--surface-base);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
   box-shadow: var(--shadow-sm);
@@ -194,7 +194,7 @@
 .calendar-day {
   aspect-ratio: 1;
   background: var(--surface-elevated);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   border-radius: var(--radius-md);
   padding: var(--space-2);
   position: relative;
@@ -212,14 +212,14 @@
 }
 
 .calendar-day:not(.empty):hover {
-  transform: translateY(-2px);
+  transform: translateY(calc(var(--space-1) * -0.5));
   box-shadow: var(--shadow-md);
   border-color: var(--border-default);
 }
 
 /* 今天的特殊樣式 */
 .calendar-day.today {
-  border: 2px solid var(--accent-500);
+  border: var(--border-width-normal) solid var(--accent-500);
   background: linear-gradient(135deg, var(--surface-base) 0%, var(--accent-50) 100%);
 }
 
@@ -256,7 +256,7 @@
 .calendar-day.intensity-heavy {
   background: linear-gradient(135deg, var(--surface-base) var(--gradient-start, 0%), rgba(var(--success-rgb), 0.25) var(--gradient-end, 100%));
   border-color: var(--success-400);
-  box-shadow: 0 2px 8px rgba(var(--success-rgb), 0.15);
+  box-shadow: 0 var(--space-1) var(--space-2) rgba(var(--success-rgb), 0.15);
 }
 
 /* 日期數字 */
@@ -272,10 +272,10 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  padding: 2px var(--space-1-5);
+  padding: calc(var(--space-1) * 0.5) var(--space-1-5);
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
-  margin: 1px;
+  margin: calc(var(--space-1) * 0.25);
 }
 
 .day-badge.pending {
@@ -307,7 +307,7 @@
   padding: var(--space-4);
   background: var(--surface-elevated);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
 }
 
 .legend-title {
@@ -335,7 +335,7 @@
   width: var(--space-6);
   height: var(--space-6);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
 }
 
 .legend-color.intensity-none {
@@ -379,7 +379,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(var(--space-1));
 }
 
 .modal-content {
@@ -387,7 +387,7 @@
   background: var(--surface-base);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2xl);
-  max-width: 600px;
+  max-width: 37.5rem; /* 600px */
   width: 90%;
   max-height: 80vh;
   overflow: hidden;
@@ -400,7 +400,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-6);
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: var(--border-width-thin) solid var(--border-light);
 }
 
 .modal-title {
@@ -417,7 +417,7 @@
   align-items: center;
   justify-content: center;
   background: var(--surface-elevated);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   border-radius: var(--radius-md);
   font-size: var(--text-xl);
   color: var(--text-secondary);
@@ -468,7 +468,7 @@
   gap: var(--space-4);
   padding: var(--space-4);
   background: var(--surface-elevated);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   border-radius: var(--radius-lg);
   transition: var(--transition-base);
 }
@@ -586,7 +586,7 @@
 
 .btn-review:hover {
   background: var(--accent-700);
-  transform: translateY(-1px);
+  transform: translateY(calc(-1 * var(--border-width-thin)));
 }
 
 .status-icon {
@@ -641,7 +641,7 @@
   }
   
   .calendar-day {
-    min-height: 60px;
+    min-height: 3.75rem; /* 60px */
     padding: var(--space-1);
   }
   
@@ -650,8 +650,8 @@
   }
   
   .day-badge {
-    font-size: 9px;
-    padding: 1px var(--space-1);
+    font-size: 0.5625rem; /* 9px */
+    padding: calc(var(--space-1) * 0.25) var(--space-1);
   }
   
   .badge-icon {

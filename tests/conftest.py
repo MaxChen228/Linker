@@ -251,7 +251,10 @@ def mock_database_settings():
 
     settings = MagicMock()
     settings.USE_DATABASE = False  # 預設不使用資料庫
-    settings.DATABASE_URL = "postgresql://test:test@localhost:5432/test"
+    # 使用統一的測試配置
+    from tests.config import TestConfig
+    test_config = TestConfig()
+    settings.DATABASE_URL = test_config.get_test_url()
     settings.DB_POOL_MIN_SIZE = 2
     settings.DB_POOL_MAX_SIZE = 5
     settings.DB_POOL_TIMEOUT = 5

@@ -6,6 +6,7 @@
 """
 
 import asyncio
+import os
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -275,7 +276,7 @@ class TestDatabaseConnectionIntegration:
         with patch.object(DatabaseSettings, "__init__", lambda self: None):
             settings = DatabaseSettings()
             settings.USE_DATABASE = True
-            settings.DATABASE_URL = "postgresql://test:test@localhost:5432/test"
+            settings.DATABASE_URL = f"postgresql://test:test@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '5432')}/test"
             settings.DB_POOL_MIN_SIZE = 2
             settings.DB_POOL_MAX_SIZE = 5
             settings.DB_POOL_TIMEOUT = 5

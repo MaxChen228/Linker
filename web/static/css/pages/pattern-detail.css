@@ -29,7 +29,7 @@
 /* ========== 第一層：核心認識 ========== */
 .core-section {
   background: var(--surface-base);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   padding: var(--space-6);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-6);
@@ -50,12 +50,12 @@
   padding: var(--space-4);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-4);
-  border: 1px solid var(--accent-200);
+  border: var(--border-width-thin) solid var(--accent-200);
 }
 
 .pattern-essence {
   font-size: var(--text-base);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   color: var(--text-secondary);
 }
 
@@ -78,7 +78,7 @@
   padding: var(--space-8);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-8);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
 }
 
 .key-points-section h2 {
@@ -87,7 +87,7 @@
   color: var(--text-primary);
   margin: 0 0 var(--space-4) 0;
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: var(--border-width-thin) solid var(--border-light);
 }
 
 .key-points {
@@ -100,8 +100,8 @@
   position: relative;
   padding: var(--space-3) 0 var(--space-3) var(--space-8);
   color: var(--text-secondary);
-  line-height: 1.6;
-  border-bottom: 1px solid var(--border-light);
+  line-height: var(--leading-relaxed);
+  border-bottom: var(--border-width-thin) solid var(--border-light);
 }
 
 .key-points li:last-child {
@@ -137,7 +137,7 @@
 .example-card {
   /* 使用 difficulty-indicator 組件樣式 */
   background: var(--surface-base);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   border-radius: var(--radius-md);
   padding: var(--space-5);
   transition: all var(--transition-base);
@@ -187,7 +187,7 @@
 .example-content .en {
   color: var(--text-primary);
   font-size: var(--text-base);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   font-style: italic;
 }
 
@@ -202,7 +202,7 @@
 /* ========== 第四層：常見錯誤 ========== */
 .mistakes-section {
   background: var(--surface-base);
-  border: 1px solid var(--error-200);
+  border: var(--border-width-thin) solid var(--error-200);
   padding: var(--space-6);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-6);
@@ -232,7 +232,7 @@
   background: var(--surface-elevated);
   padding: var(--space-5);
   border-radius: var(--radius-md);
-  border: 1px solid var(--error-200);
+  border: var(--border-width-thin) solid var(--error-200);
 }
 
 /* 使用 comparison-cards 組件的 mistake-comparison 樣式 */
@@ -243,7 +243,7 @@
 .mistake-card .explanation {
   color: var(--text-secondary);
   font-size: var(--text-sm);
-  line-height: 1.5;
+  line-height: var(--leading-relaxed);
 }
 
 /* ========== 第五層：變化形式 ========== */
@@ -272,7 +272,7 @@
   padding: var(--space-3);
   background: var(--surface-base);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
 }
 
 .variation-item .label {
@@ -288,13 +288,13 @@
   flex: 1;
   color: var(--text-secondary);
   font-style: italic;
-  line-height: 1.5;
+  line-height: var(--leading-relaxed);
 }
 
 /* ========== 第六層：練習 ========== */
 .practice-section {
   background: var(--surface-base);
-  border: 1px solid var(--accent-200);
+  border: var(--border-width-thin) solid var(--accent-200);
   padding: var(--space-6);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-6);
@@ -327,13 +327,13 @@
   padding: var(--space-4);
   background: var(--surface-elevated);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
 }
 
 .practice-item .number {
   flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
+  width: var(--space-8);
+  height: var(--space-8);
   background: var(--accent-500);
   color: var(--text-on-primary);
   border-radius: 50%;
@@ -347,7 +347,7 @@
 .practice-item .sentence {
   flex: 1;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: var(--leading-relaxed);
 }
 
 .btn-practice {
@@ -358,7 +358,7 @@
   border: none;
   border-radius: var(--radius-md);
   font-size: var(--text-base);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   cursor: pointer;
   transition: all var(--transition-base);
 }

@@ -25,11 +25,22 @@ class AsyncKnowledgeService(BaseAsyncService):
         super().__init__("knowledge")
         self._db_manager: Optional[DatabaseKnowledgeManager] = None
         self._cache_manager = UnifiedCacheManager(default_ttl=300)
+        
+        # TASK-32: 每日限額相關配置
+        self._user_id = "default_user"  # 未來支援多用戶時可修改
+        self._limited_error_types = {"isolated", "enhancement"}
     
     async def _initialize_resources(self) -> None:
-        """初始化資料庫連線"""
-        self._db_manager = await create_database_manager()
-        self.logger.info("異步知識服務資源初始化完成")
+        """初始化資源連接（支援JSON/資料庫雙模式）"""
+        from core.config import USE_DATABASE
+        
+        if USE_DATABASE:
+            self._db_manager = await create_database_manager()
+            self.logger.info("異步知識服務資源初始化完成（資料庫模式）")
+        else:
+            # JSON模式：不需要數據庫連接，使用文件操作
+            self._db_manager = None
+            self.logger.info("異步知識服務資源初始化完成（JSON模式）")
     
     async def _cleanup_resources(self) -> None:
         """清理資料庫連線"""
@@ -55,7 +66,7 @@ class AsyncKnowledgeService(BaseAsyncService):
             return None
     
     async def add_knowledge_point_async(self, knowledge_point: KnowledgePoint) -> bool:
-        """添加知識點"""
+        """添加知識點（不包含限額檢查）"""
         await self.initialize()
         try:
             result = await self._db_manager.add_knowledge_point(
@@ -363,3 +374,116 @@ class AsyncKnowledgeService(BaseAsyncService):
             recommendations.append(f"有 {len(struggling_points)} 個知識點掌握度較低，需要重點關注")
         
         return " | ".join(recommendations) if recommendations else "保持當前學習節奏"
+    
+    # ========== TASK-32: 每日知識點限額功能 - 資料庫版本 ==========
+    
+    async def check_daily_limit(self, error_type: str) -> dict:
+        """檢查每日知識點儲存限額（資料庫版本）
+        
+        Args:
+            error_type: 錯誤類型 (isolated, enhancement, systematic, other)
+            
+        Returns:
+            限額狀態字典
+        """
+        await self.initialize()
+        return await self._db_manager.check_daily_limit(self._user_id, error_type)
+    
+    async def update_daily_stats(self, error_type: str) -> bool:
+        """更新每日統計數據（資料庫版本）
+        
+        Args:
+            error_type: 錯誤類型
+            
+        Returns:
+            是否更新成功
+        """
+        await self.initialize()
+        return await self._db_manager.increment_daily_stats(self._user_id, error_type)
+    
+    async def save_knowledge_point_with_limit(self, knowledge_point: KnowledgePoint) -> dict:
+        """帶限額檢查的知識點儲存（資料庫版本）
+        
+        Args:
+            knowledge_point: 要儲存的知識點
+            
+        Returns:
+            儲存結果字典
+        """
+        await self.initialize()
+        
+        # 準備錯誤資訊
+        error_info = {
+            "error_pattern": knowledge_point.key_point,
+            "category": knowledge_point.category.value if hasattr(knowledge_point.category, 'value') else knowledge_point.category,
+            "subtype": knowledge_point.subtype,
+            "error_phrase": knowledge_point.original_phrase,
+            "correction": knowledge_point.correction,
+        }
+        
+        analysis = {
+            "explanation": knowledge_point.explanation
+        }
+        
+        # 調用資料庫管理器的事務性保存方法
+        return await self._db_manager.save_knowledge_point_with_limit(
+            error_info=error_info,
+            analysis=analysis,
+            chinese_sentence=knowledge_point.original_error.chinese_sentence,
+            user_answer=knowledge_point.original_error.user_answer,
+            correct_answer=knowledge_point.original_error.correct_answer,
+            user_id=self._user_id
+        )
+    
+    async def get_daily_limit_config(self) -> dict:
+        """獲取每日限額配置（資料庫版本）
+        
+        Returns:
+            配置字典
+        """
+        await self.initialize()
+        return await self._db_manager.get_user_settings(self._user_id)
+    
+    async def update_daily_limit_config(self, daily_limit: int = None, limit_enabled: bool = None) -> dict:
+        """更新每日限額配置（資料庫版本）
+        
+        Args:
+            daily_limit: 每日上限數量 (1-50)
+            limit_enabled: 是否啟用限額
+            
+        Returns:
+            更新結果字典
+        """
+        await self.initialize()
+        
+        success = await self._db_manager.update_user_settings(
+            user_id=self._user_id,
+            daily_limit=daily_limit,
+            limit_enabled=limit_enabled
+        )
+        
+        if success:
+            # 獲取更新後的配置
+            updated_config = await self._db_manager.get_user_settings(self._user_id)
+            return {
+                "success": True,
+                "message": "配置更新成功",
+                "config": updated_config
+            }
+        else:
+            return {
+                "success": False,
+                "message": "配置更新失敗"
+            }
+    
+    async def get_daily_limit_stats(self, days: int = 7) -> dict:
+        """獲取每日限額使用統計（資料庫版本）
+        
+        Args:
+            days: 查詢天數
+            
+        Returns:
+            統計數據
+        """
+        await self.initialize()
+        return await self._db_manager.get_daily_stats_history(self._user_id, days)

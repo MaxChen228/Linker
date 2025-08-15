@@ -12,6 +12,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+# TASK-34: 引入統一API端點管理系統，消除硬編碼
 from web.dependencies import get_async_knowledge_service  # TASK-31: 使用純異步服務
 
 router = APIRouter(prefix="/calendar", tags=["calendar"])
@@ -197,11 +198,12 @@ async def calendar_page(request: Request, year: Optional[int] = None, month: Opt
     )
 
 
-@router.get("/api/day/{date_str}")
-async def get_day_details(date_str: str):
+# 注意：由於router使用了prefix="/calendar"，這裡只需要定義/api/day/{date}部分
+@router.get("/api/day/{date}")
+async def get_day_details(date: str):
     """獲取特定日期的詳細資料"""
     try:
-        target_date = datetime.fromisoformat(date_str).date()
+        target_date = datetime.fromisoformat(date).date()
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Invalid date format") from e
 
@@ -230,10 +232,10 @@ async def get_day_details(date_str: str):
                 )
 
     # 獲取已完成的記錄
-    daily_record = calendar_data["daily_records"].get(date_str, {})
+    daily_record = calendar_data["daily_records"].get(date, {})
 
     return {
-        "date": date_str,
+        "date": date,
         "due_reviews": due_reviews,
         "completed_reviews": daily_record.get("completed_reviews", []),
         "new_practices": daily_record.get("new_practices", 0),
@@ -241,13 +243,13 @@ async def get_day_details(date_str: str):
         "study_minutes": daily_record.get("study_minutes", 0),
         "mastery_improvement": daily_record.get("mastery_improvement", 0),
         "study_sessions": [
-            s for s in calendar_data.get("study_sessions", []) if s.get("date") == date_str
+            s for s in calendar_data.get("study_sessions", []) if s.get("date") == date
         ],
     }
 
 
-@router.post("/api/complete-review/{point_id}")
-async def mark_review_complete(point_id: int):
+@router.post("/api/complete-review/{pointId}")
+async def mark_review_complete(pointId: int):
     """標記複習完成"""
     today = date.today().isoformat()
     calendar_data = load_calendar_data()
@@ -264,12 +266,12 @@ async def mark_review_complete(point_id: int):
         }
 
     # 添加到已完成列表（避免重複）
-    if point_id not in calendar_data["daily_records"][today]["completed_reviews"]:
-        calendar_data["daily_records"][today]["completed_reviews"].append(point_id)
+    if pointId not in calendar_data["daily_records"][today]["completed_reviews"]:
+        calendar_data["daily_records"][today]["completed_reviews"].append(pointId)
 
     save_calendar_data(calendar_data)
 
-    return {"status": "success", "point_id": point_id, "date": today}
+    return {"status": "success", "point_id": pointId, "date": today}
 
 
 @router.get("/api/stats/streak")

@@ -24,6 +24,13 @@ from core.database.exceptions import (
 )
 from core.log_config import get_module_logger
 
+# TASK-34: 引入統一數據庫配置管理系統，消除硬編碼
+try:
+    from core.settings.database import get_database_config
+    _database_config_available = True
+except ImportError:
+    _database_config_available = False
+
 
 class DatabaseSettings:
     """資料庫設定管理"""
@@ -37,10 +44,24 @@ class DatabaseSettings:
         except ImportError:
             pass
 
-        # 基本連線設定
-        self.DATABASE_URL = os.getenv(
-            "DATABASE_URL", "postgresql://postgres:password@localhost:5432/linker"
-        )
+        # TASK-34: 基本連線設定 - 使用統一配置系統，消除硬編碼默認值
+        if _database_config_available:
+            try:
+                db_config = get_database_config()
+                self.DATABASE_URL = db_config.get_url() if db_config.is_configured() else None
+            except Exception as e:
+                print(f"⚠️  數據庫配置載入失敗: {e}")
+                self.DATABASE_URL = None
+        else:
+            # 向後兼容：直接從環境變數讀取，不提供不安全的硬編碼默認值
+            self.DATABASE_URL = os.getenv("DATABASE_URL")
+        
+        # 如果沒有配置URL，拋出明確的錯誤
+        if not self.DATABASE_URL:
+            raise ValueError(
+                "數據庫連接URL未配置。請設置 DATABASE_URL 環境變數。\n"
+                "示例：DATABASE_URL=postgresql://user:password@host:5432/database"
+            )
 
         # 連線池設定
         self.DB_POOL_MIN_SIZE = int(os.getenv("DB_POOL_MIN_SIZE", "5"))

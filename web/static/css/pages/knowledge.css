@@ -8,7 +8,7 @@
   top: 0;
   z-index: 100;
   background: var(--surface-elevated);
-  border-bottom: 1px solid var(--border-default);
+  border-bottom: var(--border-width-thin) solid var(--border-default);
   padding: var(--space-3) var(--space-4);
   margin-bottom: var(--space-4);
   transition: all var(--transition-base);
@@ -87,7 +87,7 @@
   font-weight: var(--font-medium);
   transition: all var(--transition-base);
   cursor: pointer;
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   background: var(--surface-base);
   color: var(--text-primary);
 }
@@ -99,7 +99,7 @@
 
 .batch-toolbar .btn[data-variant="secondary"] {
   background: var(--surface-base);
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
 }
 
 .batch-toolbar .btn[data-variant="danger"] {
@@ -114,7 +114,7 @@
 
 .batch-toolbar .btn[data-variant="primary"] {
   background: var(--accent-600);
-  color: white;
+  color: var(--text-on-primary);
   border: none;
 }
 
@@ -221,7 +221,7 @@
 .search-bar {
   position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: 31.25rem; /* 500px */
   animation: var(--animation-fade-in-up);
   animation-delay: 50ms;
 }
@@ -230,7 +230,7 @@
   width: 100%;
   padding: var(--space-3) var(--space-12);
   padding-left: var(--space-10);
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   border-radius: var(--radius-full);
   font-size: var(--text-base);
   background: var(--surface-base);
@@ -272,7 +272,7 @@
 /* ========== 複習佇列區 ========== */
 .review-queue-section {
   background: var(--surface-base);
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   margin-bottom: var(--space-8);
@@ -321,7 +321,7 @@
   padding: var(--space-3) var(--space-4);
   background: var(--surface-base);
   border-radius: var(--radius);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   transition: var(--transition-base);
 }
 
@@ -332,7 +332,7 @@
 }
 
 .queue-item.due {
-  border-left: 3px solid var(--warning);
+  border-left: var(--border-width-thick) solid var(--warning);
   background: linear-gradient(to right, var(--color-warning-subtle), transparent);
 }
 
@@ -362,13 +362,13 @@
 .queue-item-badge .badge.isolated {
   background: var(--color-warning-subtle);
   color: var(--warning);
-  border: 1px solid var(--color-warning-subtle);
+  border: var(--border-width-thin) solid var(--color-warning-subtle);
 }
 
 .queue-item-badge .badge.enhancement {
   background: var(--color-success-subtle);
   color: var(--success);
-  border: 1px solid var(--color-success-subtle);
+  border: var(--border-width-thin) solid var(--color-success-subtle);
 }
 
 .queue-more {
@@ -376,7 +376,7 @@
   padding: var(--space-3);
   color: var(--text-muted);
   font-size: var(--text-sm);
-  border-top: 1px solid var(--border-light);
+  border-top: var(--border-width-thin) solid var(--border-light);
 }
 
 /* ========== 篩選區域 ========== */
@@ -394,7 +394,7 @@
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-wide);
   color: var(--text-secondary);
   margin-bottom: var(--space-3);
 }
@@ -450,7 +450,7 @@
   color: var(--text-primary);
   margin: 0 0 var(--space-5) 0;
   padding-bottom: var(--space-3);
-  border-bottom: 2px solid var(--border-light);
+  border-bottom: var(--border-width-normal) solid var(--border-light);
 }
 
 .section-icon {
@@ -482,7 +482,7 @@
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(21.25rem, 1fr)); /* 340px */
   gap: var(--space-4);
 }
 
@@ -493,7 +493,7 @@
   box-shadow: var(--shadow-xs);
   transition: var(--transition-base);
   overflow: hidden;
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   position: relative;
   padding: 0;
 }
@@ -506,15 +506,15 @@
 
 /* 掌握度變體 - 使用更細微的視覺提示 */
 .card[data-type="group"][data-mastery="low"] {
-  border-left: 3px solid var(--error);
+  border-left: var(--border-width-normal) solid var(--error);
 }
 
 .card[data-type="group"][data-mastery="medium"] {
-  border-left: 3px solid var(--warning);
+  border-left: var(--border-width-thick) solid var(--warning);
 }
 
 .card[data-type="group"][data-mastery="high"] {
-  border-left: 3px solid var(--success);
+  border-left: var(--border-width-normal) solid var(--success);
 }
 
 .group-header {
@@ -533,7 +533,7 @@
 }
 
 .group-header.expanded {
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: var(--border-width-thin) solid var(--border-light);
 }
 
 .group-info {
@@ -548,7 +548,7 @@
   font-weight: var(--font-semibold);
   color: var(--text-primary);
   margin: 0;
-  line-height: 1.4;
+  line-height: var(--leading-relaxed);
 }
 
 .group-stats {
@@ -621,7 +621,7 @@
 
 .group-content {
   background: var(--bg-secondary);
-  border-top: 1px solid var(--border-light);
+  border-top: var(--border-width-thin) solid var(--border-light);
   padding: 0;
   display: none;
   transition: all 0.3s ease-out;
@@ -643,7 +643,7 @@
   background: var(--surface-base);
   border-radius: var(--radius);
   padding: var(--space-4);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
   transition: var(--transition-base);
 }
 
@@ -690,20 +690,20 @@
   padding: var(--space-3);
   background: var(--bg-secondary);
   border-radius: var(--radius-sm);
-  border-left: 2px solid var(--border-default);
+  border-left: var(--border-width-normal) solid var(--border-default);
 }
 
 .instance-examples {
   margin-top: var(--space-3);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--border-light);
+  border-top: var(--border-width-thin) solid var(--border-light);
 }
 
 .examples-label {
   font-size: var(--text-xs);
   font-weight: var(--font-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-wide);
   color: var(--text-muted);
   margin-bottom: var(--space-2);
 }
@@ -722,7 +722,7 @@
   background: var(--surface-base);
   border-radius: var(--radius-sm);
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
 }
 
 .sentence-label {
@@ -737,17 +737,17 @@
 
 .sentence-item.error {
   background: var(--color-error-subtle);
-  border-left: 2px solid var(--error);
+  border-left: var(--border-width-normal) solid var(--error);
 }
 
 .sentence-item.correct {
   background: var(--color-success-subtle);
-  border-left: 2px solid var(--success);
+  border-left: var(--border-width-normal) solid var(--success);
 }
 
 .compare-item {
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   padding: var(--space-2);
   border-radius: var(--radius-sm);
 }
@@ -755,25 +755,25 @@
 .compare-item.error {
   background: var(--color-error-subtle);
   color: var(--text-primary);
-  border-left: 2px solid var(--error);
+  border-left: var(--border-width-normal) solid var(--error);
 }
 
 .compare-item.correct {
   background: var(--color-success-subtle);
   color: var(--text-primary);
-  border-left: 2px solid var(--success);
+  border-left: var(--border-width-normal) solid var(--success);
 }
 
 .compare-item.original {
   background: var(--surface-elevated);
   color: var(--text-secondary);
-  border-left: 2px solid var(--border-default);
+  border-left: var(--border-width-normal) solid var(--border-default);
 }
 
 .compare-item.improved {
   background: var(--color-success-subtle);
   color: var(--text-primary);
-  border-left: 2px solid var(--success);
+  border-left: var(--border-width-normal) solid var(--success);
 }
 
 .instance-stats {
@@ -783,7 +783,7 @@
   color: var(--text-muted);
   margin-top: var(--space-3);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--border-light);
+  border-top: var(--border-width-thin) solid var(--border-light);
 }
 
 /* ========== 單一知識點卡片 ========== */
@@ -793,7 +793,7 @@
   padding: var(--space-5);
   box-shadow: var(--shadow-xs);
   transition: var(--transition-base);
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   position: relative;
 }
 
@@ -805,19 +805,19 @@
 
 /* 單一性錯誤樣式 */
 .card.knowledge-single-card[data-category="單一性錯誤"] {
-  border-left: 3px solid var(--warning);
+  border-left: var(--border-width-thick) solid var(--warning);
 }
 
 /* 可以更好樣式 */
 .card.knowledge-single-card.enhancement,
 .card.knowledge-single-card[data-category="可以更好"] {
-  border-left: 3px solid var(--success);
+  border-left: var(--border-width-normal) solid var(--success);
   background: linear-gradient(to right, var(--color-success-subtle), transparent);
 }
 
 /* 其他錯誤樣式 */
 .card.knowledge-single-card[data-category="其他錯誤"] {
-  border-left: 3px solid var(--text-muted);
+  border-left: var(--border-width-normal) solid var(--text-muted);
 }
 
 .card-header {
@@ -833,13 +833,13 @@
   font-weight: var(--font-semibold);
   color: var(--text-primary);
   flex: 1;
-  line-height: 1.5;
+  line-height: var(--leading-relaxed);
 }
 
 .card-explanation {
   color: var(--text-secondary);
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   margin: 0 0 var(--space-3) 0;
 }
 
@@ -857,7 +857,7 @@
 .card-examples {
   margin-top: var(--space-4);
   padding-top: var(--space-4);
-  border-top: 1px solid var(--border-light);
+  border-top: var(--border-width-thin) solid var(--border-light);
 }
 
 .full-sentence {
@@ -872,12 +872,12 @@
   padding: var(--space-2-5);
   background: var(--surface-elevated);
   border-radius: var(--radius-sm);
-  border-left: 2px solid var(--border-default);
+  border-left: var(--border-width-normal) solid var(--border-default);
 }
 
 .sentence-en {
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   padding: var(--space-2-5);
   border-radius: var(--radius-sm);
 }
@@ -885,25 +885,25 @@
 .sentence-en.error {
   background: var(--color-error-subtle);
   color: var(--text-primary);
-  border-left: 2px solid var(--error);
+  border-left: var(--border-width-normal) solid var(--error);
 }
 
 .sentence-en.correct {
   background: var(--color-success-subtle);
   color: var(--text-primary);
-  border-left: 2px solid var(--success);
+  border-left: var(--border-width-normal) solid var(--success);
 }
 
 .sentence-en.original {
   background: var(--surface-elevated);
   color: var(--text-secondary);
-  border-left: 2px solid var(--border-default);
+  border-left: var(--border-width-normal) solid var(--border-default);
 }
 
 .sentence-en.improved {
   background: var(--color-success-subtle);
   color: var(--text-primary);
-  border-left: 2px solid var(--success);
+  border-left: var(--border-width-normal) solid var(--success);
 }
 
 
@@ -917,7 +917,7 @@
   text-align: center;
   background: var(--surface-elevated);
   border-radius: var(--radius-xl);
-  border: 2px dashed var(--border-default);
+  border: var(--border-width-normal) dashed var(--border-default);
   margin-top: var(--space-8);
 }
 
@@ -1108,7 +1108,7 @@
   display: block;
   text-decoration: none;
   background: var(--surface-base);
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   transition: all var(--transition-base);
@@ -1144,7 +1144,7 @@
   gap: var(--space-2);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
-  line-height: 1.4;
+  line-height: var(--leading-relaxed);
   flex: 1;
   overflow: hidden;
   -webkit-line-clamp: 2;
@@ -1210,7 +1210,7 @@
 /* 系統性錯誤群組卡片 */
 .knowledge-group-compact {
   background: var(--surface-base);
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   transition: all var(--transition-base);
@@ -1228,7 +1228,7 @@
   align-items: center;
   margin-bottom: var(--space-3);
   padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: var(--border-width-thin) solid var(--border-light);
 }
 
 .group-title-compact {
@@ -1295,7 +1295,7 @@
   background: var(--surface-base);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-light);
+  border: var(--border-width-thin) solid var(--border-light);
 }
 
 .group-more {

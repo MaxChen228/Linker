@@ -273,7 +273,7 @@
 {% block scripts %}
 <!-- 引入選擇管理器和批量操作 -->
 <script src="/static/js/selection-manager.js"></script>
-<script src="/static/js/batch-operations.js"></script>
+<script type="module" src="/static/js/batch-operations.js"></script>
 <script>
 // 篩選功能 - 支援組合篩選
 let activeFilters = {
@@ -329,16 +329,25 @@ function applyFilters() {
 let selectionManager = null;
 let batchOperations = null;
 
-// 頁面載入完成後初始化
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('[知識點頁面] DOM 載入完成，初始化篩選功能');
-  
-  // 初始化選擇管理器
-  selectionManager = new SelectionManager();
-  
-  // 初始化批量操作
-  batchOperations = new BatchOperations(selectionManager);
-  
+// 等待所有模組加載完成後初始化
+function initializeManagers() {
+  if (typeof SelectionManager !== 'undefined' && typeof BatchOperations !== 'undefined') {
+    console.log('[知識點頁面] 初始化選擇管理器和批量操作');
+    
+    // 初始化選擇管理器
+    selectionManager = new SelectionManager();
+    
+    // 初始化批量操作
+    batchOperations = new BatchOperations(selectionManager);
+    
+    setupEventListeners();
+  } else {
+    // 如果模組還沒加載完成，100ms後重試
+    setTimeout(initializeManagers, 100);
+  }
+}
+
+function setupEventListeners() {
   // 監聽選擇變化
   selectionManager.on('selectionchange', (data) => {
     console.log('[選擇變化]', data);
@@ -422,6 +431,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 初始化篩選
   applyFilters();
+}
+
+// 頁面載入完成後開始初始化
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('[知識點頁面] DOM 載入完成，開始初始化');
+  initializeManagers();
 });
 </script>
 {% endblock %}

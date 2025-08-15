@@ -7,6 +7,8 @@ from datetime import datetime
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
+# TASK-34: 引入統一API端點管理系統，消除硬編碼
+from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import (
     get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
     get_templates,
@@ -15,7 +17,7 @@ from web.dependencies import (
 router = APIRouter()
 
 
-@router.get("/", response_class=HTMLResponse)
+@router.get(API_ENDPOINTS.HOME, response_class=HTMLResponse)
 async def home(request: Request):
     """主頁路由"""
     templates = get_templates()
@@ -63,4 +65,27 @@ async def home(request: Request):
     return templates.TemplateResponse(
         "index.html",
         {"request": request, "stats": stats, "review_items": review_items, "active": "home"},
+    )
+
+
+@router.get(API_ENDPOINTS.SETTINGS_PAGE, response_class=HTMLResponse)
+async def settings(request: Request):
+    """設定頁面路由"""
+    templates = get_templates()
+    knowledge = await get_async_knowledge_service()
+
+    # 獲取當前限額配置
+    daily_limit_config = await knowledge.get_daily_limit_config()
+    
+    # 獲取最近7天的使用統計
+    daily_stats = await knowledge.get_daily_limit_stats(days=7)
+    
+    return templates.TemplateResponse(
+        "settings.html",
+        {
+            "request": request,
+            "active": "settings",
+            "daily_limit_config": daily_limit_config,
+            "daily_stats": daily_stats,
+        },
     )

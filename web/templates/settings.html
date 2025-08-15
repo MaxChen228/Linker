@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}設定 - Linker{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="/static/css/pages/settings.css" />
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <header class="settings-header">
+        <h2>系統設定</h2>
+        <p class="settings-subtitle">調整學習偏好和系統行為</p>
+    </header>
+
+    <!-- 每日知識點限額設定 -->
+    <section class="setting-section" id="daily-limit">
+        <div class="section-header">
+            <h3>
+                <span class="section-icon">📊</span>
+                每日知識點限額
+            </h3>
+            <p class="section-description">
+                控制每日新增的「單一知識點」和「可以更好」類型知識點數量，平衡學習進度與複習效率
+            </p>
+        </div>
+
+        <div class="setting-content">
+            <!-- 啟用狀態切換 -->
+            <div class="setting-item">
+                <div class="setting-label">
+                    <label for="limit-enabled">啟用每日限額</label>
+                    <small class="setting-help">開啟後系統將限制每日新增的知識點數量</small>
+                </div>
+                <div class="setting-control">
+                    <label class="switch">
+                        <input type="checkbox" id="limit-enabled" {% if daily_limit_config.limit_enabled %}checked{% endif %}>
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 限額數量設定 -->
+            <div class="setting-item" id="limit-amount-setting">
+                <div class="setting-label">
+                    <label for="daily-limit-range">每日限額數量</label>
+                    <small class="setting-help">建議設定為5-20之間，可根據個人學習能力調整</small>
+                </div>
+                <div class="setting-control limit-control">
+                    <input 
+                        type="range" 
+                        id="daily-limit-range" 
+                        min="1" 
+                        max="50" 
+                        value="{{ daily_limit_config.daily_limit }}"
+                        class="limit-range"
+                    >
+                    <input 
+                        type="number" 
+                        id="daily-limit-number" 
+                        min="1" 
+                        max="50" 
+                        value="{{ daily_limit_config.daily_limit }}"
+                        class="limit-number"
+                    >
+                    <span class="limit-unit">個/天</span>
+                </div>
+            </div>
+
+            <!-- 當前狀態顯示 -->
+            <div class="current-status" id="current-status">
+                <div class="status-indicator">
+                    <span class="status-icon" id="status-icon">⏳</span>
+                    <span class="status-text" id="status-text">載入中...</span>
+                </div>
+                <div class="status-progress" id="status-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <small class="progress-info" id="progress-info">載入中...</small>
+                </div>
+            </div>
+
+            <!-- 操作按鈕 -->
+            <div class="setting-actions">
+                <button class="btn" data-variant="primary" id="save-settings" disabled>
+                    <span id="save-btn-text">儲存設定</span>
+                </button>
+                <button class="btn" data-variant="ghost" id="reset-daily-count">
+                    重置今日計數
+                </button>
+                <button class="btn" data-variant="outline" onclick="window.location.href='/practice'">
+                    返回練習
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用統計 -->
+    <section class="setting-section" id="usage-stats">
+        <div class="section-header">
+            <h3>
+                <span class="section-icon">📈</span>
+                使用統計
+            </h3>
+            <p class="section-description">查看最近的知識點新增情況</p>
+        </div>
+
+        <div class="setting-content">
+            <!-- 統計摘要 -->
+            <div class="stats-summary">
+                <div class="stat-card">
+                    <div class="stat-number">{{ daily_stats.summary.total_usage }}</div>
+                    <div class="stat-label">{{ daily_stats.summary.days_queried }}日總計</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ daily_stats.summary.avg_daily_usage }}</div>
+                    <div class="stat-label">平均每日</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ daily_stats.summary.current_limit }}</div>
+                    <div class="stat-label">當前上限</div>
+                </div>
+            </div>
+
+            <!-- 每日統計圖表 -->
+            <div class="stats-chart">
+                <h4>最近7天使用情況</h4>
+                <div class="chart-container" id="daily-chart">
+                    {% for stat in daily_stats.stats %}
+                    <div class="chart-bar">
+                        <div class="bar-container">
+                            <div class="bar isolated" style="height: {{ (stat.isolated_count / daily_stats.summary.current_limit * 100)|int }}%"></div>
+                            <div class="bar enhancement" style="height: {{ (stat.enhancement_count / daily_stats.summary.current_limit * 100)|int }}%"></div>
+                        </div>
+                        <div class="bar-label">
+                            <div class="bar-date">{{ stat.date[-5:] }}</div>
+                            <div class="bar-count">{{ stat.total_count }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color isolated"></span>
+                        <span>單一知識點</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color enhancement"></span>
+                        <span>可以更好</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- 載入中覆蓋層 -->
+<div class="loading-overlay" id="settings-loading" data-visible="false">
+    <div class="spinner"></div>
+    <p>更新設定中...</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="/static/js/settings.js"></script>
+{% endblock %}

@@ -5,7 +5,7 @@
 /* 基礎卡片網格 */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-card), 1fr));
   gap: var(--space-6);
   margin: var(--space-6) 0;
 }
@@ -13,7 +13,7 @@
 /* 知識點頁面卡片網格 */
 .knowledge-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-knowledge), 1fr));
   gap: var(--space-5);
   margin-top: var(--space-5);
 }
@@ -28,7 +28,7 @@
 /* 文法句型網格 */
 .patterns-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-card), 1fr));
   gap: var(--space-6);
   margin-bottom: var(--space-12);
 }
@@ -66,15 +66,15 @@
 /* 大螢幕優化 */
 @media (min-width: var(--breakpoint-desktop)) {
   .cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-card-lg), 1fr));
   }
   
   .knowledge-cards {
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-knowledge-lg), 1fr));
   }
   
   .patterns-grid {
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-pattern-lg), 1fr));
   }
 }
 
@@ -82,7 +82,7 @@
 @media (min-width: var(--breakpoint-wide)) {
   .cards-grid,
   .knowledge-cards {
-    max-width: 1400px;
+    max-width: var(--max-width-wide);
     margin-left: auto;
     margin-right: auto;
   }

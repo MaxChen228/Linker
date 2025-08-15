@@ -190,8 +190,8 @@ def check_database():
         from core.config import USE_DATABASE, check_database_health
 
         if not USE_DATABASE:
-            print("ℹ️  資料庫模式未啟用（使用 JSON 儲存）")
-            return True
+            print("❌ 配置錯誤：USE_DATABASE應該為True（JSON模式已移除）")
+            return False
 
         is_healthy, message = check_database_health()
 

@@ -3,9 +3,17 @@
 測試批改後的確認/刪除交互流程
 """
 
+import os
 import pytest
 from playwright.sync_api import Page, expect
 from unittest.mock import patch
+
+# 統一的測試URL配置
+def get_test_url(path="/practice"):
+    """獲取測試URL，消除localhost硬編碼"""
+    test_host = os.getenv('TEST_HOST', 'localhost')
+    test_port = os.getenv('TEST_PORT', '8000')
+    return f"http://{test_host}:{test_port}{path}"
 
 
 class TestConfirmationUI:
@@ -49,7 +57,7 @@ class TestConfirmationUI:
         """測試確認/刪除按鈕是否出現在批改結果中"""
 
         # 導航到練習頁面
-        page.goto("http://localhost:8000/practice")
+        page.goto(get_test_url("/practice"))
 
         # 等待頁面加載
         page.wait_for_selector("#add-question-btn")
@@ -98,7 +106,7 @@ class TestConfirmationUI:
         """測試單個知識點的確認功能"""
 
         # 設置頁面（與上個測試類似的步驟）
-        page.goto("http://localhost:8000/practice")
+        page.goto(get_test_url("/practice"))
         page.wait_for_selector("#add-question-btn")
         page.click("#add-question-btn")
         page.wait_for_selector(".queue-item[data-status='ready']")
@@ -141,7 +149,7 @@ class TestConfirmationUI:
         """測試單個知識點的忽略功能"""
 
         # 設置頁面
-        page.goto("http://localhost:8000/practice")
+        page.goto(get_test_url("/practice"))
         page.wait_for_selector("#add-question-btn")
         page.click("#add-question-btn")
         page.wait_for_selector(".queue-item[data-status='ready']")
@@ -192,7 +200,7 @@ class TestConfirmationUI:
         }
 
         # 設置頁面
-        page.goto("http://localhost:8000/practice")
+        page.goto(get_test_url("/practice"))
         page.wait_for_selector("#add-question-btn")
         page.click("#add-question-btn")
         page.wait_for_selector(".queue-item[data-status='ready']")
@@ -244,7 +252,7 @@ class TestConfirmationUI:
             "auto_save": False,
         }
 
-        page.goto("http://localhost:8000/practice")
+        page.goto(get_test_url("/practice"))
         # ... 設置步驟 ...
 
         # 確認第一個，忽略第二個，確認第三個
@@ -285,7 +293,7 @@ class TestConfirmationUI:
             "auto_save": True,  # 標記為自動保存
         }
 
-        page.goto("http://localhost:8000/practice")
+        page.goto(get_test_url("/practice"))
         # ... 設置步驟 ...
 
         page.route(

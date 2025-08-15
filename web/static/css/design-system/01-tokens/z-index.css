@@ -1,0 +1,110 @@
+/* ===================================
+   Design Tokens - Z-Index System
+   統一堆疊層次管理系統
+   =================================== */
+
+/* ========== Z-Index Tokens ========== */
+:root {
+  /* ========== 基礎層級 (0-99) ========== */
+  --z-base: 0;          /* 基礎層，正常文檔流 */
+  --z-behind: -1;       /* 背景裝飾層 */
+  --z-low: 1;           /* 輕微提升層 */
+  --z-sticky: 10;       /* 黏性定位層 */
+  
+  /* ========== 內容層級 (100-499) ========== */
+  --z-content: 100;     /* 一般內容層 */
+  --z-sidebar: 200;     /* 側邊欄層 */
+  --z-header: 300;      /* 頁面標題層 */
+  --z-navigation: 400;  /* 導航層 */
+  
+  /* ========== 交互層級 (500-799) ========== */
+  --z-dropdown: 500;    /* 下拉菜單層 */
+  --z-tooltip: 600;     /* 提示框層 */
+  --z-popover: 700;     /* 彈出框層 */
+  --z-floating: 750;    /* 浮動元素層 */
+  
+  /* ========== 覆蓋層級 (800-999) ========== */
+  --z-overlay: 800;     /* 一般覆蓋層 */
+  --z-modal-backdrop: 900;  /* 模態框背景層 */
+  --z-modal: 950;       /* 模態框內容層 */
+  
+  /* ========== 系統層級 (1000+) ========== */
+  --z-notification: 1000;   /* 通知層 */
+  --z-toast: 1100;          /* Toast 提示層 */
+  --z-loading: 1200;        /* 載入指示器層 */
+  --z-debug: 1300;          /* 開發調試層 */
+  --z-emergency: 9999;      /* 緊急最高層（慎用）*/
+  
+  /* ========== 語義化層級別名 ========== */
+  --z-grading-result: var(--z-floating);    /* 批改結果：浮動層級 */
+  --z-practice-ui: var(--z-content);        /* 練習界面：內容層級 */
+  --z-main-content: var(--z-base);          /* 主要內容：基礎層級 */
+  --z-batch-operations: var(--z-modal);     /* 批量操作：模態框層級 */
+  --z-recommendation-card: var(--z-popover); /* 推薦卡片：彈出框層級 */
+}
+
+/* ========== 層級驗證和調試 ========== */
+@media (max-width: 1px) { /* 永不匹配的媒體查詢，用於文檔記錄 */
+  /* 
+   * Z-Index 使用指南：
+   * 
+   * 基礎原則：
+   * 1. 優先使用語義化變量 (--z-grading-result)
+   * 2. 其次使用功能性變量 (--z-floating)
+   * 3. 避免直接使用數字值
+   * 4. 遵循層級範圍約束
+   * 
+   * 層級分配：
+   * - 文檔內容: 0-99
+   * - 界面元素: 100-499  
+   * - 交互組件: 500-799
+   * - 覆蓋元素: 800-999
+   * - 系統組件: 1000+
+   * 
+   * 問題診斷：
+   * 1. 檢查是否使用了語義化變量
+   * 2. 確認層級是否在合理範圍內
+   * 3. 避免使用 --z-emergency
+   */
+}
+
+/* ========== 實用工具類 ========== */
+.z-base { z-index: var(--z-base) !important; }
+.z-low { z-index: var(--z-low) !important; }
+.z-content { z-index: var(--z-content) !important; }
+.z-floating { z-index: var(--z-floating) !important; }
+.z-modal { z-index: var(--z-modal) !important; }
+.z-toast { z-index: var(--z-toast) !important; }
+
+/* 隱藏到後方 */
+.z-behind { z-index: var(--z-behind) !important; }
+
+/* ========== 調試模式 ========== */
+.debug-z-index * {
+  position: relative;
+}
+
+.debug-z-index *::before {
+  content: "z:" attr(style);
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 10px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  padding: 2px 4px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* ========== 舊系統遷移支持 ========== */
+/* 
+ * 注意：以下為舊系統兼容性映射
+ * 新代碼請使用上面的語義化變量
+ */
+:root {
+  --legacy-modal-z: var(--z-modal);           /* 替代硬編碼的 1000 */
+  --legacy-tooltip-z: var(--z-tooltip);       /* 替代硬編碼的 600 */
+  --legacy-dropdown-z: var(--z-dropdown);     /* 替代硬編碼的 500 */
+}

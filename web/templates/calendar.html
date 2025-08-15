@@ -149,7 +149,8 @@
 // 載入連續學習統計
 async function loadStreakStats() {
     try {
-        const response = await fetch('/calendar/api/stats/streak');
+        // TASK-34: 使用統一API端點管理系統
+        const response = await fetch(window.apiEndpoints.getUrl('calendarStreakStats'));
         const data = await response.json();
         
         const streakCard = document.getElementById('streak-card');
@@ -180,7 +181,8 @@ async function showDayDetails(dateStr) {
     
     // 載入詳細資料
     try {
-        const response = await fetch(`/calendar/api/day/${dateStr}`);
+        // TASK-34: 使用統一API端點管理系統
+        const response = await fetch(window.apiEndpoints.getUrl('calendarDay', { date: dateStr }));
         const data = await response.json();
         
         let html = '';

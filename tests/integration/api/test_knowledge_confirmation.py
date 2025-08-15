@@ -3,10 +3,12 @@
 測試批改後的知識點確認/刪除機制
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock
 
+from tests.config.api_endpoints import TEST_API_ENDPOINTS
 from web.main import app
 
 
@@ -55,7 +57,7 @@ class TestKnowledgeConfirmation:
 
             # 發送批改請求
             response = client.post(
-                "/api/grade-answer",
+                TEST_API_ENDPOINTS.GRADE_ANSWER,
                 json={
                     "chinese": "我昨天去了那裡",
                     "english": "I go there yesterday",
@@ -79,7 +81,7 @@ class TestKnowledgeConfirmation:
             assert pending_point["user_answer"] == "I go there yesterday"
 
             # 確認沒有自動保存標記
-            assert data.get("auto_save", True) == False
+            assert not data.get("auto_save", True)
 
     def test_confirm_knowledge_points_success(self, client):
         """測試確認知識點API"""
@@ -92,7 +94,7 @@ class TestKnowledgeConfirmation:
 
             # 發送確認請求
             response = client.post(
-                "/api/confirm-knowledge-points",
+                TEST_API_ENDPOINTS.CONFIRM_KNOWLEDGE,
                 json={
                     "confirmed_points": [
                         {
@@ -116,7 +118,7 @@ class TestKnowledgeConfirmation:
             data = response.json()
 
             # 檢查返回結果
-            assert data["success"] == True
+            assert data["success"]
             assert data["confirmed_count"] == 1
             assert 123 in data["point_ids"]
 
@@ -133,7 +135,7 @@ class TestKnowledgeConfirmation:
 
             # 發送批量確認請求
             response = client.post(
-                "/api/confirm-knowledge-points",
+                TEST_API_ENDPOINTS.CONFIRM_KNOWLEDGE,
                 json={
                     "confirmed_points": [
                         {
@@ -164,23 +166,23 @@ class TestKnowledgeConfirmation:
     def test_confirm_empty_points_list(self, client):
         """測試確認空列表的情況"""
 
-        response = client.post("/api/confirm-knowledge-points", json={"confirmed_points": []})
+        response = client.post(TEST_API_ENDPOINTS.CONFIRM_KNOWLEDGE, json={"confirmed_points": []})
 
         assert response.status_code == 200
         data = response.json()
 
-        assert data["success"] == True
+        assert data["success"]
         assert data["confirmed_count"] == 0
         assert data["point_ids"] == []
 
     def test_grade_answer_with_auto_save_config(self, client, mock_grade_result):
         """測試當配置為自動保存時的行為"""
 
-        with patch("core.config.AUTO_SAVE_KNOWLEDGE_POINTS", True):
-            with patch("web.routers.practice.get_ai_service") as mock_ai:
-                with patch(
-                    "web.routers.practice.get_knowledge_manager_async_dependency"
-                ) as mock_km:
+        with (
+            patch("core.config.AUTO_SAVE_KNOWLEDGE_POINTS", True),
+            patch("web.routers.practice.get_ai_service") as mock_ai,
+            patch("web.routers.practice.get_knowledge_manager_async_dependency") as mock_km
+        ):
                     # 模擬服務
                     mock_ai_service = MagicMock()
                     mock_ai_service.grade_translation.return_value = mock_grade_result
@@ -196,7 +198,7 @@ class TestKnowledgeConfirmation:
 
                     # 發送批改請求
                     response = client.post(
-                        "/api/grade-answer",
+                        TEST_API_ENDPOINTS.GRADE_ANSWER,
                         json={
                             "chinese": "我昨天去了那裡",
                             "english": "I go there yesterday",
@@ -214,7 +216,7 @@ class TestKnowledgeConfirmation:
                         mock_knowledge.save_mistake.assert_called_once()
 
                     # 不應該返回待確認的知識點
-                    assert data.get("auto_save", False) == True
+                    assert data.get("auto_save", False)
 
     @pytest.mark.asyncio
     async def test_knowledge_manager_add_from_error_method(self):

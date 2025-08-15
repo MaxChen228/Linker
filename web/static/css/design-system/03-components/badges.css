@@ -45,7 +45,7 @@
 
 .badge[data-variant="primary"]:hover {
   background: rgba(99, 102, 241, 0.2);
-  transform: translateY(-1px);
+  transform: translateY(calc(var(--space-1) * -0.25));
 }
 
 /* 成功變體 */
@@ -150,21 +150,21 @@
   background: rgba(239, 68, 68, 0.1);
   color: var(--error);
   border-color: transparent;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--space-2-5));
 }
 
 .badge[data-mastery="medium"] {
   background: rgba(245, 158, 11, 0.1);
   color: var(--warning);
   border-color: transparent;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--space-2-5));
 }
 
 .badge[data-mastery="high"] {
   background: rgba(16, 185, 129, 0.1);
   color: var(--success);
   border-color: transparent;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--space-2-5));
 }
 
 /* ============================================ */
@@ -173,14 +173,14 @@
 
 /* 小尺寸 */
 .badge[data-size="sm"] {
-  height: 20px;
+  height: var(--space-5);
   padding: 0 var(--space-2);
   font-size: 0.6875rem;
 }
 
 /* 大尺寸 */
 .badge[data-size="lg"] {
-  height: 28px;
+  height: 1.75rem; /* 28px */
   padding: 0 var(--space-4);
   font-size: var(--text-sm);
 }
@@ -193,7 +193,7 @@
   flex-direction: column;
   gap: var(--space-2);
   border-radius: var(--radius-xl);
-  min-width: 80px;
+  min-width: 5rem; /* 80px */
 }
 
 .badge[data-size="xl"] .badge-label {
@@ -220,15 +220,15 @@
 }
 
 .badge[data-clickable="true"]:hover {
-  transform: translateY(-1px);
+  transform: translateY(calc(var(--space-1) * -0.25));
   box-shadow: var(--shadow-xs);
 }
 
 /* 帶圖標徽章 */
 .badge-icon {
   display: inline-flex;
-  width: 14px;
-  height: 14px;
+  width: 0.875rem; /* 14px */
+  height: 0.875rem; /* 14px */
   margin-right: var(--space-1);
 }
 
@@ -237,8 +237,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
-  height: 18px;
+  min-width: 1.125rem; /* 18px */
+  height: 1.125rem; /* 18px */
   padding: 0 var(--space-1);
   margin-left: var(--space-1);
   background: rgba(255, 255, 255, 0.2);
@@ -269,8 +269,8 @@
   left: var(--space-2);
   top: 50%;
   transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
   border-radius: 50%;
   background: currentColor;
 }
@@ -321,7 +321,7 @@
   }
   
   .badge[data-size="xl"] {
-    min-width: 70px;
+    min-width: 4.375rem; /* 70px */
     padding: var(--space-3) var(--space-4);
   }
   

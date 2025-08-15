@@ -55,7 +55,7 @@ footer small {
   color: var(--text-muted);
   opacity: 0;
   transition: var(--transition-all);
-  z-index: 1000;
+  z-index: var(--z-toast);
   pointer-events: none;
   box-shadow: var(--shadow-md);
 }

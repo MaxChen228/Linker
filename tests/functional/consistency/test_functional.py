@@ -21,7 +21,10 @@ async def test_statistics_consistency():
         import os
 
         os.environ["USE_DATABASE"] = "true"
-        os.environ["DATABASE_URL"] = "postgresql://postgres:postgres@localhost:5432/linker_test"
+        # 使用統一的測試配置
+        from tests.config import TestConfig
+        test_config = TestConfig()
+        os.environ["DATABASE_URL"] = test_config.get_test_url()
 
         from core.database.adapter import get_knowledge_manager, get_knowledge_manager_async
 

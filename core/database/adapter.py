@@ -11,8 +11,7 @@ from core.cache_manager import UnifiedCacheManager, CacheCategories
 from core.database.connection import get_database_connection
 from core.database.database_manager import DatabaseKnowledgeManager, create_database_manager
 from core.database.repositories.knowledge_repository import KnowledgePointRepository
-# Temporarily use the backup JSON version until full migration is complete
-from core.knowledge_json_backup import KnowledgeManager as LegacyKnowledgeManager
+# JSON mode removed - using database-only mode
 from core.models import KnowledgePoint, ReviewExample
 from core.log_config import get_module_logger
 from core.error_handler import ErrorHandler, with_error_handling
@@ -31,14 +30,14 @@ class KnowledgeManagerAdapter:
     4. 統一的異步 API
     """
 
-    def __init__(self, use_database: bool = False, data_dir: Optional[str] = None):
-        """初始化適配器"""
+    def __init__(self, use_database: bool = True, data_dir: Optional[str] = None):
+        """初始化適配器 - 強制資料庫模式（JSON模式已移除）"""
         self.logger = get_module_logger(self.__class__.__name__)
-        self.use_database = use_database
+        self.use_database = True  # Force database mode - JSON mode removed
         self.data_dir = data_dir or "data"
 
-        # TASK-20D: 統一錯誤處理體系
-        self._error_handler = ErrorHandler(mode="database" if use_database else "json")
+        # TASK-20D: 統一錯誤處理體系 - 強制資料庫模式
+        self._error_handler = ErrorHandler(mode="database")
         self._fallback_manager = get_fallback_manager()
 
         # 統一快取管理器
@@ -52,8 +51,7 @@ class KnowledgeManagerAdapter:
         self._db_connection = None
         self._repository: Optional[KnowledgePointRepository] = None
 
-        # 傳統 JSON 管理器
-        self._legacy_manager: Optional[LegacyKnowledgeManager] = None
+        # JSON mode removed - database-only
 
         # 快取（用於資料庫模式）
         self._knowledge_points_cache: list[KnowledgePoint] = []
@@ -139,21 +137,14 @@ class KnowledgeManagerAdapter:
             await self._fallback_to_legacy_async()
 
     def _initialize_legacy(self) -> None:
-        """初始化 JSON 模式"""
-        try:
-            if not self._legacy_manager:
-                self._legacy_manager = LegacyKnowledgeManager(data_dir=self.data_dir)
-                self.logger.info("JSON 模式初始化成功")
-        except Exception as e:
-            self.logger.error(f"JSON 模式初始化失敗: {e}")
-            raise
+        """Legacy JSON mode removed - database-only mode"""
+        self.logger.warning("JSON模式已移除，僅支援資料庫模式")
+        raise RuntimeError("JSON模式已移除，請使用資料庫模式")
 
     async def _fallback_to_legacy_async(self) -> None:
-        """異步降級到 JSON 模式"""
-        self.use_database = False
-        self._db_connection = None
-        self._repository = None
-        self._initialize_legacy()
+        """Legacy JSON mode removed - no fallback available"""
+        self.logger.error("JSON模式已移除，無法降級")
+        raise RuntimeError("JSON模式已移除，無法降級到JSON模式")
 
     async def _load_cache_from_database_async(self) -> None:
         """異步從資料庫載入快取"""

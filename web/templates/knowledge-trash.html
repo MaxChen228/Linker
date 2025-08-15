@@ -362,7 +362,8 @@
 // 復原知識點
 async function restorePoint(pointId) {
   try {
-    const response = await fetch(`/api/knowledge/${pointId}/restore`, {
+    // TASK-34: 使用統一API端點管理系統
+    const response = await fetch(window.apiEndpoints.getUrl('knowledgeRestore', { id: pointId }), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -401,7 +402,8 @@ function clearOldTrash() {
     '確定要永久刪除所有超過 30 天的項目嗎？',
     async () => {
       try {
-        const response = await fetch('/api/knowledge/trash/clear', {
+        // TASK-34: 使用統一API端點管理系統
+        const response = await fetch(window.apiEndpoints.getUrl('knowledgeTrashClear'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

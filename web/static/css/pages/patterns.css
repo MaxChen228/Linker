@@ -4,43 +4,43 @@
 
 /* ========== 頁面頭部 ========== */
 .patterns-header {
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
 .header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
 }
 
 .page-title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
   color: var(--text-primary);
   margin: 0;
 }
 
 .quick-stats {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 
 /* ========== 搜尋欄 ========== */
 .search-bar {
   position: relative;
-  max-width: 600px;
+  max-width: 37.5rem;
 }
 
 .search-bar input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 3rem;
-  font-size: 1rem;
-  border: 2px solid var(--border-default);
-  border-radius: 12px;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-12);
+  font-size: var(--text-base);
+  border: var(--border-width-normal) solid var(--border-default);
+  border-radius: var(--radius-lg);
   background: var(--surface-base);
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .search-bar input:focus {
@@ -51,7 +51,7 @@
 
 .search-icon {
   position: absolute;
-  left: 1rem;
+  left: var(--space-4);
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-tertiary);
@@ -59,25 +59,25 @@
 
 .search-hint {
   position: absolute;
-  right: 1rem;
+  right: var(--space-4);
   top: 50%;
   transform: translateY(-50%);
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--text-tertiary);
   pointer-events: none;
 }
 
 /* ========== 篩選區域 ========== */
 .filter-container {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
+  margin-bottom: var(--space-8);
+  padding: var(--space-6);
   background: var(--surface-elevated);
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  border: var(--border-width-thin) solid var(--border-light);
 }
 
 .filter-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
 }
 
 .filter-section:last-child {
@@ -85,19 +85,19 @@
 }
 
 .filter-title {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
   color: var(--text-secondary);
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: var(--tracking-wide);
 }
 
 .filter-tabs,
 .filter-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 /* 舊的 .filter-tab 和 .filter-pill 樣式已移至設計系統 */
@@ -111,21 +111,21 @@
 /* ========== 句型卡片網格 ========== */
 .patterns-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(23.75rem /* 380px */, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
 .pattern-card-compact {
   background: var(--surface-base);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
+  border: var(--border-width-thin) solid var(--border-light);
+  border-radius: var(--radius-lg);
   transition: all 0.3s;
   overflow: hidden;
 }
 
 .pattern-card-compact:hover {
-  transform: translateY(-2px);
+  transform: translateY(calc(var(--space-1) * -0.5));
   box-shadow: var(--shadow-lg);
   border-color: var(--accent-200);
 }
@@ -142,12 +142,12 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
 }
 
 .pattern-formula {
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary);
   margin: 0;
   line-height: 1.3;
@@ -162,10 +162,10 @@
 
 /* 公式展示 */
 .pattern-formula-compact {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
   padding: 0.5rem;
   background: var(--surface-dark);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
@@ -182,10 +182,10 @@
 /* 統計資訊 */
 .pattern-stats-compact {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: var(--border-width-thin) solid var(--border-light);
 }
 
 .stat-item {
@@ -202,20 +202,20 @@
 
 /* 例句預覽 */
 .pattern-example-preview {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
 }
 
 .example-item {
   padding: 0.625rem;
   background: var(--surface-elevated);
-  border-radius: 6px;
-  border-left: 3px solid var(--accent-300);
+  border-radius: var(--radius-md);
+  border-left: var(--border-width-thick) solid var(--accent-300);
 }
 
 .example-zh,
 .example-en {
   display: block;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
@@ -236,7 +236,7 @@
 }
 
 .view-detail {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--accent-600);
   font-weight: 500;
   transition: color 0.2s;
@@ -276,7 +276,7 @@
   .header-top {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: var(--space-4);
   }
   
   .filter-tabs {
@@ -287,7 +287,7 @@
   
   .pattern-header-compact {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
   
   .pattern-badges {

@@ -11,46 +11,46 @@
   position: fixed;
   bottom: var(--space-6);
   right: var(--space-6);
-  width: 56px;
-  height: 56px;
+  width: var(--size-trigger-default);
+  height: var(--size-trigger-default);
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--accent-600);
-  color: white;
+  color: var(--text-on-primary);
   border: none;
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-lg);
   cursor: pointer;
   z-index: var(--z-floating, 100);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--duration-normal) var(--ease-spring);
   
   /* 確保可訪問性 */
-  outline-offset: 4px;
+  outline-offset: var(--space-1);
 }
 
 .recommendation-trigger:hover {
   background: var(--accent-700);
-  transform: translateY(-2px) scale(1.05);
+  transform: translateY(var(--offset-hover)) scale(var(--scale-hover-button));
   box-shadow: var(--shadow-xl);
 }
 
 .recommendation-trigger:active {
-  transform: translateY(-1px) scale(1.02);
+  transform: translateY(var(--offset-active)) scale(var(--scale-active-button));
 }
 
 .recommendation-trigger:focus-visible {
-  outline: 2px solid var(--accent-300);
+  outline: var(--border-width-normal) solid var(--accent-300);
 }
 
 .recommendation-trigger-icon {
-  width: 24px;
-  height: 24px;
-  transition: transform 0.2s ease;
+  width: var(--space-6);
+  height: var(--space-6);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
 
 .recommendation-trigger:hover .recommendation-trigger-icon {
-  transform: scale(1.1);
+  transform: scale(var(--scale-hover-icon));
 }
 
 /* 位置變體 */
@@ -68,13 +68,13 @@
 
 /* 尺寸變體 */
 .recommendation-trigger[data-size="sm"] {
-  width: 48px;
-  height: 48px;
+  width: var(--space-12);
+  height: var(--space-12);
 }
 
 .recommendation-trigger[data-size="lg"] {
-  width: 64px;
-  height: 64px;
+  width: var(--size-trigger-lg);
+  height: var(--size-trigger-lg);
 }
 
 /* ============================================ */
@@ -85,9 +85,9 @@
 .recommendation-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: var(--overlay-recommendation);
+  backdrop-filter: blur(var(--space-1));
+  -webkit-backdrop-filter: blur(var(--space-1));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,8 +96,8 @@
   opacity: 0;
   visibility: hidden;
   transition: 
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity var(--duration-normal) var(--ease-spring),
+    visibility var(--duration-normal) var(--ease-spring);
 }
 
 .recommendation-modal-overlay[data-visible="true"] {
@@ -110,14 +110,14 @@
   background: var(--surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-2xl);
-  max-width: 500px;
+  max-width: var(--width-modal-default);
   width: 100%;
-  max-height: 80vh;
+  max-height: var(--height-recommendation-max);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transform: translateY(20px) scale(0.95);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(var(--space-5)) scale(0.95);
+  transition: transform var(--duration-normal) var(--ease-spring);
   
   /* 確保可訪問性 */
   outline: none;
@@ -133,7 +133,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-6);
-  border-bottom: 1px solid var(--border);
+  border-bottom: var(--border-width-thin) solid var(--border);
   position: sticky;
   top: 0;
   background: var(--surface);
@@ -148,8 +148,8 @@
 }
 
 .recommendation-modal-close {
-  width: 32px;
-  height: 32px;
+  width: var(--size-8);
+  height: var(--size-8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,7 +158,7 @@
   border-radius: var(--radius);
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .recommendation-modal-close:hover {
@@ -167,8 +167,8 @@
 }
 
 .recommendation-modal-close:focus-visible {
-  outline: 2px solid var(--accent-300);
-  outline-offset: 2px;
+  outline: var(--border-width-normal) solid var(--accent-300);
+  outline-offset: var(--space-1);
 }
 
 /* 模態框內容區域 */
@@ -197,11 +197,11 @@
 .recommendation-card {
   position: relative;
   background: var(--surface-elevated);
-  border: 1px solid var(--border);
+  border: var(--border-width-thin) solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--duration-normal) var(--ease-spring);
   overflow: hidden;
 }
 
@@ -212,7 +212,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: var(--height-progress);
   background: linear-gradient(
     90deg,
     var(--accent-500) 0%,
@@ -231,8 +231,8 @@
 }
 
 .recommendation-icon {
-  width: 48px;
-  height: 48px;
+  width: var(--space-12);
+  height: var(--space-12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -242,8 +242,8 @@
 }
 
 .recommendation-icon svg {
-  width: 24px;
-  height: 24px;
+  width: var(--space-6);
+  height: var(--space-6);
   color: var(--accent-600);
 }
 
@@ -349,13 +349,13 @@
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .focus-area-tag:hover {
   background: var(--accent-100);
   border-color: var(--accent-300);
-  transform: translateY(-1px);
+  transform: translateY(calc(var(--space-1) * -0.25));
 }
 
 /* 統計資訊區 */
@@ -403,19 +403,19 @@
   flex: 1;
   padding: var(--space-3) var(--space-4);
   background: var(--accent-600);
-  color: white;
+  color: var(--text-on-primary);
   border: none;
   border-radius: var(--radius);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) var(--ease-out);
   text-align: center;
 }
 
 .recommendation-action:hover {
   background: var(--accent-700);
-  transform: translateY(-1px);
+  transform: translateY(calc(var(--space-1) * -0.25));
   box-shadow: var(--shadow-md);
 }
 
@@ -426,7 +426,7 @@
 .recommendation-action[data-variant="secondary"] {
   background: var(--surface);
   color: var(--text);
-  border: 1px solid var(--border);
+  border: var(--border-width-thin) solid var(--border);
 }
 
 .recommendation-action[data-variant="secondary"]:hover {
@@ -473,8 +473,8 @@
 }
 
 .recommendation-empty-icon {
-  width: 64px;
-  height: 64px;
+  width: var(--size-trigger-lg);
+  height: var(--size-trigger-lg);
   margin-bottom: var(--space-4);
   color: var(--text-muted);
   opacity: 0.5;
@@ -548,8 +548,8 @@
 @media (max-width: 768px) {
   /* 觸發按鈕在移動設備上的調整 */
   .recommendation-trigger {
-    width: 48px;
-    height: 48px;
+    width: var(--space-12);
+    height: var(--space-12);
     bottom: var(--space-4);
     right: var(--space-4);
   }

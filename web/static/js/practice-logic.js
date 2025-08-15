@@ -4,6 +4,9 @@
  * @description 採用狀態驅動 UI 模式，管理練習題目的完整生命週期。
  */
 
+// TASK-34: 引入統一API端點管理系統，消除硬編碼
+import { apiEndpoints } from './config/api-endpoints.js';
+
 /**
  * @class PracticeSystem
  * @classdesc 主類別，封裝了練習系統的所有狀態和行為。
@@ -29,6 +32,17 @@ class PracticeSystem {
          * @property {number} generatingCount - 正在生成中的題目數量，用於速率限制。
          */
         this.generatingCount = 0;
+        
+        /**
+         * @property {object} dailyLimitStatus - TASK-32: 每日知識點上限狀態
+         */
+        this.dailyLimitStatus = {
+            limit_enabled: false,
+            daily_limit: 15,
+            used_count: 0,
+            can_add_more: true,
+            breakdown: { isolated: 0, enhancement: 0 }
+        };
 
         /**
          * @property {object} elements - 快取的 DOM 元素，避免重複查詢。
@@ -58,6 +72,9 @@ class PracticeSystem {
         };
 
         this.init();
+        
+        // TASK-32: 初始化時獲取每日限額狀態
+        this.updateDailyLimitStatus();
     }
 
     /**
@@ -205,7 +222,7 @@ class PracticeSystem {
         this.questionQueue.push(newQuestion);
         this.renderQueue();
 
-        const data = await this.fetchAPI('/api/generate-question', params);
+        const data = await this.fetchAPI(apiEndpoints.getUrl('generateQuestion'), params);
 
         if (data.success) {
             this.updateQuestionState(questionId, { 
@@ -291,7 +308,7 @@ class PracticeSystem {
         this.updateQuestionState(question.id, { status: this.QuestionStatus.GRADING, userAnswer });
         this.renderSandbox();
 
-        const result = await this.fetchAPI('/api/grade-answer', {
+        const result = await this.fetchAPI(apiEndpoints.getUrl('gradeAnswer'), {
             chinese: question.chinese,
             english: userAnswer,
             mode: question.mode,
@@ -549,10 +566,7 @@ class PracticeSystem {
                         <div class="confirmation-section">
                             <div class="confirmation-label">請確認是否將以下錯誤加入知識庫：</div>
                             <ul class="pending-points-list">${pendingList}</ul>
-                            <div class="batch-actions">
-                                <button class="btn btn-confirm-all" data-variant="primary" data-size="sm">全部加入</button>
-                                <button class="btn btn-ignore-all" data-variant="secondary" data-size="sm">全部忽略</button>
-                            </div>
+                            ${this.generateKnowledgeButtons(pendingPoints)}
                         </div>
                         <div class="result-actions">
                             <button id="retry-btn" class="btn" data-variant="secondary">重新作答</button>
@@ -567,6 +581,9 @@ class PracticeSystem {
             
             // 綁定確認/忽略按鈕事件
             this.bindConfirmationEvents(question.id);
+            
+            // TASK-32: 綁定限額相關事件
+            this.bindLimitEvents();
         } else {
             // 傳統的錯誤列表展示（自動保存模式）
             const errorList = (result.error_analysis || []).map(e => `
@@ -655,7 +672,7 @@ class PracticeSystem {
         if (!point) return;
         
         // 調用API確認知識點
-        const response = await this.fetchAPI('/api/confirm-knowledge-points', {
+        const response = await this.fetchAPI(apiEndpoints.getUrl('confirmKnowledge'), {
             confirmed_points: [point]
         });
         
@@ -710,7 +727,7 @@ class PracticeSystem {
         if (!question || !question.pendingPoints || question.pendingPoints.length === 0) return;
         
         // 調用API確認所有知識點
-        const response = await this.fetchAPI('/api/confirm-knowledge-points', {
+        const response = await this.fetchAPI(apiEndpoints.getUrl('confirmKnowledge'), {
             confirmed_points: question.pendingPoints
         });
         
@@ -797,6 +814,136 @@ class PracticeSystem {
                 }
             }, 300);
         }, 3000);
+    }
+    
+    // ==================== TASK-32: 每日知識點上限功能 ====================
+    
+    /**
+     * 更新每日限額狀態
+     * @returns {Promise<void>}
+     */
+    async updateDailyLimitStatus() {
+        try {
+            const response = await this.fetchAPI(apiEndpoints.getUrl('knowledgeDailyLimitStatus'), {}, 'GET');
+            if (response) {
+                this.dailyLimitStatus = response;
+                this.updateDailyLimitDisplay();
+            }
+        } catch (error) {
+            console.error('獲取每日限額狀態失敗:', error);
+            // 失敗時使用預設值（不阻擋正常功能）
+        }
+    }
+    
+    /**
+     * 更新限額顯示在頁面上
+     * @returns {void}
+     */
+    updateDailyLimitDisplay() {
+        // 在練習簡介下方添加限額顯示
+        let limitIndicator = document.getElementById('daily-limit-indicator');
+        
+        if (!limitIndicator) {
+            limitIndicator = document.createElement('div');
+            limitIndicator.id = 'daily-limit-indicator';
+            limitIndicator.className = 'daily-limit-indicator';
+            
+            // 插入到 practice-header 之後
+            const header = document.querySelector('.practice-header');
+            if (header && header.parentNode) {
+                header.parentNode.insertBefore(limitIndicator, header.nextSibling);
+            }
+        }
+        
+        if (!this.dailyLimitStatus.limit_enabled) {
+            limitIndicator.style.display = 'none';
+            return;
+        }
+        
+        const percentage = this.dailyLimitStatus.daily_limit > 0 
+            ? (this.dailyLimitStatus.used_count / this.dailyLimitStatus.daily_limit) * 100 
+            : 0;
+        
+        limitIndicator.style.display = 'block';
+        limitIndicator.innerHTML = `
+            <div class="limit-progress">
+                <span class="limit-text">今日已儲存: <strong>${this.dailyLimitStatus.used_count}</strong>/<strong>${this.dailyLimitStatus.daily_limit}</strong></span>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${Math.min(100, percentage)}%"></div>
+                </div>
+            </div>
+            <small class="limit-detail">重點複習: ${this.dailyLimitStatus.breakdown.isolated} | 可改進: ${this.dailyLimitStatus.breakdown.enhancement}</small>
+        `;
+    }
+    
+    /**
+     * 根據限額狀態生成按鈕組合
+     * @param {Array} pendingPoints - 待確認的知識點列表
+     * @returns {string} - 按鈕HTML
+     */
+    generateKnowledgeButtons(pendingPoints) {
+        // 檢查是否有限制類型的知識點
+        const hasLimitedTypes = pendingPoints.some(point => 
+            point.subtype === 'isolated' || point.subtype === 'enhancement'
+        );
+        
+        // 如果沒有限制類型或未啟用限額，顯示正常按鈕
+        if (!hasLimitedTypes || !this.dailyLimitStatus.limit_enabled || this.dailyLimitStatus.can_add_more) {
+            return `
+                <div class="batch-actions" id="knowledge-actions">
+                    <button class="btn btn-confirm-all" data-variant="primary" data-size="sm">全部加入</button>
+                    <button class="btn btn-ignore-all" data-variant="secondary" data-size="sm">全部忽略</button>
+                </div>
+            `;
+        }
+        
+        // 達到上限時顯示合併按鈕
+        return `
+            <div class="batch-actions limit-reached" id="knowledge-actions-limited">
+                <button class="btn btn-limit-reached" id="limit-reached-btn">
+                    📊 已到達上限 - 點擊設定
+                </button>
+                <small class="limit-reached-hint">今日知識點儲存已達上限 (${this.dailyLimitStatus.used_count}/${this.dailyLimitStatus.daily_limit})，可到設定頁面調整</small>
+            </div>
+        `;
+    }
+    
+    /**
+     * 綁定限額相關的事件處理
+     * @returns {void}
+     */
+    bindLimitEvents() {
+        const limitBtn = document.getElementById('limit-reached-btn');
+        if (limitBtn) {
+            limitBtn.addEventListener('click', () => {
+                // 跳轉到設定頁面的限額設定區域
+                window.location.href = '/settings#daily-limit';
+            });
+        }
+    }
+    
+    /**
+     * 使用限額檢查的知識點儲存
+     * @param {object} point - 知識點數據
+     * @returns {Promise<object>} - 儲存結果
+     */
+    async saveKnowledgePointWithLimit(point) {
+        try {
+            const response = await this.fetchAPI(apiEndpoints.getUrl('knowledgeSaveWithLimit'), point, 'POST');
+            
+            if (response.success) {
+                // 更新限額狀態
+                if (response.limit_status) {
+                    this.dailyLimitStatus = response.limit_status;
+                    this.updateDailyLimitDisplay();
+                }
+            }
+            
+            return response;
+        } catch (error) {
+            console.error('帶限額檢查的知識點儲存失敗:', error);
+            return { success: false, message: '儲存失敗' };
+        }
     }
 }
 

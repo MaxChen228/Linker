@@ -6,19 +6,19 @@
 /* Progress Container */
 .batch-progress-container {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
+    bottom: var(--space-5);
+    right: var(--space-5);
+    z-index: var(--z-batch-operations);
     animation: slideInUp 0.3s ease;
 }
 
 /* Progress Card */
 .batch-progress-card {
     background: var(--surface-elevated);
-    border: 1px solid var(--border-default);
+    border: var(--border-width-thin) solid var(--border-default);
     border-radius: var(--radius-lg);
     padding: var(--space-4);
-    min-width: 300px;
+    min-width: 18.75rem;
     box-shadow: var(--shadow-lg);
 }
 
@@ -42,13 +42,13 @@
     color: var(--text-muted);
     cursor: pointer;
     padding: 0;
-    width: 24px;
-    height: 24px;
+    width: var(--space-6);
+    height: var(--space-6);
 }
 
 /* Progress Bar */
 .progress-bar-wrapper {
-    height: 8px;
+    height: var(--space-2);
     background: var(--bg-tertiary);
     border-radius: var(--radius-full);
     overflow: hidden;
@@ -73,16 +73,16 @@
 /* Notifications */
 .notification {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: var(--space-5);
+    right: var(--space-5);
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-md);
     background: var(--surface-elevated);
-    border: 1px solid var(--border-default);
+    border: var(--border-width-thin) solid var(--border-default);
     box-shadow: var(--shadow-lg);
-    z-index: 2000;
+    z-index: var(--z-notification);
     animation: slideInRight 0.3s ease;
-    max-width: 400px;
+    max-width: 25rem; /* 400px */
 }
 
 .notification-success {
@@ -118,7 +118,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1500;
+    z-index: var(--z-modal);
     animation: fadeIn 0.2s ease;
 }
 
@@ -127,7 +127,7 @@
     background: var(--surface-base);
     padding: var(--space-6);
     border-radius: var(--radius-lg);
-    min-width: 400px;
+    min-width: 25rem; /* 400px */
     box-shadow: var(--shadow-xl);
     animation: slideUp 0.3s ease;
 }
@@ -147,7 +147,7 @@
 .modal-input {
     width: 100%;
     padding: var(--space-2);
-    border: 1px solid var(--border-default);
+    border: var(--border-width-thin) solid var(--border-default);
     border-radius: var(--radius-sm);
     margin-bottom: var(--space-4);
     font-size: var(--text-base);
@@ -163,7 +163,7 @@
 .modal-btn {
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-md);
-    border: 1px solid var(--border-default);
+    border: var(--border-width-thin) solid var(--border-default);
     background: var(--surface-base);
     cursor: pointer;
     font-size: var(--text-sm);
@@ -176,7 +176,7 @@
 
 .modal-btn.btn-primary {
     background: var(--accent-600);
-    color: white;
+    color: var(--text-on-primary);
     border: none;
 }
 
@@ -229,7 +229,7 @@
 
 @keyframes slideUp {
     from {
-        transform: translateY(20px);
+        transform: translateY(var(--space-5));
         opacity: 0;
     }
     to {

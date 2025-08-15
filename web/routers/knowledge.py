@@ -10,6 +10,9 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from core.error_types import ErrorCategory, ErrorTypeSystem
+
+# TASK-34: 引入統一API端點管理系統，消除硬編碼
+from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import (
     get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
     get_templates,
@@ -18,7 +21,7 @@ from web.dependencies import (
 router = APIRouter()
 
 
-@router.get("/knowledge", response_class=HTMLResponse)
+@router.get(API_ENDPOINTS.KNOWLEDGE_PAGE, response_class=HTMLResponse)
 async def knowledge_points(
     request: Request, category: Optional[str] = None, mastery: Optional[str] = None
 ):
@@ -63,7 +66,7 @@ async def knowledge_points(
     for point in all_points:
         # 處理 category 可能是字符串或枚舉的情況
         category_value = point.category if isinstance(point.category, str) else point.category.value
-        
+
         if category_value == "systematic":
             # 系統性錯誤按subtype分組
             subtype_obj = type_system.get_subtype_by_name(point.subtype)
@@ -113,7 +116,7 @@ async def knowledge_points(
 
     # 獲取複習佇列（可以複習的知識點）
     review_queue = await knowledge.get_review_candidates(max_points=20)  # TASK-31: 添加 await
-    
+
     # 統一使用資料庫數據源避免統計不一致（修復：總知識點 vs 待複習數量矛盾）
     if hasattr(knowledge, "get_review_candidates_async"):
         due_points = await knowledge.get_review_candidates_async(max_points=100)
@@ -145,7 +148,7 @@ async def knowledge_points(
     )
 
 
-@router.get("/knowledge/trash", response_class=HTMLResponse)
+@router.get(API_ENDPOINTS.KNOWLEDGE_TRASH_PAGE, response_class=HTMLResponse)
 async def knowledge_trash(request: Request):
     """知識點回收站頁面"""
     templates = get_templates()
@@ -205,7 +208,7 @@ async def knowledge_trash(request: Request):
     )
 
 
-@router.get("/knowledge/{point_id}", response_class=HTMLResponse)
+@router.get(API_ENDPOINTS.KNOWLEDGE_DETAIL_PAGE, response_class=HTMLResponse)
 async def knowledge_detail(request: Request, point_id: str):
     """知識點詳情頁面"""
     templates = get_templates()
@@ -216,7 +219,7 @@ async def knowledge_detail(request: Request, point_id: str):
         point_id_int = int(point_id)
     except ValueError:
         return RedirectResponse(url="/knowledge", status_code=303)
-        
+
     if hasattr(knowledge, "get_knowledge_point_async"):
         point = await knowledge.get_knowledge_point_async(point_id_int)
     else:

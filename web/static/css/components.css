@@ -15,14 +15,14 @@
   padding: var(--space-4);
   background: var(--surface-base);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   transition: var(--transition-all);
 }
 
 .item:hover {
   background: var(--surface-elevated);
   border-color: var(--border-hover);
-  transform: translateY(-2px);
+  transform: translateY(calc(-1 * var(--border-width-normal)));
   box-shadow: var(--shadow-md);
 }
 
@@ -108,10 +108,10 @@
 }
 
 .empty-state svg {
-  width: 64px;
-  height: 64px;
+  width: var(--space-16);
+  height: var(--space-16);
   margin: 0 auto var(--space-4);
-  opacity: 0.3;
+  opacity: var(--opacity-empty-icon);
 }
 
 .empty-state h3 {
@@ -131,16 +131,16 @@
   right: var(--space-6);
   padding: var(--space-3) var(--space-4);
   background: var(--surface-base);
-  border: 1px solid var(--border-default);
+  border: var(--border-width-thin) solid var(--border-default);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  transform: translateY(100px);
+  transform: translateY(var(--offset-toast));
   opacity: 0;
   transition: var(--transition-all);
-  z-index: 1000;
+  z-index: var(--z-toast);
 }
 
 .toast.show {
@@ -160,25 +160,25 @@
 
 /* Divider */
 .divider {
-  height: 1px;
+  height: var(--border-width-thin);
   background: var(--border-default);
   margin: var(--space-6) 0;
 }
 
 /* Focus States */
 .focus-ring {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  outline: var(--border-width-normal) solid var(--primary);
+  outline-offset: var(--border-width-normal);
   border-radius: var(--radius-md);
 }
 
 /* Accessibility */
 .visually-hidden {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: var(--border-width-thin);
+  height: var(--border-width-thin);
   padding: 0;
-  margin: -1px;
+  margin: calc(-1 * var(--border-width-thin));
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -206,7 +206,7 @@
   /* Examples Section */
   .examples {
     background: var(--surface-elevated);
-    border: 1px solid var(--border-light);
+    border: var(--border-width-thin) solid var(--border-light);
   }
   
   .examples .zh {
@@ -240,7 +240,7 @@
   }
   
   .empty-state svg {
-    opacity: 0.4;
+    opacity: var(--opacity-empty-icon-dark);
   }
   
   /* Section Styles */

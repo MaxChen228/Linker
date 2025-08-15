@@ -20,6 +20,7 @@
       <a class="{% if active=='practice' %}active{% endif %}" href="/practice">翻譯練習</a>
       <a class="{% if active=='knowledge' %}active{% endif %}" href="/knowledge">知識點</a>
       <a class="{% if active=='calendar' %}active{% endif %}" href="/calendar">學習日曆</a>
+      <a class="{% if active=='settings' %}active{% endif %}" href="/settings">設定</a>
     </nav>
   </header>
 
@@ -31,8 +32,10 @@
     <small>© Linker</small>
   </footer>
   
+  <!-- TASK-34: 統一API端點管理系統 -->
+  <script type="module" src="/static/js/config/api-endpoints.js"></script>
   <!-- 日誌系統 -->
-  <script src="/static/js/logger.js"></script>
+  <script type="module" src="/static/js/logger.js"></script>
   <!-- 主要互動腳本 -->
   <script src="/static/main.js"></script>
   <!-- 頁面專屬腳本 -->

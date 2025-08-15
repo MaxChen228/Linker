@@ -3,6 +3,9 @@
  * 負責獲取和顯示個性化學習推薦
  */
 
+// TASK-34: 引入統一API端點管理系統，消除硬編碼
+import { apiEndpoints } from './config/api-endpoints.js';
+
 class RecommendationCard {
     constructor(containerId, options = {}) {
         this.containerId = containerId;
@@ -113,7 +116,7 @@ class RecommendationCard {
         this.renderLoadingState();
         
         try {
-            const response = await fetch('/api/knowledge/recommendations', {
+            const response = await fetch(apiEndpoints.getUrl('knowledgeRecommendations'), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

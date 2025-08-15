@@ -13,6 +13,10 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from core.exceptions import KnowledgeNotFoundError
+
+# TASK-34: 引入統一API端點管理系統，消除硬編碼
+# 注意：由於router使用prefix="/api/knowledge"，路由定義只需要相對路徑
+from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import (
     get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
     get_logger,
@@ -28,6 +32,21 @@ from web.models.validation import (
 
 router = APIRouter(prefix="/api/knowledge")
 logger = get_logger()
+
+# TASK-34: 輔助函數，從完整API路徑提取相對路徑
+def _get_relative_path(full_path: str) -> str:
+    """從完整API路徑提取相對於/api/knowledge的路徑
+    
+    Args:
+        full_path: 完整路徑，如 "/api/knowledge/recommendations"
+        
+    Returns:
+        相對路徑，如 "/recommendations"
+    """
+    prefix = "/api/knowledge"
+    if full_path.startswith(prefix):
+        return full_path[len(prefix):] or "/"
+    return full_path
 
 
 class EditKnowledgeRequest(BaseModel):
@@ -98,7 +117,7 @@ batch_tasks: dict[str, BatchProgress] = {}
 # ==================== 固定路徑路由（必須在動態路徑之前）====================
 
 
-@router.get("/recommendations")
+@router.get(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_RECOMMENDATIONS))
 async def get_learning_recommendations(params: RecommendationParams = RecommendationParams()):
     """獲取學習推薦
 
@@ -127,7 +146,7 @@ async def get_learning_recommendations(params: RecommendationParams = Recommenda
         raise HTTPException(status_code=500, detail=f"獲取推薦失敗: {str(e)}") from e
 
 
-@router.get("/trash/list")
+@router.get(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_TRASH_LIST))
 async def get_trash_list():
     """獲取回收站中的知識點列表"""
     knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
@@ -155,7 +174,7 @@ async def get_trash_list():
     return JSONResponse({"success": True, "count": len(trash_items), "items": trash_items})
 
 
-@router.post("/trash/clear")
+@router.post(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_TRASH_CLEAR))
 async def clear_old_trash(days: int = 30):
     """清理超過指定天數的回收站項目"""
     knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
@@ -173,7 +192,7 @@ async def clear_old_trash(days: int = 30):
     )
 
 
-@router.post("/batch")
+@router.post(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_BATCH))
 async def batch_operation(request: EnhancedBatchRequest, background_tasks: BackgroundTasks):
     """批量操作端點"""
     knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
@@ -183,7 +202,7 @@ async def batch_operation(request: EnhancedBatchRequest, background_tasks: Backg
         operation_enum = BatchOperation(request.operation)
     except ValueError:
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail=f"不支持的操作類型: {request.operation}"
         )
 
@@ -242,7 +261,7 @@ async def batch_operation(request: EnhancedBatchRequest, background_tasks: Backg
         )
 
 
-@router.get("/batch/{task_id}/progress")
+@router.get(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_BATCH_PROGRESS))
 async def get_batch_progress(task_id: str):
     """查詢批量操作進度"""
     if task_id not in batch_tasks:
@@ -253,7 +272,7 @@ async def get_batch_progress(task_id: str):
     return JSONResponse(task.dict())
 
 
-@router.delete("/batch/{task_id}")
+@router.delete(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_BATCH_DELETE))
 async def cancel_batch_operation(
     task_id: str = Path(..., min_length=8, max_length=100, description="批量任務ID"),
 ):
@@ -273,7 +292,7 @@ async def cancel_batch_operation(
     return JSONResponse({"success": True, "message": "任務已清理"})
 
 
-@router.post("/maintenance/delete-old-points")
+@router.post(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_MAINTENANCE_DELETE_OLD))
 async def delete_old_knowledge_points(request: DeleteOldPointsRequest):
     """永久刪除舊的已刪除知識點
 
@@ -306,7 +325,7 @@ async def delete_old_knowledge_points(request: DeleteOldPointsRequest):
 # ==================== 動態路徑路由（必須在固定路徑之後）====================
 
 
-@router.get("/{point_id}")
+@router.get(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_DETAIL))
 async def get_knowledge_point(point_id: int):
     """獲取單個知識點詳情"""
     knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
@@ -348,7 +367,7 @@ async def get_knowledge_point(point_id: int):
     return JSONResponse(point_dict)
 
 
-@router.put("/{point_id}")
+@router.put(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_DETAIL))
 async def edit_knowledge_point(
     request: EnhancedEditKnowledgeRequest,
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
@@ -372,7 +391,7 @@ async def edit_knowledge_point(
     return JSONResponse({"success": True, "message": "知識點已更新", "history": history})
 
 
-@router.delete("/{point_id}")
+@router.delete(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_DETAIL))
 async def delete_knowledge_point(
     request: EnhancedDeleteKnowledgeRequest,
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
@@ -390,7 +409,7 @@ async def delete_knowledge_point(
     return JSONResponse({"success": True, "message": "知識點已移至回收站"})
 
 
-@router.post("/{point_id}/restore")
+@router.post(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_RESTORE))
 async def restore_knowledge_point(
     point_id: int = Path(..., ge=1, le=1000000, description="知識點ID"),
 ):
@@ -407,7 +426,7 @@ async def restore_knowledge_point(
     return JSONResponse({"success": True, "message": "知識點已復原"})
 
 
-@router.post("/{point_id}/tags")
+@router.post(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_TAGS))
 async def update_tags(
     request: TagsRequest, point_id: int = Path(..., ge=1, le=1000000, description="知識點ID")
 ):
@@ -422,7 +441,7 @@ async def update_tags(
     return JSONResponse({"success": True, "message": "標籤已更新", "tags": request.tags})
 
 
-@router.post("/{point_id}/notes")
+@router.post(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_NOTES))
 async def update_notes(
     request: NotesRequest, point_id: int = Path(..., ge=1, le=1000000, description="知識點ID")
 ):
@@ -552,3 +571,174 @@ async def process_batch_operation(
         task.status = "failed"
         task.errors.append({"error": f"批量操作失敗: {str(e)}"})
         logger.error(f"批量操作失敗: {e}")
+
+
+# ==================== TASK-32: 每日知識點上限功能 ====================
+
+
+class DailyLimitConfigRequest(BaseModel):
+    """每日限額配置請求"""
+
+    daily_limit: Optional[int] = None
+    limit_enabled: Optional[bool] = None
+
+
+@router.get(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_DAILY_LIMIT_STATUS))
+async def get_daily_limit_status():
+    """獲取每日限額狀態"""
+    knowledge = await get_async_knowledge_service()
+
+    try:
+        # 獲取今日狀態（假設是 isolated 類型來獲取狀態）
+        limit_status = await knowledge.check_daily_limit("isolated")
+        config = await knowledge.get_daily_limit_config()
+
+        return JSONResponse({
+            "date": limit_status.get("date", ""),
+            "limit_enabled": config["limit_enabled"],
+            "daily_limit": config["daily_knowledge_limit"],
+            "used_count": limit_status.get("used_count", 0),
+            "remaining": limit_status.get("remaining", config["daily_knowledge_limit"]),
+            "can_add_more": limit_status.get("can_add", True),
+            "breakdown": limit_status.get("breakdown", {"isolated": 0, "enhancement": 0}),
+            "status": "normal" if limit_status.get("can_add", True) else "exceeded"
+        })
+
+    except Exception as e:
+        logger.error(f"獲取每日限額狀態失敗: {e}")
+        raise HTTPException(status_code=500, detail="獲取限額狀態失敗")
+
+
+@router.get(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_DAILY_LIMIT_CONFIG))
+async def get_daily_limit_config():
+    """獲取每日限額配置"""
+    knowledge = await get_async_knowledge_service()
+    try:
+        config = await knowledge.get_daily_limit_config()
+        return JSONResponse(config)
+    except Exception as e:
+        logger.error(f"獲取每日限額配置失敗: {e}")
+        raise HTTPException(status_code=500, detail="獲取配置失敗")
+
+
+@router.put(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_DAILY_LIMIT_CONFIG))
+async def update_daily_limit_config(request: DailyLimitConfigRequest):
+    """更新每日限額配置"""
+    knowledge = await get_async_knowledge_service()
+
+    try:
+        result = await knowledge.update_daily_limit_config(
+            daily_limit=request.daily_limit,
+            limit_enabled=request.limit_enabled
+        )
+
+        if not result["success"]:
+            raise HTTPException(status_code=400, detail=result["message"])
+
+        logger.info(f"每日限額配置已更新: {result['config']}")
+        return JSONResponse(result)
+
+    except Exception as e:
+        logger.error(f"更新每日限額配置失敗: {e}")
+        raise HTTPException(status_code=500, detail="配置更新失敗")
+
+
+@router.get(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_DAILY_LIMIT_STATS))
+async def get_daily_limit_stats(days: int = 7):
+    """獲取每日限額使用統計
+    
+    Args:
+        days: 查詢天數 (1-30)
+    """
+    if not (1 <= days <= 30):
+        raise HTTPException(status_code=400, detail="天數範圍應在 1-30 之間")
+
+    knowledge = await get_async_knowledge_service()
+
+    try:
+        stats = await knowledge.get_daily_limit_stats(days)
+
+        # 計算建議上限
+        summary = stats["summary"]
+        avg_usage = summary["avg_daily_usage"]
+        current_limit = summary["current_limit"]
+
+        suggested_limit = current_limit
+        if avg_usage > 0:
+            if avg_usage >= current_limit * 0.9:
+                suggested_limit = min(50, int(avg_usage * 1.2))
+            elif avg_usage <= current_limit * 0.5:
+                suggested_limit = max(5, int(avg_usage * 1.5))
+
+        return JSONResponse({
+            "stats": stats["stats"],
+            "summary": {
+                **summary,
+                "suggested_limit": suggested_limit
+            }
+        })
+
+    except Exception as e:
+        logger.error(f"獲取每日限額統計失敗: {e}")
+        raise HTTPException(status_code=500, detail="獲取統計數據失敗")
+
+
+@router.post(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_SAVE_WITH_LIMIT))
+async def save_knowledge_point_with_limit(knowledge_point: dict):
+    """帶限額檢查的知識點儲存
+    
+    這是一個新的API端點，用於從前端練習頁面儲存知識點時進行限額檢查
+    """
+    knowledge = await get_async_knowledge_service()
+
+    try:
+        # 這裡需要將 dict 轉換為 KnowledgePoint 物件
+        # 簡化版本，實際使用時需要完整的轉換邏輯
+        from core.error_types import ErrorCategory
+        from core.models import KnowledgePoint, OriginalError
+
+        # 創建 OriginalError 物件
+        original_error = OriginalError(
+            chinese_sentence=knowledge_point.get("chinese_sentence", ""),
+            user_answer=knowledge_point.get("user_answer", ""),
+            correct_answer=knowledge_point.get("correct_answer", ""),
+            timestamp=knowledge_point.get("timestamp", "")
+        )
+
+        # 創建 KnowledgePoint 物件
+        kp = KnowledgePoint(
+            id=0,  # 新建時為 0
+            key_point=knowledge_point.get("key_point", ""),
+            category=ErrorCategory(knowledge_point.get("category", "other")),
+            subtype=knowledge_point.get("subtype", ""),
+            explanation=knowledge_point.get("explanation", ""),
+            original_phrase=knowledge_point.get("original_phrase", ""),
+            correction=knowledge_point.get("correction", ""),
+            original_error=original_error
+        )
+
+        # 使用帶限額檢查的儲存方法
+        result = await knowledge.save_knowledge_point_with_limit(kp)
+
+        if result["success"]:
+            return JSONResponse({
+                "success": True,
+                "message": result["message"],
+                "limit_status": result["limit_status"]
+            })
+        else:
+            # 達到上限或其他錯誤
+            return JSONResponse(
+                status_code=200,  # 不是伺服器錯誤，是業務邏輯
+                content={
+                    "success": False,
+                    "reason": result["reason"],
+                    "message": result["message"],
+                    "limit_status": result["limit_status"],
+                    "suggestion": result.get("suggestion", "")
+                }
+            )
+
+    except Exception as e:
+        logger.error(f"帶限額檢查的知識點儲存失敗: {e}")
+        raise HTTPException(status_code=500, detail="知識點儲存失敗")

@@ -8,6 +8,8 @@ from pathlib import Path
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
+# TASK-34: 引入統一API端點管理系統，消除硬編碼
+from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import (
     get_ai_service,
     get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
@@ -16,9 +18,9 @@ from web.dependencies import (
     get_templates,
 )
 from web.models.validation import (
+    ConfirmKnowledgeRequest,
     GenerateQuestionRequest,
     GradeAnswerRequest,
-    ConfirmKnowledgeRequest,
 )
 
 router = APIRouter()
@@ -47,11 +49,11 @@ def practice_page(request: Request):
 # --------------------------------------------------------------------------
 
 
-@router.post("/api/grade-answer", response_class=JSONResponse)
+@router.post(API_ENDPOINTS.GRADE_ANSWER, response_class=JSONResponse)
 async def grade_answer_api(request: GradeAnswerRequest):
     """API 端點：批改答案"""
     import os
-    
+
     # Read configuration dynamically to allow runtime changes
     AUTO_SAVE_KNOWLEDGE_POINTS = os.getenv("AUTO_SAVE_KNOWLEDGE_POINTS", "false").lower() == "true"
     SHOW_CONFIRMATION_UI = os.getenv("SHOW_CONFIRMATION_UI", "true").lower() == "true"
@@ -165,7 +167,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
         # 添加待確認點和配置標記
         logger.info(f"Config check - SHOW_CONFIRMATION_UI: {SHOW_CONFIRMATION_UI}, AUTO_SAVE_KNOWLEDGE_POINTS: {AUTO_SAVE_KNOWLEDGE_POINTS}")
         logger.info(f"Pending points count: {len(pending_knowledge_points)}")
-        
+
         if SHOW_CONFIRMATION_UI and not AUTO_SAVE_KNOWLEDGE_POINTS:
             response_data["pending_knowledge_points"] = pending_knowledge_points
             response_data["auto_save"] = False
@@ -179,7 +181,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
         return JSONResponse({"success": False, "error": "批改時發生內部錯誤"}, status_code=500)
 
 
-@router.post("/api/confirm-knowledge-points", response_class=JSONResponse)
+@router.post(API_ENDPOINTS.CONFIRM_KNOWLEDGE, response_class=JSONResponse)
 async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
     """API 端點：確認並保存選中的知識點"""
     knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
@@ -202,6 +204,7 @@ async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
             else:
                 # 如果方法不存在，使用現有的添加知識點邏輯
                 from datetime import datetime
+
                 from core.knowledge import KnowledgePoint
 
                 point = KnowledgePoint(
@@ -248,7 +251,7 @@ async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
         return JSONResponse({"success": False, "error": "確認知識點時發生錯誤"}, status_code=500)
 
 
-@router.post("/api/generate-question", response_class=JSONResponse)
+@router.post(API_ENDPOINTS.GENERATE_QUESTION, response_class=JSONResponse)
 async def generate_question_api(request: GenerateQuestionRequest):
     """API 端點：生成單個題目（支援並行調用）"""
     ai = get_ai_service()

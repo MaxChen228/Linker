@@ -3,6 +3,9 @@
  * 處理批量操作的 API 調用、進度追蹤、錯誤處理等
  */
 
+// TASK-34: 引入統一API端點管理系統，消除硬編碼
+import { apiEndpoints } from './config/api-endpoints.js';
+
 class BatchOperations {
     constructor(selectionManager) {
         this.selection = selectionManager;
@@ -69,7 +72,7 @@ class BatchOperations {
         }
         
         try {
-            const response = await fetch('/api/knowledge/batch', {
+            const response = await fetch(apiEndpoints.getUrl('knowledgeBatch'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,7 +125,7 @@ class BatchOperations {
         }
         
         try {
-            const response = await fetch('/api/knowledge/batch', {
+            const response = await fetch(apiEndpoints.getUrl('knowledgeBatch'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -180,7 +183,7 @@ class BatchOperations {
         }
         
         try {
-            const response = await fetch('/api/knowledge/batch', {
+            const response = await fetch(apiEndpoints.getUrl('knowledgeBatch'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

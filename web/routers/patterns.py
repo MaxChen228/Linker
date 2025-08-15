@@ -9,6 +9,8 @@ from typing import Optional
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 
+# TASK-34: 引入統一API端點管理系統，消除硬編碼
+from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import get_knowledge_assets, get_logger, get_templates
 
 router = APIRouter()
@@ -135,7 +137,7 @@ def pattern_detail(request: Request, pattern_id: str):
     )
 
 
-@router.get("/api/patterns", response_class=JSONResponse)
+@router.get(API_ENDPOINTS.PATTERNS_BASE, response_class=JSONResponse)
 def get_all_patterns_api():
     """API 端點：獲取所有文法句型列表，用於練習模式選擇。"""
     try:

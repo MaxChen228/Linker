@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 資料庫配置管理工具
-用於快速切換 JSON/資料庫模式
+JSON模式已移除，僅支援資料庫模式
 """
 
 import sys
@@ -63,7 +63,7 @@ def show_current_config():
     if USE_DATABASE:
         logger.info("  📊 模式: 資料庫模式")
     else:
-        logger.info("  📁 模式: JSON 檔案模式")
+        logger.error("  ❌ 模式: JSON 模式已移除")
 
     if ENABLE_DUAL_WRITE:
         logger.info("  🔄 雙寫模式: 啟用")
@@ -72,11 +72,10 @@ def show_current_config():
 
 
 def configure_json_mode():
-    """配置為 JSON 模式"""
-    logger.info("配置為 JSON 檔案模式...")
-    create_env_file(use_database=False, dual_write=False)
-    logger.info("✓ 已配置為 JSON 檔案模式")
-    logger.info("重啟應用程式以套用更改")
+    """JSON模式已移除"""
+    logger.error("❌ JSON模式已移除，系統僅支援資料庫模式")
+    logger.info("請使用 configure_database_mode() 配置資料庫模式")
+    raise RuntimeError("JSON模式已移除")
 
 
 def configure_database_mode(database_url: str = None):
@@ -126,16 +125,17 @@ def interactive_configure():
     show_current_config()
 
     print("\n選擇配置模式:")
-    print("1. JSON 檔案模式 (預設)")
-    print("2. 資料庫模式")
-    print("3. 雙寫模式 (開發/測試用)")
+    print("1. ❌ JSON 檔案模式 (已移除)")
+    print("2. 資料庫模式 (唯一選項)")
+    print("3. ❌ 雙寫模式 (已移除)")
     print("4. 顯示當前配置")
     print("0. 退出")
 
     choice = input("\n請選擇 (0-4): ").strip()
 
     if choice == "1":
-        configure_json_mode()
+        print("❌ JSON模式已移除，請選擇資料庫模式")
+        return
     elif choice == "2":
         db_url = input(
             "資料庫 URL (預設: postgresql://postgres:password@localhost:5432/linker): "
@@ -149,13 +149,8 @@ def interactive_configure():
 
         configure_database_mode(db_url)
     elif choice == "3":
-        db_url = input(
-            "資料庫 URL (預設: postgresql://postgres:password@localhost:5432/linker): "
-        ).strip()
-        if not db_url:
-            db_url = None
-
-        configure_dual_write_mode(db_url)
+        print("❌ 雙寫模式已移除，系統僅支援純資料庫模式")
+        return
     elif choice == "4":
         show_current_config()
     elif choice == "0":
@@ -169,7 +164,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="資料庫配置管理工具")
-    parser.add_argument("--mode", choices=["json", "database", "dual"], help="設定模式")
+    parser.add_argument("--mode", choices=["database"], help="設定模式 (僅支援database)")
     parser.add_argument("--database-url", help="資料庫連線 URL")
     parser.add_argument("--show", action="store_true", help="顯示當前配置")
     parser.add_argument("--interactive", action="store_true", help="互動式配置")
@@ -182,11 +177,13 @@ def main():
         interactive_configure()
     elif args.mode:
         if args.mode == "json":
-            configure_json_mode()
+            print("❌ JSON模式已移除，請使用 --mode database")
+            sys.exit(1)
         elif args.mode == "database":
             configure_database_mode(args.database_url)
         elif args.mode == "dual":
-            configure_dual_write_mode(args.database_url)
+            print("❌ 雙寫模式已移除，系統僅支援純資料庫模式")
+            sys.exit(1)
     else:
         # 預設為互動模式
         interactive_configure()

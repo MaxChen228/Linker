@@ -18,7 +18,7 @@ core/ai_service.py → Gemini API (2.5 Flash/Pro dual-model)
     ↓
 core/knowledge.py → Knowledge tracking & spaced repetition
     ↓
-data/*.json / PostgreSQL → Dual storage backend
+PostgreSQL → Database backend
 ```
 
 ### Key Components
@@ -26,7 +26,7 @@ data/*.json / PostgreSQL → Dual storage backend
 - **Frontend**: Vanilla JavaScript (ES6+) SPA with Jinja2 templates
 - **AI Service**: Dual Gemini models - Flash for speed (generation), Pro for quality (grading)
 - **Service Layer**: Pure async service architecture with AsyncKnowledgeService (TASK-31 完成)
-- **Data Layer**: JSON files (default) with PostgreSQL migration support
+- **Data Layer**: PostgreSQL database (JSON mode removed)
 - **Cache System**: Unified cache management with thread-safe operations and TTL support
 - **CSS Architecture**: Modular design system with @import - DO NOT delete subfiles
 
@@ -59,8 +59,8 @@ pytest --cov=core --cov=web    # Generate coverage report
 
 ### Database Operations
 ```bash
-# One-click migration from JSON to PostgreSQL
-./migrate_to_database.sh
+# Database initialization (JSON migration no longer needed)
+./migrate_to_database.sh  # For legacy data migration only
 
 # Manual database operations
 python scripts/init_database.py     # Initialize schema
@@ -72,7 +72,7 @@ python scripts/configure_db.py      # Configure settings
 ```bash
 # Required environment variables
 export GEMINI_API_KEY=your-key      # Required for AI functionality
-export USE_DATABASE=false            # Toggle JSON/PostgreSQL backend
+export USE_DATABASE=true             # Database mode (JSON mode removed)
 
 # Install dependencies
 pip install -r requirements.txt      # Production dependencies

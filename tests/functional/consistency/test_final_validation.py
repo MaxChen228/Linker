@@ -48,7 +48,10 @@ async def final_consistency_test():
         # 步驟2: 資料庫模式測試（使用相同的原始資料）
         print("\n🔗 步驟2: 測試資料庫模式統計...")
         os.environ["USE_DATABASE"] = "true"
-        os.environ["DATABASE_URL"] = "postgresql://chenliangyu@localhost:5432/linker_test"
+        # 使用統一的測試配置
+        from tests.config import TestConfig
+        test_config = TestConfig()
+        os.environ["DATABASE_URL"] = test_config.get_test_url()
 
         from core.database.adapter import get_knowledge_manager_async
 
@@ -58,7 +61,17 @@ async def final_consistency_test():
         # 清空資料表
         import psycopg2
 
-        conn = psycopg2.connect(host="localhost", database="linker_test", user="chenliangyu")
+        # 使用環境變數配置
+        from urllib.parse import urlparse
+        from tests.config import TestConfig
+        test_config = TestConfig()
+        db_url = urlparse(test_config.get_test_url())
+        conn = psycopg2.connect(
+            host=db_url.hostname or 'localhost',
+            database=db_url.path.lstrip('/') or 'linker_test',
+            user=db_url.username or 'chenliangyu',
+            password=db_url.password
+        )
         cur = conn.cursor()
         cur.execute("DELETE FROM knowledge_points")
         conn.commit()

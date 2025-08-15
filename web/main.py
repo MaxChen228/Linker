@@ -45,6 +45,28 @@ def create_app() -> FastAPI:
     # 配置日誌
     configure_logging()
 
+    # 執行配置驗證 - 如果配置無效則直接停止啟動
+    from core.config import validate_config
+    is_valid, errors, warnings = validate_config()
+    
+    if not is_valid:
+        logger.error("❌ 配置驗證失敗，應用無法啟動：")
+        for error in errors:
+            logger.error(f"  {error}")
+        
+        if warnings:
+            logger.warning("⚠️  額外警告：")
+            for warning in warnings:
+                logger.warning(f"  {warning}")
+                
+        # 打印解決建議
+        logger.error("\n💡 解決步驟：")
+        logger.error("  1. 設置 DATABASE_URL 環境變數")
+        logger.error("  2. 示例：export DATABASE_URL='postgresql://user:pass@localhost:5432/linker'")
+        logger.error("  3. 或者創建 .env 文件並添加 DATABASE_URL")
+        
+        raise SystemExit("❌ 配置錯誤，應用啟動失敗")
+
     # 建立 FastAPI 應用
     app = FastAPI(title="Linker", docs_url=None, redoc_url=None)
 

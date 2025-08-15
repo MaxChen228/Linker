@@ -3,13 +3,18 @@
  * 提供與後端一致的日誌級別和格式
  */
 
+import environment from './config/environment.js';
+
+// TASK-34: 引入統一API端點管理系統，消除硬編碼
+import { apiEndpoints } from './config/api-endpoints.js';
+
 class Logger {
     constructor(moduleName, options = {}) {
         this.moduleName = moduleName;
         this.logLevel = options.logLevel || this.getLogLevel();
         this.enableConsole = options.enableConsole !== false;
         this.enableRemote = options.enableRemote || false;
-        this.remoteEndpoint = options.remoteEndpoint || '/api/logs';
+        this.remoteEndpoint = options.remoteEndpoint || apiEndpoints.getUrl('logs');
         
         // 日誌級別
         this.levels = {
@@ -46,9 +51,7 @@ class Logger {
         if (stored) return stored;
         
         // 根據環境判斷
-        const isProduction = window.location.hostname !== 'localhost' && 
-                           window.location.hostname !== '127.0.0.1';
-        return isProduction ? 'WARNING' : 'DEBUG';
+        return environment.getLogLevel();
     }
     
     shouldLog(level) {
@@ -271,7 +274,7 @@ class LogManager {
         }
     }
     
-    enableRemoteLogging(endpoint = '/api/logs') {
+    enableRemoteLogging(endpoint = apiEndpoints.getUrl('logs')) {
         this.defaultOptions.enableRemote = true;
         this.defaultOptions.remoteEndpoint = endpoint;
         

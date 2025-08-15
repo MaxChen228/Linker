@@ -255,7 +255,8 @@ async function saveEdit() {
     };
     
     try {
-        const response = await fetch(`/api/knowledge/${pointId}`, {
+        // TASK-34: 使用統一API端點管理系統
+        const response = await fetch(window.apiEndpoints.getUrl('knowledgeDetail', { id: pointId }), {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -279,7 +280,8 @@ function deleteKnowledgePoint() {
     if (confirm('確定要刪除這個知識點嗎？刪除後可在回收站中復原。')) {
         const reason = prompt('請輸入刪除原因（選填）：') || '';
         
-        fetch(`/api/knowledge/${pointId}`, {
+        // TASK-34: 使用統一API端點管理系統
+        fetch(window.apiEndpoints.getUrl('knowledgeDetail', { id: pointId }), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
