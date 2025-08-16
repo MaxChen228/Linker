@@ -64,17 +64,13 @@ PostgreSQL → Database backend
 
 詳細使用說明請參考 `docs/guides/LINKER_MANAGER.md`。
 
-### Alternative Commands (舊版命令)
+### Alternative Commands (手動命令)
 
-如果偏好使用個別腳本：
+如果不使用 linker.sh，可直接執行：
 
 ```bash
 # 快速啟動
-./run.sh                         # 啟動開發服務器
-uvicorn web.main:app --reload    # 手動啟動
-
-# 系統重置
-./reset.sh                       # 重置系統
+uvicorn web.main:app --reload    # 手動啟動開發服務器
 
 # 程式碼品質
 ruff check .                     # 靜態分析

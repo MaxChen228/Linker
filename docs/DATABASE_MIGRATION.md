@@ -99,7 +99,7 @@ python scripts/configure_db.py --show
 
 ```bash
 # 重啟應用程式以套用新配置
-./run.sh
+./linker.sh start
 ```
 
 ---
@@ -108,7 +108,7 @@ python scripts/configure_db.py --show
 
 ### 驗證遷移
 
-1.  **啟動應用程式** (`./run.sh`)
+1.  **啟動應用程式** (`./linker.sh start`)
 2.  **測試 API 端點** (如 `curl http://localhost:8000/api/knowledge`)
 3.  **檢查資料一致性** (`python scripts/migrate_data.py --verify-only`)
 
@@ -121,7 +121,7 @@ python scripts/configure_db.py --show
 python scripts/configure_db.py --mode json
 
 # 重啟應用程式
-./run.sh
+./linker.sh start
 ```
 遷移前的 JSON 備份檔案會保存在 `data/knowledge_backup_*.json`。
 

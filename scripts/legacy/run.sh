@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # One-line launcher for Linker web
-# Usage: ./run.sh
+# Usage: ./scripts/legacy/run.sh (建議使用 ./linker.sh start)
 
-PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(cd "$(dirname "$0")/../../" && pwd)"
 VENV_DIR="$PROJECT_DIR/venv"
 PYTHON_BIN="$VENV_DIR/bin/python3"
 

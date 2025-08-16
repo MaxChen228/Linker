@@ -28,7 +28,7 @@ from core.error_types import ErrorCategory, ErrorTypeSystem
 from core.exceptions import DatabaseError
 from core.log_config import get_module_logger
 from core.models import KnowledgePoint, OriginalError
-from settings import settings
+from scripts.settings import settings
 
 
 class KnowledgeManager:

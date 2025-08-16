@@ -77,7 +77,7 @@ By default, the application runs in JSON mode. To use a PostgreSQL database, fol
 5.  **Start the Application**: Run the application as usual. It will now use the database as its backend.
 
     ```bash
-    ./run.sh
+    ./linker.sh start
     ```
 
 ## Deployment Options
@@ -280,7 +280,7 @@ systemctl restart linker
 Enable debug logging:
 ```bash
 export LOG_LEVEL=DEBUG
-./run.sh
+./linker.sh dev
 ```
 
 View real-time logs:

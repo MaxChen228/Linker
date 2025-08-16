@@ -1,39 +1,71 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
 .Python
 venv/
+ENV/
 env/
 .venv
 
-# Project
-.env
-*.log
-.git/
-.gitignore
-README.md
-DEPLOYMENT.md
-docs/
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.tox/
+test_data/
 
-# IDE
-.vscode/
-.idea/
+# Temporary files
+.tmp/
+*.log
+*.tmp
+*.bak
 *.swp
 *.swo
 *~
 
-# OS
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Git
+.git/
+.gitignore
+
+# Documentation (not needed in container)
+docs/
+TODO/
+*.md
+
+# Node.js (if not needed in production)
+node_modules/
+npm-debug.log
+
+# Environment files (use Docker secrets instead)
+.env
+.env.*
+
+# OS files
 .DS_Store
 Thumbs.db
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
+# Build artifacts
+build/
+dist/
+*.egg-info/
 
-# Docker
-Dockerfile
-docker-compose.yml
-.dockerignore
+# Claude specific
+.claude/
+
+# Scripts not needed in container
+scripts/legacy/
+scripts/utils/build-css.sh
+
+# Data (should be volumes)
+data/backups/
+
+# Cache
+logs/

@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from core.error_types import ErrorCategory
-from settings import settings
+from scripts.settings import settings
 
 
 @dataclass
