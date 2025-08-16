@@ -97,7 +97,7 @@ class APISettings:
 
 
 @dataclass
-class ErrorPrioritySettings:
+class ErrorPriority:
     """錯誤優先級配置"""
 
     PRIORITIES: dict[str, int] = None
@@ -169,7 +169,7 @@ class Settings:
         self.learning = LearningSettings()
         self.cache = CacheSettings()
         self.api = APISettings()
-        self.error_priority = ErrorPrioritySettings()
+        self.error_priority = ErrorPriority()
         self.practice = PracticeSettings()
         self.ui = UISettings()
 

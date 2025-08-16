@@ -12,7 +12,7 @@ from core.models import KnowledgePoint
 from core.services.base import BaseAsyncService
 
 
-class AsyncKnowledgeService(BaseAsyncService):
+class KnowService(BaseAsyncService):
     """純異步知識點服務
 
     直接使用 DatabaseKnowledgeManager，無需同步包裝
@@ -103,15 +103,15 @@ class AsyncKnowledgeService(BaseAsyncService):
             self.logger.error(f"更新知識點失敗: {e}")
             return False
 
-    async def delete_knowledge_point_async(self, point_id: int, reason: str = "") -> bool:
+    async def delete_point_async(self, point_id: int, reason: str = "") -> bool:
         """刪除知識點"""
         await self.initialize()
-        return await self._db_manager.delete_knowledge_point(point_id, reason)
+        return await self._db_manager.delete_point(point_id, reason)
 
-    async def restore_knowledge_point_async(self, point_id: int) -> bool:
+    async def restore_point_async(self, point_id: int) -> bool:
         """恢復知識點"""
         await self.initialize()
-        return await self._db_manager.restore_knowledge_point(point_id)
+        return await self._db_manager.restore_point(point_id)
 
     # ========== 查詢操作 ==========
 
@@ -136,7 +136,6 @@ class AsyncKnowledgeService(BaseAsyncService):
         all_points = await self._db_manager.get_all_knowledge_points(include_deleted=True)
         deleted_points = [p for p in all_points if p.is_deleted]
 
-
         return deleted_points
 
     async def permanent_delete_old_points(
@@ -158,11 +157,12 @@ class AsyncKnowledgeService(BaseAsyncService):
 
         # 篩選出超過指定天數的知識點
         from datetime import timedelta
+
         cutoff_date = datetime.now() - timedelta(days=days_old)
 
         old_points = []
         for point in deleted_points:
-            if hasattr(point, 'deleted_at') and point.deleted_at:
+            if hasattr(point, "deleted_at") and point.deleted_at:
                 deleted_date = datetime.fromisoformat(point.deleted_at)
                 if deleted_date < cutoff_date:
                     old_points.append(point)
@@ -171,22 +171,24 @@ class AsyncKnowledgeService(BaseAsyncService):
             return {
                 "dry_run": True,
                 "would_delete": len(old_points),
-                "points": [{"id": p.id, "key_point": p.key_point} for p in old_points]
+                "points": [{"id": p.id, "key_point": p.key_point} for p in old_points],
             }
 
         # 實際刪除
         deleted_count = 0
         for point in old_points:
             # 這裡需要實現永久刪除的邏輯
-            # 暫時使用 delete_knowledge_point，但應該是永久刪除
-            success = await self._db_manager.delete_knowledge_point(point.id, "永久刪除舊資料")
+            # 暫時使用 delete_point，但應該是永久刪除
+            success = await self._db_manager.delete_point(point.id, "永久刪除舊資料")
             if success:
                 deleted_count += 1
 
         return {
             "dry_run": False,
             "deleted": deleted_count,
-            "points": [{"id": p.id, "key_point": p.key_point} for p in old_points[:10]]  # 只返回前10個
+            "points": [
+                {"id": p.id, "key_point": p.key_point} for p in old_points[:10]
+            ],  # 只返回前10個
         }
 
     # ========== 學習記錄操作 ==========
@@ -233,7 +235,7 @@ class AsyncKnowledgeService(BaseAsyncService):
         await self.initialize()
         return await self._db_manager.get_statistics()
 
-    async def get_learning_recommendations_async(self) -> dict[str, Any]:
+    async def get_recommendations_async(self) -> dict[str, Any]:
         """獲取學習建議"""
         await self.initialize()
 
@@ -262,7 +264,9 @@ class AsyncKnowledgeService(BaseAsyncService):
                 }
                 for p in struggling_points[:5]
             ],
-            "recommendation": self._generate_recommendation(stats, review_candidates, struggling_points),
+            "recommendation": self._generate_recommendation(
+                stats, review_candidates, struggling_points
+            ),
         }
 
     # ========== 編輯操作 ==========
@@ -308,7 +312,7 @@ class AsyncKnowledgeService(BaseAsyncService):
             analysis={"explanation": error.get("explanation", "")},
             chinese_sentence=chinese_sentence,
             user_answer=user_answer,
-            correct_answer=feedback.get("correct_answer", "")
+            correct_answer=feedback.get("correct_answer", ""),
         )
         return result is not None
 
@@ -329,9 +333,7 @@ class AsyncKnowledgeService(BaseAsyncService):
             "category": error.get("category", "other"),
             "subtype": error.get("subtype", "general"),
         }
-        analysis = {
-            "explanation": error.get("explanation", "")
-        }
+        analysis = {"explanation": error.get("explanation", "")}
 
         result = await self._db_manager.add_knowledge_point(
             error_info, analysis, chinese_sentence, user_answer, correct_answer
@@ -403,7 +405,7 @@ class AsyncKnowledgeService(BaseAsyncService):
         await self.initialize()
         return await self._db_manager.increment_daily_stats(self._user_id, error_type)
 
-    async def save_knowledge_point_with_limit(self, knowledge_point: KnowledgePoint) -> dict:
+    async def save_with_limit(self, knowledge_point: KnowledgePoint) -> dict:
         """帶限額檢查的知識點儲存（資料庫版本）
 
         Args:
@@ -417,24 +419,24 @@ class AsyncKnowledgeService(BaseAsyncService):
         # 準備錯誤資訊
         error_info = {
             "error_pattern": knowledge_point.key_point,
-            "category": knowledge_point.category.value if hasattr(knowledge_point.category, 'value') else knowledge_point.category,
+            "category": knowledge_point.category.value
+            if hasattr(knowledge_point.category, "value")
+            else knowledge_point.category,
             "subtype": knowledge_point.subtype,
             "error_phrase": knowledge_point.original_phrase,
             "correction": knowledge_point.correction,
         }
 
-        analysis = {
-            "explanation": knowledge_point.explanation
-        }
+        analysis = {"explanation": knowledge_point.explanation}
 
         # 調用資料庫管理器的事務性保存方法
-        return await self._db_manager.save_knowledge_point_with_limit(
+        return await self._db_manager.save_with_limit(
             error_info=error_info,
             analysis=analysis,
             chinese_sentence=knowledge_point.original_error.chinese_sentence,
             user_answer=knowledge_point.original_error.user_answer,
             correct_answer=knowledge_point.original_error.correct_answer,
-            user_id=self._user_id
+            user_id=self._user_id,
         )
 
     async def get_daily_limit_config(self) -> dict:
@@ -446,7 +448,9 @@ class AsyncKnowledgeService(BaseAsyncService):
         await self.initialize()
         return await self._db_manager.get_user_settings(self._user_id)
 
-    async def update_daily_limit_config(self, daily_limit: int = None, limit_enabled: bool = None) -> dict:
+    async def update_daily_limit_config(
+        self, daily_limit: int = None, limit_enabled: bool = None
+    ) -> dict:
         """更新每日限額配置（資料庫版本）
 
         Args:
@@ -459,24 +463,15 @@ class AsyncKnowledgeService(BaseAsyncService):
         await self.initialize()
 
         success = await self._db_manager.update_user_settings(
-            user_id=self._user_id,
-            daily_limit=daily_limit,
-            limit_enabled=limit_enabled
+            user_id=self._user_id, daily_limit=daily_limit, limit_enabled=limit_enabled
         )
 
         if success:
             # 獲取更新後的配置
             updated_config = await self._db_manager.get_user_settings(self._user_id)
-            return {
-                "success": True,
-                "message": "配置更新成功",
-                "config": updated_config
-            }
+            return {"success": True, "message": "配置更新成功", "config": updated_config}
         else:
-            return {
-                "success": False,
-                "message": "配置更新失敗"
-            }
+            return {"success": False, "message": "配置更新失敗"}
 
     async def get_daily_limit_stats(self, days: int = 7) -> dict:
         """獲取每日限額使用統計（資料庫版本）

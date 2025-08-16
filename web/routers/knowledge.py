@@ -14,7 +14,7 @@ from core.error_types import ErrorCategory, ErrorTypeSystem
 # TASK-34: 引入統一API端點管理系統，消除硬編碼
 from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import (
-    get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
+    get_know_service,  # TASK-31: 使用新的純異步服務
     get_templates,
 )
 
@@ -27,7 +27,7 @@ async def knowledge_points(
 ):
     """知識點瀏覽頁面"""
     templates = get_templates()
-    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge = await get_know_service()  # TASK-31: 使用純異步服務
 
     # 獲取所有未刪除的知識點
     if hasattr(knowledge, "get_active_points_async"):
@@ -42,7 +42,11 @@ async def knowledge_points(
     if category:
         try:
             ErrorCategory.from_string(category)
-            all_points = [p for p in all_points if (p.category if isinstance(p.category, str) else p.category.value) == category]
+            all_points = [
+                p
+                for p in all_points
+                if (p.category if isinstance(p.category, str) else p.category.value) == category
+            ]
         except (ValueError, KeyError, AttributeError):
             pass
 
@@ -152,7 +156,7 @@ async def knowledge_points(
 async def knowledge_trash(request: Request):
     """知識點回收站頁面"""
     templates = get_templates()
-    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge = await get_know_service()  # TASK-31: 使用純異步服務
 
     # 獲取所有已刪除的知識點
     if hasattr(knowledge, "get_deleted_points_async"):
@@ -212,7 +216,7 @@ async def knowledge_trash(request: Request):
 async def knowledge_detail(request: Request, point_id: str):
     """知識點詳情頁面"""
     templates = get_templates()
-    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge = await get_know_service()  # TASK-31: 使用純異步服務
 
     # 獲取指定的知識點
     try:
@@ -231,10 +235,10 @@ async def knowledge_detail(request: Request, point_id: str):
 
     # 獲取相關的錯誤記錄（最近的10個）
     related_mistakes = []
-    # TASK-31: AsyncKnowledgeService 暫時不提供 get_all_mistakes，返回空列表
-    if hasattr(knowledge, 'get_all_mistakes_async'):
+    # TASK-31: KnowService 暫時不提供 get_all_mistakes，返回空列表
+    if hasattr(knowledge, "get_all_mistakes_async"):
         all_mistakes = await knowledge.get_all_mistakes_async()
-    elif hasattr(knowledge, 'get_all_mistakes'):
+    elif hasattr(knowledge, "get_all_mistakes"):
         all_mistakes = knowledge.get_all_mistakes()
     else:
         all_mistakes = []
@@ -292,7 +296,9 @@ async def knowledge_detail(request: Request, point_id: str):
         "key_point": point.key_point,
         "category": {
             "value": point.category if isinstance(point.category, str) else point.category.value,
-            "chinese_name": ErrorCategory.from_string(point.category if isinstance(point.category, str) else point.category.value).to_chinese()
+            "chinese_name": ErrorCategory.from_string(
+                point.category if isinstance(point.category, str) else point.category.value
+            ).to_chinese(),
         },
         "subtype": point.subtype,
         "description": point.explanation,  # 使用 explanation 作為 description

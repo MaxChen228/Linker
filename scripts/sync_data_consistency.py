@@ -14,7 +14,7 @@ import psycopg2
 
 from core.database.connection import DatabaseSettings
 from core.knowledge import KnowledgeManager
-from scripts.analyze_data_consistency import analyze_consistency
+from scripts.data_check import analyze_consistency
 
 
 async def sync_knowledge_ids():

@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """Test script to verify the knowledge point confirmation feature"""
 
-
 import requests
 
 # Test data with intentional errors
 test_data = {
     "chinese": "我昨天去了圖書館",
     "english": "I go to library yesterday",  # Intentional errors: tense and article
-    "mode": "new"
+    "mode": "new",
 }
 
 print("Testing Knowledge Point Confirmation Feature")
@@ -21,7 +20,7 @@ print(f"English: {test_data['english']}")
 response = requests.post(
     "http://localhost:8000/api/grade-answer",
     json=test_data,
-    headers={"Content-Type": "application/json"}
+    headers={"Content-Type": "application/json"},
 )
 
 if response.status_code == 200:
@@ -32,8 +31,8 @@ if response.status_code == 200:
     print(f"   Auto Save: {result.get('auto_save', 'NOT SET')}")
 
     # Check for pending knowledge points
-    if 'pending_knowledge_points' in result:
-        pending_points = result['pending_knowledge_points']
+    if "pending_knowledge_points" in result:
+        pending_points = result["pending_knowledge_points"]
         print(f"\n3. Pending Knowledge Points: {len(pending_points)} found")
 
         for i, point in enumerate(pending_points, 1):
@@ -52,7 +51,7 @@ if response.status_code == 200:
             confirm_response = requests.post(
                 "http://localhost:8000/api/confirm-knowledge-points",
                 json=confirm_data,
-                headers={"Content-Type": "application/json"}
+                headers={"Content-Type": "application/json"},
             )
 
             if confirm_response.status_code == 200:
@@ -71,7 +70,10 @@ if response.status_code == 200:
         # Check configuration
         print("\n5. Checking server configuration...")
         import os
-        print(f"   AUTO_SAVE_KNOWLEDGE_POINTS env: {os.getenv('AUTO_SAVE_KNOWLEDGE_POINTS', 'not set')}")
+
+        print(
+            f"   AUTO_SAVE_KNOWLEDGE_POINTS env: {os.getenv('AUTO_SAVE_KNOWLEDGE_POINTS', 'not set')}"
+        )
         print(f"   SHOW_CONFIRMATION_UI env: {os.getenv('SHOW_CONFIRMATION_UI', 'not set')}")
 
 else:

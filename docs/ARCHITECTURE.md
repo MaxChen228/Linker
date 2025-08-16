@@ -65,7 +65,6 @@ graph TD
 - **KnowledgeManager**: The heart of the learning system. It manages the lifecycle of `KnowledgePoint` objects, including creation from mistakes, mastery level updates, and scheduling for the spaced repetition system.
 - **TagManager**: Manages the grammar pattern tags, providing functionalities like searching, categorization, and validating tag combinations for practice.
 - **ErrorTypeSystem**: A sophisticated system for classifying user errors into four distinct categories (`systematic`, `isolated`, `enhancement`, `other`), which drives the learning and review logic.
-- **VersionManager**: Manages data schema versions and handles automated migrations for all JSON data files upon startup.
 
 ### 4. Data Layer (`core/database/` & `data/`)
 - **Dual Backend Support**: The system supports two data backends through a sophisticated **Adapter Pattern** (`core/database/adapter.py`).

@@ -11,11 +11,11 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-import os
+import os  # noqa: E402
 
 os.environ["USE_DATABASE"] = "true"
 
-from core.database.adapter import get_knowledge_manager_async
+from core.database.adapter import get_knowledge_manager_async  # noqa: E402
 
 
 async def test_knowledge_point_22():

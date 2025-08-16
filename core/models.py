@@ -1,10 +1,14 @@
 """
-數據模型定義
-分離數據模型以避免循環導入問題
+應用程式核心資料模型定義
+
+此模組使用 `dataclasses` 定義了應用程式中的核心資料結構，
+如 `KnowledgePoint`, `OriginalError`, 和 `ReviewExample`。
+將資料模型與業務邏輯分離，有助於避免循環導入問題，並提高程式碼的清晰度和可維護性。
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from typing import Any
 
 from core.error_types import ErrorCategory
 from settings import settings
@@ -12,22 +16,21 @@ from settings import settings
 
 @dataclass
 class OriginalError:
-    """原始錯誤記錄 - 每個知識點只有一個"""
-
+    """記錄知識點最初被創建時的原始錯誤資訊。"""
     chinese_sentence: str
     user_answer: str
     correct_answer: str
     timestamp: str
 
     def __post_init__(self):
-        if not hasattr(self, "timestamp") or not self.timestamp:
+        """如果 timestamp 未被提供，則自動設定為當前時間。"""
+        if not getattr(self, "timestamp", None):
             self.timestamp = datetime.now().isoformat()
 
 
 @dataclass
 class ReviewExample:
-    """複習例句記錄 - 每個知識點可以有多個"""
-
+    """記錄每一次複習的具體例句和結果。"""
     chinese_sentence: str
     user_answer: str
     correct_answer: str
@@ -35,29 +38,31 @@ class ReviewExample:
     is_correct: bool
 
     def __post_init__(self):
-        if not hasattr(self, "timestamp") or not self.timestamp:
+        """如果 timestamp 未被提供，則自動設定為當前時間。"""
+        if not getattr(self, "timestamp", None):
             self.timestamp = datetime.now().isoformat()
 
 
 @dataclass
 class KnowledgePoint:
-    """知識點數據類 - 每個知識點對應一個具體的錯誤模式"""
+    """
+    知識點的核心資料模型。
 
+    每個 `KnowledgePoint` 物件代表一個具體的使用者錯誤模式，並包含其所有相關資訊，
+    例如錯誤分類、掌握度、複習排程和編輯歷史等。
+    """
     id: int
-    key_point: str  # 更具體的描述，如 "單字拼寫錯誤: irrevertable"
+    key_point: str  # 錯誤的簡短描述，例如 "單字拼寫錯誤: irrevertable"
     category: ErrorCategory
     subtype: str
     explanation: str
     original_phrase: str
     correction: str
 
-    # 原始錯誤（只有一個）
     original_error: OriginalError
+    review_examples: list[ReviewExample] = field(default_factory=list)
 
-    # 複習例句（可以有多個）
-    review_examples: list[ReviewExample] = None
-
-    # 掌握度相關
+    # 學習進度和排程
     mastery_level: float = 0.0
     mistake_count: int = 1
     correct_count: int = 0
@@ -65,71 +70,37 @@ class KnowledgePoint:
     last_seen: str = ""
     next_review: str = ""
 
-    # 新增欄位 - 版本 4.0
-    is_deleted: bool = False  # 軟刪除標記
-    deleted_at: str = ""  # 刪除時間
-    deleted_reason: str = ""  # 刪除原因
-    tags: list[str] = None  # 自定義標籤
-    custom_notes: str = ""  # 用戶筆記
-    version_history: list[dict] = None  # 編輯歷史
-    last_modified: str = ""  # 最後修改時間
+    # 版本 4.0 新增欄位，支援更豐富的管理功能
+    is_deleted: bool = False
+    deleted_at: str = ""
+    deleted_reason: str = ""
+    tags: list[str] = field(default_factory=list)
+    custom_notes: str = ""
+    version_history: list[dict] = field(default_factory=list)
+    last_modified: str = ""
 
     def __post_init__(self):
+        """初始化預設值和空列表，確保物件狀態的一致性。"""
+        now = datetime.now().isoformat()
         if not self.created_at:
-            self.created_at = datetime.now().isoformat()
+            self.created_at = now
         if not self.last_seen:
-            self.last_seen = datetime.now().isoformat()
+            self.last_seen = now
         if not self.next_review:
             self.next_review = self._calculate_next_review()
-        if self.review_examples is None:
-            self.review_examples = []
-        # 初始化新欄位
-        if self.tags is None:
-            self.tags = []
-        if self.version_history is None:
-            self.version_history = []
         if not self.last_modified:
             self.last_modified = self.created_at
 
     @property
     def unique_identifier(self) -> str:
-        """知識點的唯一標識符"""
+        """生成一個用於識別相似知識點的唯一標識符。"""
         return f"{self.key_point}|{self.original_phrase}|{self.correction}"
 
-    @property
-    def examples(self) -> list[dict]:
-        """舊格式兼容屬性 - 將新格式轉換為舊格式"""
-        examples_list = []
-
-        # 添加原始錯誤作為第一個例句
-        if self.original_error:
-            examples_list.append(
-                {
-                    "chinese": self.original_error.chinese_sentence,
-                    "user_answer": self.original_error.user_answer,
-                    "correct": self.original_error.correct_answer,
-                }
-            )
-
-        # 添加複習例句
-        for review in self.review_examples:
-            examples_list.append(
-                {
-                    "chinese": review.chinese_sentence,
-                    "user_answer": review.user_answer,
-                    "correct": review.correct_answer,
-                }
-            )
-
-        return examples_list
-
     def _calculate_next_review(self) -> str:
-        """計算下次複習時間"""
-        # 從設定檔獲取複習間隔
+        """根據艾賓浩斯遺忘曲線和錯誤類型，計算下一次最佳複習時間。"""
         thresholds = settings.learning.MASTERY_THRESHOLDS
         intervals = settings.learning.REVIEW_INTERVALS
 
-        # 根據掌握度決定基礎天數
         if self.mastery_level < thresholds["beginner"]:
             base_days = intervals["immediate"]
         elif self.mastery_level < thresholds["intermediate"]:
@@ -141,112 +112,64 @@ class KnowledgePoint:
         else:
             base_days = intervals["mastered"]
 
-        # 根據錯誤類別調整
         multiplier = self.category.get_review_multiplier()
         days = max(1, int(base_days * multiplier))
-
-        next_date = datetime.now() + timedelta(days=days)
-        return next_date.isoformat()
+        return (datetime.now() + timedelta(days=days)).isoformat()
 
     def update_mastery(self, is_correct: bool):
-        """更新掌握度"""
-        increments = settings.learning.MASTERY_INCREMENTS
-        decrements = settings.learning.MASTERY_DECREMENTS
-
+        """根據練習結果更新掌握度、計數和下次複習時間。"""
         if is_correct:
             self.correct_count += 1
-            # 根據錯誤類別調整進步幅度
-            category_key = self.category.value
-            increment = increments.get(category_key, increments["other"])
+            increment = settings.learning.MASTERY_INCREMENTS.get(self.category.value, settings.learning.MASTERY_INCREMENTS["other"])
             self.mastery_level = min(1.0, self.mastery_level + increment)
         else:
             self.mistake_count += 1
-            # 錯誤時的懲罰
-            category_key = self.category.value
-            decrement = decrements.get(category_key, decrements["other"])
+            decrement = settings.learning.MASTERY_DECREMENTS.get(self.category.value, settings.learning.MASTERY_DECREMENTS["other"])
             self.mastery_level = max(0.0, self.mastery_level - decrement)
 
         self.last_seen = datetime.now().isoformat()
         self.next_review = self._calculate_next_review()
 
-    def edit(self, updates: dict) -> dict:
-        """編輯知識點並記錄歷史
+    def edit(self, updates: dict[str, Any]) -> dict[str, Any]:
+        """
+        編輯知識點屬性，並將變更記錄到 `version_history`。
 
         Args:
-            updates: 要更新的欄位字典
+            updates: 一個包含要更新欄位和新值的字典。
 
         Returns:
-            包含變更前後對比的字典
+            一個描述此次變更的歷史記錄項目。
         """
-        # 記錄變更前的狀態
-        before_state = {
-            "key_point": self.key_point,
-            "explanation": self.explanation,
-            "original_phrase": self.original_phrase,
-            "correction": self.correction,
-            "category": self.category.value,
-            "subtype": self.subtype,
-            "tags": self.tags.copy() if self.tags else [],
-            "custom_notes": self.custom_notes,
-        }
+        before_state = {field: getattr(self, field) for field in updates.keys()}
+        
+        for key, value in updates.items():
+            if hasattr(self, key):
+                if key == "category":
+                    setattr(self, key, ErrorCategory.from_string(value))
+                else:
+                    setattr(self, key, value)
 
-        # 應用更新
-        if "key_point" in updates:
-            self.key_point = updates["key_point"]
-        if "explanation" in updates:
-            self.explanation = updates["explanation"]
-        if "original_phrase" in updates:
-            self.original_phrase = updates["original_phrase"]
-        if "correction" in updates:
-            self.correction = updates["correction"]
-        if "category" in updates:
-            self.category = ErrorCategory.from_string(updates["category"])
-        if "subtype" in updates:
-            self.subtype = updates["subtype"]
-        if "tags" in updates:
-            self.tags = updates["tags"] if isinstance(updates["tags"], list) else []
-        if "custom_notes" in updates:
-            self.custom_notes = updates["custom_notes"]
-
-        # 更新修改時間
         self.last_modified = datetime.now().isoformat()
+        after_state = {field: getattr(self, field) for field in updates.keys()}
 
-        # 記錄到版本歷史
         history_entry = {
             "timestamp": self.last_modified,
             "before": before_state,
-            "after": {
-                "key_point": self.key_point,
-                "explanation": self.explanation,
-                "original_phrase": self.original_phrase,
-                "correction": self.correction,
-                "category": self.category.value,
-                "subtype": self.subtype,
-                "tags": self.tags.copy() if self.tags else [],
-                "custom_notes": self.custom_notes,
-            },
+            "after": after_state,
             "changed_fields": list(updates.keys()),
         }
-
-        if self.version_history is None:
-            self.version_history = []
         self.version_history.append(history_entry)
-
         return history_entry
 
-    def soft_delete(self, reason: str = "") -> None:
-        """軟刪除知識點
-
-        Args:
-            reason: 刪除原因
-        """
+    def soft_delete(self, reason: str = ""):
+        """將知識點標記為已刪除。"""
         self.is_deleted = True
         self.deleted_at = datetime.now().isoformat()
         self.deleted_reason = reason
         self.last_modified = self.deleted_at
 
-    def restore(self) -> None:
-        """復原軟刪除的知識點"""
+    def restore(self):
+        """從軟刪除狀態恢復知識點。"""
         self.is_deleted = False
         self.deleted_at = ""
         self.deleted_reason = ""

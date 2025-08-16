@@ -21,7 +21,7 @@ except ImportError as e:
     sys.exit(1)
 
 
-class ArchitectureDesignAnalyzer:
+class ArchAnalyzer:
     """架構設計一致性分析器（排除數據內容）"""
 
     def __init__(self):
@@ -57,10 +57,10 @@ class ArchitectureDesignAnalyzer:
             "get_statistics",  # 統計查詢
             "get_active_points",  # 知識點檢索
             "get_review_candidates",  # 複習候選
-            "get_learning_recommendations",  # 學習推薦
+            "get_recommendations",  # 學習推薦
             "edit_knowledge_point",  # 知識點編輯
-            "delete_knowledge_point",  # 知識點刪除
-            "restore_knowledge_point",  # 知識點恢復
+            "delete_point",  # 知識點刪除
+            "restore_point",  # 知識點恢復
             "save_mistake",  # 錯誤記錄
             "update_knowledge_point",  # 知識點更新
         ]
@@ -169,8 +169,8 @@ class ArchitectureDesignAnalyzer:
 
         # 2. 學習推薦邏輯設計
         try:
-            if hasattr(self.json_manager, "get_learning_recommendations"):
-                json_rec = self.json_manager.get_learning_recommendations()
+            if hasattr(self.json_manager, "get_recommendations"):
+                json_rec = self.json_manager.get_recommendations()
 
                 # 檢查推薦結構設計
                 expected_fields = ["recommendations", "priority_points", "next_review_count"]
@@ -235,7 +235,7 @@ class ArchitectureDesignAnalyzer:
         key_methods = [
             "get_statistics",
             "get_review_candidates",
-            "delete_knowledge_point",
+            "delete_point",
             "edit_knowledge_point",
         ]
 
@@ -441,7 +441,7 @@ class ArchitectureDesignAnalyzer:
 
 async def main():
     """主函數"""
-    analyzer = ArchitectureDesignAnalyzer()
+    analyzer = ArchAnalyzer()
 
     try:
         results = await analyzer.run_design_analysis()

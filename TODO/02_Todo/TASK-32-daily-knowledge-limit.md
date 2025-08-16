@@ -4,7 +4,7 @@
 - **Estimated Time**: 20 hours (分階段執行)
 - **Related Components**: 
   - `core/services/async_knowledge_service.py`
-  - `core/database/repositories/knowledge_repository.py`
+  - `core/database/repositories/know_repo.py`
   - `web/routers/api_knowledge.py`
   - `web/templates/practice.html`
   - `web/static/js/practice-logic.js`
@@ -142,7 +142,7 @@ class AsyncKnowledgeService(BaseAsyncService):
         
         return status
     
-    async def save_knowledge_point_with_limit(
+    async def save_with_limit(
         self, 
         knowledge_point: KnowledgePoint
     ) -> dict:

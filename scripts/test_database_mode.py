@@ -21,9 +21,9 @@ sys.path.insert(0, str(project_root))
 # 強制使用資料庫模式
 os.environ["USE_DATABASE"] = "true"
 
-from core.config import USE_DATABASE
-from core.database.adapter import get_knowledge_manager_async
-from core.log_config import get_module_logger
+from core.config import USE_DATABASE  # noqa: E402
+from core.database.adapter import get_knowledge_manager_async  # noqa: E402
+from core.log_config import get_module_logger  # noqa: E402
 
 logger = get_module_logger(__name__)
 

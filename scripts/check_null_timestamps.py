@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from core.database.connection import get_database_connection
+from core.database.connection import get_database_connection  # noqa: E402
 
 
 async def check_null_timestamps():

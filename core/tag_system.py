@@ -15,7 +15,7 @@ from core.log_config import get_module_logger
 logger = get_module_logger(__name__)
 
 # 資料目錄
-DATA_DIR = Path(__file__).parent.parent / "data"
+ASSETS_DIR = Path(__file__).parent.parent / "assets"
 
 
 class TagType(Enum):
@@ -129,7 +129,7 @@ class TagManager:
 
     def _load_patterns_data(self) -> dict:
         """載入文法句型資料"""
-        patterns_file = DATA_DIR / "patterns_enriched_complete.json"
+        patterns_file = ASSETS_DIR / "patterns_enriched_complete.json"
         if patterns_file.exists():
             with open(patterns_file, encoding="utf-8") as f:
                 data = json.load(f)

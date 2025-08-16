@@ -10,7 +10,7 @@ from fastapi.responses import HTMLResponse
 # TASK-34: 引入統一API端點管理系統，消除硬編碼
 from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import (
-    get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
+    get_know_service,  # TASK-31: 使用新的純異步服務
     get_templates,
 )
 
@@ -21,7 +21,7 @@ router = APIRouter()
 async def home(request: Request):
     """主頁路由"""
     templates = get_templates()
-    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge = await get_know_service()  # TASK-31: 使用純異步服務
 
     # 獲取複習列表（最多顯示10個）
     if hasattr(knowledge, "get_review_candidates_async"):
@@ -51,8 +51,12 @@ async def home(request: Request):
                 "id": point.id,
                 "key_point": point.key_point,
                 # TASK-31: 處理 ErrorCategory 可能是 enum 或字符串
-                "category": point.category.to_chinese() if hasattr(point.category, 'to_chinese') else point.category,
-                "category_value": point.category.value if hasattr(point.category, 'value') else point.category,
+                "category": point.category.to_chinese()
+                if hasattr(point.category, "to_chinese")
+                else point.category,
+                "category_value": point.category.value
+                if hasattr(point.category, "value")
+                else point.category,
                 "mastery_level": round(point.mastery_level * 100),
                 "mistake_count": point.mistake_count,
                 "next_review": point.next_review,
@@ -72,7 +76,7 @@ async def home(request: Request):
 async def settings(request: Request):
     """設定頁面路由"""
     templates = get_templates()
-    knowledge = await get_async_knowledge_service()
+    knowledge = await get_know_service()
 
     # 獲取當前限額配置
     daily_limit_config = await knowledge.get_daily_limit_config()

@@ -66,10 +66,10 @@ class RealArchitectureAnalyzer:
             "get_statistics",
             "get_active_points",
             "get_review_candidates",
-            "get_learning_recommendations",
+            "get_recommendations",
             "edit_knowledge_point",
-            "delete_knowledge_point",
-            "restore_knowledge_point",
+            "delete_point",
+            "restore_point",
         ]
 
         method_comparison = {}
@@ -265,7 +265,6 @@ class RealArchitectureAnalyzer:
     async def _analyze_error_handling(self) -> dict[str, Any]:
         """分析錯誤處理一致性"""
         print("\n⚠️  6. 錯誤處理一致性分析")
-
 
         # 測試無效ID處理
         try:

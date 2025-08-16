@@ -3,12 +3,12 @@
 純異步架構，解決事件循環衝突問題
 """
 
-from .async_knowledge_service import AsyncKnowledgeService
 from .base import BaseAsyncService
+from .know_service import KnowService
 from .registry import ServiceRegistry, get_service_registry
 
 __all__ = [
-    "AsyncKnowledgeService",
+    "KnowService",
     "BaseAsyncService",
     "ServiceRegistry",
     "get_service_registry",

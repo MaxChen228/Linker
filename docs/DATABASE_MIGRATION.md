@@ -224,7 +224,7 @@ CREATE TABLE knowledge_point_tags (
 class BaseRepository(ABC, Generic[T]):
     # ... 基礎 Repository 抽象類 ...
 
-# core/database/repositories/knowledge_repository.py
+# core/database/repositories/know_repo.py
 class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
     # ... 知識點的具體資料庫操作 ...
 

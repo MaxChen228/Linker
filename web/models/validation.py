@@ -96,7 +96,7 @@ class CompleteReviewRequest(BaseModel):
         return v.strip()
 
 
-class EnhancedEditKnowledgeRequest(BaseModel):
+class EditKnowReq(BaseModel):
     """增強的編輯知識點請求驗證模型"""
 
     key_point: Optional[str] = Field(None, max_length=500, description="知識點標題")
@@ -174,7 +174,7 @@ class EnhancedEditKnowledgeRequest(BaseModel):
         return v
 
 
-class EnhancedDeleteKnowledgeRequest(BaseModel):
+class DeleteKnowReq(BaseModel):
     """增強的刪除知識點請求驗證模型"""
 
     reason: str = Field(default="", max_length=500, description="刪除原因")
@@ -195,10 +195,12 @@ class EnhancedDeleteKnowledgeRequest(BaseModel):
         return v.strip() if v else ""
 
 
-class EnhancedBatchRequest(BaseModel):
+class BatchReq(BaseModel):
     """增強的批量操作請求驗證模型"""
 
-    operation: str = Field(..., pattern="^(delete|update|restore|export|tag)$", description="批量操作類型")
+    operation: str = Field(
+        ..., pattern="^(delete|update|restore|export|tag)$", description="批量操作類型"
+    )
     ids: list[int] = Field(
         ...,
         min_items=1,

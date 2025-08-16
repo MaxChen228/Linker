@@ -115,17 +115,14 @@ class ServiceRegistry:
                 "registered_classes": list(self._service_classes.keys()),
                 "active_services": list(self._services.keys()),
             },
-            "services": {}
+            "services": {},
         }
 
         for name, service in self._services.items():
             try:
                 results["services"][name] = await service.health_check()
             except Exception as e:
-                results["services"][name] = {
-                    "status": "error",
-                    "error": str(e)
-                }
+                results["services"][name] = {"status": "error", "error": str(e)}
 
         return results
 
@@ -174,8 +171,9 @@ def get_service_registry() -> ServiceRegistry:
         _registry = ServiceRegistry()
 
         # 註冊默認服務
-        from core.services.async_knowledge_service import AsyncKnowledgeService
-        _registry.register_class("knowledge", AsyncKnowledgeService)
+        from core.services.know_service import KnowService
+
+        _registry.register_class("knowledge", KnowService)
 
     return _registry
 

@@ -6,28 +6,26 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from core.services import AsyncKnowledgeService
-
 # TASK-34: 引入統一API端點管理系統，消除硬編碼
 from web.config.api_endpoints import API_ENDPOINTS
-from web.dependencies import get_async_knowledge_service, get_logger
+from web.dependencies import get_know_service, get_logger
+from core.services.know_service import KnowService
 
 router = APIRouter(prefix="/api/test", tags=["test"])
 logger = get_logger()
+
 
 # TASK-34: 輔助函數，從完整API路徑提取相對路徑
 def _get_relative_path(full_path: str) -> str:
     """從完整API路徑提取相對於/api/test的路徑"""
     prefix = "/api/test"
     if full_path.startswith(prefix):
-        return full_path[len(prefix):] or "/"
+        return full_path[len(prefix) :] or "/"
     return full_path
 
 
 @router.get(_get_relative_path(API_ENDPOINTS.TEST_ASYNC_STATS))
-async def test_async_stats(
-    service: AsyncKnowledgeService = Depends(get_async_knowledge_service)
-):
+async def test_async_stats(service: KnowService = Depends(get_know_service)):
     """測試異步統計功能
 
     這是一個簡單的測試端點，用於驗證：
@@ -43,24 +41,23 @@ async def test_async_stats(
 
         logger.info(f"成功獲取統計資料: {stats}")
 
-        return JSONResponse({
-            "success": True,
-            "message": "異步服務正常運作",
-            "stats": stats,
-            "service_type": "AsyncKnowledgeService"
-        })
+        return JSONResponse(
+            {
+                "success": True,
+                "message": "異步服務正常運作",
+                "stats": stats,
+                "service_type": "KnowService",
+            }
+        )
 
     except Exception as e:
         logger.error(f"測試異步統計失敗: {e}", exc_info=True)
-        return JSONResponse({
-            "success": False,
-            "error": str(e)
-        }, status_code=500)
+        return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
 
 @router.get(_get_relative_path(API_ENDPOINTS.TEST_ASYNC_REVIEW_CANDIDATES))
 async def test_async_review_candidates(
-    service: AsyncKnowledgeService = Depends(get_async_knowledge_service)
+    service: KnowService = Depends(get_know_service),
 ):
     """測試異步獲取複習候選
 
@@ -75,49 +72,43 @@ async def test_async_review_candidates(
         # 轉換為可序列化格式
         result = []
         for point in candidates:
-            result.append({
-                "id": point.id,
-                "key_point": point.key_point,
-                "mastery_level": point.mastery_level,
-                "last_seen": point.last_seen,
-                "next_review": point.next_review
-            })
+            result.append(
+                {
+                    "id": point.id,
+                    "key_point": point.key_point,
+                    "mastery_level": point.mastery_level,
+                    "last_seen": point.last_seen,
+                    "next_review": point.next_review,
+                }
+            )
 
         logger.info(f"成功獲取 {len(result)} 個複習候選")
 
-        return JSONResponse({
-            "success": True,
-            "message": "異步複習候選功能正常",
-            "count": len(result),
-            "candidates": result,
-            "service_type": "AsyncKnowledgeService"
-        })
+        return JSONResponse(
+            {
+                "success": True,
+                "message": "異步複習候選功能正常",
+                "count": len(result),
+                "candidates": result,
+                "service_type": "KnowService",
+            }
+        )
 
     except Exception as e:
         logger.error(f"測試異步複習候選失敗: {e}", exc_info=True)
-        return JSONResponse({
-            "success": False,
-            "error": str(e)
-        }, status_code=500)
+        return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
 
 @router.get(_get_relative_path(API_ENDPOINTS.TEST_SERVICE_HEALTH))
 async def test_service_health(
-    service: AsyncKnowledgeService = Depends(get_async_knowledge_service)
+    service: KnowService = Depends(get_know_service),
 ):
     """測試服務健康狀態"""
     try:
         health = await service.health_check()
 
-        return JSONResponse({
-            "success": True,
-            "health": health,
-            "message": "服務健康檢查完成"
-        })
+        return JSONResponse({"success": True, "health": health, "message": "服務健康檢查完成"})
 
     except Exception as e:
         logger.error(f"健康檢查失敗: {e}", exc_info=True)
-        return JSONResponse({
-            "success": False,
-            "error": str(e)
-        }, status_code=500)
+        return JSONResponse({"success": False, "error": str(e)}, status_code=500)

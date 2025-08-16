@@ -12,7 +12,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import (
     get_ai_service,
-    get_async_knowledge_service,  # TASK-31: 使用新的純異步服務
+    get_know_service,  # TASK-31: 使用新的純異步服務
     get_knowledge_assets,
     get_logger,
     get_templates,
@@ -55,12 +55,12 @@ async def grade_answer_api(request: GradeAnswerRequest):
     import os
 
     # Read configuration dynamically to allow runtime changes
-    AUTO_SAVE_KNOWLEDGE_POINTS = os.getenv("AUTO_SAVE_KNOWLEDGE_POINTS", "false").lower() == "true"
-    SHOW_CONFIRMATION_UI = os.getenv("SHOW_CONFIRMATION_UI", "true").lower() == "true"
+    auto_save_knowledge_points = os.getenv("AUTO_SAVE_KNOWLEDGE_POINTS", "false").lower() == "true"
+    show_confirmation_ui = os.getenv("SHOW_CONFIRMATION_UI", "true").lower() == "true"
     import uuid
 
     ai = get_ai_service()
-    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge = await get_know_service()  # TASK-31: 使用純異步服務
 
     try:
         # 輸入已通過 Pydantic 驗證
@@ -98,7 +98,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
         pending_knowledge_points = []
 
         if not is_correct:
-            if AUTO_SAVE_KNOWLEDGE_POINTS:
+            if auto_save_knowledge_points:
                 # 舊邏輯：自動保存錯誤記錄
                 if hasattr(knowledge, "_save_mistake_async"):
                     await knowledge._save_mistake_async(
@@ -165,14 +165,16 @@ async def grade_answer_api(request: GradeAnswerRequest):
         }
 
         # 添加待確認點和配置標記
-        logger.info(f"Config check - SHOW_CONFIRMATION_UI: {SHOW_CONFIRMATION_UI}, AUTO_SAVE_KNOWLEDGE_POINTS: {AUTO_SAVE_KNOWLEDGE_POINTS}")
+        logger.info(
+            f"Config check - SHOW_CONFIRMATION_UI: {show_confirmation_ui}, AUTO_SAVE_KNOWLEDGE_POINTS: {auto_save_knowledge_points}"
+        )
         logger.info(f"Pending points count: {len(pending_knowledge_points)}")
 
-        if SHOW_CONFIRMATION_UI and not AUTO_SAVE_KNOWLEDGE_POINTS:
+        if show_confirmation_ui and not auto_save_knowledge_points:
             response_data["pending_knowledge_points"] = pending_knowledge_points
             response_data["auto_save"] = False
         else:
-            response_data["auto_save"] = AUTO_SAVE_KNOWLEDGE_POINTS
+            response_data["auto_save"] = auto_save_knowledge_points
 
         return JSONResponse(response_data)
 
@@ -184,7 +186,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
 @router.post(API_ENDPOINTS.CONFIRM_KNOWLEDGE, response_class=JSONResponse)
 async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
     """API 端點：確認並保存選中的知識點"""
-    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge = await get_know_service()  # TASK-31: 使用純異步服務
 
     try:
         confirmed_ids = []
@@ -255,7 +257,7 @@ async def confirm_knowledge_points(request: ConfirmKnowledgeRequest):
 async def generate_question_api(request: GenerateQuestionRequest):
     """API 端點：生成單個題目（支援並行調用）"""
     ai = get_ai_service()
-    knowledge = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    knowledge = await get_know_service()  # TASK-31: 使用純異步服務
     assets = get_knowledge_assets()
 
     try:
@@ -270,7 +272,9 @@ async def generate_question_api(request: GenerateQuestionRequest):
         )
 
         if mode == "review":
-            review_points = await knowledge.get_review_candidates(max_points=5)  # TASK-31: 添加 await
+            review_points = await knowledge.get_review_candidates(
+                max_points=5
+            )  # TASK-31: 添加 await
             if not review_points:
                 return JSONResponse({"success": False, "error": "沒有待複習的知識點"})
 
@@ -291,7 +295,7 @@ async def generate_question_api(request: GenerateQuestionRequest):
         # 文法句型模式 - 現在支援隨機選擇
         elif mode == "pattern":
             # 載入句型資料
-            enriched_file = Path("data/patterns_enriched_complete.json")
+            enriched_file = Path("assets/patterns_enriched_complete.json")
             if not enriched_file.exists():
                 return JSONResponse(
                     {"success": False, "error": "Patterns data not found."}, status_code=404

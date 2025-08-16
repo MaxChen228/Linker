@@ -24,7 +24,7 @@ def patterns(request: Request, category: Optional[str] = None, q: Optional[str] 
     assets = get_knowledge_assets()
 
     # 載入所有擴充的句型資料
-    enriched_file = Path("data/patterns_enriched_complete.json")
+    enriched_file = Path("assets/patterns_enriched_complete.json")
     if enriched_file.exists():
         with open(enriched_file, encoding="utf-8") as f:
             data = json.load(f)
@@ -97,7 +97,7 @@ def pattern_detail(request: Request, pattern_id: str):
     templates = get_templates()
 
     # 載入擴充資料
-    enriched_file = Path("data/patterns_enriched_complete.json")
+    enriched_file = Path("assets/patterns_enriched_complete.json")
     if enriched_file.exists():
         with open(enriched_file, encoding="utf-8") as f:
             data = json.load(f)
@@ -141,7 +141,7 @@ def pattern_detail(request: Request, pattern_id: str):
 def get_all_patterns_api():
     """API 端點：獲取所有文法句型列表，用於練習模式選擇。"""
     try:
-        enriched_file = Path("data/patterns_enriched_complete.json")
+        enriched_file = Path("assets/patterns_enriched_complete.json")
         if not enriched_file.exists():
             return JSONResponse(
                 {"success": False, "error": "Patterns data not found."}, status_code=404

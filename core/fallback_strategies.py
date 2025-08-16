@@ -1,18 +1,20 @@
 """
 降級策略模組
-提供各種錯誤情況下的降級處理策略
 
-包含功能：
-1. 快取降級策略
-2. 網路錯誤降級策略
-3. 並發錯誤降級策略
-4. 降級管理器
-5. 降級結果驗證
+提供在系統主要功能（如資料庫、網路請求）失敗時的備用處理方案，
+以增強系統的穩定性和使用者體驗。
 
-注意：DatabaseToJsonFallback 已在 TASK-30B 中移除（純資料庫架構）
+主要功能：
+- 定義了多種降級策略，如快取降級、網路重試、優雅降級等。
+- `FallbackManager` 統一管理和執行這些策略。
+- 策略可以根據錯誤的類別和嚴重性被觸發。
+
+注意：隨著架構演進，原有的 `DatabaseToJsonFallback` 已被移除，
+因為系統現在是純資料庫架構。
 """
 
 import asyncio
+import time
 from datetime import datetime, timedelta
 from typing import Any, Callable, Optional
 
@@ -21,38 +23,40 @@ from core.log_config import get_module_logger
 
 
 class FallbackStrategy:
-    """降級策略基類"""
+    """所有降級策略的抽象基礎類別。"""
 
     def __init__(self):
         self.logger = get_module_logger(self.__class__.__name__)
 
     def can_handle(self, error_category: ErrorCategory, severity: ErrorSeverity) -> bool:
-        """判斷是否可以處理此錯誤"""
+        """判斷此策略是否能處理特定類別和嚴重性的錯誤。"""
         raise NotImplementedError
 
     def execute(self, original_func: Callable, *args, **kwargs) -> Any:
-        """執行降級策略"""
+        """執行降級邏輯。"""
         raise NotImplementedError
 
     def get_strategy_name(self) -> str:
-        """獲取策略名稱"""
+        """返回策略的名稱。"""
         return self.__class__.__name__
 
 
-# TASK-30B: DatabaseToJsonFallback removed - pure database architecture
-# No longer fallback to JSON mode since JSON backend is completely removed
-
-
 class CacheFallback(FallbackStrategy):
-    """快取降級策略"""
+    """
+    快取降級策略。
+
+    當主要資料來源（如資料庫）不可用時，嘗試從記憶體快取中返回舊的、
+    可能稍微過時的資料，以維持系統的基本可用性。
+    """
 
     def __init__(self):
         super().__init__()
         self._cache: dict[str, Any] = {}
         self._cache_timestamps: dict[str, datetime] = {}
-        self._default_ttl = timedelta(minutes=5)  # 快取過期時間
+        self._default_ttl = timedelta(minutes=5)
 
     def can_handle(self, error_category: ErrorCategory, severity: ErrorSeverity) -> bool:
+        """此策略可以處理資料庫、網路、並發和系統錯誤。"""
         return error_category in [
             ErrorCategory.DATABASE,
             ErrorCategory.NETWORK,
@@ -61,129 +65,79 @@ class CacheFallback(FallbackStrategy):
         ]
 
     def execute(self, original_func: Callable, *args, **kwargs) -> Any:
-        """使用快取數據執行"""
+        """嘗試從快取中獲取資料，如果快取無效則返回安全的預設值。"""
         try:
-            # 生成快取鍵
             cache_key = self._generate_cache_key(original_func, args, kwargs)
-
-            # 檢查快取是否存在且未過期
             if self._is_cache_valid(cache_key):
                 cached_result = self._cache[cache_key]
-                self.logger.info(f"快取降級成功: {original_func.__name__}")
-
-                # 如果是字典，添加快取命中標記
+                self.logger.info(f"成功執行快取降級 for {original_func.__name__}")
                 if isinstance(cached_result, dict):
-                    result = cached_result.copy()
-                    result["_cache_hit"] = True
-                    result["_fallback"] = True
-                    result["_fallback_strategy"] = self.get_strategy_name()
-                    return result
-
+                    return {**cached_result, "_fallback_strategy": self.get_strategy_name()}
                 return cached_result
-
-            # 快取未命中或已過期，返回安全默認值
             return self._get_safe_default(original_func.__name__)
-
         except Exception as e:
-            self.logger.error(f"快取降級失敗: {e}")
+            self.logger.error(f"快取降級執行失敗: {e}")
             return self._get_safe_default(original_func.__name__)
 
     def update_cache(self, func: Callable, args: tuple, kwargs: dict, result: Any) -> None:
-        """更新快取"""
+        """在正常操作成功後，更新快取內容。"""
         try:
             cache_key = self._generate_cache_key(func, args, kwargs)
             self._cache[cache_key] = result
             self._cache_timestamps[cache_key] = datetime.now()
-
-            # 清理過期快取
             self._cleanup_expired_cache()
-
         except Exception as e:
-            self.logger.warning(f"快取更新失敗: {e}")
+            self.logger.warning(f"更新快取失敗: {e}")
 
     def _generate_cache_key(self, func: Callable, args: tuple, kwargs: dict) -> str:
-        """生成快取鍵"""
-        try:
-            # 簡化的快取鍵生成策略
-            func_name = func.__name__
-
-            # 只使用部分參數作為鍵，避免過於複雜
-            key_parts = [func_name]
-
-            # 添加實例類型信息
-            if args:
-                instance_type = type(args[0]).__name__
-                key_parts.append(instance_type)
-
-            # 添加重要的關鍵字參數
-            important_kwargs = ["limit", "offset", "category", "search_term"]
-            for key in important_kwargs:
-                if key in kwargs:
-                    key_parts.append(f"{key}={kwargs[key]}")
-
-            return ":".join(key_parts)
-
-        except Exception:
-            # 如果生成鍵失敗，使用函數名作為鍵
-            return func.__name__
+        """根據函數和參數生成一個唯一的快取鍵。"""
+        # 簡化鍵的生成，只包含關鍵資訊以提高命中率
+        key_parts = [func.__name__]
+        if args:
+            key_parts.append(type(args[0]).__name__)
+        key_parts.extend(f"{k}={v}" for k, v in kwargs.items() if k in ["limit", "category"])
+        return ":".join(key_parts)
 
     def _is_cache_valid(self, cache_key: str) -> bool:
-        """檢查快取是否有效"""
-        if cache_key not in self._cache:
+        """檢查快取是否存在且未過期。"""
+        if cache_key not in self._cache or cache_key not in self._cache_timestamps:
             return False
-
-        if cache_key not in self._cache_timestamps:
-            return False
-
-        cache_time = self._cache_timestamps[cache_key]
-        return datetime.now() - cache_time < self._default_ttl
+        return datetime.now() - self._cache_timestamps[cache_key] < self._default_ttl
 
     def _cleanup_expired_cache(self) -> None:
-        """清理過期快取"""
-        try:
-            current_time = datetime.now()
-            expired_keys = [
-                key
-                for key, timestamp in self._cache_timestamps.items()
-                if current_time - timestamp > self._default_ttl
-            ]
-
-            for key in expired_keys:
-                self._cache.pop(key, None)
-                self._cache_timestamps.pop(key, None)
-
-            if expired_keys:
-                self.logger.debug(f"清理了 {len(expired_keys)} 個過期快取項目")
-
-        except Exception as e:
-            self.logger.warning(f"快取清理失敗: {e}")
+        """清理所有已過期的快取條目以釋放記憶體。"""
+        expired_keys = [k for k, ts in self._cache_timestamps.items() if datetime.now() - ts > self._default_ttl]
+        for key in expired_keys:
+            self._cache.pop(key, None)
+            self._cache_timestamps.pop(key, None)
+        if expired_keys:
+            self.logger.debug(f"已清理 {len(expired_keys)} 個過期快取項目。")
 
     def _get_safe_default(self, method_name: str) -> Any:
-        """安全的默認返回值"""
-        if "statistics" in method_name or "stats" in method_name:
-            return {
-                "total_practices": 0,
-                "correct_count": 0,
-                "knowledge_points": 0,
-                "avg_mastery": 0.0,
-                "category_distribution": {},
-                "due_reviews": 0,
-                "_cache_miss": True,
-                "_fallback": True,
-                "_fallback_strategy": self.get_strategy_name(),
-            }
-        elif any(keyword in method_name for keyword in ["points", "candidates", "search"]):
-            return []
-        elif method_name.replace("async_", "").replace("_async", "") == "get_knowledge_point":
-            return None
-        elif any(keyword in method_name for keyword in ["add", "edit", "delete", "restore"]):
-            return False
-        else:
-            return None
+        """根據方法名稱提供一個安全的預設回傳值。"""
+        defaults = {
+            "statistics": {"total_practices": 0, "correct_count": 0, "knowledge_points": 0, "avg_mastery": 0.0, "due_reviews": 0},
+            "points": [],
+            "candidates": [],
+            "search": [],
+            "get_knowledge_point": None,
+            "add": False, "edit": False, "delete": False, "restore": False,
+        }
+        key = next((k for k in defaults if k in method_name), None)
+        if key:
+            default_value = defaults[key]
+            if isinstance(default_value, dict):
+                return {**default_value, "_fallback_strategy": self.get_strategy_name(), "_cache_miss": True}
+            return default_value
+        return None
 
 
 class NetworkRetryFallback(FallbackStrategy):
-    """網路錯誤重試降級策略"""
+    """
+    網路錯誤重試降級策略。
+
+    當發生網路相關錯誤時，自動進行重試，並採用指數退避策略避免對服務造成過大壓力。
+    """
 
     def __init__(self, max_retries: int = 3, retry_delay: float = 1.0):
         super().__init__()
@@ -191,202 +145,135 @@ class NetworkRetryFallback(FallbackStrategy):
         self.retry_delay = retry_delay
 
     def can_handle(self, error_category: ErrorCategory, severity: ErrorSeverity) -> bool:
+        """此策略專門處理網路錯誤。"""
         return error_category == ErrorCategory.NETWORK
 
     def execute(self, original_func: Callable, *args, **kwargs) -> Any:
-        """網路錯誤重試策略"""
-
+        """執行網路重試邏輯。"""
         for attempt in range(self.max_retries):
             try:
-                self.logger.info(
-                    f"網路操作重試 {attempt + 1}/{self.max_retries}: {original_func.__name__}"
-                )
-
+                self.logger.info(f"網路操作重試 {attempt + 1}/{self.max_retries}: {original_func.__name__}")
                 if asyncio.iscoroutinefunction(original_func):
-                    # 異步函數需要特殊處理
-                    return self._execute_async_retry(original_func, args, kwargs, attempt)
-                else:
-                    return original_func(*args, **kwargs)
-
+                    # 實際應用中，應由異步錯誤處理器調用異步重試邏輯
+                    self.logger.warning("異步重試應在異步上下文中處理。")
+                    break
+                return original_func(*args, **kwargs)
             except Exception as e:
                 if attempt < self.max_retries - 1:
-                    import time
-
-                    retry_delay = self.retry_delay * (2**attempt)  # 指數退避
-                    self.logger.warning(f"網路操作失敗，{retry_delay}秒後重試: {e}")
-                    time.sleep(retry_delay)
+                    delay = self.retry_delay * (2 ** attempt)
+                    self.logger.warning(f"網路操作失敗，將在 {delay:.2f} 秒後重試: {e}")
+                    time.sleep(delay)
                 else:
-                    self.logger.error(f"網路操作重試 {self.max_retries} 次後仍失敗: {e}")
-
-        # 所有重試都失敗，返回默認值
+                    self.logger.error(f"網路操作在 {self.max_retries} 次重試後仍然失敗: {e}")
         return self._get_network_default(original_func.__name__)
 
-    def _execute_async_retry(self, func: Callable, args: tuple, kwargs: dict, attempt: int) -> Any:
-        """執行異步重試"""
-        # 這個方法本身不是異步的，所以需要特殊處理
-        # 在實際使用中，這需要在異步上下文中調用
-        self.logger.warning("異步重試需要在異步上下文中處理")
-        return self._get_network_default(func.__name__)
-
     def _get_network_default(self, method_name: str) -> Any:
-        """獲取網路錯誤的默認值"""
-        return {
-            "_network_error": True,
-            "_fallback": True,
-            "_fallback_strategy": self.get_strategy_name(),
-            "message": "網路連接異常，請稍後重試",
-        }
+        """返回一個表示網路錯誤的標準化回應。"""
+        return {"_fallback_strategy": self.get_strategy_name(), "_network_error": True, "message": "網路連線異常，請稍後重試。"}
 
 
 class GracefulDegradationFallback(FallbackStrategy):
-    """優雅降級策略 - 提供基本功能"""
+    """
+    優雅降級策略。
+
+    作為最後一道防線，當其他策略都失敗時，提供最基本但安全的預設回應，
+    確保應用程式不會完全崩潰。
+    """
 
     def can_handle(self, error_category: ErrorCategory, severity: ErrorSeverity) -> bool:
-        # 這是最後的降級策略，可以處理所有錯誤
+        """此策略可以處理任何類型的錯誤，作為最終的降級手段。"""
         return True
 
     def execute(self, original_func: Callable, *args, **kwargs) -> Any:
-        """優雅降級執行"""
-        try:
-            method_name = original_func.__name__
-
-            # 根據方法類型提供基本功能
-            if "statistics" in method_name or "stats" in method_name:
-                return self._get_minimal_statistics()
-            elif any(keyword in method_name for keyword in ["points", "candidates", "search"]):
-                return []
-            elif method_name in ["get_knowledge_point"]:
-                return None
-            elif any(keyword in method_name for keyword in ["add", "edit", "delete", "restore"]):
-                return False
-            else:
-                return None
-
-        except Exception as e:
-            self.logger.error(f"優雅降級執行失敗: {e}")
+        """根據方法名稱返回一個安全的、最小化的預設值。"""
+        method_name = original_func.__name__
+        if "statistics" in method_name or "stats" in method_name:
+            return self._get_minimal_statistics()
+        elif any(keyword in method_name for keyword in ["points", "candidates", "search"]):
+            return []
+        elif "get_knowledge_point" in method_name:
             return None
+        elif any(keyword in method_name for keyword in ["add", "edit", "delete", "restore"]):
+            return False
+        return None
 
     def _get_minimal_statistics(self) -> dict:
-        """獲取最小統計信息"""
+        """返回一個最小化的統計數據結構。"""
         return {
-            "total_practices": 0,
-            "correct_count": 0,
-            "knowledge_points": 0,
-            "avg_mastery": 0.0,
-            "category_distribution": {},
-            "due_reviews": 0,
-            "_graceful_degradation": True,
-            "_fallback": True,
-            "_fallback_strategy": self.get_strategy_name(),
-            "message": "系統正在降級模式運行，功能受限",
+            "total_practices": 0, "correct_count": 0, "knowledge_points": 0, "avg_mastery": 0.0, "due_reviews": 0,
+            "_fallback_strategy": self.get_strategy_name(), "_graceful_degradation": True, "message": "系統功能受限，正在降級模式運行。"
         }
 
 
 class FallbackManager:
-    """降級管理器"""
+    """
+    降級管理器，負責協調和執行所有已註冊的降級策略。
+    """
 
     def __init__(self):
-        self.strategies = [
-            # DatabaseToJsonFallback removed - pure database architecture
-            CacheFallback(),
-            NetworkRetryFallback(),
-            GracefulDegradationFallback(),  # 最後的降級策略
-        ]
+        self.strategies = [CacheFallback(), NetworkRetryFallback(), GracefulDegradationFallback()]
         self.logger = get_module_logger(self.__class__.__name__)
         self._fallback_stats = {"total_fallbacks": 0, "strategy_usage": {}, "success_rate": {}}
 
     def execute_fallback(
-        self,
-        error_category: ErrorCategory,
-        severity: ErrorSeverity,
-        original_func: Callable,
-        *args,
-        **kwargs,
+        self, error_category: ErrorCategory, severity: ErrorSeverity, original_func: Callable, *args, **kwargs
     ) -> Optional[Any]:
-        """執行適當的降級策略"""
+        """根據錯誤類型，依序嘗試執行合適的降級策略。"""
         self._fallback_stats["total_fallbacks"] += 1
-
         for strategy in self.strategies:
             if strategy.can_handle(error_category, severity):
                 strategy_name = strategy.get_strategy_name()
-
                 try:
                     result = strategy.execute(original_func, *args, **kwargs)
-
-                    # 更新統計信息
                     self._update_strategy_stats(strategy_name, success=True)
-
-                    self.logger.info(f"降級策略成功: {strategy_name} for {original_func.__name__}")
+                    self.logger.info(f"降級策略 '{strategy_name}' 成功執行 for {original_func.__name__}")
                     return result
-
                 except Exception as e:
                     self._update_strategy_stats(strategy_name, success=False)
-                    self.logger.warning(f"降級策略失敗 {strategy_name}: {e}")
+                    self.logger.warning(f"降級策略 '{strategy_name}' 執行失敗: {e}")
                     continue
-
-        self.logger.error(f"所有降級策略都失敗，錯誤類別: {error_category}")
+        self.logger.error(f"所有降級策略均失敗 for error category: {error_category.value}")
         return None
 
     def _update_strategy_stats(self, strategy_name: str, success: bool) -> None:
-        """更新策略統計信息"""
-        if strategy_name not in self._fallback_stats["strategy_usage"]:
-            self._fallback_stats["strategy_usage"][strategy_name] = 0
-            self._fallback_stats["success_rate"][strategy_name] = {"success": 0, "total": 0}
-
-        self._fallback_stats["strategy_usage"][strategy_name] += 1
-        self._fallback_stats["success_rate"][strategy_name]["total"] += 1
-
+        """更新降級策略的執行統計。"""
+        usage = self._fallback_stats["strategy_usage"]
+        rate = self._fallback_stats["success_rate"]
+        usage[strategy_name] = usage.get(strategy_name, 0) + 1
+        if strategy_name not in rate:
+            rate[strategy_name] = {"success": 0, "total": 0}
+        rate[strategy_name]["total"] += 1
         if success:
-            self._fallback_stats["success_rate"][strategy_name]["success"] += 1
+            rate[strategy_name]["success"] += 1
 
     def get_fallback_statistics(self) -> dict:
-        """獲取降級統計信息"""
+        """獲取降級操作的詳細統計數據。"""
         stats = self._fallback_stats.copy()
-
-        # 計算成功率
-        for strategy_name in stats["success_rate"]:
-            success_data = stats["success_rate"][strategy_name]
-            if success_data["total"] > 0:
-                success_rate = success_data["success"] / success_data["total"]
-                success_data["rate"] = round(success_rate * 100, 2)
-            else:
-                success_data["rate"] = 0.0
-
+        for name, data in stats["success_rate"].items():
+            data["rate"] = (data["success"] / data["total"] * 100) if data["total"] > 0 else 0
         return stats
 
-    def add_strategy(self, strategy: FallbackStrategy, priority: int = None) -> None:
-        """添加新的降級策略"""
+    def add_strategy(self, strategy: FallbackStrategy, priority: Optional[int] = None) -> None:
+        """動態添加一個新的降級策略。"""
         if priority is None:
-            # 添加到優雅降級策略之前
-            self.strategies.insert(-1, strategy)
+            self.strategies.insert(-1, strategy)  # 插入到優雅降級策略之前
         else:
             self.strategies.insert(priority, strategy)
-
-        self.logger.info(f"添加降級策略: {strategy.get_strategy_name()}")
-
-    def remove_strategy(self, strategy_class: type) -> bool:
-        """移除特定類型的降級策略"""
-        for i, strategy in enumerate(self.strategies):
-            if isinstance(strategy, strategy_class):
-                removed_strategy = self.strategies.pop(i)
-                self.logger.info(f"移除降級策略: {removed_strategy.get_strategy_name()}")
-                return True
-        return False
+        self.logger.info(f"已添加新的降級策略: {strategy.get_strategy_name()}")
 
     def clear_cache(self) -> None:
-        """清理所有快取"""
+        """手動清理所有快取策略中的快取。"""
         for strategy in self.strategies:
             if isinstance(strategy, CacheFallback):
                 strategy._cache.clear()
                 strategy._cache_timestamps.clear()
-                self.logger.info("快取已清理")
+                self.logger.info("所有快取降級策略的快取已被清理。")
                 break
 
 
-# 全局降級管理器實例
+# 提供一個全域的降級管理器實例
 fallback_manager = FallbackManager()
 
-
 def get_fallback_manager() -> FallbackManager:
-    """獲取全局降級管理器實例"""
+    """獲取全域的降級管理器實例。"""
     return fallback_manager

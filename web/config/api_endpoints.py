@@ -35,7 +35,7 @@ class ApiEndpoints:
     KNOWLEDGE_RESTORE: str = "/api/knowledge/{point_id}/restore"
     KNOWLEDGE_TAGS: str = "/api/knowledge/{point_id}/tags"
     KNOWLEDGE_NOTES: str = "/api/knowledge/{point_id}/notes"
-    KNOWLEDGE_MAINTENANCE_DELETE_OLD: str = "/api/knowledge/maintenance/delete-old-points"
+    KNOWLEDGE_DELETE_OLD: str = "/api/knowledge/maintenance/delete-old-points"
     KNOWLEDGE_DAILY_LIMIT_STATUS: str = "/api/knowledge/daily-limit/status"
     KNOWLEDGE_DAILY_LIMIT_CONFIG: str = "/api/knowledge/daily-limit/config"
     KNOWLEDGE_DAILY_LIMIT_STATS: str = "/api/knowledge/daily-limit/stats"
@@ -78,7 +78,7 @@ class ApiEndpoints:
         return {
             key: value
             for key, value in self.__dict__.items()
-            if not key.startswith('_') and isinstance(value, str)
+            if not key.startswith("_") and isinstance(value, str)
         }
 
     def format_url(self, endpoint: str, **kwargs) -> str:
@@ -111,12 +111,12 @@ class ApiEndpoints:
         errors = []
         for name, path in self.get_all_endpoints().items():
             # 檢查路徑是否以/開頭
-            if not path.startswith('/'):
+            if not path.startswith("/"):
                 errors.append(f"端點 {name} 的路徑應以/開頭: {path}")
 
             # 檢查是否有未配對的大括號
-            open_braces = path.count('{')
-            close_braces = path.count('}')
+            open_braces = path.count("{")
+            close_braces = path.count("}")
             if open_braces != close_braces:
                 errors.append(f"端點 {name} 的參數佔位符不配對: {path}")
 
@@ -130,6 +130,7 @@ API_ENDPOINTS = ApiEndpoints()
 _validation_errors = API_ENDPOINTS.validate_endpoints()
 if _validation_errors:
     import warnings
+
     warnings.warn(f"API端點配置錯誤: {_validation_errors}", stacklevel=2)
 
 
@@ -166,9 +167,4 @@ def format_endpoint(name: str, **kwargs) -> str:
 
 
 # 導出常用變量
-__all__ = [
-    'API_ENDPOINTS',
-    'ApiEndpoints',
-    'get_endpoint',
-    'format_endpoint'
-]
+__all__ = ["API_ENDPOINTS", "ApiEndpoints", "get_endpoint", "format_endpoint"]

@@ -12,7 +12,7 @@ from pathlib import Path
 # 添加項目根目錄到路徑
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from core.services.async_knowledge_service import AsyncKnowledgeService
+from core.services.know_service import KnowService
 
 
 async def test_daily_limit_functions():
@@ -20,7 +20,7 @@ async def test_daily_limit_functions():
     print("🧪 開始測試 TASK-32 每日限額功能...")
 
     # 初始化服務
-    service = AsyncKnowledgeService()
+    service = KnowService()
     await service.initialize()
 
     try:
@@ -47,7 +47,9 @@ async def test_daily_limit_functions():
 
         # 測試 enhancement 類型
         enhancement_status = await service.check_daily_limit("enhancement")
-        print(f"   enhancement 類型狀態: {json.dumps(enhancement_status, ensure_ascii=False, indent=2)}")
+        print(
+            f"   enhancement 類型狀態: {json.dumps(enhancement_status, ensure_ascii=False, indent=2)}"
+        )
 
         # 測試非限制類型
         other_status = await service.check_daily_limit("other")
@@ -63,7 +65,9 @@ async def test_daily_limit_functions():
         # 5. 再次檢查狀態（應該有變化）
         print("\n5️⃣ 檢查更新後的狀態")
         updated_status = await service.check_daily_limit("isolated")
-        print(f"   更新後 isolated 狀態: {json.dumps(updated_status, ensure_ascii=False, indent=2)}")
+        print(
+            f"   更新後 isolated 狀態: {json.dumps(updated_status, ensure_ascii=False, indent=2)}"
+        )
 
         # 6. 測試獲取統計數據
         print("\n6️⃣ 測試獲取統計數據")
@@ -81,13 +85,16 @@ async def test_daily_limit_functions():
             await service.update_daily_stats("isolated")
 
         limit_exceeded_status = await service.check_daily_limit("isolated")
-        print(f"   達到上限後狀態: {json.dumps(limit_exceeded_status, ensure_ascii=False, indent=2)}")
+        print(
+            f"   達到上限後狀態: {json.dumps(limit_exceeded_status, ensure_ascii=False, indent=2)}"
+        )
 
         print("\n✅ 所有測試完成！")
 
     except Exception as e:
         print(f"\n❌ 測試過程中發生錯誤: {e}")
         import traceback
+
         traceback.print_exc()
 
     finally:
@@ -98,7 +105,7 @@ def test_config_file_paths():
     """測試配置文件路徑是否正確"""
     print("\n📁 測試配置文件路徑...")
 
-    service = AsyncKnowledgeService()
+    service = KnowService()
 
     settings_path = service._get_settings_file_path()
     stats_path = service._get_daily_stats_file_path()

@@ -17,7 +17,7 @@ from core.database.adapter import KnowledgeManagerAdapter
 from core.knowledge import KnowledgeManager
 
 
-async def test_json_unified_statistics():
+async def test_json_stats():
     """測試 JSON 模式的統一統計邏輯"""
     print("=== JSON 模式統一統計測試 ===")
 
@@ -45,7 +45,7 @@ async def test_json_unified_statistics():
         return {}
 
 
-async def test_database_unified_statistics():
+async def test_db_stats():
     """測試 Database 模式的統一統計邏輯"""
     print("\n=== Database 模式統一統計測試 ===")
 
@@ -92,8 +92,8 @@ async def verify_statistics_consistency():
     print("TASK-19D 統一統計邏輯驗證")
     print("=" * 70)
 
-    json_stats = await test_json_unified_statistics()
-    db_stats = await test_database_unified_statistics()
+    json_stats = await test_json_stats()
+    db_stats = await test_db_stats()
 
     if not json_stats or not db_stats:
         print("❌ 統計數據獲取失敗，無法進行一致性驗證")

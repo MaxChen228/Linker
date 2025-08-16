@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class DatabaseConfigError(Exception):
     """數據庫配置相關的錯誤"""
+
     pass
 
 
@@ -43,25 +44,28 @@ class DatabaseConfig:
     def _detect_environment(self) -> str:
         """檢測當前運行環境"""
         # 檢測是否為測試環境
-        if any(test_indicator in os.environ.get('_', '')
-               for test_indicator in ['pytest', 'test', 'unittest']):
-            return 'test'
+        if any(
+            test_indicator in os.environ.get("_", "")
+            for test_indicator in ["pytest", "test", "unittest"]
+        ):
+            return "test"
 
         # 檢測是否為CI環境
-        if any(ci_var in os.environ
-               for ci_var in ['CI', 'CONTINUOUS_INTEGRATION', 'GITHUB_ACTIONS']):
-            return 'ci'
+        if any(
+            ci_var in os.environ for ci_var in ["CI", "CONTINUOUS_INTEGRATION", "GITHUB_ACTIONS"]
+        ):
+            return "ci"
 
         # 檢測是否為生產環境
-        if os.getenv('ENVIRONMENT', '').lower() in ['production', 'prod']:
-            return 'production'
+        if os.getenv("ENVIRONMENT", "").lower() in ["production", "prod"]:
+            return "production"
 
         # 檢測是否為開發環境
-        if os.getenv('DEV_MODE', 'false').lower() == 'true':
-            return 'development'
+        if os.getenv("DEV_MODE", "false").lower() == "true":
+            return "development"
 
         # 默認為開發環境
-        return 'development'
+        return "development"
 
     def _load_configuration(self):
         """載入數據庫配置"""
@@ -78,15 +82,15 @@ class DatabaseConfig:
 
         except Exception as e:
             logger.error(f"數據庫配置載入失敗: {e}")
-            raise DatabaseConfigError(f"無法載入數據庫配置: {e}")
+            raise DatabaseConfigError(f"無法載入數據庫配置: {e}") from e
 
     def _get_database_url_from_env(self) -> Optional[str]:
         """從環境變數獲取數據庫URL"""
         # 優先級順序的環境變數名稱
         env_vars = [
-            'DATABASE_URL',           # 標準變數名
-            'DB_URL',                # 簡化變數名
-            f'{self._environment.upper()}_DATABASE_URL',  # 環境特定變數
+            "DATABASE_URL",  # 標準變數名
+            "DB_URL",  # 簡化變數名
+            f"{self._environment.upper()}_DATABASE_URL",  # 環境特定變數
         ]
 
         for var_name in env_vars:
@@ -94,8 +98,8 @@ class DatabaseConfig:
             if url and url.strip():
                 # 檢查是否為佔位符值
                 placeholder_indicators = [
-                    'your_database_url_here',
-                    'user:password@localhost:5432',  # 更具體的佔位符模式
+                    "your_database_url_here",
+                    "user:password@localhost:5432",  # 更具體的佔位符模式
                 ]
 
                 if not any(indicator in url.lower() for indicator in placeholder_indicators):
@@ -119,10 +123,10 @@ class DatabaseConfig:
         # 檢查是否使用了不安全的配置
         security_warnings = []
 
-        if self._parsed_url.password == 'password':
+        if self._parsed_url.password == "password":
             security_warnings.append("使用了不安全的密碼 'password'")
 
-        if self._parsed_url.hostname == 'localhost' and self._environment == 'production':
+        if self._parsed_url.hostname == "localhost" and self._environment == "production":
             security_warnings.append("生產環境不應使用localhost")
 
         if security_warnings:
@@ -132,9 +136,9 @@ class DatabaseConfig:
     def _provide_configuration_guidance(self):
         """提供配置指導"""
         guidance_messages = [
-            "\n" + "="*60,
+            "\n" + "=" * 60,
             "數據庫配置指導",
-            "="*60,
+            "=" * 60,
             "",
             "請設置以下環境變數之一：",
             "  DATABASE_URL - 主要數據庫連接URL",
@@ -150,32 +154,38 @@ class DatabaseConfig:
         ]
 
         # 根據環境提供特定建議
-        if self._environment == 'development':
-            guidance_messages.extend([
-                "開發環境建議：",
-                "  1. 創建 .env 文件",
-                "  2. 設置: DATABASE_URL=postgresql://user:pass@localhost:5432/linker",
-                "  3. 確保PostgreSQL服務正在運行",
-                "",
-            ])
-        elif self._environment == 'test':
-            guidance_messages.extend([
-                "測試環境建議：",
-                "  1. 設置: DATABASE_URL=postgresql://user:pass@localhost:5432/linker_test",
-                "  2. 使用獨立的測試數據庫",
-                "",
-            ])
-        elif self._environment == 'production':
-            guidance_messages.extend([
-                "生產環境建議：",
-                "  1. 使用環境變數或secrets管理",
-                "  2. 啟用SSL連接",
-                "  3. 使用強密碼",
-                "  4. 限制數據庫訪問權限",
-                "",
-            ])
+        if self._environment == "development":
+            guidance_messages.extend(
+                [
+                    "開發環境建議：",
+                    "  1. 創建 .env 文件",
+                    "  2. 設置: DATABASE_URL=postgresql://user:pass@localhost:5432/linker",
+                    "  3. 確保PostgreSQL服務正在運行",
+                    "",
+                ]
+            )
+        elif self._environment == "test":
+            guidance_messages.extend(
+                [
+                    "測試環境建議：",
+                    "  1. 設置: DATABASE_URL=postgresql://user:pass@localhost:5432/linker_test",
+                    "  2. 使用獨立的測試數據庫",
+                    "",
+                ]
+            )
+        elif self._environment == "production":
+            guidance_messages.extend(
+                [
+                    "生產環境建議：",
+                    "  1. 使用環境變數或secrets管理",
+                    "  2. 啟用SSL連接",
+                    "  3. 使用強密碼",
+                    "  4. 限制數據庫訪問權限",
+                    "",
+                ]
+            )
 
-        guidance_messages.append("="*60)
+        guidance_messages.append("=" * 60)
 
         for message in guidance_messages:
             print(message)
@@ -227,7 +237,7 @@ class DatabaseConfig:
             raise DatabaseConfigError("無法生成測試數據庫URL：基礎配置無效")
 
         # 獲取原數據庫名稱
-        original_db = self._parsed_url.path.lstrip('/')
+        original_db = self._parsed_url.path.lstrip("/")
         test_db = f"{original_db}{test_db_suffix}"
 
         return self.get_url(test_db)
@@ -243,20 +253,21 @@ class DatabaseConfig:
             raise DatabaseConfigError("無法獲取連接參數：URL未解析")
 
         params = {
-            'host': self._parsed_url.hostname,
-            'port': self._parsed_url.port or 5432,
-            'database': self._parsed_url.path.lstrip('/'),
+            "host": self._parsed_url.hostname,
+            "port": self._parsed_url.port or 5432,
+            "database": self._parsed_url.path.lstrip("/"),
         }
 
         if self._parsed_url.username:
-            params['user'] = self._parsed_url.username
+            params["user"] = self._parsed_url.username
 
         if self._parsed_url.password:
-            params['password'] = self._parsed_url.password
+            params["password"] = self._parsed_url.password
 
         # 解析查詢參數
         if self._parsed_url.query:
             import urllib.parse
+
             query_params = urllib.parse.parse_qs(self._parsed_url.query)
             for key, values in query_params.items():
                 if values:  # 取第一個值
@@ -280,16 +291,16 @@ class DatabaseConfig:
             包含數據庫基本信息的字典
         """
         if not self._parsed_url:
-            return {'status': 'not_configured'}
+            return {"status": "not_configured"}
 
         return {
-            'status': 'configured',
-            'scheme': self._parsed_url.scheme,
-            'hostname': self._parsed_url.hostname,
-            'port': str(self._parsed_url.port or 5432),
-            'database': self._parsed_url.path.lstrip('/'),
-            'environment': self._environment,
-            'has_credentials': bool(self._parsed_url.username and self._parsed_url.password)
+            "status": "configured",
+            "scheme": self._parsed_url.scheme,
+            "hostname": self._parsed_url.hostname,
+            "port": str(self._parsed_url.port or 5432),
+            "database": self._parsed_url.path.lstrip("/"),
+            "environment": self._environment,
+            "has_credentials": bool(self._parsed_url.username and self._parsed_url.password),
         }
 
     # ========== 工具方法 ==========
@@ -314,7 +325,7 @@ class DatabaseConfig:
             logger.error(f"數據庫連接驗證失敗: {e}")
             return False
 
-    def create_test_config(self) -> 'DatabaseConfig':
+    def create_test_config(self) -> "DatabaseConfig":
         """
         創建測試專用的配置實例
 
@@ -322,7 +333,7 @@ class DatabaseConfig:
             新的測試配置實例
         """
         test_config = DatabaseConfig.__new__(DatabaseConfig)
-        test_config._environment = 'test'
+        test_config._environment = "test"
 
         # 嘗試生成測試URL
         if self.is_configured():
@@ -340,6 +351,7 @@ class DatabaseConfig:
 # 全局數據庫配置實例
 _db_config_instance = None
 
+
 def get_database_config() -> DatabaseConfig:
     """
     獲取全局數據庫配置實例（單例模式）
@@ -351,6 +363,7 @@ def get_database_config() -> DatabaseConfig:
     if _db_config_instance is None:
         _db_config_instance = DatabaseConfig()
     return _db_config_instance
+
 
 def get_database_url(database_name: Optional[str] = None) -> str:
     """
@@ -364,6 +377,7 @@ def get_database_url(database_name: Optional[str] = None) -> str:
     """
     return get_database_config().get_url(database_name)
 
+
 def get_test_database_url() -> str:
     """
     便捷函數：獲取測試數據庫URL
@@ -372,6 +386,7 @@ def get_test_database_url() -> str:
         測試數據庫連接URL
     """
     return get_database_config().get_test_url()
+
 
 def is_database_configured() -> bool:
     """
@@ -385,6 +400,7 @@ def is_database_configured() -> bool:
 
 # ========== 環境配置檢查 ==========
 
+
 def check_database_configuration():
     """
     檢查並報告數據庫配置狀態
@@ -394,8 +410,10 @@ def check_database_configuration():
         config = get_database_config()
         info = config.get_database_info()
 
-        if info['status'] == 'configured':
-            logger.info(f"數據庫配置已載入 ({info['environment']}): {info['hostname']}:{info['port']}/{info['database']}")
+        if info["status"] == "configured":
+            logger.info(
+                f"數據庫配置已載入 ({info['environment']}): {info['hostname']}:{info['port']}/{info['database']}"
+            )
         else:
             logger.warning("數據庫配置未設置，請檢查環境變數")
 
@@ -404,5 +422,5 @@ def check_database_configuration():
 
 
 # 模組載入時自動檢查配置（僅在非測試環境）
-if not os.environ.get('SKIP_DB_CONFIG_CHECK'):
+if not os.environ.get("SKIP_DB_CONFIG_CHECK"):
     check_database_configuration()

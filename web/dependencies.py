@@ -67,27 +67,29 @@ def get_knowledge_manager():
     原因：依賴已廢棄的 SimplifiedDatabaseAdapter
     """
     import warnings
+
     warnings.warn(
         "get_knowledge_manager() 已廢棄。請使用 get_async_knowledge_service() 替代。",
         DeprecationWarning,
-        stacklevel=2
+        stacklevel=2,
     )
     raise RuntimeError("get_knowledge_manager() 已廢棄，請使用 get_async_knowledge_service() 替代")
 
 
-async def get_knowledge_manager_async_dependency():
+async def get_km_async():
     """獲取知識管理器（異步版本，純資料庫模式）
 
     ⚠️ 已廢棄 (TASK-31)：請使用 get_async_knowledge_service() 替代
     原因：依賴已廢棄的 SimplifiedDatabaseAdapter
     """
     import warnings
+
     warnings.warn(
-        "get_knowledge_manager_async_dependency() 已廢棄。請使用 get_async_knowledge_service() 替代。",
+        "get_km_async() 已廢棄。請使用 get_async_knowledge_service() 替代。",
         DeprecationWarning,
-        stacklevel=2
+        stacklevel=2,
     )
-    raise RuntimeError("get_knowledge_manager_async_dependency() 已廢棄，請使用 get_async_knowledge_service() 替代")
+    raise RuntimeError("get_km_async() 已廢棄，請使用 get_async_knowledge_service() 替代")
 
 
 def get_knowledge_assets():
@@ -107,14 +109,14 @@ def get_logger():
     return logger
 
 
-async def get_async_knowledge_service():
+async def get_know_service():
     """獲取純異步知識服務 - TASK-31
 
     這是新的純異步服務層，用於替代 SimplifiedDatabaseAdapter。
     完全避免事件循環衝突問題，提供更好的性能和可維護性。
 
     Returns:
-        AsyncKnowledgeService: 純異步知識服務實例
+        KnowService: 純異步知識服務實例
     """
     registry = get_service_registry()
     service = await registry.get_service("knowledge")

@@ -12,51 +12,55 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from core.database.calendar_db import CalendarDB
+from core.log_config import get_module_logger
+
 # TASK-34: 引入統一API端點管理系統，消除硬編碼
-from web.dependencies import get_async_knowledge_service  # TASK-31: 使用純異步服務
+from web.dependencies import get_know_service  # TASK-31: 使用純異步服務
 
 router = APIRouter(prefix="/calendar", tags=["calendar"])
 templates = Jinja2Templates(directory="web/templates")
+logger = get_module_logger(__name__)
 
-# 資料檔案路徑
+# 建立全域日曆管理器實例
+calendar_manager = CalendarDB()
+
+# 資料檔案路徑（保留用於遷移）
 DATA_DIR = Path("data")
 CALENDAR_FILE = DATA_DIR / "learning_calendar.json"
 PRACTICE_LOG_FILE = DATA_DIR / "practice_log.json"
 
 
-def ensure_calendar_file():
-    """確保日曆資料檔案存在"""
-    if not CALENDAR_FILE.exists():
-        initial_data = {
-            "version": "1.0",
-            "last_updated": datetime.now().isoformat(),
-            "daily_records": {},
-            "weekly_goals": {},
-            "study_sessions": [],
-        }
-        with open(CALENDAR_FILE, "w", encoding="utf-8") as f:
-            json.dump(initial_data, f, ensure_ascii=False, indent=2)
+async def migrate_json_to_db():
+    """一次性遷移 JSON 資料到數據庫"""
+    if CALENDAR_FILE.exists():
+        try:
+            with open(CALENDAR_FILE, encoding="utf-8") as f:
+                json_data = json.load(f)
+
+            success = await calendar_manager.migrate_from_json(json_data)
+            if success:
+                # 重命名檔案作為備份
+                backup_file = CALENDAR_FILE.with_suffix(".json.migrated")
+                if not backup_file.exists():
+                    CALENDAR_FILE.rename(backup_file)
+                    logger.info(
+                        f"Migrated calendar data from JSON to database, backup saved as {backup_file}"
+                    )
+            return success
+        except Exception as e:
+            logger.error(f"Failed to migrate calendar data: {e}")
+            return False
+    return True  # 沒有檔案需要遷移
 
 
-def load_calendar_data() -> dict:
-    """載入日曆資料"""
-    ensure_calendar_file()
-    with open(CALENDAR_FILE, encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_calendar_data(data: dict):
-    """儲存日曆資料"""
-    data["last_updated"] = datetime.now().isoformat()
-    with open(CALENDAR_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-
-async def get_month_calendar_data(year: int, month: int) -> dict:
+async def get_month_data(year: int, month: int) -> dict:
     """獲取指定月份的日曆資料"""
-    km = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    # 嘗試遷移舊資料（如果存在）
+    await migrate_json_to_db()
+
+    km = await get_know_service()  # TASK-31: 使用純異步服務
     knowledge_points = await km.get_knowledge_points_async()
-    calendar_data = load_calendar_data()
 
     # 計算月份的第一天和最後一天
     first_day = date(year, month, 1)
@@ -83,6 +87,10 @@ async def get_month_calendar_data(year: int, month: int) -> dict:
     for _ in range(first_weekday):
         current_week.append(None)
 
+    # 獲取整月的記錄
+    monthly_records = await calendar_manager.get_daily_records(first_day, last_day)
+    records_dict = {r["record_date"].isoformat(): r for r in monthly_records}
+
     # 填充每一天的資料
     current_date = first_day
     today = date.today()
@@ -106,8 +114,10 @@ async def get_month_calendar_data(year: int, month: int) -> dict:
                         }
                     )
 
-        # 從日曆資料中獲取已完成的記錄
-        daily_record = calendar_data["daily_records"].get(date_str, {})
+        # 從數據庫記錄中獲取已完成的記錄
+        daily_record = records_dict.get(date_str, {})
+        completed_reviews = daily_record.get("completed_reviews", []) if daily_record else []
+        new_practices = daily_record.get("new_practices", 0) if daily_record else 0
 
         day_info = {
             "date": current_date.day,
@@ -117,10 +127,10 @@ async def get_month_calendar_data(year: int, month: int) -> dict:
             "is_past": current_date < today,
             "weekday": current_date.strftime("%a"),
             "reviews_pending": len(due_reviews),
-            "reviews_completed": len(daily_record.get("completed_reviews", [])),
-            "new_practices": daily_record.get("new_practices", 0),
-            "study_intensity": calculate_study_intensity(daily_record),
-            "has_activity": bool(daily_record),
+            "reviews_completed": len(completed_reviews),
+            "new_practices": new_practices,
+            "study_intensity": calc_intensity(daily_record),
+            "has_activity": bool(completed_reviews or new_practices),
         }
 
         month_data["days"].append(day_info)
@@ -128,7 +138,7 @@ async def get_month_calendar_data(year: int, month: int) -> dict:
 
         # 更新統計
         month_data["stats"]["total_reviews_pending"] += len(due_reviews)
-        month_data["stats"]["total_completed"] += len(daily_record.get("completed_reviews", []))
+        month_data["stats"]["total_completed"] += len(completed_reviews)
 
         # 如果一週結束或月份結束，添加到週列表
         if current_date.weekday() == 6 or current_date == last_day:
@@ -143,14 +153,15 @@ async def get_month_calendar_data(year: int, month: int) -> dict:
     return month_data
 
 
-def calculate_study_intensity(daily_record: dict) -> str:
+def calc_intensity(daily_record: dict) -> str:
     """計算學習強度等級"""
     if not daily_record:
         return "none"
 
-    total_activities = len(daily_record.get("completed_reviews", [])) + daily_record.get(
-        "new_practices", 0
-    )
+    completed_reviews = daily_record.get("completed_reviews", [])
+    new_practices = daily_record.get("new_practices", 0)
+
+    total_activities = (len(completed_reviews) if completed_reviews else 0) + new_practices
 
     if total_activities == 0:
         return "none"
@@ -174,7 +185,7 @@ async def calendar_page(request: Request, year: Optional[int] = None, month: Opt
         month = now.month
 
     # 獲取月份資料
-    month_data = await get_month_calendar_data(year, month)  # TASK-31: 調用異步函數
+    month_data = await get_month_data(year, month)  # TASK-31: 調用異步函數
 
     # 計算上一月和下一月
     prev_month = month - 1 if month > 1 else 12
@@ -200,16 +211,15 @@ async def calendar_page(request: Request, year: Optional[int] = None, month: Opt
 
 # 注意：由於router使用了prefix="/calendar"，這裡只需要定義/api/day/{date}部分
 @router.get("/api/day/{date}")
-async def get_day_details(date: str):
+async def get_day_details(date_str: str):
     """獲取特定日期的詳細資料"""
     try:
-        target_date = datetime.fromisoformat(date).date()
+        target_date = datetime.fromisoformat(date_str).date()
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Invalid date format") from e
 
-    km = await get_async_knowledge_service()  # TASK-31: 使用純異步服務
+    km = await get_know_service()  # TASK-31: 使用純異步服務
     knowledge_points = await km.get_knowledge_points_async()
-    calendar_data = load_calendar_data()
 
     # 獲取該日的待複習知識點
     due_reviews = []
@@ -231,114 +241,51 @@ async def get_day_details(date: str):
                     }
                 )
 
-    # 獲取已完成的記錄
-    daily_record = calendar_data["daily_records"].get(date, {})
+    # 從數據庫獲取已完成的記錄
+    daily_record = await calendar_manager.get_day_details(target_date)
 
     return {
-        "date": date,
+        "date": date_str,
         "due_reviews": due_reviews,
         "completed_reviews": daily_record.get("completed_reviews", []),
         "new_practices": daily_record.get("new_practices", 0),
         "total_mistakes": daily_record.get("total_mistakes", 0),
         "study_minutes": daily_record.get("study_minutes", 0),
         "mastery_improvement": daily_record.get("mastery_improvement", 0),
-        "study_sessions": [
-            s for s in calendar_data.get("study_sessions", []) if s.get("date") == date
-        ],
+        "study_sessions": daily_record.get("study_sessions", []),
     }
 
 
-@router.post("/api/complete-review/{pointId}")
-async def mark_review_complete(pointId: int):
+@router.post("/api/complete-review/{point_id}")
+async def mark_review_complete(point_id: int):
     """標記複習完成"""
-    today = date.today().isoformat()
-    calendar_data = load_calendar_data()
+    today = date.today()
+    success = await calendar_manager.mark_review_complete(point_id, today)
 
-    # 確保當日記錄存在
-    if today not in calendar_data["daily_records"]:
-        calendar_data["daily_records"][today] = {
-            "planned_reviews": [],
-            "completed_reviews": [],
-            "new_practices": 0,
-            "total_mistakes": 0,
-            "study_minutes": 0,
-            "mastery_improvement": 0,
-        }
-
-    # 添加到已完成列表（避免重複）
-    if pointId not in calendar_data["daily_records"][today]["completed_reviews"]:
-        calendar_data["daily_records"][today]["completed_reviews"].append(pointId)
-
-    save_calendar_data(calendar_data)
-
-    return {"status": "success", "point_id": pointId, "date": today}
+    if success:
+        return {"status": "success", "point_id": point_id, "date": today.isoformat()}
+    else:
+        return {"status": "already_completed", "point_id": point_id, "date": today.isoformat()}
 
 
 @router.get("/api/stats/streak")
 async def get_streak_stats():
     """獲取連續學習統計"""
-    calendar_data = load_calendar_data()
-    today = date.today()
+    stats = await calendar_manager.get_streak_stats()
+    return stats
 
-    # 計算連續學習天數
-    streak = 0
-    current_date = today
 
-    while True:
-        date_str = current_date.isoformat()
-        if date_str in calendar_data["daily_records"]:
-            record = calendar_data["daily_records"][date_str]
-            if record.get("completed_reviews") or record.get("new_practices"):
-                streak += 1
-                current_date -= timedelta(days=1)
-            else:
-                break
-        else:
-            break
+@router.get("/api/stats")
+async def get_calendar_stats():
+    """獲取日曆統計資料"""
+    stats = await calendar_manager.get_streak_stats()
 
-    # 計算本月學習天數
-    month_start = date(today.year, today.month, 1)
-    month_days = 0
-    current_date = month_start
-
-    while current_date <= today:
-        date_str = current_date.isoformat()
-        if date_str in calendar_data["daily_records"]:
-            record = calendar_data["daily_records"][date_str]
-            if record.get("completed_reviews") or record.get("new_practices"):
-                month_days += 1
-        current_date += timedelta(days=1)
-
+    # 可以添加更多統計資料
     return {
-        "current_streak": streak,
-        "month_active_days": month_days,
-        "best_streak": calculate_best_streak(calendar_data),
+        "streak": stats,
+        "summary": {
+            "current_streak": stats["current_streak"],
+            "best_streak": stats["best_streak"],
+            "month_active_days": stats["month_active_days"],
+        },
     }
-
-
-def calculate_best_streak(calendar_data: dict) -> int:
-    """計算最長連續學習天數"""
-    if not calendar_data["daily_records"]:
-        return 0
-
-    # 按日期排序所有記錄
-    sorted_dates = sorted(calendar_data["daily_records"].keys())
-
-    best_streak = 0
-    current_streak = 0
-    prev_date = None
-
-    for date_str in sorted_dates:
-        record = calendar_data["daily_records"][date_str]
-        if record.get("completed_reviews") or record.get("new_practices"):
-            current_date = datetime.fromisoformat(date_str).date()
-
-            if prev_date and (current_date - prev_date).days == 1:
-                current_streak += 1
-            else:
-                current_streak = 1
-
-            best_streak = max(best_streak, current_streak)
-            prev_date = current_date
-
-    return best_streak
