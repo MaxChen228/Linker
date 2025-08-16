@@ -156,16 +156,23 @@ pip install -e ".[dev]"             # 開發依賴
 4. **API Models**: 所有 API 請求/回應必須使用 Pydantic 模型進行驗證
 5. **Import Order**: 標準庫、第三方套件、本地模組分組，組間空一行
 
-### Testing Requirements
+### Testing Requirements ⚠️ **CURRENT STATUS UPDATE**
 
 - **Framework**: Pytest with fixtures and parametrization
-- **Coverage Target**: Maintain minimum 90% test coverage
-- **Test Organization**: Mirror app structure in `tests/` directory
+- **Current Coverage**: **24%** (測試實際分析 2025-08-16)
+- **Target Coverage**: 90% (需要重大架構改進)
+- **Test Structure Issue**: ⚠️ pyproject.toml 配置 `testpaths = ["tests"]` 但目錄不存在
+- **Test Organization**: 測試文件散落在 `scripts/` 目錄，需要重構
 - **Test Markers**: 
   - `@pytest.mark.unit` - Fast unit tests
   - `@pytest.mark.integration` - Integration tests
   - `@pytest.mark.asyncio` - Async tests
   - `@pytest.mark.external` - Tests requiring external APIs
+
+**Critical Issues**:
+- 核心模組 `core/knowledge.py`, `core/ai_service.py`, `web/main.py` 等零測試覆蓋
+- 3/8 測試文件因過時導入而無法運行
+- 需要立即重構測試架構以達到生產標準
 
 **Critical**: Never fake test results. All tests must actually execute.
 
@@ -466,7 +473,7 @@ Before submitting any changes:
 - [ ] Code passes `ruff check .` without errors
 - [ ] Code is formatted with `ruff format .`
 - [ ] All tests pass with `pytest`
-- [ ] Test coverage remains above 90%
+- [ ] ⚠️ Test coverage target: 90% (當前: 24%, 需要重大改進)
 - [ ] **Zero hardcode compliance**: No magic numbers, use design tokens
 - [ ] **CSS follows design system**: Use `var(--token-name)` format
 - [ ] Type annotations are complete
