@@ -231,7 +231,7 @@
   margin: 2% auto;
   padding: 0;
   width: 90%;
-  max-width: 75rem; /* 1200px */
+  max-width: var(--max-width-practice);
   max-height: 90vh;
   border-radius: var(--radius-lg);
   box-shadow: 0 var(--space-5) 3.75rem var(--shadow-color-dark);
@@ -384,7 +384,7 @@
 
 /* ========== 容器與佈局 ========== */
 .practice-container {
-  max-width: 50rem; /* 800px */
+  max-width: var(--max-width-settings);
   margin: 0 auto;
   padding: var(--space-8) var(--space-4);
 }
@@ -410,7 +410,7 @@
   color: var(--text-muted);
   font-size: var(--text-base);
   line-height: var(--leading-relaxed);
-  max-width: 31.25rem; /* 500px */
+  max-width: var(--max-width-form);
   margin: 0 auto;
 }
 
@@ -425,7 +425,7 @@
   padding: var(--space-2);
   background: var(--surface-subtle);
   border-radius: var(--radius-xl);
-  max-width: 25rem; /* 400px */
+  max-width: var(--max-width-toast);
   margin-left: auto;
   margin-right: auto;
 }
@@ -487,7 +487,7 @@
   padding: var(--space-4);
   background: var(--surface-subtle);
   border-radius: var(--radius-xl);
-  max-width: 37.5rem; /* 600px */
+  max-width: var(--max-width-modal);
   margin-left: auto;
   margin-right: auto;
 }
@@ -514,7 +514,7 @@
   border-radius: var(--radius-lg);
   font-size: var(--text-sm);
   background: var(--surface-base);
-  min-width: 6.25rem; /* 100px */
+  min-width: var(--space-25);
   transition: var(--transition-base);
   cursor: pointer;
   color: var(--text-primary);
@@ -776,7 +776,7 @@
   background: var(--surface-subtle);
   transition: var(--transition-base);
   resize: vertical;
-  min-height: 7.5rem; /* 120px */
+  min-height: var(--min-height-card);
 }
 
 .answer-input:hover {
@@ -815,7 +815,7 @@
   border: var(--space-1) dashed var(--border-default);
   animation: var(--animation-pulse-subtle);
   color: var(--text-secondary);
-  min-height: 12.5rem; /* 200px */
+  min-height: var(--space-25-alt);
 }
 
 .grading-indicator .spinner {
@@ -837,7 +837,7 @@
   font-weight: var(--font-medium);
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 12.5rem; /* 200px */
+  min-width: var(--space-25-alt);
 }
 
 #submitBtn:hover {
@@ -1009,7 +1009,7 @@
   box-shadow: var(--shadow-lg);
   z-index: 10000;
   font-weight: var(--font-medium);
-  max-width: 18.75rem; /* 300px */
+  max-width: var(--max-width-card);
   word-wrap: break-word;
   animation: slideIn 0.3s ease;
   color: var(--text-inverse);
@@ -1183,11 +1183,58 @@
 
 /* 限額達到時的按鈕樣式 */
 .batch-actions.limit-reached {
-  text-align: center;
-  padding: var(--space-6);
+  padding: var(--space-5);
   background: var(--warning-overlay-light);
   border-radius: var(--radius-md);
   border: var(--border-width-thin) dashed var(--warning-400);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* 限額警告區域 */
+.limit-warning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--warning-overlay-subtle);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.limit-icon {
+  font-size: var(--text-lg);
+}
+
+.limit-message {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--warning-800);
+}
+
+.btn-settings-link {
+  font-size: var(--text-xs);
+  padding: var(--space-1-5) var(--space-3);
+}
+
+/* 可用操作區域 */
+.available-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.action-hint {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
 }
 
 .btn-limit-reached {

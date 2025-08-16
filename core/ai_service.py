@@ -543,11 +543,11 @@ class AIService:
 
         points_info = [
             {
-                "id": getattr(p, "id", p.get("id")),
-                "key_point": getattr(p, "key_point", p.get("key_point")),
-                "explanation": getattr(p, "explanation", p.get("explanation")),
-                "original_phrase": getattr(p, "original_phrase", p.get("original_phrase")),
-                "correction": getattr(p, "correction", p.get("correction")),
+                "id": getattr(p, "id", 0),
+                "key_point": getattr(p, "key_point", ""),
+                "explanation": getattr(p, "explanation", ""),
+                "original_phrase": getattr(p, "original_phrase", ""),
+                "correction": getattr(p, "correction", ""),
             }
             for p in selected_points
         ]
@@ -602,9 +602,9 @@ class AIService:
 
         target_points = [
             {
-                "id": getattr(p, "id", p.get("id")),
-                "key_point": getattr(p, "key_point", p.get("key_point")),
-                "category": getattr(p, "category", {}).get("value", "other"),
+                "id": getattr(p, "id", 0),
+                "key_point": getattr(p, "key_point", ""),
+                "category": getattr(getattr(p, "category", None), "value", "other"),
                 "mastery_level": round(getattr(p, "mastery_level", 0.0), 2),
             }
             for p in selected_points

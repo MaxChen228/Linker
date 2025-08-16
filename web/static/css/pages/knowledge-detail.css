@@ -142,7 +142,7 @@
   padding: 0;
   font-weight: var(--font-normal);
   letter-spacing: 0.0125rem /* 0.2px */;
-  max-width: 37.5rem; /* 600px */
+  max-width: var(--max-width-modal);
   position: relative;
 }
 

@@ -94,6 +94,15 @@
   color: var(--accent-600);
 }
 
+.stat-card[data-variant="accent"] {
+  background: var(--accent-50);
+  border-color: var(--accent-300);
+}
+
+.stat-card[data-variant="accent"] .stat-value {
+  color: var(--accent-700);
+}
+
 /* Subtle background decoration */
 .stat-card::before {
   content: '';
@@ -113,6 +122,107 @@
 
 .stat-card[data-variant="warning"]::before {
   background: linear-gradient(90deg, var(--gray-400) 0%, var(--gray-600) 100%);
+}
+
+.stat-card[data-variant="accent"]::before {
+  background: linear-gradient(90deg, var(--accent-500) 0%, var(--accent-700) 100%);
+}
+
+/* ========== 每日目標卡片特殊樣式 ========== */
+#daily-goal-card {
+  /* 重置統計卡片的文字對齊，讓 DailyGoalWidget 自行控制布局 */
+  text-align: left;
+}
+
+#daily-goal-card .daily-goal-widget {
+  /* 確保組件填滿整個卡片 */
+  height: 100%;
+  min-height: inherit;
+}
+
+/* ========== 3卡片布局（簡化版本）========== */
+.stats-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  max-width: 60rem; /* 限制最大寬度讓卡片不會太寬 */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 3卡片響應式布局 */
+@media (max-width: var(--breakpoint-lg)) {
+  .stats-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: none;
+  }
+}
+
+@media (max-width: var(--breakpoint-md)) {
+  .stats-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* 在2列布局時，每日目標卡片跨越兩列居中 */
+  .stats-grid-3 #daily-goal-card {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: var(--breakpoint-xs)) {
+  .stats-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  /* 極小屏幕時恢復單列 */
+  .stats-grid-3 #daily-goal-card {
+    grid-column: span 1;
+  }
+}
+
+/* ========== 原有5卡片布局（保留兼容性）========== */
+.stats-grid:not(.stats-grid-3) {
+  /* 統計網格響應式調整，確保有5個卡片時的布局 */
+}
+
+@media (min-width: var(--breakpoint-desktop)) {
+  .stats-grid:not(.stats-grid-3) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: calc(var(--breakpoint-desktop) - 1px)) and (min-width: 900px) {
+  .stats-grid:not(.stats-grid-3) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* 讓每日目標卡片跨越兩列 */
+  .stats-grid:not(.stats-grid-3) #daily-goal-card {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 899px) {
+  .stats-grid:not(.stats-grid-3) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* 小屏幕時每日目標卡片跨越兩列 */
+  .stats-grid:not(.stats-grid-3) #daily-goal-card {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 599px) {
+  .stats-grid:not(.stats-grid-3) {
+    grid-template-columns: 1fr;
+  }
+  
+  /* 極小屏幕時恢復單列 */
+  .stats-grid:not(.stats-grid-3) #daily-goal-card {
+    grid-column: span 1;
+  }
 }
 
 /* ========== 行動區塊 ========== */
@@ -446,7 +556,7 @@
   }
 }
 
-@media (max-width: 30rem) { /* 480px */
+@media (max-width: var(--breakpoint-xs)) {
   .stats-grid {
     grid-template-columns: 1fr;
   }

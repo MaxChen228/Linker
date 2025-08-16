@@ -336,9 +336,10 @@ class DatabaseKnowledgeManager:
                                 result[key] = value.isoformat()
                         return result
                     # 如果沒有設定，創建並返回預設值
+                    from core.config import DEFAULT_DAILY_LIMIT
                     default_settings = {
                         "user_id": user_id,
-                        "daily_knowledge_limit": 15,
+                        "daily_knowledge_limit": DEFAULT_DAILY_LIMIT,
                         "limit_enabled": False,
                     }
                     await conn.execute(
@@ -350,7 +351,7 @@ class DatabaseKnowledgeManager:
                     return default_settings
             except Exception as e:
                 self.logger.error(f"獲取使用者 {user_id} 設定失敗: {e}")
-                return {"user_id": user_id, "daily_knowledge_limit": 15, "limit_enabled": False}
+                return {"user_id": user_id, "daily_knowledge_limit": DEFAULT_DAILY_LIMIT, "limit_enabled": False}
 
         return await self._cache_manager.get_or_compute_async(cache_key, _get_settings, ttl=1800)
 
@@ -363,8 +364,9 @@ class DatabaseKnowledgeManager:
         """更新使用者設定。"""
         try:
             await self._ensure_initialized()
-            if daily_limit is not None and not (1 <= daily_limit <= 50):
-                raise ValueError("每日限額必須在 1 到 50 之間。")
+            from core.config import MIN_DAILY_LIMIT, MAX_DAILY_LIMIT
+            if daily_limit is not None and not (MIN_DAILY_LIMIT <= daily_limit <= MAX_DAILY_LIMIT):
+                raise ValueError(f"每日限額必須在 {MIN_DAILY_LIMIT} 到 {MAX_DAILY_LIMIT} 之間。")
             pool = await self._db_connection.connect()
             async with pool.acquire() as conn:
                 await conn.execute(

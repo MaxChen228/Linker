@@ -66,30 +66,50 @@ async def home(request: Request):
             }
         )
 
+    # 獲取每日目標進度數據（為了更好的初始載入體驗）
+    try:
+        status_data = await knowledge.check_daily_limit("isolated")
+        config_data = await knowledge.get_daily_limit_config()
+        
+        # 🔥 數據標準化：統一字段名，與API端點保持一致
+        from core.config import DEFAULT_DAILY_LIMIT
+        daily_progress = {
+            'status': status_data,
+            'config': {
+                **config_data,
+                'daily_limit': config_data.get('daily_knowledge_limit', config_data.get('daily_limit', DEFAULT_DAILY_LIMIT))
+            }
+        }
+        
+        # 移除舊字段名避免混淆
+        daily_progress['config'].pop('daily_knowledge_limit', None)
+        
+    except Exception as e:
+        # 如果獲取每日進度失敗，記錄錯誤並設為None，讓前端組件自行載入
+        print(f"主頁路由獲取每日進度失敗: {e}")
+        daily_progress = None
+
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "stats": stats, "review_items": review_items, "active": "home"},
+        {
+            "request": request, 
+            "stats": stats, 
+            "review_items": review_items,
+            "daily_progress": daily_progress,
+            "active": "home"
+        },
     )
 
 
 @router.get(API_ENDPOINTS.SETTINGS_PAGE, response_class=HTMLResponse)
 async def settings(request: Request):
-    """設定頁面路由"""
+    """簡化設定頁面路由 - 使用 DailyGoalWidget 組件動態載入數據"""
     templates = get_templates()
-    knowledge = await get_know_service()
-
-    # 獲取當前限額配置
-    daily_limit_config = await knowledge.get_daily_limit_config()
-
-    # 獲取最近7天的使用統計
-    daily_stats = await knowledge.get_daily_limit_stats(days=7)
 
     return templates.TemplateResponse(
         "settings.html",
         {
             "request": request,
             "active": "settings",
-            "daily_limit_config": daily_limit_config,
-            "daily_stats": daily_stats,
         },
     )

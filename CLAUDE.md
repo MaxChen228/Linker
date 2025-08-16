@@ -32,51 +32,85 @@ PostgreSQL → Database backend
 
 ## Development Commands
 
-### Quick Start
-```bash
-# Launch development server (auto-setup venv, install deps)
-./run.sh
-# Access at http://localhost:8000
+### 🚀 主要開發工具：Linker 管理系統 (推薦)
 
-# Alternative manual start
-uvicorn web.main:app --reload --port 8000
+專案提供了功能完整的管理腳本 `linker.sh`，整合所有開發、測試和維護功能：
+
+```bash
+# 啟動互動式管理介面（推薦）
+./linker.sh
+
+# 直接命令模式
+./linker.sh start   # 快速啟動服務
+./linker.sh dev     # 開發模式（背景執行 + 自動重載）
+./linker.sh stop    # 停止服務
+./linker.sh reset   # 重置系統（清空資料庫）
+./linker.sh test    # 執行測試套件
+./linker.sh help    # 顯示使用說明
 ```
 
-### Code Quality & Testing
-```bash
-# Linting and formatting (Black-compatible via Ruff)
-ruff check .                    # Static code analysis
-ruff check . --fix              # Auto-fix issues
-ruff format .                   # Format code (88 char limit)
+**Linker 管理系統功能**：
+1. **🚀 快速啟動** - 自動設置環境並啟動服務
+2. **🔧 開發模式** - 背景執行，檔案變更自動重載
+3. **🔄 系統重置** - 清空資料庫並重置為初始狀態
+4. **🗄️ 資料庫管理** - 備份、還原、初始化、狀態檢查
+5. **⏹️ 停止服務** - 優雅關閉所有服務
+6. **🔍 程式碼品質** - Ruff 檢查與自動修復
+7. **🧪 執行測試** - 單元、整合、API 測試與覆蓋率
+8. **⚙️ 環境設定** - 管理 API Key、資料庫連接等
+9. **🔗 快速連結** - 顯示所有重要 URL
+10. **ℹ️ 系統資訊** - 查看狀態與統計
 
-# Testing with Pytest
-pytest                          # Run all tests with coverage
-pytest tests/test_knowledge.py  # Run specific test file
-pytest -m unit                  # Run unit tests only
-pytest -m integration           # Run integration tests
-pytest --cov=core --cov=web    # Generate coverage report
+詳細使用說明請參考 `docs/guides/LINKER_MANAGER.md`。
+
+### Alternative Commands (舊版命令)
+
+如果偏好使用個別腳本：
+
+```bash
+# 快速啟動
+./run.sh                         # 啟動開發服務器
+uvicorn web.main:app --reload    # 手動啟動
+
+# 系統重置
+./reset.sh                       # 重置系統
+
+# 程式碼品質
+ruff check .                     # 靜態分析
+ruff check . --fix              # 自動修復
+ruff format .                   # 格式化代碼
+
+# 測試
+pytest                          # 所有測試
+pytest -m unit                  # 單元測試
+pytest -m integration           # 整合測試
+pytest --cov=core --cov=web    # 覆蓋率報告
 ```
 
 ### Database Operations
 ```bash
-# Database initialization (JSON migration no longer needed)
-./migrate_to_database.sh  # For legacy data migration only
+# 使用 linker.sh（推薦）
+./linker.sh                     # 選擇 4 進入資料庫管理
 
-# Manual database operations
-python scripts/init_database.py     # Initialize schema
-python scripts/migrate_data.py      # Migrate data
-python scripts/configure_db.py      # Configure settings
+# 手動操作
+python scripts/init_database.py # 初始化結構
+python scripts/migrate_data.py  # 遷移資料
+python scripts/configure_db.py  # 配置設定
 ```
 
 ### Environment Setup
 ```bash
-# Required environment variables
-export GEMINI_API_KEY=your-key      # Required for AI functionality
-export USE_DATABASE=true             # Database mode (JSON mode removed)
+# 使用 linker.sh（推薦）
+./linker.sh                     # 選擇 8 進行環境設定
 
-# Install dependencies
-pip install -r requirements.txt      # Production dependencies
-pip install -e ".[dev]"             # Development dependencies
+# 手動設定
+export GEMINI_API_KEY=your-key      # AI 功能必需
+export DATABASE_URL=postgresql://... # 資料庫連接
+export DEFAULT_DAILY_LIMIT=15       # 每日限額
+
+# 安裝依賴
+pip install -r requirements.txt      # 生產依賴
+pip install -e ".[dev]"             # 開發依賴
 ```
 
 ## Development Guidelines

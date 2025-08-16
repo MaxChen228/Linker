@@ -221,7 +221,7 @@
 .search-bar {
   position: relative;
   width: 100%;
-  max-width: 31.25rem; /* 500px */
+  max-width: var(--max-width-form);
   animation: var(--animation-fade-in-up);
   animation-delay: 50ms;
 }
@@ -482,7 +482,7 @@
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(21.25rem, 1fr)); /* 340px */
+  grid-template-columns: repeat(auto-fill, minmax(var(--width-grid-small), 1fr));
   gap: var(--space-4);
 }
 
@@ -1098,7 +1098,7 @@
 /* ========== 緊湊卡片佈局 ========== */
 .knowledge-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--width-grid-min), 1fr));
   gap: var(--space-4);
   margin-top: var(--space-6);
 }

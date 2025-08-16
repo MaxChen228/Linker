@@ -111,7 +111,7 @@
 /* ========== 句型卡片網格 ========== */
 .patterns-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(23.75rem /* 380px */, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--width-grid-medium), 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
 }

@@ -1,8 +1,32 @@
 # Deployment & Operations Guide
 
+## Quick Deployment Setup
+
+### Using Linker Management System (Recommended)
+
+The project includes `linker.sh` for simplified deployment preparation:
+
+```bash
+# Interactive setup wizard
+./linker.sh
+
+# Then select:
+# 8) Environment Setup - Configure API keys and database
+# 4) Database Management - Initialize database structure
+# 6) Code Quality Check - Ensure code is production-ready
+# 7) Run Tests - Verify all components work correctly
+```
+
+This will guide you through:
+- Setting up environment variables
+- Configuring database connections
+- Running code quality checks
+- Executing test suites
+
 ## Prerequisites
 
 - Python 3.9+
+- PostgreSQL 12+ (for production)
 - 2GB RAM minimum
 - 10GB disk space
 - Internet connectivity for AI API access

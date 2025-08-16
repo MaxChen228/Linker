@@ -19,6 +19,14 @@
   --space-16: 64px; /* 8 * 8 */
   --space-20: 80px; /* 10 * 8 */
   
+  /* ========== 擴展間距 (Extended Spacing) ========== */
+  --space-0-75: 3px;  /* 0.375 * 8 */
+  --space-4-5: 18px;  /* 2.25 * 8 */
+  --space-15: 60px;   /* 7.5 * 8 */
+  --space-25: 100px;  /* 12.5 * 8 */
+  --space-25-alt: 200px;  /* 25 * 8 */
+  --space-30: 120px;  /* 15 * 8 */
+  
   /* ========== Button Specific ========== */
   --btn-height-sm: 32px;
   --btn-height-md: 40px;

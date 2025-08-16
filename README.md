@@ -8,16 +8,38 @@ An intelligent English translation practice system powered by Google Gemini AI, 
 
 ## Quick Start
 
+### 🚀 Using Linker Management System (Recommended)
+
 ```bash
 # Clone repository
 git clone <repository-url>
-cd linker-cli
+cd linker
 
-# Set API key
+# Launch interactive management interface
+./linker.sh
+
+# Or use direct commands
+./linker.sh start   # Quick start server
+./linker.sh dev     # Development mode with auto-reload
+./linker.sh stop    # Stop server
+```
+
+The `linker.sh` script provides:
+- 🔧 Automatic environment setup
+- 📦 Dependency installation
+- ⚙️ Environment configuration wizard
+- 🗄️ Database management tools
+- 🧪 Testing and code quality checks
+- 📊 Real-time system status display
+
+For detailed usage, see [LINKER_MANAGER.md](./docs/guides/LINKER_MANAGER.md)
+
+### Alternative Quick Start
+
+```bash
+# Manual setup (without linker.sh)
 export GEMINI_API_KEY="your-api-key"
-
-# Run application
-./run.sh
+uvicorn web.main:app --reload
 # Access http://localhost:8000
 ```
 
@@ -39,9 +61,39 @@ export GEMINI_API_KEY="your-api-key"
 - **Production-Ready Database Backend**: Officially supports PostgreSQL for enhanced performance, data integrity, and scalability. A complete migration system from JSON to PostgreSQL is included.
 - **Robust Data Handling**: Features an automatic data versioning and migration system to ensure data integrity across updates.
 
+## Development Tools
+
+### 🛠️ Linker Management System
+
+The project includes a comprehensive management script `linker.sh` that integrates all development, testing, and maintenance functions:
+
+**Features:**
+- **Interactive Menu**: User-friendly interface with numbered options
+- **Environment Management**: Automatic venv setup, dependency installation
+- **Database Tools**: Backup, restore, initialization, status check
+- **Code Quality**: Integrated Ruff for linting and formatting
+- **Testing Suite**: Unit, integration, API tests with coverage reports
+- **Configuration Wizard**: Easy setup for API keys and database connections
+- **Real-time Status**: Live display of server, database, and AI service status
+
+**Usage:**
+```bash
+# Interactive mode (recommended)
+./linker.sh
+
+# Command mode
+./linker.sh start   # Quick start
+./linker.sh dev     # Development mode
+./linker.sh reset   # Reset system
+./linker.sh test    # Run tests
+```
+
+See [LINKER_MANAGER.md](./docs/guides/LINKER_MANAGER.md) for complete documentation.
+
 ## System Requirements
 
 - Python 3.9+
+- PostgreSQL 12+ (for production)
 - 2GB RAM minimum
 - Internet connection for AI API access
 

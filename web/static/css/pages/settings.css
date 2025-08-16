@@ -1,536 +1,203 @@
 /* ============================================ */
-/* 設定頁面樣式 - 響應式 & 深色模式支援         */
+/* 簡化設定頁面樣式 - 每日目標設定專用           */
 /* ============================================ */
 
-/* 主容器 */
+/* ========== 主容器 ========== */
 .settings-container {
-    max-width: 800px;
+    max-width: var(--max-width-settings);
     margin: 0 auto;
-    padding: 1.5rem 0;
+    padding: var(--space-6) var(--space-4);
+    min-height: calc(100vh - 8rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
 }
 
+.settings-container.simplified {
+    max-width: var(--max-width-modal);
+}
+
+/* ========== 頁面頭部 ========== */
 .settings-header {
     text-align: center;
-    margin-bottom: 2rem;
+    padding: var(--space-4) 0;
+    border-bottom: var(--border-width-thin) solid var(--border-light);
 }
 
 .settings-header h2 {
-    color: var(--color-text-primary);
-    margin-bottom: 0.5rem;
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-2) 0;
 }
 
 .settings-subtitle {
-    color: var(--color-text-secondary);
-    font-size: 1rem;
+    font-size: var(--text-base);
+    color: var(--text-muted);
     margin: 0;
+    line-height: var(--leading-relaxed);
 }
 
-/* ========== 設定區塊 ========== */
+/* ========== 簡化設定區塊 ========== */
 .setting-section {
-    background: var(--color-surface-elevated);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
+    background: var(--surface-elevated);
+    border: var(--border-width-thin) solid var(--border-light);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
     overflow: hidden;
-    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.setting-section.simplified {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .setting-section:hover {
-    box-shadow: 0 2px 8px var(--shadow-light);
+    box-shadow: var(--shadow-sm);
 }
 
-@media (prefers-color-scheme: dark) {
-    .setting-section:hover {
-        box-shadow: 0 2px 8px var(--overlay-subtle);
+.setting-section.simplified:hover {
+    box-shadow: none;
+}
+
+/* ========== 每日目標容器 ========== */
+.daily-goal-container {
+    padding: var(--space-6);
+    display: flex;
+    justify-content: center;
+}
+
+/* ========== 導航區域 ========== */
+.navigation-section {
+    padding: var(--space-4) 0;
+    border-top: var(--border-width-thin) solid var(--border-light);
+    background: var(--surface-base);
+    border-radius: var(--radius-lg);
+}
+
+.nav-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.nav-actions .btn {
+    min-width: 8rem;
+    justify-content: center;
+}
+
+/* ========== 響應式設計 ========== */
+@media (max-width: var(--breakpoint-md)) {
+    .settings-container {
+        padding: var(--space-4) var(--space-3);
+        gap: var(--space-4);
+    }
+    
+    .daily-goal-container {
+        padding: var(--space-4);
+    }
+    
+    .settings-header h2 {
+        font-size: var(--text-xl);
+    }
+    
+    .settings-subtitle {
+        font-size: var(--text-sm);
     }
 }
 
-.section-header {
-    padding: 1.5rem;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border-subtle);
+@media (max-width: var(--breakpoint-sm)) {
+    .settings-container {
+        padding: var(--space-3) var(--space-2);
+        min-height: calc(100vh - 6rem);
+    }
+    
+    .nav-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .nav-actions .btn {
+        min-width: auto;
+    }
+    
+    .daily-goal-container {
+        padding: var(--space-3);
+    }
 }
 
-.section-header h3 {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0 0 0.5rem 0;
-    font-size: 1.25rem;
-    color: var(--color-text-primary);
+/* ========== 暗色模式 ========== */
+@media (prefers-color-scheme: dark) {
+    .settings-header {
+        border-color: var(--border-dark);
+    }
+    
+    .navigation-section {
+        background: var(--surface-dark);
+        border-color: var(--border-dark);
+    }
+    
+    .setting-section:hover {
+        box-shadow: var(--shadow-dark-sm);
+    }
 }
 
-.section-icon {
-    font-size: 1.5rem;
+/* ========== 過渡動畫 ========== */
+.settings-container {
+    animation: fadeInUp 0.4s ease-out;
 }
 
-.section-description {
-    margin: 0;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.setting-content {
-    padding: 1.5rem;
+/* ========== 特殊狀態樣式 ========== */
+.settings-container.loading {
+    pointer-events: none;
+    opacity: 0.7;
 }
 
-/* ========== 設定項目 ========== */
-.setting-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.setting-item:last-child {
-    border-bottom: none;
-}
-
-.setting-label {
-    flex: 1;
-    margin-right: 1rem;
-}
-
-.setting-label label {
-    display: block;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    margin-bottom: 0.25rem;
-}
-
-.setting-help {
-    color: var(--color-text-secondary);
-    font-size: 0.875rem;
-    line-height: 1.4;
-}
-
-.setting-control {
-    flex-shrink: 0;
-}
-
-/* ========== 開關控制 ========== */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.switch-slider {
+.settings-container.loading::after {
+    content: '';
     position: absolute;
-    cursor: pointer;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--color-neutral-300);
-    transition: 0.2s ease;
-    border-radius: 24px;
+    background: var(--surface-overlay);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.switch-slider:before {
+/* ========== 輔助工具類 ========== */
+.text-center {
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.sr-only {
     position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.2s ease;
-    border-radius: 50%;
-    box-shadow: 0 1px 3px var(--shadow-medium);
-}
-
-.switch input:checked + .switch-slider {
-    background-color: var(--color-primary);
-}
-
-.switch input:checked + .switch-slider:before {
-    transform: translateX(26px);
-}
-
-/* ========== 限額控制 ========== */
-.limit-control {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    min-width: 200px;
-}
-
-.limit-range {
-    flex: 1;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--color-neutral-200);
-    outline: none;
-    -webkit-appearance: none;
-}
-
-.limit-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    cursor: pointer;
-    box-shadow: 0 1px 3px var(--shadow-medium);
-}
-
-.limit-range::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 1px 3px var(--shadow-medium);
-}
-
-.limit-number {
-    width: 60px;
-    padding: 0.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    background: var(--color-surface);
-    color: var(--color-text-primary);
-    text-align: center;
-}
-
-.limit-unit {
-    color: var(--color-text-secondary);
-    font-size: 0.875rem;
-    white-space: nowrap;
-}
-
-/* ========== 當前狀態 ========== */
-.current-status {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem 0;
-}
-
-.status-indicator {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-}
-
-.status-icon {
-    font-size: 1.25rem;
-}
-
-.status-text {
-    font-weight: 500;
-    color: var(--color-text-primary);
-}
-
-.status-progress {
-    margin-top: 0.5rem;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 8px;
-    background-color: var(--color-neutral-200);
-    border-radius: 4px;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
     overflow: hidden;
-    margin-bottom: 0.5rem;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--color-success), var(--color-warning));
-    border-radius: 4px;
-    transition: width 0.3s ease;
-    width: 0%;
-}
-
-.progress-info {
-    color: var(--color-text-secondary);
-    font-size: 0.875rem;
-}
-
-/* ========== 操作按鈕 ========== */
-.setting-actions {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.setting-actions .btn {
-    min-width: 120px;
-}
-
-/* ========== 統計區塊 ========== */
-.stats-summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.stat-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: 8px;
-    padding: 1rem;
-    text-align: center;
-    transition: all 0.2s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px var(--shadow-light);
-}
-
-.stat-number {
-    font-size: 1.75rem;
-    font-weight: bold;
-    color: var(--color-primary);
-    line-height: 1.2;
-}
-
-.stat-label {
-    color: var(--color-text-secondary);
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
-/* ========== 統計圖表 ========== */
-.stats-chart h4 {
-    margin: 0 0 1rem 0;
-    color: var(--color-text-primary);
-}
-
-.chart-container {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    height: 120px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-}
-
-.chart-bar {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 60px;
-}
-
-.bar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 20px;
-    height: 80px;
-    position: relative;
-    margin-bottom: 0.5rem;
-    justify-content: end;
-}
-
-.bar {
-    width: 100%;
-    border-radius: 2px 2px 0 0;
-    min-height: 2px;
-    transition: height 0.3s ease;
-}
-
-.bar.isolated {
-    background: var(--color-info);
-    margin-bottom: 1px;
-}
-
-.bar.enhancement {
-    background: var(--color-warning);
-}
-
-.bar-label {
-    text-align: center;
-}
-
-.bar-date {
-    font-size: 0.75rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.125rem;
-}
-
-.bar-count {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-text-primary);
-}
-
-.chart-legend {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-}
-
-.legend-color {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-}
-
-.legend-color.isolated {
-    background: var(--color-info);
-}
-
-.legend-color.enhancement {
-    background: var(--color-warning);
-}
-
-/* ========== 載入覆蓋層 ========== */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--shadow-modal);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    z-index: 1000;
-    backdrop-filter: blur(2px);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease;
-}
-
-.loading-overlay[data-visible="true"] {
-    opacity: 1;
-    visibility: visible;
-}
-
-.loading-overlay .spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--overlay-light);
-    border-top: 3px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-.loading-overlay p {
-    color: white;
-    font-weight: 500;
-    margin: 0;
-}
-
-/* ========== 響應式設計 ========== */
-@media (max-width: 768px) {
-    .settings-container {
-        padding: 1rem;
-    }
-    
-    .setting-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .setting-label {
-        margin-right: 0;
-    }
-    
-    .setting-control {
-        width: 100%;
-    }
-    
-    .limit-control {
-        width: 100%;
-        min-width: unset;
-    }
-    
-    .setting-actions {
-        flex-direction: column;
-    }
-    
-    .setting-actions .btn {
-        width: 100%;
-    }
-    
-    .stats-summary {
-        grid-template-columns: 1fr;
-    }
-    
-    .chart-container {
-        height: 100px;
-        padding: 0.75rem;
-    }
-    
-    .bar-container {
-        height: 60px;
-    }
-    
-    .chart-legend {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-    }
-}
-
-/* ========== 動畫 ========== */
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ========== 無障礙支援 ========== */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* ========== 狀態變化 ========== */
-.setting-item.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.setting-actions .btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* ========== 深色模式優化 ========== */
-@media (prefers-color-scheme: dark) {
-    .switch-slider:before {
-        background-color: var(--color-surface-elevated);
-    }
-    
-    .stat-card:hover {
-        box-shadow: 0 2px 4px var(--overlay-subtle);
-    }
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }

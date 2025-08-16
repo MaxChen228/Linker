@@ -4,19 +4,13 @@
 {% block styles %}
 <link rel="stylesheet" href="/static/css/pages/index.css" />
 <link rel="stylesheet" href="/static/css/design-system/03-components/recommendation-cards.css" />
+<link rel="stylesheet" href="/static/css/design-system/03-components/progress-indicators.css" />
+<link rel="stylesheet" href="/static/css/components/daily-goal-widget.css" />
 {% endblock %}
 
 {% block content %}
   <!-- 統計卡片區 -->
-  <section class="stats-grid">
-    <div class="stat-card" data-variant="primary" data-glass="true">
-      <h2>總練習次數</h2>
-      <p class="stat-value">{{ stats.total_practices }}</p>
-    </div>
-    <div class="stat-card" data-variant="success" data-glass="true">
-      <h2>正確數</h2>
-      <p class="stat-value">{{ stats.correct_count }}</p>
-    </div>
+  <section class="stats-grid stats-grid-3">
     <div class="stat-card" data-variant="info" data-glass="true">
       <h2>知識點</h2>
       <p class="stat-value">{{ stats.knowledge_points }}</p>
@@ -24,6 +18,10 @@
     <div class="stat-card" data-variant="warning" data-glass="true">
       <h2>待複習</h2>
       <p class="stat-value">{{ stats.due_reviews }}</p>
+    </div>
+    <div class="stat-card" data-variant="accent" data-glass="true" id="daily-goal-card">
+      <!-- 每日目標組件容器 -->
+      <div id="home-daily-goal" class="daily-goal-widget card"></div>
     </div>
   </section>
 
@@ -112,13 +110,70 @@
 
 {% block scripts %}
 <script src="/static/js/recommendation-card.js"></script>
+<script src="/static/js/daily-goal-widget.js"></script>
 <script>
     // 初始化推薦卡片浮動組件
     document.addEventListener('DOMContentLoaded', () => {
-        const recommendationCard = new RecommendationCard('home-recommendations', {
-            position: 'bottom-right',
-            size: 'default'
-        });
+        // 等待 API endpoints 初始化完成
+        function initializeComponents() {
+            if (!window.apiEndpoints) {
+                console.log('等待 API endpoints 初始化...');
+                setTimeout(initializeComponents, 100);
+                return;
+            }
+            
+            console.log('API endpoints 已可用，初始化組件...');
+            
+            // 初始化推薦卡片（如果可用）
+            let recommendationCard = null;
+            if (window.RecommendationCard && document.getElementById('home-recommendations')) {
+                try {
+                    recommendationCard = new RecommendationCard('home-recommendations', {
+                        position: 'bottom-right',
+                        size: 'default'
+                    });
+                    console.log('推薦卡片初始化成功');
+                } catch (error) {
+                    console.warn('推薦卡片初始化失敗:', error.message);
+                }
+            }
+            
+            // 準備初始數據（如果有的話）
+            const initialData = {% if daily_progress %}
+                {
+                    status: {{ daily_progress.status|tojson }},
+                    config: {{ daily_progress.config|tojson }}
+                }
+            {% else %}
+                null
+            {% endif %};
+            
+            // 初始化每日目標組件
+            let dailyGoalWidget = null;
+            try {
+                dailyGoalWidget = new DailyGoalWidget('home-daily-goal', {
+                    mode: 'card',
+                    autoRefresh: true,
+                    refreshInterval: 120000, // 2分鐘自動刷新
+                    showInput: true,
+                    initialData: initialData // 傳遞初始數據
+                });
+                console.log('每日目標組件初始化成功');
+            } catch (error) {
+                console.error('每日目標組件初始化失敗:', error.message);
+            }
+            
+            // 將組件實例保存到全域以便其他腳本使用
+            if (recommendationCard) {
+                window.homeRecommendationCard = recommendationCard;
+            }
+            if (dailyGoalWidget) {
+                window.homeDailyGoal = dailyGoalWidget;
+            }
+        }
+        
+        // 開始初始化
+        initializeComponents();
         
         // 監聽推薦練習事件 - 跳轉到練習頁面
         document.addEventListener('recommendation-practice', (event) => {
@@ -128,8 +183,13 @@
             window.location.href = `/practice?mode=${mode}&level=${difficulty}`;
         });
         
-        // 將推薦組件保存到全域以便其他腳本使用
-        window.homeRecommendationCard = recommendationCard;
+        // 監聽每日目標更新事件
+        document.addEventListener('goalUpdated', (event) => {
+            const { newLimit } = event.detail;
+            console.log(`每日目標已更新為: ${newLimit}`);
+            
+            // 可以在這裡添加更多與主頁相關的更新邏輯
+        });
     });
 </script>
 {% endblock %}

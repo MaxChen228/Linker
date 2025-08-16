@@ -387,7 +387,7 @@
   background: var(--surface-base);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2xl);
-  max-width: 37.5rem; /* 600px */
+  max-width: var(--max-width-modal);
   width: 90%;
   max-height: 80vh;
   overflow: hidden;
@@ -641,7 +641,7 @@
   }
   
   .calendar-day {
-    min-height: 3.75rem; /* 60px */
+    min-height: var(--space-15);
     padding: var(--space-1);
   }
   
@@ -650,7 +650,7 @@
   }
   
   .day-badge {
-    font-size: 0.5625rem; /* 9px */
+    font-size: var(--text-xxs);
     padding: calc(var(--space-1) * 0.25) var(--space-1);
   }
   

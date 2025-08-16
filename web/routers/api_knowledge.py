@@ -596,13 +596,17 @@ async def get_daily_limit_status():
         limit_status = await knowledge.check_daily_limit("isolated")
         config = await knowledge.get_daily_limit_config()
 
+        # 🔥 統一字段名：所有API都使用 daily_limit，確保前端數據一致性
+        from core.config import DEFAULT_DAILY_LIMIT
+        daily_limit_value = config.get("daily_knowledge_limit", config.get("daily_limit", DEFAULT_DAILY_LIMIT))
+        
         return JSONResponse(
             {
                 "date": limit_status.get("date", ""),
                 "limit_enabled": config["limit_enabled"],
-                "daily_limit": config["daily_knowledge_limit"],
+                "daily_limit": daily_limit_value,
                 "used_count": limit_status.get("used_count", 0),
-                "remaining": limit_status.get("remaining", config["daily_knowledge_limit"]),
+                "remaining": limit_status.get("remaining", daily_limit_value),
                 "can_add_more": limit_status.get("can_add", True),
                 "breakdown": limit_status.get("breakdown", {"isolated": 0, "enhancement": 0}),
                 "status": "normal" if limit_status.get("can_add", True) else "exceeded",
@@ -620,8 +624,17 @@ async def get_daily_limit_config():
     knowledge = await get_know_service()
     try:
         config = await knowledge.get_daily_limit_config()
-        # 讓 FastAPI 自動處理序列化，而不是手動使用 JSONResponse
-        return config
+        
+        # 統一字段名：將 daily_knowledge_limit 重命名為 daily_limit，與 status API 保持一致
+        from core.config import DEFAULT_DAILY_LIMIT
+        standardized_config = {
+            **config,
+            "daily_limit": config.get("daily_knowledge_limit", config.get("daily_limit", DEFAULT_DAILY_LIMIT))
+        }
+        # 移除原始字段以避免混淆
+        standardized_config.pop("daily_knowledge_limit", None)
+        
+        return standardized_config
     except Exception as e:
         logger.error(f"獲取每日限額配置失敗: {e}")
         raise HTTPException(status_code=500, detail="獲取配置失敗") from e

@@ -18,12 +18,16 @@
   --max-width-mobile: var(--max-width-sm);
   --max-width-tablet: var(--max-width-md);
   --max-width-desktop: var(--max-width-lg);
+  --max-width-settings: 800px;
   
   /* ================================================
      特定寬度 (Specific Widths)
      ================================================ */
   --width-sidebar: 280px;
   --width-compact: 80px;
+  --width-grid-min: 280px;
+  --width-grid-small: 340px;
+  --width-grid-medium: 380px;
   --width-icon: 24px;
   --width-icon-sm: 16px;
   --width-icon-lg: 32px;
@@ -71,6 +75,8 @@
      ================================================ */
   --min-width-button: 80px;
   --min-width-input: 120px;
+  --min-width-settings-field: 200px;
+  --min-width-settings-grid: 120px;
   --min-height-touch: 44px;
   --min-height-card: 120px;
   
@@ -80,6 +86,9 @@
   --max-height-dropdown: 300px;
   --max-width-modal: 600px;
   --max-width-toast: 400px;
+  --max-width-practice: 1200px;
+  --max-width-form: 500px;
+  --max-width-card: 300px;
   
   /* ================================================
      間距相關尺寸 (Spacing-related Dimensions)

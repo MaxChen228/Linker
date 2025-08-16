@@ -48,6 +48,24 @@ htmlcov/
 .env
 .env.local
 
+# 臨時檔案和生成檔案
+.tmp/
+server.log
+*.tmp
+*.bak
+*.swp.orig
+
+# Node.js (如果不需要可以移除)
+node_modules/
+package-lock.json
+
+# 測試數據
+test_data/
+
+# 系統檔案
+Thumbs.db
+.DS_Store
+
 # 暫存文件
 *.tmp
 *.bak

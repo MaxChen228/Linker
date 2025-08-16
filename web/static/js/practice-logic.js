@@ -522,9 +522,23 @@ class PracticeSystem {
         const score = (result && typeof result.score === 'number') ? result.score : 0;
         const scoreColor = score >= 80 ? '#48bb78' : score >= 60 ? '#ed8936' : '#f56565';
         
+        // 🔥 調試信息：檢查實際API響應
+        console.log('🔍 API Response Debug:', {
+            auto_save: result.auto_save,
+            pending_knowledge_points: result.pending_knowledge_points,
+            error_analysis: result.error_analysis,
+            has_error_analysis: result.error_analysis && result.error_analysis.length > 0
+        });
+        
         // 檢查是否有待確認的知識點
         const pendingPoints = result.pending_knowledge_points || [];
         const showConfirmationUI = !result.auto_save && pendingPoints.length > 0;
+        
+        console.log('🔍 UI Logic Debug:', {
+            pendingPointsLength: pendingPoints.length,
+            autoSave: result.auto_save,
+            showConfirmationUI: showConfirmationUI
+        });
         
         if (showConfirmationUI) {
             // 渲染待確認的知識點介面
@@ -898,13 +912,20 @@ class PracticeSystem {
             `;
         }
         
-        // 達到上限時顯示合併按鈕
+        // 達到上限時，顯示限額提示 + 忽略按鈕（忽略不消耗限額）
         return `
             <div class="batch-actions limit-reached" id="knowledge-actions-limited">
-                <button class="btn btn-limit-reached" id="limit-reached-btn">
-                    📊 已到達上限 - 點擊設定
-                </button>
-                <small class="limit-reached-hint">今日知識點儲存已達上限 (${this.dailyLimitStatus.used_count}/${this.dailyLimitStatus.daily_limit})，可到設定頁面調整</small>
+                <div class="limit-warning">
+                    <span class="limit-icon">📊</span>
+                    <span class="limit-message">今日已達上限 (${this.dailyLimitStatus.used_count}/${this.dailyLimitStatus.daily_limit})</span>
+                    <button class="btn btn-settings-link" id="limit-settings-btn" data-variant="ghost" data-size="sm">
+                        調整設定
+                    </button>
+                </div>
+                <div class="available-actions">
+                    <button class="btn btn-ignore-all" data-variant="secondary" data-size="sm">全部忽略</button>
+                    <small class="action-hint">💡 忽略不會消耗每日限額</small>
+                </div>
             </div>
         `;
     }
@@ -914,9 +935,9 @@ class PracticeSystem {
      * @returns {void}
      */
     bindLimitEvents() {
-        const limitBtn = document.getElementById('limit-reached-btn');
-        if (limitBtn) {
-            limitBtn.addEventListener('click', () => {
+        const settingsBtn = document.getElementById('limit-settings-btn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => {
                 // 跳轉到設定頁面的限額設定區域
                 window.location.href = '/settings#daily-limit';
             });

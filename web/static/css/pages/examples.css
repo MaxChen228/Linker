@@ -135,7 +135,7 @@
   position: fixed;
   bottom: var(--space-8);
   left: 50%;
-  transform: translateX(-50%) translateY(6.25rem /* 100px */);
+  transform: translateX(-50%) translateY(var(--space-25));
   background: var(--surface);
   border: var(--border-width-thin) solid var(--border);
   border-radius: var(--radius-full);
@@ -198,7 +198,7 @@
 }
 
 .examples-content.expanded {
-  max-height: 31.25rem /* 500px */;
+  max-height: var(--max-width-form);
   margin-top: var(--space-3);
 }
 
@@ -259,7 +259,7 @@
 .sentence-label {
   font-weight: var(--font-medium);
   color: var(--text-muted);
-  min-width: 5rem /* 80px */;
+  min-width: var(--space-20);
   flex-shrink: 0;
 }
 

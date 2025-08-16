@@ -124,8 +124,12 @@ async def grade_answer_api(request: GradeAnswerRequest):
 
         # 3. 根據配置決定是自動保存還是返回待確認點
         pending_knowledge_points = []
-
-        if not is_correct:
+        
+        # 🔥 修復核心邏輯：只要有錯誤分析，就應該讓用戶選擇是否保存知識點
+        # 不再依賴 is_correct，因為 AI 可能判斷「大致正確」但仍有可學習的錯誤
+        error_analysis = result.get("error_analysis", [])
+        
+        if error_analysis:  # 改為：只要有錯誤分析就生成待確認點
             if auto_save_knowledge_points:
                 # 舊邏輯：自動保存錯誤記錄
                 if hasattr(knowledge, "_save_mistake_async"):
@@ -144,7 +148,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
                     )
             else:
                 # 新邏輯：生成待確認的知識點數據
-                for error in result.get("error_analysis", []):
+                for error in error_analysis:
                     pending_knowledge_points.append(
                         {
                             "id": f"temp_{uuid.uuid4().hex[:8]}",
@@ -155,8 +159,8 @@ async def grade_answer_api(request: GradeAnswerRequest):
                         }
                     )
 
-        # 4. 如果是複習答對，也記錄下來
-        elif mode == "review" and target_point_ids:
+        # 4. 如果是複習模式且答對，也記錄下來（獨立於錯誤分析）
+        if mode == "review" and target_point_ids and is_correct:
             for point_id in target_point_ids:
                 # 使用異步方法
                 if hasattr(knowledge, "add_review_success_async"):
@@ -170,7 +174,7 @@ async def grade_answer_api(request: GradeAnswerRequest):
 
         # 5. 計算分數
         score = 100
-        for error in result.get("error_analysis", []):
+        for error in error_analysis:
             category = error.get("category", "other")
             if category == "systematic":
                 score -= 15
@@ -188,21 +192,32 @@ async def grade_answer_api(request: GradeAnswerRequest):
             "score": score,
             "is_generally_correct": is_correct,
             "feedback": result.get("overall_suggestion", ""),
-            "error_analysis": result.get("error_analysis", []),
+            "error_analysis": error_analysis,  # 使用已提取的變數
             "detailed_feedback": result.get("detailed_feedback", ""),
         }
 
-        # 添加待確認點和配置標記
-        logger.info(
-            f"Config check - SHOW_CONFIRMATION_UI: {show_confirmation_ui}, AUTO_SAVE_KNOWLEDGE_POINTS: {auto_save_knowledge_points}"
-        )
-        logger.info(f"Pending points count: {len(pending_knowledge_points)}")
+        # 🔥 詳細調試信息
+        logger.info(f"🔍 Environment Variables:")
+        logger.info(f"   SHOW_CONFIRMATION_UI: {os.getenv('SHOW_CONFIRMATION_UI', 'not set')} -> {show_confirmation_ui}")
+        logger.info(f"   AUTO_SAVE_KNOWLEDGE_POINTS: {os.getenv('AUTO_SAVE_KNOWLEDGE_POINTS', 'not set')} -> {auto_save_knowledge_points}")
+        
+        logger.info(f"🔍 Data Analysis:")
+        logger.info(f"   Error analysis count: {len(error_analysis)}")
+        logger.info(f"   Error analysis content: {[e.get('key_point_summary', 'no summary') for e in error_analysis]}")
+        logger.info(f"   Pending points count: {len(pending_knowledge_points)}")
+        
+        logger.info(f"🔍 Condition Check:")
+        logger.info(f"   show_confirmation_ui: {show_confirmation_ui}")
+        logger.info(f"   not auto_save_knowledge_points: {not auto_save_knowledge_points}")
+        logger.info(f"   Combined condition: {show_confirmation_ui and not auto_save_knowledge_points}")
 
         if show_confirmation_ui and not auto_save_knowledge_points:
             response_data["pending_knowledge_points"] = pending_knowledge_points
             response_data["auto_save"] = False
+            logger.info(f"🔍 -> Using confirmation UI mode, pending_points added: {len(pending_knowledge_points)}")
         else:
             response_data["auto_save"] = auto_save_knowledge_points
+            logger.info(f"🔍 -> Using auto_save mode: {auto_save_knowledge_points}")
 
         return JSONResponse(response_data)
 

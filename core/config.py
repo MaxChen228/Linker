@@ -186,6 +186,11 @@ DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
 AUTO_SAVE_KNOWLEDGE_POINTS = os.getenv("AUTO_SAVE_KNOWLEDGE_POINTS", "false").lower() == "true"
 SHOW_CONFIRMATION_UI = os.getenv("SHOW_CONFIRMATION_UI", "true").lower() == "true"
 
+# 🎯 每日知識點限額配置 - 統一數據源
+DEFAULT_DAILY_LIMIT = int(os.getenv("DEFAULT_DAILY_LIMIT", "15"))  # 統一預設值
+MIN_DAILY_LIMIT = 1
+MAX_DAILY_LIMIT = 50
+
 # 確保資料目錄存在
 with contextlib.suppress(PermissionError):
     DATA_DIR.mkdir(exist_ok=True, parents=True)
