@@ -300,8 +300,8 @@ textarea[data-status="warning"] {
 }
 
 .form-check-input[type="radio"]:checked::after {
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
   background: var(--surface-base);
   border-radius: var(--radius-full);
   transform: translate(-50%, -50%);
@@ -338,10 +338,10 @@ textarea[data-status="warning"] {
 
 .form-switch-input {
   position: relative;
-  width: 48px;
-  height: 24px;
+  width: var(--space-12);
+  height: var(--space-6);
   background: var(--gray-300);
-  border-radius: 24px;
+  border-radius: var(--space-6);
   cursor: pointer;
   transition: background 0.3s ease;
   appearance: none;
@@ -714,12 +714,12 @@ textarea[data-status="warning"] {
 
 .form-with-icon.has-icon-left .form-control,
 .form-with-icon.has-icon-left input {
-  padding-left: 44px;
+  padding-left: calc(var(--space-10) + var(--space-1));
 }
 
 .form-with-icon.has-icon-right .form-control,
 .form-with-icon.has-icon-right input {
-  padding-right: 44px;
+  padding-right: calc(var(--space-10) + var(--space-1));
 }
 
 /* Form Button Group Utilities */
@@ -781,7 +781,7 @@ textarea[data-status="warning"] {
 .form-field-horizontal .form-label {
   margin-bottom: 0;
   flex-shrink: 0;
-  min-width: 120px;
+  min-width: var(--min-width-input);
 }
 
 .form-field-horizontal .form-control,

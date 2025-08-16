@@ -396,7 +396,7 @@
   
   .card[data-glass="true"] {
     background: var(--surface-overlay);
-    border: 1px solid rgba(255, 255, 255, var(--alpha-3));
+    border: var(--border-width-thin) solid rgba(255, 255, 255, var(--alpha-3));
   }
   
   .card[data-type="question"] {

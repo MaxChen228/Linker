@@ -110,11 +110,12 @@ class AIService:
             from google.api_core import retry
             
             full_prompt = f"{system_prompt}\n\n{user_prompt}"
+            # 🔧 修復：安全地獲取模型配置信息
             model_config = {
                 "model_name": getattr(model, "model_name", str(model)),
-                "temperature": getattr(model.generation_config, "temperature", None),
-                "top_p": getattr(model.generation_config, "top_p", None),
-                "top_k": getattr(model.generation_config, "top_k", None),
+                "temperature": getattr(getattr(model, "generation_config", None), "temperature", None),
+                "top_p": getattr(getattr(model, "generation_config", None), "top_p", None),
+                "top_k": getattr(getattr(model, "generation_config", None), "top_k", None),
             }
 
             # 🔧 修復：添加超時和重試機制
