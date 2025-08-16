@@ -5,7 +5,6 @@
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Optional, Any
 
 from core.error_types import ErrorCategory
 from settings import settings

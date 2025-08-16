@@ -7,11 +7,10 @@
 import asyncio
 import random
 import time
-from typing import Dict, Any
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
-from core.knowledge import KnowledgePoint
+
 from tests.functional.edge_cases.conftest import assert_stats_consistent
 
 
@@ -48,7 +47,7 @@ class TestConcurrentOperations:
         async def reader_task():
             """讀取任務 - 多次讀取統計數據"""
             results = []
-            for i in range(50):
+            for _i in range(50):
                 # 動態計算當前統計
                 current_points = len(mock_json_manager.knowledge_points)
                 current_total = sum(
@@ -175,7 +174,7 @@ class TestConcurrentOperations:
             tasks = []
 
             # 100個併發請求
-            for i in range(100):
+            for _i in range(100):
                 # 隨機選擇操作類型
                 if random.choice([True, False]):
                     # 模擬快取命中
@@ -201,7 +200,7 @@ class TestConcurrentOperations:
 
         # 驗證所有結果一致
         baseline_stats = results[0]
-        for i, stats in enumerate(results[1:], 1):
+        for _i, stats in enumerate(results[1:], 1):
             assert_stats_consistent(stats, baseline_stats)
 
         # 驗證快取效果

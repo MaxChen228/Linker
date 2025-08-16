@@ -7,9 +7,9 @@
 import asyncio
 import time
 from datetime import datetime
-from typing import List
 
 import pytest
+
 from core.knowledge import KnowledgePoint, OriginalError
 from tests.functional.edge_cases.conftest import (
     assert_stats_consistent,
@@ -170,8 +170,9 @@ class TestLargeDataScenarios:
         self, large_dataset_generator, mock_json_manager, mock_db_manager, edge_case_test_config
     ):
         """測試大數據集的記憶體使用情況"""
-        import psutil
         import os
+
+        import psutil
 
         # 記錄初始記憶體使用
         process = psutil.Process(os.getpid())

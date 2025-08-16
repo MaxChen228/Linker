@@ -10,10 +10,8 @@
 """
 
 import asyncio
-import json
 import os
 import sys
-from datetime import datetime
 from pathlib import Path
 
 # 添加專案根目錄到 Python 路徑
@@ -38,7 +36,7 @@ async def test_database_mode():
     print("=" * 60)
 
     # 確認配置
-    print(f"\n1. 環境配置檢查:")
+    print("\n1. 環境配置檢查:")
     print(f"   USE_DATABASE = {USE_DATABASE}")
 
     if not USE_DATABASE:
@@ -48,7 +46,7 @@ async def test_database_mode():
     print("   ✅ 資料庫模式已啟用")
 
     # 獲取異步知識管理器
-    print(f"\n2. 初始化知識管理器:")
+    print("\n2. 初始化知識管理器:")
     try:
         knowledge = await get_knowledge_manager_async(use_database=True)
         print("   ✅ 知識管理器初始化成功")
@@ -57,7 +55,7 @@ async def test_database_mode():
         return False
 
     # 檢查是否真的使用資料庫
-    print(f"\n3. 驗證資料庫模式:")
+    print("\n3. 驗證資料庫模式:")
     if knowledge.use_database:
         print("   ✅ 確認使用資料庫模式")
     else:
@@ -65,7 +63,7 @@ async def test_database_mode():
         return False
 
     # 測試 save_mistake_async
-    print(f"\n4. 測試 save_mistake_async 方法:")
+    print("\n4. 測試 save_mistake_async 方法:")
 
     # 模擬錯誤反饋
     test_feedback = {
@@ -100,7 +98,7 @@ async def test_database_mode():
         return False
 
     # 測試統計獲取
-    print(f"\n5. 測試統計資料獲取:")
+    print("\n5. 測試統計資料獲取:")
     try:
         stats = await knowledge.get_statistics_async()
         print(f"   知識點總數: {stats.get('knowledge_points', 0)}")
@@ -112,7 +110,7 @@ async def test_database_mode():
         return False
 
     # 測試獲取知識點
-    print(f"\n6. 測試獲取知識點:")
+    print("\n6. 測試獲取知識點:")
     try:
         points = await knowledge.get_knowledge_points_async()
         print(f"   找到 {len(points)} 個知識點")
@@ -122,7 +120,7 @@ async def test_database_mode():
         return False
 
     # 測試複習候選
-    print(f"\n7. 測試獲取複習候選:")
+    print("\n7. 測試獲取複習候選:")
     try:
         candidates = await knowledge.get_review_candidates_async(max_points=5)
         print(f"   找到 {len(candidates)} 個待複習知識點")
@@ -132,7 +130,7 @@ async def test_database_mode():
         return False
 
     # 檢查是否有任何降級警告
-    print(f"\n8. 檢查降級警告:")
+    print("\n8. 檢查降級警告:")
     print("   請檢查上述輸出是否有「降級到 JSON 模式」的警告")
     print("   如果沒有警告，表示資料庫模式獨立運行成功")
 

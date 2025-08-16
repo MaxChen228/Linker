@@ -10,10 +10,11 @@ from pathlib import Path
 # 添加專案根目錄到 Python 路徑
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from scripts.analyze_data_consistency import analyze_consistency
-from core.knowledge import KnowledgeManager
-from core.database.connection import DatabaseSettings
 import psycopg2
+
+from core.database.connection import DatabaseSettings
+from core.knowledge import KnowledgeManager
+from scripts.analyze_data_consistency import analyze_consistency
 
 
 async def sync_knowledge_ids():
@@ -40,63 +41,62 @@ async def sync_knowledge_ids():
     db_settings = DatabaseSettings()
 
     try:
-        with psycopg2.connect(db_settings.DATABASE_URL) as conn:
-            with conn.cursor() as cur:
-                print("\n🗄️  清理 Database 中的知識點...")
+        with psycopg2.connect(db_settings.DATABASE_URL) as conn, conn.cursor() as cur:
+            print("\n🗄️  清理 Database 中的知識點...")
 
-                # 完全清空現有的知識點和相關數據（避免唯一約束衝突）
-                print("   清理所有相關表...")
-                cur.execute("DELETE FROM knowledge_point_versions")
-                cur.execute("DELETE FROM knowledge_point_tags")
-                cur.execute("DELETE FROM practice_queue")
-                cur.execute("DELETE FROM review_examples")
-                cur.execute("DELETE FROM original_errors")
-                cur.execute("DELETE FROM knowledge_points")
+            # 完全清空現有的知識點和相關數據（避免唯一約束衝突）
+            print("   清理所有相關表...")
+            cur.execute("DELETE FROM knowledge_point_versions")
+            cur.execute("DELETE FROM knowledge_point_tags")
+            cur.execute("DELETE FROM practice_queue")
+            cur.execute("DELETE FROM review_examples")
+            cur.execute("DELETE FROM original_errors")
+            cur.execute("DELETE FROM knowledge_points")
 
-                # 暫時刪除唯一約束索引
-                cur.execute("DROP INDEX IF EXISTS uk_kp_content")
-                print("   已完全清空所有相關數據")
-                deleted_count = cur.rowcount
-                print(f"   已軟刪除 {deleted_count} 個現有知識點")
+            # 暫時刪除唯一約束索引
+            cur.execute("DROP INDEX IF EXISTS uk_kp_content")
+            print("   已完全清空所有相關數據")
+            deleted_count = cur.rowcount
+            print(f"   已軟刪除 {deleted_count} 個現有知識點")
 
-                print("\n📝 插入 JSON 知識點到 Database...")
-                inserted_count = 0
+            print("\n📝 插入 JSON 知識點到 Database...")
+            inserted_count = 0
 
-                for point in json_points:
-                    # 將 ErrorCategory enum 轉換為字符串
-                    category_str = str(point.category).split(".")[-1].lower()
+            for point in json_points:
+                # 將 ErrorCategory enum 轉換為字符串
+                category_str = str(point.category).split(".")[-1].lower()
 
-                    # 修正時間約束問題：確保 next_review >= last_seen
-                    from datetime import datetime
+                # 修正時間約束問題：確保 next_review >= last_seen
+                from datetime import datetime
 
-                    try:
-                        if point.next_review and point.last_seen:
-                            next_review_dt = datetime.fromisoformat(
-                                point.next_review.replace("Z", "+00:00")
-                            )
-                            last_seen_dt = datetime.fromisoformat(
-                                point.last_seen.replace("Z", "+00:00")
-                            )
-                            # 移除時區信息進行比較
-                            next_review_dt = next_review_dt.replace(tzinfo=None)
-                            last_seen_dt = last_seen_dt.replace(tzinfo=None)
+                try:
+                    if point.next_review and point.last_seen:
+                        next_review_dt = datetime.fromisoformat(
+                            point.next_review.replace("Z", "+00:00")
+                        )
+                        last_seen_dt = datetime.fromisoformat(
+                            point.last_seen.replace("Z", "+00:00")
+                        )
+                        # 移除時區信息進行比較
+                        next_review_dt = next_review_dt.replace(tzinfo=None)
+                        last_seen_dt = last_seen_dt.replace(tzinfo=None)
 
-                            if next_review_dt < last_seen_dt:
-                                # 修正：將 next_review 設為 last_seen 的時間
-                                point.next_review = point.last_seen
-                                print(f"   修正知識點 {point.id} 的時間約束")
-                    except (ValueError, AttributeError):
-                        # 時間格式有問題，設為當前時間
-                        current_time = datetime.now().isoformat()
-                        point.next_review = current_time
-                        point.last_seen = current_time
+                        if next_review_dt < last_seen_dt:
+                            # 修正：將 next_review 設為 last_seen 的時間
+                            point.next_review = point.last_seen
+                            print(f"   修正知識點 {point.id} 的時間約束")
+                except (ValueError, AttributeError):
+                    # 時間格式有問題，設為當前時間
+                    current_time = datetime.now().isoformat()
+                    point.next_review = current_time
+                    point.last_seen = current_time
 
-                    # 插入知識點 (對應資料庫 schema)
-                    cur.execute(
-                        """
+                # 插入知識點 (對應資料庫 schema)
+                cur.execute(
+                    """
                         INSERT INTO knowledge_points (
                             id, key_point, category, subtype, explanation,
-                            original_phrase, correction, mastery_level, 
+                            original_phrase, correction, mastery_level,
                             next_review, mistake_count, correct_count, custom_notes,
                             is_deleted, created_at, last_modified, last_seen
                         ) VALUES (
@@ -118,37 +118,37 @@ async def sync_knowledge_ids():
                             is_deleted = FALSE,
                             last_modified = CURRENT_TIMESTAMP
                     """,
-                        (
-                            point.id,
-                            point.key_point,
-                            category_str,
-                            point.subtype,
-                            point.explanation,
-                            point.original_phrase,
-                            point.correction,
-                            point.mastery_level,
-                            point.next_review,
-                            point.mistake_count,
-                            point.correct_count,
-                            point.custom_notes,
-                            point.created_at,
-                            point.last_seen,
-                        ),
-                    )
+                    (
+                        point.id,
+                        point.key_point,
+                        category_str,
+                        point.subtype,
+                        point.explanation,
+                        point.original_phrase,
+                        point.correction,
+                        point.mastery_level,
+                        point.next_review,
+                        point.mistake_count,
+                        point.correct_count,
+                        point.custom_notes,
+                        point.created_at,
+                        point.last_seen,
+                    ),
+                )
 
-                    inserted_count += 1
+                inserted_count += 1
 
-                print(f"   已插入/更新 {inserted_count} 個知識點")
+            print(f"   已插入/更新 {inserted_count} 個知識點")
 
-                # 更新 ID 序列（確保下次插入使用正確的 ID）
-                cur.execute("""
-                    SELECT setval('knowledge_points_id_seq', 
+            # 更新 ID 序列（確保下次插入使用正確的 ID）
+            cur.execute("""
+                    SELECT setval('knowledge_points_id_seq',
                                  COALESCE((SELECT MAX(id) FROM knowledge_points), 1))
                 """)
 
-                # 提交事務
-                conn.commit()
-                print("   ✅ 數據同步完成")
+            # 提交事務
+            conn.commit()
+            print("   ✅ 數據同步完成")
 
     except Exception as e:
         print(f"❌ 數據同步失敗: {e}")
@@ -165,7 +165,7 @@ async def sync_knowledge_ids():
         print(f"✅ 同步成功！兩種模式都包含 {final_analysis['json_count']} 個知識點")
         return True
     else:
-        print(f"❌ 同步後仍有差異，需要進一步調查")
+        print("❌ 同步後仍有差異，需要進一步調查")
         return False
 
 
@@ -177,25 +177,24 @@ async def backup_database_before_sync():
     backup_data = []
 
     try:
-        with psycopg2.connect(db_settings.DATABASE_URL) as conn:
-            with conn.cursor() as cur:
-                cur.execute("""
+        with psycopg2.connect(db_settings.DATABASE_URL) as conn, conn.cursor() as cur:
+            cur.execute("""
                     SELECT id, key_point, category, created_at, is_deleted
-                    FROM knowledge_points 
+                    FROM knowledge_points
                     ORDER BY id
                 """)
 
-                rows = cur.fetchall()
-                for row in rows:
-                    backup_data.append(
-                        {
-                            "id": row[0],
-                            "key_point": row[1],
-                            "category": row[2],
-                            "created_at": str(row[3]),
-                            "is_deleted": row[4],
-                        }
-                    )
+            rows = cur.fetchall()
+            for row in rows:
+                backup_data.append(
+                    {
+                        "id": row[0],
+                        "key_point": row[1],
+                        "category": row[2],
+                        "created_at": str(row[3]),
+                        "is_deleted": row[4],
+                    }
+                )
 
         # 寫入備份文件
         import json

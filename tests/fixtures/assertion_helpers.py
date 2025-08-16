@@ -3,13 +3,13 @@
 用於驗證 JSON 和 Database 模式之間的操作一致性
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 from core.knowledge import KnowledgePoint
 
 
 def assert_stats_consistent(
-    json_stats: Dict[str, Any], db_stats: Dict[str, Any], tolerance: float = 0.01
+    json_stats: dict[str, Any], db_stats: dict[str, Any], tolerance: float = 0.01
 ) -> None:
     """斷言統計數據一致性"""
     key_fields = [
@@ -35,7 +35,7 @@ def assert_stats_consistent(
                 assert json_val == db_val, f"{field} 不一致: JSON={json_val}, DB={db_val}"
 
 
-def assert_initial_state_consistent(json_stats: Dict, db_stats: Dict, expected: Dict) -> None:
+def assert_initial_state_consistent(json_stats: dict, db_stats: dict, expected: dict) -> None:
     """斷言初始狀態一致性"""
     for key, expected_value in expected.items():
         if key in ["recommendations"]:
@@ -51,7 +51,7 @@ def assert_initial_state_consistent(json_stats: Dict, db_stats: Dict, expected: 
             )
 
 
-def assert_stats_match_expected(stats: Dict, expected: Dict) -> None:
+def assert_stats_match_expected(stats: dict, expected: dict) -> None:
     """斷言統計數據符合預期"""
     for key, expected_value in expected.items():
         if key == "category_distribution":
@@ -81,7 +81,7 @@ def assert_knowledge_point_consistent(json_point: KnowledgePoint, db_point: Know
     )
 
 
-def assert_recommendations_consistent(json_rec: Dict, db_rec: Dict) -> None:
+def assert_recommendations_consistent(json_rec: dict, db_rec: dict) -> None:
     """斷言學習推薦一致性"""
     assert len(json_rec["recommendations"]) == len(db_rec["recommendations"])
     assert json_rec.get("suggested_difficulty") == db_rec.get("suggested_difficulty")
@@ -94,7 +94,7 @@ def assert_recommendations_consistent(json_rec: Dict, db_rec: Dict) -> None:
 
 
 def assert_candidates_consistent(
-    json_candidates: List[KnowledgePoint], db_candidates: List[KnowledgePoint]
+    json_candidates: list[KnowledgePoint], db_candidates: list[KnowledgePoint]
 ) -> None:
     """斷言複習候選一致性"""
     assert len(json_candidates) == len(db_candidates)

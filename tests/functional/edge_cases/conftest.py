@@ -2,16 +2,15 @@
 邊界測試專用配置和夾具
 """
 
-import asyncio
 import os
 import random
 import time
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Any, Dict, List
+from datetime import datetime, timezone
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+
 from core.knowledge import KnowledgePoint, OriginalError
 
 
@@ -103,7 +102,7 @@ def create_test_knowledge_point():
 def large_dataset_generator(create_test_knowledge_point, edge_case_test_config):
     """大數據集生成器"""
 
-    def _generate_dataset(size: int = None) -> List[KnowledgePoint]:
+    def _generate_dataset(size: int = None) -> list[KnowledgePoint]:
         if size is None:
             size = edge_case_test_config["large_dataset_size"]
 
@@ -152,7 +151,6 @@ async def clean_test_environment():
 @pytest.fixture
 def mock_json_manager():
     """模擬 JSON 模式管理器"""
-    from unittest.mock import MagicMock
 
     manager = MagicMock()
     manager.knowledge_points = []
@@ -178,7 +176,6 @@ def mock_json_manager():
 @pytest.fixture
 async def mock_db_manager():
     """模擬 Database 模式管理器"""
-    from unittest.mock import AsyncMock
 
     manager = AsyncMock()
     manager.get_statistics_async.return_value = {
@@ -205,7 +202,7 @@ async def mock_db_manager():
 
 
 # 輔助函數
-def assert_stats_match(actual_stats: Dict[str, Any], expected_stats: Dict[str, Any]):
+def assert_stats_match(actual_stats: dict[str, Any], expected_stats: dict[str, Any]):
     """驗證統計數據匹配"""
     for key, expected_value in expected_stats.items():
         actual_value = actual_stats.get(key, "MISSING")
@@ -222,7 +219,7 @@ def assert_stats_match(actual_stats: Dict[str, Any], expected_stats: Dict[str, A
 
 
 def assert_stats_consistent(
-    stats1: Dict[str, Any], stats2: Dict[str, Any], tolerance: float = 0.000001
+    stats1: dict[str, Any], stats2: dict[str, Any], tolerance: float = 0.000001
 ):
     """驗證兩個統計結果的一致性"""
     # 獲取所有鍵
@@ -234,7 +231,7 @@ def assert_stats_consistent(
 
         # 處理缺失值
         if val1 == "MISSING" or val2 == "MISSING":
-            assert False, f"統計項目 {key} 在某一模式中缺失: JSON={val1}, DB={val2}"
+            raise AssertionError(f"統計項目 {key} 在某一模式中缺失: JSON={val1}, DB={val2}")
 
         # 處理不同類型的比較
         if isinstance(val1, (int, float)) and isinstance(val2, (int, float)):
@@ -248,7 +245,7 @@ def assert_stats_consistent(
             assert val1 == val2, f"統計項目 {key} 不一致: JSON={val1}, DB={val2}"
 
 
-def assert_user_session_consistent(session1: Dict[str, Any], session2: Dict[str, Any]):
+def assert_user_session_consistent(session1: dict[str, Any], session2: dict[str, Any]):
     """驗證用戶會話結果的一致性"""
     for operation_name, (result1, result2) in session1.items():
         baseline1, baseline2 = session2[operation_name]
@@ -261,7 +258,7 @@ def assert_user_session_consistent(session1: Dict[str, Any], session2: Dict[str,
             assert len(result2) == len(baseline2), f"操作 {operation_name} DB 結果長度不一致"
 
 
-def recommendations_consistent(rec1: Dict[str, Any], rec2: Dict[str, Any]) -> bool:
+def recommendations_consistent(rec1: dict[str, Any], rec2: dict[str, Any]) -> bool:
     """檢查推薦結果是否一致"""
     return rec1.get("next_review_count") == rec2.get("next_review_count") and len(
         rec1.get("recommendations", [])
@@ -288,7 +285,7 @@ def performance_monitor():
             self.start_time = None
             return duration
 
-        def get_stats(self) -> Dict[str, float]:
+        def get_stats(self) -> dict[str, float]:
             return self.measurements.copy()
 
     return PerformanceMonitor()

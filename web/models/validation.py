@@ -4,7 +4,7 @@
 所有 API 端點都應使用這些模型進行輸入驗證，防止注入攻擊和資料損毀。
 """
 
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -27,7 +27,7 @@ class GradeAnswerRequest(BaseModel):
         example="To achieve her goal, she has to give it her all.",
     )
     mode: str = Field(default="new", pattern="^(new|review)$", description="練習模式")
-    target_point_ids: List[int] = Field(
+    target_point_ids: list[int] = Field(
         default_factory=list, max_items=50, description="目標知識點ID列表"
     )
 
@@ -107,7 +107,7 @@ class EnhancedEditKnowledgeRequest(BaseModel):
         None, pattern="^(systematic|isolated|enhancement|other)$", description="錯誤分類"
     )
     subtype: Optional[str] = Field(None, max_length=100, description="子類型")
-    tags: Optional[List[str]] = Field(None, max_items=20, description="標籤列表")
+    tags: Optional[list[str]] = Field(None, max_items=20, description="標籤列表")
     custom_notes: Optional[str] = Field(None, max_length=1000, description="自定義筆記")
 
     @field_validator("tags")
@@ -199,7 +199,7 @@ class EnhancedBatchRequest(BaseModel):
     """增強的批量操作請求驗證模型"""
 
     operation: str = Field(..., pattern="^(delete|update|restore|export|tag)$", description="批量操作類型")
-    ids: List[int] = Field(
+    ids: list[int] = Field(
         ...,
         min_items=1,
         max_items=100,  # 限制批量操作數量
@@ -245,7 +245,7 @@ class EnhancedBatchRequest(BaseModel):
 class TagsRequest(BaseModel):
     """標籤請求驗證模型"""
 
-    tags: List[str] = Field(..., max_items=20, description="標籤列表")
+    tags: list[str] = Field(..., max_items=20, description="標籤列表")
 
     @field_validator("tags")
     @classmethod
@@ -377,7 +377,7 @@ class PendingKnowledgePoint(BaseModel):
 class ConfirmKnowledgeRequest(BaseModel):
     """確認知識點請求驗證模型"""
 
-    confirmed_points: List[PendingKnowledgePoint] = Field(
+    confirmed_points: list[PendingKnowledgePoint] = Field(
         ..., max_items=50, description="要確認的知識點列表"
     )
 

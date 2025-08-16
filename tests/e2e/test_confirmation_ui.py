@@ -4,9 +4,10 @@
 """
 
 import os
+
 import pytest
 from playwright.sync_api import Page, expect
-from unittest.mock import patch
+
 
 # 統一的測試URL配置
 def get_test_url(path="/practice"):
@@ -241,16 +242,6 @@ class TestConfirmationUI:
         """測試混合確認和忽略操作"""
 
         # 準備多個待確認點
-        multi_point_result = {
-            "success": True,
-            "score": 60,
-            "pending_knowledge_points": [
-                {"id": "temp_001", "error": {"key_point_summary": "錯誤1"}},
-                {"id": "temp_002", "error": {"key_point_summary": "錯誤2"}},
-                {"id": "temp_003", "error": {"key_point_summary": "錯誤3"}},
-            ],
-            "auto_save": False,
-        }
 
         page.goto(get_test_url("/practice"))
         # ... 設置步驟 ...

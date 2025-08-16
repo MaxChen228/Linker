@@ -16,7 +16,7 @@ import functools
 import time
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 from core.log_config import get_module_logger
 
@@ -56,7 +56,7 @@ class LinkerError(Exception):
         self,
         message: str,
         error_code: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        details: Optional[dict[str, Any]] = None,
         category: ErrorCategory = ErrorCategory.UNKNOWN,
         severity: ErrorSeverity = ErrorSeverity.MEDIUM,
         user_message: Optional[str] = None,
@@ -85,7 +85,7 @@ class LinkerError(Exception):
         }
         return user_messages.get(self.category, "系統發生未知錯誤")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """轉換為字典格式"""
         return {
             "error_code": self.error_code,
@@ -647,7 +647,7 @@ class UnifiedError(LinkerError):
         error_code: str,
         category: ErrorCategory = ErrorCategory.UNKNOWN,
         severity: ErrorSeverity = ErrorSeverity.MEDIUM,
-        details: Optional[Dict[str, Any]] = None,
+        details: Optional[dict[str, Any]] = None,
         user_message: Optional[str] = None,
         recovery_suggestions: Optional[list[str]] = None,
     ):

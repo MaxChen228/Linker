@@ -7,7 +7,6 @@ import asyncio
 import logging
 import os
 from datetime import datetime
-from pathlib import Path
 
 # 設置日志
 logging.basicConfig(
@@ -47,7 +46,7 @@ async def import_json_to_database():
 
         # 獲取導入後的統計
         db_stats = await db_manager.get_statistics_async()
-        print(f"\n📊 資料庫統計 (導入後):")
+        print("\n📊 資料庫統計 (導入後):")
         for key, value in db_stats.items():
             print(f"  {key}: {value}")
 
@@ -59,7 +58,7 @@ async def import_json_to_database():
         json_manager = get_knowledge_manager(use_database=False)
         json_stats = json_manager.get_statistics()
 
-        print(f"📊 JSON 統計:")
+        print("📊 JSON 統計:")
         for key, value in json_stats.items():
             print(f"  {key}: {value}")
 

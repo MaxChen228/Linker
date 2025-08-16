@@ -60,17 +60,17 @@ async def test_knowledge_point_lifecycle_management():
 
     # DB 模式編輯（檢查方法是否存在）
     if hasattr(db_manager, "update_knowledge_point_async"):
-        db_edit_result = await db_manager.update_knowledge_point_async(
+        await db_manager.update_knowledge_point_async(
             target_point_id, **edit_updates
         )
     elif hasattr(db_manager, "edit_knowledge_point_async"):
-        db_edit_result = await db_manager.edit_knowledge_point_async(target_point_id, edit_updates)
+        await db_manager.edit_knowledge_point_async(target_point_id, edit_updates)
     else:
         # 如果沒有對應的異步方法，嘗試同步方法
         if hasattr(db_manager, "edit_knowledge_point"):
-            db_edit_result = db_manager.edit_knowledge_point(target_point_id, edit_updates)
+            db_manager.edit_knowledge_point(target_point_id, edit_updates)
         else:
-            db_edit_result = True  # 假設編輯成功，稍後在驗證中會檢查
+            pass  # 假設編輯成功，稍後在驗證中會檢查
 
     assert json_edit_result is not None, "JSON 編輯應該成功"
 
@@ -109,8 +109,8 @@ async def test_knowledge_point_lifecycle_management():
     else:
         db_delete_result = db_manager.delete_knowledge_point(target_point_id, delete_reason)
 
-    assert json_delete_result == True, "JSON 刪除應該成功"
-    assert db_delete_result == True, "DB 刪除應該成功"
+    assert json_delete_result, "JSON 刪除應該成功"
+    assert db_delete_result, "DB 刪除應該成功"
 
     # 驗證軟刪除結果
     json_active_points = json_manager.get_active_points()
@@ -132,7 +132,7 @@ async def test_knowledge_point_lifecycle_management():
             break
 
     assert deleted_point is not None, "被刪除的知識點應該出現在已刪除列表中"
-    assert deleted_point.is_deleted == True
+    assert deleted_point.is_deleted
     assert deleted_point.deleted_reason == delete_reason
 
     # === 階段 5: 復原知識點 ===
@@ -143,8 +143,8 @@ async def test_knowledge_point_lifecycle_management():
     else:
         db_restore_result = db_manager.restore_knowledge_point(target_point_id)
 
-    assert json_restore_result == True, "JSON 復原應該成功"
-    assert db_restore_result == True, "DB 復原應該成功"
+    assert json_restore_result, "JSON 復原應該成功"
+    assert db_restore_result, "DB 復原應該成功"
 
     # 驗證復原結果
     json_final_active = json_manager.get_active_points()
@@ -164,7 +164,7 @@ async def test_knowledge_point_lifecycle_management():
             break
 
     assert restored_json_point is not None
-    assert restored_json_point.is_deleted == False
+    assert not restored_json_point.is_deleted
     assert restored_json_point.deleted_reason == ""
 
 

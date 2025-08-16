@@ -148,7 +148,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
         """
         # 檢查是否要包含已刪除記錄
         include_deleted = filters.pop("include_deleted", False)
-        
+
         if include_deleted:
             # 包含已刪除記錄，不添加is_deleted過濾條件
             pass
@@ -196,7 +196,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 kp_query = """
                     INSERT INTO knowledge_points
                     (key_point, category, subtype, explanation, original_phrase, correction,
-                     mastery_level, mistake_count, correct_count, created_at, last_seen, 
+                     mastery_level, mistake_count, correct_count, created_at, last_seen,
                      next_review, custom_notes, last_modified)
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
                     RETURNING id
@@ -599,7 +599,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 COUNT(DISTINCT category) FILTER (WHERE is_deleted = FALSE) as categories_count
             FROM knowledge_points
         """
-        
+
         # 練習記錄統計（從 review_examples 表計算）
         practice_query = """
             SELECT
@@ -613,7 +613,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 # 獲取知識點統計
                 knowledge_row = await conn.fetchrow(knowledge_query)
                 knowledge_stats = dict(knowledge_row) if knowledge_row else {}
-                
+
                 # 獲取練習記錄統計
                 try:
                     practice_row = await conn.fetchrow(practice_query)
@@ -621,7 +621,7 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 except Exception:
                     # 如果 review_examples 表不存在，返回默認值
                     practice_stats = {"total_practices": 0, "correct_count": 0}
-                
+
                 # 合併統計結果，確保字段名匹配前端期望
                 stats = {
                     "knowledge_points": knowledge_stats.get("knowledge_points", 0),
@@ -633,9 +633,9 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                     "avg_mastery": knowledge_stats.get("avg_mastery", 0.0),
                     "categories_count": knowledge_stats.get("categories_count", 0),
                 }
-                
+
                 return stats
-                
+
             except Exception as e:
                 self._handle_database_error(e, "get_statistics")
                 raise

@@ -29,7 +29,6 @@ async def test_new_user_complete_journey():
     json_stats = json_manager.get_statistics()
     db_stats = await db_manager.get_statistics_async()
 
-    expected_initial_state = {"total_practices": 0, "knowledge_points": 0}
 
     # 驗證初始狀態一致性
     assert json_stats["total_practices"] == 0
@@ -244,7 +243,7 @@ async def test_new_user_first_success():
 
     # 驗證統計
     json_stats = json_manager.get_statistics()
-    db_stats = await db_manager.get_statistics_async()
+    await db_manager.get_statistics_async()
 
     assert json_stats["total_practices"] == 1
     assert json_stats["knowledge_points"] == 0  # 正確答案不產生知識點

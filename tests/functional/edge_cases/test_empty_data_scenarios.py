@@ -5,9 +5,10 @@
 """
 
 import pytest
+
 from tests.functional.edge_cases.conftest import (
-    assert_stats_match,
     assert_stats_consistent,
+    assert_stats_match,
     recommendations_consistent,
 )
 

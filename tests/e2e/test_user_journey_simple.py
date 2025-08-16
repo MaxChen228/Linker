@@ -9,9 +9,10 @@ from pathlib import Path
 # 添加項目根目錄到路徑
 sys.path.insert(0, str(Path(__file__).parent))
 
-from core.knowledge import KnowledgeManager
-from core.database.adapter import KnowledgeManagerAdapter
 import asyncio
+
+from core.database.adapter import KnowledgeManagerAdapter
+from core.knowledge import KnowledgeManager
 
 
 async def simple_consistency_test():
@@ -228,11 +229,11 @@ async def main():
     success = await simple_consistency_test()
 
     if success:
-        print(f"\n🎉 用戶操作路徑一致性驗證通過！")
+        print("\n🎉 用戶操作路徑一致性驗證通過！")
         print("   兩種模式在核心功能上表現一致")
         return 0
     else:
-        print(f"\n⚠️ 用戶操作路徑一致性需要改進")
+        print("\n⚠️ 用戶操作路徑一致性需要改進")
         print("   建議檢查具體差異並進行優化")
         return 1
 

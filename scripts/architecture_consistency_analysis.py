@@ -9,15 +9,15 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Tuple
+from typing import Any
 
 # 添加項目根目錄到路徑
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
-    from core.knowledge import KnowledgeManager
     from core.database.adapter import KnowledgeManagerAdapter
     from core.error_types import ErrorCategory
+    from core.knowledge import KnowledgeManager
 except ImportError as e:
     print(f"❌ 導入失敗: {e}")
     print("請確保在專案根目錄執行此腳本")
@@ -32,7 +32,7 @@ class RealArchitectureAnalyzer:
         self.db_manager = KnowledgeManagerAdapter(use_database=True)
         self.analysis_results = {}
 
-    async def run_complete_analysis(self) -> Dict[str, Any]:
+    async def run_complete_analysis(self) -> dict[str, Any]:
         """執行完整的架構一致性分析"""
         print("🔍 開始真實架構一致性分析...")
         print("=" * 60)
@@ -57,7 +57,7 @@ class RealArchitectureAnalyzer:
 
         return results
 
-    async def _analyze_api_interfaces(self) -> Dict[str, Any]:
+    async def _analyze_api_interfaces(self) -> dict[str, Any]:
         """分析API接口一致性"""
         print("\n📋 1. API接口一致性分析")
 
@@ -101,7 +101,7 @@ class RealArchitectureAnalyzer:
             "total_methods_checked": len(core_methods),
         }
 
-    def _analyze_data_models(self) -> Dict[str, Any]:
+    def _analyze_data_models(self) -> dict[str, Any]:
         """分析數據模型一致性"""
         print("\n📊 2. 數據模型一致性分析")
 
@@ -119,7 +119,7 @@ class RealArchitectureAnalyzer:
         except Exception as e:
             return {"error": str(e), "model_consistency": False}
 
-    async def _analyze_statistics_consistency(self) -> Dict[str, Any]:
+    async def _analyze_statistics_consistency(self) -> dict[str, Any]:
         """分析統計數據一致性"""
         print("\n📈 3. 統計數據一致性分析")
 
@@ -168,7 +168,7 @@ class RealArchitectureAnalyzer:
             print(f"   ❌ 統計分析失敗: {e}")
             return {"error": str(e), "consistency_score": 0.0}
 
-    async def _analyze_performance(self) -> Dict[str, Any]:
+    async def _analyze_performance(self) -> dict[str, Any]:
         """分析性能特徵"""
         print("\n⚡ 4. 性能特徵比較")
 
@@ -177,11 +177,11 @@ class RealArchitectureAnalyzer:
         try:
             # 測試統計計算性能
             start = time.time()
-            json_stats = self.json_manager.get_statistics()
+            self.json_manager.get_statistics()
             json_stats_time = time.time() - start
 
             start = time.time()
-            db_stats = await self.db_manager.get_statistics_async()
+            await self.db_manager.get_statistics_async()
             db_stats_time = time.time() - start
 
             performance_results["statistics_calculation"] = {
@@ -192,11 +192,11 @@ class RealArchitectureAnalyzer:
 
             # 測試知識點檢索性能
             start = time.time()
-            json_points = self.json_manager.get_active_points()
+            self.json_manager.get_active_points()
             json_retrieval_time = time.time() - start
 
             start = time.time()
-            db_points = await self.db_manager.get_knowledge_points_async()
+            await self.db_manager.get_knowledge_points_async()
             db_retrieval_time = time.time() - start
 
             performance_results["data_retrieval"] = {
@@ -229,7 +229,7 @@ class RealArchitectureAnalyzer:
 
         return performance_results
 
-    def _analyze_method_availability(self) -> Dict[str, Any]:
+    def _analyze_method_availability(self) -> dict[str, Any]:
         """分析方法可用性"""
         print("\n🔧 5. 方法可用性分析")
 
@@ -262,11 +262,10 @@ class RealArchitectureAnalyzer:
             "method_overlap": len(common_methods) / max(len(json_methods), len(db_methods)),
         }
 
-    async def _analyze_error_handling(self) -> Dict[str, Any]:
+    async def _analyze_error_handling(self) -> dict[str, Any]:
         """分析錯誤處理一致性"""
         print("\n⚠️  6. 錯誤處理一致性分析")
 
-        error_scenarios = []
 
         # 測試無效ID處理
         try:
@@ -294,7 +293,7 @@ class RealArchitectureAnalyzer:
             "overall_consistency": 1.0 if invalid_id_consistent else 0.0,
         }
 
-    def _generate_overall_assessment(self, results: Dict[str, Any]) -> Dict[str, Any]:
+    def _generate_overall_assessment(self, results: dict[str, Any]) -> dict[str, Any]:
         """生成整體評估"""
         print("\n📋 7. 整體架構一致性評估")
 
@@ -330,7 +329,7 @@ class RealArchitectureAnalyzer:
             "error_handling": 0.05,
         }
 
-        overall_score = sum(scores[key] * weights[key] for key in scores.keys())
+        overall_score = sum(scores[key] * weights[key] for key in scores)
 
         # 評級
         if overall_score >= 0.95:

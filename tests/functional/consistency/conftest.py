@@ -2,18 +2,13 @@
 一致性測試配置和共用夾具
 """
 
-import asyncio
-import pytest
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Optional
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
-from core.knowledge import KnowledgeManager
-from core.database.adapter import KnowledgeManagerAdapter
-from core.knowledge import KnowledgePoint, ReviewExample, OriginalError
+import pytest
+
 from core.error_types import ErrorCategory
-from core.config import DATA_DIR
+from core.knowledge import KnowledgeManager, KnowledgePoint, OriginalError, ReviewExample
 
 
 @pytest.fixture

@@ -37,7 +37,7 @@ async def test_knowledge_point_22():
 
         if point:
             print("   ✅ 查詢成功！")
-            print(f"\n   知識點詳情：")
+            print("\n   知識點詳情：")
             print(f"      ID: {point.id}")
             print(f"      Key Point: {point.key_point[:50]}...")
             print(f"      Category: {point.category}")
@@ -48,12 +48,12 @@ async def test_knowledge_point_22():
 
             # 檢查原始錯誤
             if point.original_error:
-                print(f"\n   原始錯誤：")
+                print("\n   原始錯誤：")
                 print(f"      Chinese: {point.original_error.chinese_sentence[:30]}...")
                 print(f"      User Answer: {point.original_error.user_answer[:30]}...")
                 print(f"      Timestamp: {point.original_error.timestamp}")
             else:
-                print(f"\n   ⚠️ 沒有原始錯誤記錄")
+                print("\n   ⚠️ 沒有原始錯誤記錄")
         else:
             print("   ❌ 找不到知識點 ID 22")
 

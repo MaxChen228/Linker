@@ -36,10 +36,10 @@ logger = get_logger()
 # TASK-34: 輔助函數，從完整API路徑提取相對路徑
 def _get_relative_path(full_path: str) -> str:
     """從完整API路徑提取相對於/api/knowledge的路徑
-    
+
     Args:
         full_path: 完整路徑，如 "/api/knowledge/recommendations"
-        
+
     Returns:
         相對路徑，如 "/recommendations"
     """
@@ -646,7 +646,7 @@ async def update_daily_limit_config(request: DailyLimitConfigRequest):
 @router.get(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_DAILY_LIMIT_STATS))
 async def get_daily_limit_stats(days: int = 7):
     """獲取每日限額使用統計
-    
+
     Args:
         days: 查詢天數 (1-30)
     """
@@ -686,7 +686,7 @@ async def get_daily_limit_stats(days: int = 7):
 @router.post(_get_relative_path(API_ENDPOINTS.KNOWLEDGE_SAVE_WITH_LIMIT))
 async def save_knowledge_point_with_limit(knowledge_point: dict):
     """帶限額檢查的知識點儲存
-    
+
     這是一個新的API端點，用於從前端練習頁面儲存知識點時進行限額檢查
     """
     knowledge = await get_async_knowledge_service()

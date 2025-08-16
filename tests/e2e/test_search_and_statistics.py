@@ -6,7 +6,6 @@
 import pytest
 
 from core.error_types import ErrorCategory
-
 from tests.fixtures.test_data_manager import (
     UserJourneyTestDataManager,
     get_db_manager,

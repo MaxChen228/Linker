@@ -73,24 +73,24 @@ async def test_daily_practice_complete_cycle():
 
         # 記錄複習成功 - 需要檢查方法是否存在
         if hasattr(json_manager, "add_review_success"):
-            json_success = json_manager.add_review_success(
+            json_manager.add_review_success(
                 review_point.id, review_practice["chinese_sentence"], review_practice["user_answer"]
             )
         else:
             # 如果沒有專門的複習成功方法，使用正確答案記錄
-            json_success = json_manager.save_mistake(
+            json_manager.save_mistake(
                 review_practice["chinese_sentence"],
                 review_practice["user_answer"],
                 {"is_generally_correct": True, "error_analysis": []},
             )
 
         if hasattr(db_manager, "add_review_success_async"):
-            db_success = await db_manager.add_review_success_async(
+            await db_manager.add_review_success_async(
                 review_point.id, review_practice["chinese_sentence"], review_practice["user_answer"]
             )
         else:
             # 使用正確答案記錄
-            db_success = await db_manager._save_mistake_async(
+            await db_manager._save_mistake_async(
                 review_practice["chinese_sentence"],
                 review_practice["user_answer"],
                 {"is_generally_correct": True, "error_analysis": []},
@@ -332,7 +332,7 @@ async def test_performance_consistency():
     json_result = json_manager.save_mistake(
         practice["chinese"], practice["user_answer"], practice["feedback"]
     )
-    json_stats = json_manager.get_statistics()
+    json_manager.get_statistics()
     json_time = time.time() - start_time
 
     # 測試 DB 模式性能
@@ -340,7 +340,7 @@ async def test_performance_consistency():
     db_result = await db_manager._save_mistake_async(
         practice["chinese"], practice["user_answer"], practice["feedback"]
     )
-    db_stats = await db_manager.get_statistics_async()
+    await db_manager.get_statistics_async()
     db_time = time.time() - start_time
 
     # 驗證功能一致性

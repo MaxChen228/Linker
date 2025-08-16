@@ -6,8 +6,6 @@ TASK-19D 分析腳本：比較 JSON 和 Database 模式的統計計算邏輯
 """
 
 import asyncio
-import json
-import os
 import sys
 from pathlib import Path
 
@@ -27,7 +25,7 @@ async def analyze_json_statistics():
         manager = KnowledgeManager(data_dir=str(DATA_DIR))
         stats = manager.get_statistics()
 
-        print(f"JSON 統計結果:")
+        print("JSON 統計結果:")
         print(f"  總練習次數: {stats['total_practices']}")
         print(f"  正確次數: {stats['correct_count']}")
         print(f"  知識點數量: {stats['knowledge_points']}")
@@ -35,7 +33,7 @@ async def analyze_json_statistics():
         print(f"  分類分布: {stats.get('category_distribution', {})}")
 
         # 詳細分析統計來源
-        print(f"\n詳細分析:")
+        print("\n詳細分析:")
         print(f"  practice_history 長度: {len(manager.practice_history)}")
 
         # 分析練習歷史中的正確答案
@@ -68,7 +66,7 @@ async def analyze_database_statistics():
 
         # 異步統計
         async_stats = await adapter.get_statistics_async()
-        print(f"Database 異步統計結果:")
+        print("Database 異步統計結果:")
         print(f"  總練習次數: {async_stats.get('total_practices', 0)}")
         print(f"  正確次數: {async_stats.get('correct_count', 0)}")
         print(f"  知識點數量: {async_stats.get('knowledge_points', 0)}")
@@ -77,7 +75,7 @@ async def analyze_database_statistics():
 
         # 同步統計（使用緩存）
         sync_stats = adapter.get_statistics()
-        print(f"\nDatabase 同步統計結果:")
+        print("\nDatabase 同步統計結果:")
         print(f"  總練習次數: {sync_stats.get('total_practices', 0)}")
         print(f"  正確次數: {sync_stats.get('correct_count', 0)}")
         print(f"  知識點數量: {sync_stats.get('knowledge_points', 0)}")
@@ -87,7 +85,7 @@ async def analyze_database_statistics():
         # 如果有直接數據庫訪問，分析原始數據
         if adapter._repository:
             raw_stats = await adapter._repository.get_statistics()
-            print(f"\n原始數據庫統計:")
+            print("\n原始數據庫統計:")
             print(f"  {raw_stats}")
 
             # 手動計算練習次數
@@ -102,7 +100,7 @@ async def analyze_database_statistics():
 
 async def analyze_database_practice_counts(adapter):
     """分析數據庫中的練習次數計算邏輯"""
-    print(f"\n=== Database 練習次數詳細分析 ===")
+    print("\n=== Database 練習次數詳細分析 ===")
 
     try:
         # 獲取連接池
@@ -128,11 +126,11 @@ async def analyze_database_practice_counts(adapter):
 
                 # 方法3: 基於知識點的 correct_count 和 mistake_count
                 knowledge_counts = await conn.fetchrow("""
-                    SELECT 
+                    SELECT
                         SUM(correct_count + mistake_count) as total_from_counts,
                         SUM(correct_count) as correct_from_counts,
                         SUM(mistake_count) as mistakes_from_counts
-                    FROM knowledge_points 
+                    FROM knowledge_points
                     WHERE is_deleted = FALSE
                 """)
 
@@ -167,7 +165,7 @@ async def compare_statistics():
     json_stats = await analyze_json_statistics()
     db_stats = await analyze_database_statistics()
 
-    print(f"\n=== 統計結果對比 ===")
+    print("\n=== 統計結果對比 ===")
 
     if json_stats and db_stats:
         async_stats = db_stats.get("async", {})
@@ -209,7 +207,7 @@ async def compare_statistics():
 
 def identify_root_causes():
     """分析根本原因"""
-    print(f"\n=== 根本原因分析 ===")
+    print("\n=== 根本原因分析 ===")
     print("1. 練習次數統計差異原因:")
     print("   - JSON 模式: 基於 practice_history 數組")
     print("   - Database 模式: 基於多個數據表的組合計算")
@@ -233,7 +231,7 @@ async def main():
     await compare_statistics()
     identify_root_causes()
 
-    print(f"\n=== 下一步建議 ===")
+    print("\n=== 下一步建議 ===")
     print("1. 創建統一的統計計算函數")
     print("2. 修改兩種模式使用相同的計算邏輯")
     print("3. 驗證統計結果一致性")

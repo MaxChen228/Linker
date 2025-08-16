@@ -2,9 +2,11 @@
 功能行為一致性測試套件
 """
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock
-from tests.functional.consistency.conftest import create_test_knowledge_point, create_test_dataset
+
+import pytest
+
+from tests.functional.consistency.conftest import create_test_dataset, create_test_knowledge_point
 
 
 @pytest.mark.asyncio
@@ -58,8 +60,8 @@ class TestFunctionalConsistency:
             db_results = db_manager_mock.search_knowledge_points(keyword, limit=5)
 
             # 基本結果結構驗證
-            assert isinstance(json_results, list), f"JSON 搜索結果應該是列表"
-            assert isinstance(db_results, list), f"Database 搜索結果應該是列表"
+            assert isinstance(json_results, list), "JSON 搜索結果應該是列表"
+            assert isinstance(db_results, list), "Database 搜索結果應該是列表"
 
             # 如果有結果，驗證結果類型一致
             if json_results and db_results:
@@ -277,11 +279,11 @@ class TestPerformanceConsistency:
         search_keyword = "測試"
 
         start_time = time.time()
-        json_results = json_manager.search_knowledge_points(search_keyword, limit=10)
+        json_manager.search_knowledge_points(search_keyword, limit=10)
         json_search_time = time.time() - start_time
 
         start_time = time.time()
-        db_results = db_manager_mock.search_knowledge_points(search_keyword, limit=10)
+        db_manager_mock.search_knowledge_points(search_keyword, limit=10)
         db_search_time = time.time() - start_time
 
         # 驗證搜索性能合理

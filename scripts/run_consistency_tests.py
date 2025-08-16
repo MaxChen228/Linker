@@ -4,9 +4,9 @@
 運行完整的 JSON/Database 模式一致性測試套件
 """
 
-import sys
-import subprocess
 import argparse
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -149,7 +149,7 @@ def run_test_validation():
         print(f"✅ 測試套件驗證通過，發現 {test_count} 個測試")
         return True
     else:
-        print(f"❌ 測試語法錯誤:")
+        print("❌ 測試語法錯誤:")
         print(result.stderr)
         return False
 
@@ -197,7 +197,7 @@ def main():
 測試類型:
   all         - 運行所有一致性測試（默認）
   statistics  - 只運行統計一致性測試
-  functional  - 只運行功能一致性測試  
+  functional  - 只運行功能一致性測試
   quick       - 運行快速驗證測試
 
 示例:

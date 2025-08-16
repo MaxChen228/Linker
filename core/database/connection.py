@@ -55,7 +55,7 @@ class DatabaseSettings:
         else:
             # 向後兼容：直接從環境變數讀取，不提供不安全的硬編碼默認值
             self.DATABASE_URL = os.getenv("DATABASE_URL")
-        
+
         # 如果沒有配置URL，拋出明確的錯誤
         if not self.DATABASE_URL:
             raise ValueError(

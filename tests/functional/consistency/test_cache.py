@@ -7,8 +7,6 @@
 import asyncio
 import threading
 import time
-from datetime import datetime, timedelta
-from typing import Any, Dict, List
 
 import pytest
 
@@ -290,7 +288,7 @@ class TestCacheConsistency:
         manager = KnowledgeManager("data")  # 使用現有數據
 
         # 獲取初始統計（建立快取）
-        initial_stats = manager.get_statistics()
+        manager.get_statistics()
 
         # 檢查快取
         cache_stats = manager._cache_manager.get_stats()
@@ -334,7 +332,7 @@ class TestCacheConsistency:
         db_cache.set("statistics_sync", consistent_stats)
 
         # 測試同步成功
-        assert sync_manager.sync_statistics() == True
+        assert sync_manager.sync_statistics()
 
         # 設置不一致的統計資料
         inconsistent_stats = {
@@ -347,7 +345,7 @@ class TestCacheConsistency:
         db_cache.set("statistics_sync", inconsistent_stats)
 
         # 測試同步失敗並清除快取
-        assert sync_manager.sync_statistics() == False
+        assert not sync_manager.sync_statistics()
         assert json_cache.get("statistics_sync") is None
         assert db_cache.get("statistics_sync") is None
 

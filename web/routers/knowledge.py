@@ -41,7 +41,7 @@ async def knowledge_points(
     # 根據類別篩選
     if category:
         try:
-            cat_enum = ErrorCategory.from_string(category)
+            ErrorCategory.from_string(category)
             all_points = [p for p in all_points if (p.category if isinstance(p.category, str) else p.category.value) == category]
         except (ValueError, KeyError, AttributeError):
             pass

@@ -19,7 +19,7 @@ except ImportError:
 
 # TASK-34: 導入統一端口配置管理系統
 try:
-    from core.settings.ports import get_port_config, get_app_port, get_app_host, get_app_url
+    from core.settings.ports import get_app_host, get_app_port, get_app_url, get_port_config
     _port_config_available = True
 except ImportError:
     # 向後兼容：如果新配置系統不可用
@@ -245,11 +245,11 @@ def switch_storage_mode(mode: str) -> bool:
     if mode == "json":
         print("❌ JSON模式已移除，系統僅支援資料庫模式")
         return False
-    
+
     if mode == "database":
         print("✅ 系統已強制使用資料庫模式")
         return True
-    
+
     print(f"❌ 無效的模式: {mode}，系統僅支援 'database' 模式")
     return False
 

@@ -5,7 +5,7 @@
 
 import random
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
 from core.database.adapter import KnowledgeManagerAdapter
 from core.error_types import ErrorCategory
@@ -59,7 +59,7 @@ class UserJourneyTestDataManager:
         mistake_count: int = 1,
         correct_count: int = 0,
         created_at: str = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """創建測試知識點數據"""
         if created_at is None:
             created_at = datetime.now().isoformat()
@@ -175,7 +175,7 @@ class UserJourneyTestDataManager:
         await UserJourneyTestDataManager.load_test_data_to_both_modes(knowledge_points)
 
     @staticmethod
-    async def load_test_data_to_both_modes(knowledge_points: List[Dict[str, Any]]) -> None:
+    async def load_test_data_to_both_modes(knowledge_points: list[dict[str, Any]]) -> None:
         """將測試數據加載到兩種模式"""
         # 加載到 JSON 模式
         json_manager = KnowledgeManager()
@@ -224,7 +224,7 @@ class UserJourneyTestDataManager:
             },
         ]
 
-        for i in range(count):
+        for _i in range(count):
             scenario = random.choice(practice_scenarios)
 
             feedback = {

@@ -5,7 +5,6 @@
 """
 
 from datetime import datetime, timedelta, timezone
-from unittest import mock
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -50,8 +49,8 @@ class TestTimeBoundaryScenarios:
             assert json_due == db_due, f"時區 {tz} 的複習時間判斷不一致"
 
             # 由於next_review是明天，現在不應該到期
-            assert json_due == False, f"時區 {tz} 的知識點不應該到期"
-            assert db_due == False, f"時區 {tz} 的知識點不應該到期"
+            assert not json_due, f"時區 {tz} 的知識點不應該到期"
+            assert not db_due, f"時區 {tz} 的知識點不應該到期"
 
     def _is_due_for_review_json(self, point, current_time):
         """模擬JSON模式的複習時間判斷"""

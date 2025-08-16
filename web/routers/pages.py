@@ -76,10 +76,10 @@ async def settings(request: Request):
 
     # 獲取當前限額配置
     daily_limit_config = await knowledge.get_daily_limit_config()
-    
+
     # 獲取最近7天的使用統計
     daily_stats = await knowledge.get_daily_limit_stats(days=7)
-    
+
     return templates.TemplateResponse(
         "settings.html",
         {

@@ -4,14 +4,12 @@
 測試系統在各種異常情況下的錯誤處理和降級行為。
 """
 
+import contextlib
 import json
-import os
-import tempfile
-from pathlib import Path
-from unittest import mock
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
+
 from core.exceptions import DataError
 
 
@@ -209,7 +207,7 @@ class TestFailureScenarios:
         # 測試超時處理
         try:
             # 使用較短的超時時間
-            stats = await asyncio.wait_for(
+            await asyncio.wait_for(
                 mock_db_manager.get_statistics_async(),
                 timeout=0.1,  # 0.1秒超時
             )
@@ -255,17 +253,14 @@ class TestFailureScenarios:
 
         finally:
             # 恢復文件權限以便清理
-            try:
+            with contextlib.suppress(OSError, PermissionError):
                 json_file.chmod(0o644)
-            except (OSError, PermissionError):
-                pass
 
     @pytest.mark.asyncio
     async def test_concurrent_file_access_conflicts(
         self, temp_data_dir, create_test_knowledge_point, clean_test_environment
     ):
         """測試併發文件訪問衝突"""
-        import asyncio
         import threading
 
         json_file = temp_data_dir / "knowledge.json"
@@ -286,7 +281,7 @@ class TestFailureScenarios:
         def read_file():
             """讀取文件的函數"""
             try:
-                with open(json_file, "r", encoding="utf-8") as f:
+                with open(json_file, encoding="utf-8") as f:
                     data = json.load(f)
                     results.append(("read", len(data.get("data", []))))
             except Exception as e:
@@ -337,8 +332,9 @@ class TestFailureScenarios:
         self, create_test_knowledge_point, clean_test_environment
     ):
         """測試數據驗證失敗的處理"""
-        from core.knowledge import KnowledgePoint
         from pydantic import ValidationError
+
+        from core.knowledge import KnowledgePoint
 
         # 測試各種無效數據情況
         invalid_data_cases = [
@@ -368,7 +364,7 @@ class TestFailureScenarios:
             },
         ]
 
-        for i, invalid_data in enumerate(invalid_data_cases):
+        for _i, invalid_data in enumerate(invalid_data_cases):
             with pytest.raises(ValidationError):
                 # 嘗試創建無效的知識點應該失敗
                 KnowledgePoint(

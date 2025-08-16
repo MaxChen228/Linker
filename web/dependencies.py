@@ -8,12 +8,12 @@ from pathlib import Path
 from fastapi.templating import Jinja2Templates
 
 from core.ai_service import AIService
-from core.config import DATA_DIR
+
 # TASK-31: 舊的適配器已廢棄，不再導入
 # from core.database.simplified_adapter import KnowledgeManagerAdapter, get_knowledge_manager_async
 from core.knowledge_assets import KnowledgeAssets
 from core.log_config import get_module_logger
-from core.services import AsyncKnowledgeService, get_service_registry
+from core.services import get_service_registry
 
 # 初始化模組 logger
 logger = get_module_logger(__name__)
@@ -109,18 +109,18 @@ def get_logger():
 
 async def get_async_knowledge_service():
     """獲取純異步知識服務 - TASK-31
-    
+
     這是新的純異步服務層，用於替代 SimplifiedDatabaseAdapter。
     完全避免事件循環衝突問題，提供更好的性能和可維護性。
-    
+
     Returns:
         AsyncKnowledgeService: 純異步知識服務實例
     """
     registry = get_service_registry()
     service = await registry.get_service("knowledge")
-    
+
     if not service:
         logger.error("無法獲取異步知識服務")
         raise RuntimeError("異步知識服務不可用")
-    
+
     return service

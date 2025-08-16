@@ -5,16 +5,14 @@
 """
 
 import asyncio
-import json
 import sys
-import os
 from pathlib import Path
 
 # 添加專案根目錄到 Python 路徑
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from core.knowledge import KnowledgeManager
 from core.database.connection import DatabaseSettings
+from core.knowledge import KnowledgeManager
 
 
 async def analyze_consistency():
@@ -42,29 +40,28 @@ async def analyze_consistency():
         conn_str = db_settings.DATABASE_URL
 
         try:
-            with psycopg2.connect(conn_str) as conn:
-                with conn.cursor() as cur:
-                    # 查詢所有未刪除的知識點
-                    cur.execute("""
+            with psycopg2.connect(conn_str) as conn, conn.cursor() as cur:
+                # 查詢所有未刪除的知識點
+                cur.execute("""
                         SELECT id, key_point, category, created_at, is_deleted
-                        FROM knowledge_points 
+                        FROM knowledge_points
                         WHERE is_deleted = FALSE
                         ORDER BY id
                     """)
-                    db_rows = cur.fetchall()
+                db_rows = cur.fetchall()
 
-                    # 轉換為字典格式便於處理
-                    db_points = []
-                    for row in db_rows:
-                        db_points.append(
-                            {
-                                "id": row[0],
-                                "key_point": row[1],
-                                "category": row[2],
-                                "created_at": row[3],
-                                "is_deleted": row[4],
-                            }
-                        )
+                # 轉換為字典格式便於處理
+                db_points = []
+                for row in db_rows:
+                    db_points.append(
+                        {
+                            "id": row[0],
+                            "key_point": row[1],
+                            "category": row[2],
+                            "created_at": row[3],
+                            "is_deleted": row[4],
+                        }
+                    )
         except Exception as e:
             print(f"❌ 資料庫連接失敗: {e}")
             return None
@@ -104,7 +101,7 @@ async def analyze_consistency():
         if len(json_ids) == len(db_ids) and not only_in_json and not only_in_db:
             print("   ✅ 數據完全一致，無需處理")
         else:
-            print(f"   ❌ 發現數據不一致:")
+            print("   ❌ 發現數據不一致:")
             print(f"      - 數量差異: JSON({len(json_ids)}) vs Database({len(db_ids)})")
             print(f"      - 需要同步的記錄: {len(only_in_json) + len(only_in_db)} 個")
 

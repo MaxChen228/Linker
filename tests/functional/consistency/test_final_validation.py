@@ -7,7 +7,6 @@ import asyncio
 import logging
 import os
 from datetime import datetime
-from pathlib import Path
 
 # 設置日志
 logging.basicConfig(
@@ -33,7 +32,7 @@ async def final_consistency_test():
         json_points = json_manager.knowledge_points
         json_active = [p for p in json_points if not p.is_deleted]
 
-        print(f"原始 JSON 統計:")
+        print("原始 JSON 統計:")
         print(f"  知識點總數: {len(json_points)}")
         print(f"  活躍知識點: {len(json_active)}")
         print(f"  總練習次數: {json_stats.get('total_practices', 0)}")
@@ -59,10 +58,11 @@ async def final_consistency_test():
         print("🗑️ 清空並重新初始化資料庫...")
 
         # 清空資料表
-        import psycopg2
-
         # 使用環境變數配置
         from urllib.parse import urlparse
+
+        import psycopg2
+
         from tests.config import TestConfig
         test_config = TestConfig()
         db_url = urlparse(test_config.get_test_url())
@@ -98,7 +98,7 @@ async def final_consistency_test():
         db_points = await db_manager.get_knowledge_points_async()
         db_active = [p for p in db_points if not p.is_deleted]
 
-        print(f"\n資料庫統計:")
+        print("\n資料庫統計:")
         print(f"  知識點總數: {len(db_points)}")
         print(f"  活躍知識點: {len(db_active)}")
         print(f"  總練習次數: {db_stats.get('total_practices', 0)}")
@@ -143,7 +143,7 @@ async def final_consistency_test():
         json_categories = json_stats.get("category_distribution", {})
         db_categories = db_stats.get("category_distribution", {})
 
-        print(f"\n📂 分類分布比較:")
+        print("\n📂 分類分布比較:")
         all_categories = set(json_categories.keys()) | set(db_categories.keys())
         category_consistent = True
 
@@ -160,7 +160,7 @@ async def final_consistency_test():
             print(f"  {category}: JSON={json_count}, DB={db_count} {status}")
 
         # 最終評估
-        print(f"\n📊 最終一致性評估:")
+        print("\n📊 最終一致性評估:")
         consistency_rate = (consistent_count / total_metrics) * 100
 
         print(f"核心指標一致性: {consistent_count}/{total_metrics} ({consistency_rate:.1f}%)")

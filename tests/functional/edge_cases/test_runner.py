@@ -7,9 +7,7 @@
 import asyncio
 import time
 from datetime import datetime
-from typing import Dict, Any, List, Callable
-
-import pytest
+from typing import Any
 
 
 class EdgeCaseTestRunner:
@@ -20,7 +18,7 @@ class EdgeCaseTestRunner:
         self.start_time = None
         self.performance_stats = {}
 
-    async def run_all_edge_tests(self) -> Dict[str, Any]:
+    async def run_all_edge_tests(self) -> dict[str, Any]:
         """執行所有邊界測試"""
         print("🚀 開始執行邊界情況完整測試套件...")
         self.start_time = time.time()
@@ -66,37 +64,37 @@ class EdgeCaseTestRunner:
 
         return self.generate_report()
 
-    async def run_empty_data_tests(self) -> Dict[str, Any]:
+    async def run_empty_data_tests(self) -> dict[str, Any]:
         """執行空數據場景測試"""
         return await self._run_pytest_suite(
             "tests/test_edge_cases/test_empty_data_scenarios.py", "空數據場景測試"
         )
 
-    async def run_large_data_tests(self) -> Dict[str, Any]:
+    async def run_large_data_tests(self) -> dict[str, Any]:
         """執行大數據場景測試"""
         return await self._run_pytest_suite(
             "tests/test_edge_cases/test_large_data_scenarios.py", "大數據場景測試"
         )
 
-    async def run_concurrent_tests(self) -> Dict[str, Any]:
+    async def run_concurrent_tests(self) -> dict[str, Any]:
         """執行併發操作測試"""
         return await self._run_pytest_suite(
             "tests/test_edge_cases/test_concurrent_operations.py", "併發操作測試"
         )
 
-    async def run_failure_tests(self) -> Dict[str, Any]:
+    async def run_failure_tests(self) -> dict[str, Any]:
         """執行異常場景測試"""
         return await self._run_pytest_suite(
             "tests/test_edge_cases/test_failure_scenarios.py", "異常場景測試"
         )
 
-    async def run_time_tests(self) -> Dict[str, Any]:
+    async def run_time_tests(self) -> dict[str, Any]:
         """執行時間邊界測試"""
         return await self._run_pytest_suite(
             "tests/test_edge_cases/test_time_boundary_scenarios.py", "時間邊界測試"
         )
 
-    async def _run_pytest_suite(self, test_path: str, description: str) -> Dict[str, Any]:
+    async def _run_pytest_suite(self, test_path: str, description: str) -> dict[str, Any]:
         """運行指定的pytest測試套件"""
         try:
             # 模擬測試執行（在實際環境中會調用pytest）
@@ -126,7 +124,7 @@ class EdgeCaseTestRunner:
                 "error": str(e),
             }
 
-    def generate_report(self) -> Dict[str, Any]:
+    def generate_report(self) -> dict[str, Any]:
         """生成測試報告"""
         total_duration = time.time() - self.start_time if self.start_time else 0
 
@@ -162,7 +160,7 @@ class EdgeCaseTestRunner:
 
         return report
 
-    def _analyze_performance(self) -> Dict[str, Any]:
+    def _analyze_performance(self) -> dict[str, Any]:
         """分析測試性能"""
         suite_durations = [r["duration"] for r in self.results.values() if r["status"] == "passed"]
 
@@ -177,7 +175,7 @@ class EdgeCaseTestRunner:
             "performance_grade": self._calculate_performance_grade(suite_durations),
         }
 
-    def _calculate_performance_grade(self, durations: List[float]) -> str:
+    def _calculate_performance_grade(self, durations: list[float]) -> str:
         """計算性能等級"""
         avg_duration = sum(durations) / len(durations)
 
@@ -192,7 +190,7 @@ class EdgeCaseTestRunner:
         else:
             return "D (較差)"
 
-    def _generate_recommendations(self) -> List[str]:
+    def _generate_recommendations(self) -> list[str]:
         """生成改進建議"""
         recommendations = []
 
@@ -222,7 +220,7 @@ class EdgeCaseReportGenerator:
     """邊界測試報告生成器"""
 
     @staticmethod
-    def print_detailed_report(report: Dict[str, Any]):
+    def print_detailed_report(report: dict[str, Any]):
         """打印詳細測試報告"""
         print("\n" + "=" * 80)
         print("🎯 邊界情況完整測試報告")
@@ -230,7 +228,7 @@ class EdgeCaseReportGenerator:
 
         # 摘要信息
         summary = report["summary"]
-        print(f"\n📊 測試摘要:")
+        print("\n📊 測試摘要:")
         print(f"   總執行時間: {summary['total_duration']}秒")
         print(f"   通過套件: {summary['passed_suites']}/{summary['total_suites']}")
         print(f"   總測試數: {summary['total_tests']}")
@@ -238,7 +236,7 @@ class EdgeCaseReportGenerator:
         print(f"   完成時間: {summary['timestamp']}")
 
         # 套件詳情
-        print(f"\n📋 套件詳情:")
+        print("\n📋 套件詳情:")
         for suite_name, suite_result in report["suite_details"].items():
             status_icon = "✅" if suite_result["status"] == "passed" else "❌"
             duration = suite_result.get("duration", 0)
@@ -261,7 +259,7 @@ class EdgeCaseReportGenerator:
         if "performance_analysis" in report:
             perf = report["performance_analysis"]
             if perf.get("status") != "no_data":
-                print(f"\n⚡ 性能分析:")
+                print("\n⚡ 性能分析:")
                 print(f"   最快套件: {perf.get('fastest_suite', 0):.2f}秒")
                 print(f"   最慢套件: {perf.get('slowest_suite', 0):.2f}秒")
                 print(f"   平均耗時: {perf.get('avg_suite_duration', 0):.2f}秒")
@@ -269,7 +267,7 @@ class EdgeCaseReportGenerator:
 
         # 改進建議
         if "recommendations" in report:
-            print(f"\n💡 改進建議:")
+            print("\n💡 改進建議:")
             for i, rec in enumerate(report["recommendations"], 1):
                 print(f"   {i}. {rec}")
 

@@ -11,14 +11,14 @@ from typing import Any, Optional
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import data models from separate file to avoid circular imports
-from core.models import KnowledgePoint, OriginalError, ReviewExample
-from core.cache_manager import UnifiedCacheManager, CacheCategories
+from core.cache_manager import CacheCategories, UnifiedCacheManager
+from core.database.connection import get_database_connection
+from core.database.repositories.knowledge_repository import KnowledgePointRepository
+from core.error_handler import ErrorHandler, with_error_handling
 from core.error_types import ErrorCategory, ErrorTypeSystem
 from core.exceptions import DatabaseError
 from core.log_config import get_module_logger
-from core.error_handler import ErrorHandler, with_error_handling
-from core.database.repositories.knowledge_repository import KnowledgePointRepository
-from core.database.connection import get_database_connection
+from core.models import KnowledgePoint, OriginalError
 from settings import settings
 
 
@@ -38,7 +38,7 @@ class KnowledgeManager:
         # 數據庫連接和 repository
         self._db_connection = None
         self._repository: Optional[KnowledgePointRepository] = None
-        
+
         # 錯誤類型系統
         self.type_system = ErrorTypeSystem()
 
@@ -58,7 +58,7 @@ class KnowledgeManager:
                 operation="initialize",
                 details={"error": str(e)}
             ) from e
-            
+
     async def _ensure_repository(self) -> KnowledgePointRepository:
         """確保 repository 已初始化"""
         if not self._repository:
@@ -93,7 +93,7 @@ class KnowledgeManager:
         repository = await self._ensure_repository()
         now = datetime.now()
         all_points = await repository.find_all(is_deleted=False)
-        
+
         due_points = []
         for p in all_points:
             if p.next_review:
@@ -119,19 +119,19 @@ class KnowledgeManager:
             user_answer: 用戶答案
             error: 錯誤分析數據
             correct_answer: 正確答案
-            
+
         Returns:
             新創建的知識點 ID
         """
         repository = await self._ensure_repository()
-        
+
         # 處理 category - 確保是枚舉類型
         category_str = error.get("category", "other")
         try:
             category = ErrorCategory(category_str) if isinstance(category_str, str) else category_str
         except ValueError:
             category = ErrorCategory.OTHER
-            
+
         point = KnowledgePoint(
             id=0,  # Repository 會自動分配 ID
             key_point=error.get("key_point_summary", "未知錯誤"),
@@ -152,10 +152,10 @@ class KnowledgeManager:
                 timestamp=datetime.now().isoformat()
             )
         )
-        
+
         created_point = await repository.create(point)
         self._invalidate_caches()
-        
+
         return created_point.id
 
     async def edit_knowledge_point(self, point_id: int, updates: dict) -> Optional[dict]:
@@ -170,7 +170,7 @@ class KnowledgeManager:
         """
         repository = await self._ensure_repository()
         point = await repository.find_by_id(point_id)
-        
+
         if point and not point.is_deleted:
             # 執行編輯
             history = point.edit(updates)
@@ -197,7 +197,7 @@ class KnowledgeManager:
         """
         repository = await self._ensure_repository()
         point = await repository.find_by_id(point_id)
-        
+
         if point and not point.is_deleted:
             # 執行軟刪除
             point.soft_delete(reason)
@@ -223,7 +223,7 @@ class KnowledgeManager:
         """
         repository = await self._ensure_repository()
         point = await repository.find_by_id(point_id)
-        
+
         if point and point.is_deleted:
             # 執行復原
             point.restore()
@@ -312,7 +312,7 @@ class KnowledgeManager:
             "restore_knowledge_point": None,
         }
 
-        result = defaults.get(operation, None)
+        result = defaults.get(operation)
         if isinstance(result, dict):
             result = result.copy()
             result["_database_error_fallback"] = True

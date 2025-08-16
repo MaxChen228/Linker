@@ -10,8 +10,8 @@ from pathlib import Path
 # 添加項目根目錄到路徑
 sys.path.insert(0, str(Path(__file__).parent))
 
-from core.knowledge import KnowledgeManager
 from core.database.adapter import KnowledgeManagerAdapter
+from core.knowledge import KnowledgeManager
 
 
 async def quick_user_journey_test():

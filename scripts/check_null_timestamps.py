@@ -39,8 +39,8 @@ async def check_null_timestamps():
                        next_review IS NULL as review_null,
                        last_modified IS NULL as modified_null
                 FROM knowledge_points
-                WHERE created_at IS NULL 
-                   OR last_seen IS NULL 
+                WHERE created_at IS NULL
+                   OR last_seen IS NULL
                    OR last_modified IS NULL
                 LIMIT 10
             """
@@ -51,20 +51,20 @@ async def check_null_timestamps():
                 for row in rows:
                     print(f"      ID {row['id']}: {row['key_point'][:30]}...")
                     if row["created_null"]:
-                        print(f"         - created_at 為 NULL")
+                        print("         - created_at 為 NULL")
                     if row["seen_null"]:
-                        print(f"         - last_seen 為 NULL")
+                        print("         - last_seen 為 NULL")
                     if row["review_null"]:
-                        print(f"         - next_review 為 NULL")
+                        print("         - next_review 為 NULL")
                     if row["modified_null"]:
-                        print(f"         - last_modified 為 NULL")
+                        print("         - last_modified 為 NULL")
             else:
                 print("   ✅ 沒有發現 NULL 時間戳")
 
             # 檢查 original_errors 表
             print("\n2. 檢查 original_errors 表：")
             query = """
-                SELECT knowledge_point_id, 
+                SELECT knowledge_point_id,
                        timestamp IS NULL as timestamp_null
                 FROM original_errors
                 WHERE timestamp IS NULL
@@ -82,7 +82,7 @@ async def check_null_timestamps():
             # 檢查 ID 22 的具體情況
             print("\n3. 檢查 ID 22 的知識點：")
             query = """
-                SELECT 
+                SELECT
                     kp.id,
                     kp.key_point,
                     kp.created_at,

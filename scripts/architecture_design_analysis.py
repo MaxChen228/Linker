@@ -13,9 +13,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
-    from core.knowledge import KnowledgeManager
     from core.database.adapter import KnowledgeManagerAdapter
     from core.error_types import ErrorCategory
+    from core.knowledge import KnowledgeManager
 except ImportError as e:
     print(f"❌ 導入失敗: {e}")
     sys.exit(1)
@@ -128,9 +128,9 @@ class ArchitectureDesignAnalyzer:
         # 錯誤分類系統
         categories = [cat.value for cat in ErrorCategory]
 
-        print(f"   數據模型完全統一: ✅")
+        print("   數據模型完全統一: ✅")
         print(f"   錯誤分類系統: {len(categories)} 種統一分類")
-        print(f"   模型設計一致性: 100%")
+        print("   模型設計一致性: 100%")
 
         return {
             "model_consistency": model_consistency,
@@ -405,7 +405,7 @@ class ArchitectureDesignAnalyzer:
         }
 
         # 計算加權總分
-        overall_design_score = sum(scores[key] * weights[key] for key in scores.keys())
+        overall_design_score = sum(scores[key] * weights[key] for key in scores)
 
         # 設計一致性評級
         if overall_design_score >= 0.90:

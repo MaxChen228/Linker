@@ -29,7 +29,7 @@ async def test_async_stats(
     service: AsyncKnowledgeService = Depends(get_async_knowledge_service)
 ):
     """測試異步統計功能
-    
+
     這是一個簡單的測試端點，用於驗證：
     1. 異步服務可以正常初始化
     2. 沒有事件循環衝突
@@ -63,7 +63,7 @@ async def test_async_review_candidates(
     service: AsyncKnowledgeService = Depends(get_async_knowledge_service)
 ):
     """測試異步獲取複習候選
-    
+
     這個端點測試更複雜的功能，涉及資料庫查詢和排序
     """
     try:

@@ -20,8 +20,8 @@ from core.database.connection import get_database_connection  # noqa: E402
 from core.database.exceptions import DatabaseError  # noqa: E402
 from core.database.repositories.knowledge_repository import KnowledgePointRepository  # noqa: E402
 from core.error_types import ErrorCategory  # noqa: E402
-from core.models import KnowledgePoint, OriginalError, ReviewExample  # noqa: E402
 from core.log_config import get_module_logger  # noqa: E402
+from core.models import KnowledgePoint, OriginalError, ReviewExample  # noqa: E402
 
 logger = get_module_logger("migrate_data")
 

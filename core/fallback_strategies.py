@@ -12,11 +12,11 @@
 注意：DatabaseToJsonFallback 已在 TASK-30B 中移除（純資料庫架構）
 """
 
-from typing import Any, Optional, Callable, Dict
 import asyncio
 from datetime import datetime, timedelta
+from typing import Any, Callable, Optional
 
-from core.exceptions import ErrorCategory, ErrorSeverity, UnifiedError
+from core.exceptions import ErrorCategory, ErrorSeverity
 from core.log_config import get_module_logger
 
 
@@ -48,8 +48,8 @@ class CacheFallback(FallbackStrategy):
 
     def __init__(self):
         super().__init__()
-        self._cache: Dict[str, Any] = {}
-        self._cache_timestamps: Dict[str, datetime] = {}
+        self._cache: dict[str, Any] = {}
+        self._cache_timestamps: dict[str, datetime] = {}
         self._default_ttl = timedelta(minutes=5)  # 快取過期時間
 
     def can_handle(self, error_category: ErrorCategory, severity: ErrorSeverity) -> bool:
@@ -174,7 +174,7 @@ class CacheFallback(FallbackStrategy):
             }
         elif any(keyword in method_name for keyword in ["points", "candidates", "search"]):
             return []
-        elif "get_knowledge_point" == method_name.replace("async_", "").replace("_async", ""):
+        elif method_name.replace("async_", "").replace("_async", "") == "get_knowledge_point":
             return None
         elif any(keyword in method_name for keyword in ["add", "edit", "delete", "restore"]):
             return False
@@ -195,7 +195,6 @@ class NetworkRetryFallback(FallbackStrategy):
 
     def execute(self, original_func: Callable, *args, **kwargs) -> Any:
         """網路錯誤重試策略"""
-        last_error = None
 
         for attempt in range(self.max_retries):
             try:
@@ -210,7 +209,6 @@ class NetworkRetryFallback(FallbackStrategy):
                     return original_func(*args, **kwargs)
 
             except Exception as e:
-                last_error = e
                 if attempt < self.max_retries - 1:
                     import time
 

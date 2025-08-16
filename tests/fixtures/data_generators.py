@@ -5,9 +5,10 @@
 
 import random
 from datetime import datetime, timedelta
-from typing import List, Dict, Any, Tuple
-from core.knowledge import KnowledgePoint, ReviewExample, OriginalError
+from typing import Any
+
 from core.error_types import ErrorCategory
+from core.knowledge import KnowledgePoint, OriginalError, ReviewExample
 
 
 class ConsistencyTestDataGenerator:
@@ -138,7 +139,7 @@ class ConsistencyTestDataGenerator:
 
     def generate_consistent_dataset(
         self, size: int = 20
-    ) -> Tuple[List[KnowledgePoint], Dict[str, Any]]:
+    ) -> tuple[list[KnowledgePoint], dict[str, Any]]:
         """生成一致的測試數據集，並計算期望的統計結果
 
         Args:
@@ -187,7 +188,7 @@ class ConsistencyTestDataGenerator:
 
         return points, expected_stats
 
-    def generate_edge_case_dataset(self) -> List[KnowledgePoint]:
+    def generate_edge_case_dataset(self) -> list[KnowledgePoint]:
         """生成邊界情況測試數據"""
         edge_cases = []
 
@@ -235,20 +236,20 @@ class ConsistencyTestDataGenerator:
 
     def generate_category_balanced_dataset(
         self, size_per_category: int = 5
-    ) -> List[KnowledgePoint]:
+    ) -> list[KnowledgePoint]:
         """生成每個分類平均分佈的數據集"""
         balanced_points = []
         index = 8000
 
         for category in self.error_categories:
-            for i in range(size_per_category):
+            for _i in range(size_per_category):
                 point = self.generate_knowledge_point(index=index, category=category)
                 balanced_points.append(point)
                 index += 1
 
         return balanced_points
 
-    def generate_performance_test_dataset(self, size: int = 1000) -> List[KnowledgePoint]:
+    def generate_performance_test_dataset(self, size: int = 1000) -> list[KnowledgePoint]:
         """生成性能測試數據集"""
         performance_points = []
 
@@ -284,7 +285,7 @@ class ConsistencyTestDataGenerator:
 
         return performance_points
 
-    def generate_migration_test_data(self) -> Tuple[List[KnowledgePoint], List[KnowledgePoint]]:
+    def generate_migration_test_data(self) -> tuple[list[KnowledgePoint], list[KnowledgePoint]]:
         """生成遷移測試數據
 
         返回 (遷移前數據, 遷移後數據)，用於測試數據遷移的一致性
@@ -358,7 +359,7 @@ def create_test_knowledge_point_with_stats(
     return point
 
 
-def create_minimal_test_dataset(size: int = 3) -> List[KnowledgePoint]:
+def create_minimal_test_dataset(size: int = 3) -> list[KnowledgePoint]:
     """創建最小測試數據集（用於快速測試）"""
     generator = ConsistencyTestDataGenerator(seed=123)
     return [generator.generate_knowledge_point(i) for i in range(size)]

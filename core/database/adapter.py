@@ -7,16 +7,16 @@ import threading
 from datetime import datetime
 from typing import Any, Optional
 
-from core.cache_manager import UnifiedCacheManager, CacheCategories
+from core.cache_manager import CacheCategories, UnifiedCacheManager
 from core.database.connection import get_database_connection
-from core.database.database_manager import DatabaseKnowledgeManager, create_database_manager
 from core.database.repositories.knowledge_repository import KnowledgePointRepository
+from core.error_handler import ErrorHandler, with_error_handling
+from core.exceptions import ErrorCategory, ErrorSeverity
+from core.fallback_strategies import get_fallback_manager
+from core.log_config import get_module_logger
+
 # JSON mode removed - using database-only mode
 from core.models import KnowledgePoint, ReviewExample
-from core.log_config import get_module_logger
-from core.error_handler import ErrorHandler, with_error_handling
-from core.fallback_strategies import get_fallback_manager
-from core.exceptions import DatabaseError, ErrorCategory, ErrorSeverity, UnifiedError
 
 
 class KnowledgeManagerAdapter:
@@ -762,11 +762,11 @@ class KnowledgeManagerAdapter:
                 except (ValueError, TypeError):
                     self.logger.warning(f"無效的知識點 ID: {point_id}")
                     return None
-                
+
                 for point in self._knowledge_points_cache:
                     if point.id == id_int:
                         return point
-                
+
                 # 如果快取中沒有且未初始化，嘗試異步查詢
                 if not self._initialization_complete:
                     import asyncio
@@ -780,7 +780,7 @@ class KnowledgeManagerAdapter:
                             return loop.run_until_complete(self.get_knowledge_point_async(point_id))
                     except RuntimeError:
                         return asyncio.run(self.get_knowledge_point_async(point_id))
-                
+
                 return None
             except Exception as e:
                 self.logger.error(f"資料庫查詢知識點失敗: {e}")
@@ -789,7 +789,7 @@ class KnowledgeManagerAdapter:
                     self.logger.warning("降級到JSON模式查詢知識點")
                     return self._legacy_manager.get_knowledge_point(point_id)
                 return None
-        
+
         # JSON 模式降級
         if self._legacy_manager:
             return self._legacy_manager.get_knowledge_point(point_id)
@@ -869,7 +869,7 @@ class KnowledgeManagerAdapter:
                         knowledge_point_id, chinese_sentence, user_answer
                     )
                 return
-        
+
         # JSON 模式降級
         if self._legacy_manager:
             self._legacy_manager.add_review_success(
@@ -1184,7 +1184,7 @@ class KnowledgeManagerAdapter:
                         or keyword.lower() in point.original_phrase.lower()
                     ]
                 return []
-        
+
         # JSON 模式降級
         if self._legacy_manager:
             return [
@@ -1216,7 +1216,7 @@ class KnowledgeManagerAdapter:
             except Exception as e:
                 self.logger.error(f"資料庫匯入失敗: {e}")
                 return False
-        
+
         # JSON 模式不支援匯入功能
         if self._legacy_manager:
             self.logger.error("JSON 模式不支援匯入功能")
@@ -1262,7 +1262,7 @@ class KnowledgeManagerAdapter:
                     self.logger.warning("降級到JSON模式獲取回收站知識點")
                     return [p for p in self._legacy_manager.knowledge_points if p.is_deleted]
                 return []
-        
+
         # JSON 模式降級
         if self._legacy_manager:
             return [p for p in self._legacy_manager.knowledge_points if p.is_deleted]
@@ -1272,7 +1272,7 @@ class KnowledgeManagerAdapter:
     async def get_deleted_points_async(self) -> list[KnowledgePoint]:
         """異步獲取回收站中的知識點（資料庫優先）"""
         await self._ensure_initialized()
-        
+
         # 資料庫模式優先（用戶要求資料庫作為主要方式）
         if self.use_database and self._repository:
             # 資料庫模式 - 直接查詢已刪除的知識點
@@ -1296,7 +1296,7 @@ class KnowledgeManagerAdapter:
     async def get_active_points_async(self) -> list[KnowledgePoint]:
         """異步獲取所有活躍（未刪除）的知識點（資料庫優先）"""
         await self._ensure_initialized()
-        
+
         # 資料庫模式優先（用戶要求資料庫作為主要方式）
         if self.use_database and self._repository:
             try:
@@ -1338,7 +1338,7 @@ class KnowledgeManagerAdapter:
                         if p.category.value == category and not p.is_deleted
                     ]
                 return []
-        
+
         # JSON 模式降級
         if self._legacy_manager:
             return [
@@ -1459,13 +1459,13 @@ class KnowledgeManagerAdapter:
         self, chinese_sentence: str, user_answer: str, error: dict, correct_answer: str
     ) -> int:
         """從錯誤信息創建知識點（用於手動確認功能）
-        
+
         Args:
             chinese_sentence: 中文句子
             user_answer: 用戶答案
             error: 錯誤分析數據
             correct_answer: 正確答案
-            
+
         Returns:
             新創建的知識點ID
         """
@@ -1481,7 +1481,7 @@ class KnowledgeManagerAdapter:
                 loop = asyncio.get_event_loop()
                 if loop.is_running():
                     # 如果在異步上下文中，創建任務
-                    future = asyncio.ensure_future(
+                    asyncio.ensure_future(
                         self._add_knowledge_point_from_error_async(
                             chinese_sentence, user_answer, error, correct_answer
                         )
@@ -1500,19 +1500,20 @@ class KnowledgeManagerAdapter:
                         chinese_sentence, user_answer, error, correct_answer
                     )
                 )
-    
+
     async def _add_knowledge_point_from_error_async(
         self, chinese_sentence: str, user_answer: str, error: dict, correct_answer: str
     ) -> int:
         """異步版本：從錯誤信息創建知識點"""
         from datetime import datetime
+
         from core.error_types import ErrorCategory
-        
+
         # 處理 category - 確保是字符串（資料庫存儲為字符串）
         category_str = error.get("category", "other")
         if not isinstance(category_str, str):
             category_str = category_str.value if hasattr(category_str, "value") else "other"
-            
+
         # 創建知識點數據
         point_data = {
             "key_point": error.get("key_point_summary", "未知錯誤"),
@@ -1542,12 +1543,12 @@ class KnowledgeManagerAdapter:
                 "timestamp": datetime.now().isoformat(),
             }
         }
-        
+
         # 保存到資料庫
         if self._repository:
             # 將字典數據轉換為 KnowledgePoint 實體
             from core.models import KnowledgePoint, OriginalError
-            
+
             # 創建 OriginalError 對象
             original_error = OriginalError(
                 chinese_sentence=chinese_sentence,
@@ -1555,7 +1556,7 @@ class KnowledgeManagerAdapter:
                 correct_answer=correct_answer,
                 timestamp=datetime.now().isoformat()
             )
-            
+
             # 創建 KnowledgePoint 實體
             point = KnowledgePoint(
                 id=0,  # 資料庫會自動分配 ID
@@ -1581,13 +1582,13 @@ class KnowledgeManagerAdapter:
                 last_modified=point_data["last_modified"],
                 original_error=original_error
             )
-            
+
             # 調用正確的 create 方法
             created_point = await self._repository.create(point)
-            
+
             # 更新快取
             await self._load_cache_from_database_async()
-            
+
             return created_point.id
         else:
             self.logger.error("Repository not initialized")
@@ -2231,7 +2232,7 @@ class KnowledgeManagerAdapter:
         }
 
         # 添加錯誤標記
-        result = defaults.get(operation, None)
+        result = defaults.get(operation)
         if isinstance(result, dict):
             result = result.copy()
             result["_error_fallback"] = True

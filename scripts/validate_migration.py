@@ -9,7 +9,7 @@ import json
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 from urllib.parse import urlparse
 
 import psycopg2
@@ -88,8 +88,8 @@ class MigrationValidator:
 
             # 3. 外鍵完整性
             cursor.execute("""
-                SELECT COUNT(*) FROM knowledge_point_tags kpt 
-                LEFT JOIN knowledge_points kp ON kpt.knowledge_point_id = kp.id 
+                SELECT COUNT(*) FROM knowledge_point_tags kpt
+                LEFT JOIN knowledge_points kp ON kpt.knowledge_point_id = kp.id
                 WHERE kp.id IS NULL;
             """)
             invalid_fk = cursor.fetchone()[0]
@@ -257,7 +257,7 @@ class MigrationValidator:
 
         print()
 
-    def generate_report(self) -> Dict[str, Any]:
+    def generate_report(self) -> dict[str, Any]:
         """生成驗證報告"""
         total_tests = len(self.results)
         passed_tests = sum(1 for r in self.results.values() if r["success"])
@@ -277,7 +277,7 @@ class MigrationValidator:
             "recommendations": self._generate_recommendations(),
         }
 
-    def _generate_recommendations(self) -> List[str]:
+    def _generate_recommendations(self) -> list[str]:
         """生成改進建議"""
         recommendations = []
 

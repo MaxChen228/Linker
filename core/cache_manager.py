@@ -3,12 +3,12 @@
 提供線程安全的快取管理，支援異步和同步操作
 """
 
-import threading
 import asyncio
 import logging
-from datetime import datetime, timedelta
-from typing import Any, Optional, Callable, Union, Dict
+import threading
 from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class UnifiedCacheManager:
         Args:
             default_ttl: 預設存活時間（秒），預設5分鐘
         """
-        self._cache: Dict[str, CacheEntry] = {}
+        self._cache: dict[str, CacheEntry] = {}
         self._cache_lock = threading.RLock()
         self._default_ttl = default_ttl
         self._stats = {"hits": 0, "misses": 0, "evictions": 0, "refreshes": 0}
@@ -105,7 +105,7 @@ class UnifiedCacheManager:
                 logger.info(f"清除所有快取: {count} 個")
                 return count
 
-            keys_to_remove = [k for k in self._cache.keys() if pattern in k]
+            keys_to_remove = [k for k in self._cache if pattern in k]
             for key in keys_to_remove:
                 del self._cache[key]
 
@@ -185,7 +185,7 @@ class UnifiedCacheManager:
             logger.error(f"異步快取計算失敗 {key}: {e}")
             raise
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """獲取快取統計
 
         Returns:

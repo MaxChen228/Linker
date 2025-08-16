@@ -3,6 +3,7 @@
 """
 
 import pytest
+
 from .conftest import ConsistencyValidator
 
 
@@ -44,15 +45,13 @@ class TestSimpleConsistency:
 
         assert async_stats == sync_stats, "異步和同步統計應該一致"
 
-        print(f"異步統計驗證通過")
+        print("異步統計驗證通過")
 
     def test_consistency_validator(self):
         """測試一致性驗證器"""
         validator = ConsistencyValidator()
 
         # 測試匹配驗證
-        json_stats = {"knowledge_points": 5, "total_practices": 10}
-        db_stats = {"total_knowledge_points": 5, "total_practices": 10}
 
         # 不應該拋出異常（這個測試不做嚴格字段匹配）
         assert validator is not None

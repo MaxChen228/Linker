@@ -4,7 +4,7 @@
 """
 
 import asyncio
-import json
+
 import httpx
 
 
@@ -31,14 +31,14 @@ async def test_grade_answer():
 
             if response.status_code == 200:
                 result = response.json()
-                print(f"✅ API 調用成功")
+                print("✅ API 調用成功")
                 print(f"   分數: {result.get('score', 0)}")
                 print(f"   正確性: {result.get('is_generally_correct', False)}")
                 print(f"   錯誤數: {len(result.get('error_analysis', []))}")
 
                 # 檢查是否有錯誤被記錄
                 if not result.get("is_generally_correct", False):
-                    print(f"   💾 錯誤已保存到知識點")
+                    print("   💾 錯誤已保存到知識點")
 
                 return True
             else:
@@ -67,7 +67,7 @@ async def test_generate_question():
 
             if response.status_code == 200:
                 result = response.json()
-                print(f"✅ API 調用成功")
+                print("✅ API 調用成功")
                 print(f"   生成句子: {result.get('chinese', '')[0:30]}...")
                 return True
             else:

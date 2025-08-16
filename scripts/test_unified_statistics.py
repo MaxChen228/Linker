@@ -25,7 +25,7 @@ async def test_json_unified_statistics():
         manager = KnowledgeManager(data_dir=str(DATA_DIR))
         stats = manager.get_statistics()
 
-        print(f"JSON 統計結果 (使用統一邏輯):")
+        print("JSON 統計結果 (使用統一邏輯):")
         print(f"  總練習次數: {stats['total_practices']}")
         print(f"  正確次數: {stats['correct_count']}")
         print(f"  錯誤次數: {stats['mistake_count']}")
@@ -54,7 +54,7 @@ async def test_database_unified_statistics():
 
         # 測試異步統計
         async_stats = await adapter.get_statistics_async()
-        print(f"Database 異步統計結果 (使用統一邏輯):")
+        print("Database 異步統計結果 (使用統一邏輯):")
         print(f"  總練習次數: {async_stats.get('total_practices', 0)}")
         print(f"  正確次數: {async_stats.get('correct_count', 0)}")
         print(f"  錯誤次數: {async_stats.get('mistake_count', 0)}")
@@ -66,7 +66,7 @@ async def test_database_unified_statistics():
 
         # 測試同步統計
         sync_stats = adapter.get_statistics()
-        print(f"\nDatabase 同步統計結果 (使用統一邏輯):")
+        print("\nDatabase 同步統計結果 (使用統一邏輯):")
         print(f"  總練習次數: {sync_stats.get('total_practices', 0)}")
         print(f"  正確次數: {sync_stats.get('correct_count', 0)}")
         print(f"  錯誤次數: {sync_stats.get('mistake_count', 0)}")
@@ -102,7 +102,7 @@ async def verify_statistics_consistency():
     async_stats = db_stats.get("async", {})
     sync_stats = db_stats.get("sync", {})
 
-    print(f"\n=== 統一邏輯一致性驗證 ===")
+    print("\n=== 統一邏輯一致性驗證 ===")
 
     # 檢查關鍵指標一致性
     consistency_report = []
@@ -221,7 +221,7 @@ async def verify_statistics_consistency():
 
     # 特別關注原來的問題
     practices_fixed = json_practices == async_practices == sync_practices
-    print(f"\n🎯 TASK-19D 核心目標驗證:")
+    print("\n🎯 TASK-19D 核心目標驗證:")
     print(f"   練習次數統計統一: {'✅ 成功' if practices_fixed else '❌ 仍有差異'}")
     if not practices_fixed:
         print(f"   - JSON: {json_practices}, DB-異步: {async_practices}, DB-同步: {sync_practices}")
@@ -232,7 +232,7 @@ async def verify_statistics_consistency():
 
 async def test_practice_records_extraction():
     """測試練習記錄提取邏輯"""
-    print(f"\n=== 練習記錄提取測試 ===")
+    print("\n=== 練習記錄提取測試 ===")
 
     try:
         from core.statistics_utils import UnifiedStatistics
@@ -241,7 +241,7 @@ async def test_practice_records_extraction():
         manager = KnowledgeManager(data_dir=str(DATA_DIR))
         json_records = UnifiedStatistics.extract_json_practice_records(manager)
 
-        print(f"JSON 模式提取記錄:")
+        print("JSON 模式提取記錄:")
         print(f"  總記錄數: {len(json_records)}")
 
         record_types = {}
@@ -254,7 +254,7 @@ async def test_practice_records_extraction():
         adapter = KnowledgeManagerAdapter(use_database=True)
         db_records = await UnifiedStatistics.extract_database_practice_records(adapter)
 
-        print(f"\nDatabase 模式提取記錄:")
+        print("\nDatabase 模式提取記錄:")
         print(f"  總記錄數: {len(db_records)}")
 
         db_record_types = {}
@@ -264,7 +264,7 @@ async def test_practice_records_extraction():
         print(f"  記錄類型分布: {db_record_types}")
 
         # 分析記錄差異
-        print(f"\n📋 記錄差異分析:")
+        print("\n📋 記錄差異分析:")
         print(f"  記錄數量差異: {abs(len(json_records) - len(db_records))}")
 
         return len(json_records), len(db_records)
@@ -288,7 +288,7 @@ async def main():
     # 驗證統計一致性
     is_consistent = await verify_statistics_consistency()
 
-    print(f"\n" + "=" * 70)
+    print("\n" + "=" * 70)
     print("TASK-19D 完成評估")
     print("=" * 70)
 
@@ -302,7 +302,7 @@ async def main():
         print(f"📊 練習記錄: JSON({json_count}) vs DB({db_count})")
         print("🔧 建議檢查練習記錄提取邏輯的差異")
 
-    print(f"\n💡 建議後續步驟:")
+    print("\n💡 建議後續步驟:")
     print("1. 如果一致性良好，可標記 TASK-19D 為完成")
     print("2. 如果仍有差異，需要深入分析練習記錄的數據來源")
     print("3. 可考慮建立定期一致性檢查機制")

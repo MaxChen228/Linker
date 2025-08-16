@@ -8,13 +8,13 @@ router.post(API_ENDPOINTS.GRADE_ANSWER)
 """
 
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Optional
 
 
 @dataclass(frozen=True)
 class ApiEndpoints:
     """API端點常量定義類
-    
+
     使用dataclass確保不可變性，避免運行時意外修改
     """
 
@@ -69,9 +69,9 @@ class ApiEndpoints:
     KNOWLEDGE_TRASH_PAGE: str = "/knowledge/trash"  # 知識點回收站頁面
     KNOWLEDGE_DETAIL_PAGE: str = "/knowledge/{point_id}"  # 知識點詳情頁面
 
-    def get_all_endpoints(self) -> Dict[str, str]:
+    def get_all_endpoints(self) -> dict[str, str]:
         """獲取所有端點的字典形式
-        
+
         Returns:
             端點名稱到路徑的映射
         """
@@ -83,14 +83,14 @@ class ApiEndpoints:
 
     def format_url(self, endpoint: str, **kwargs) -> str:
         """格式化帶參數的URL
-        
+
         Args:
             endpoint: 端點路徑模板
             **kwargs: 要替換的參數
-            
+
         Returns:
             格式化後的URL
-            
+
         Example:
             >>> api.format_url(api.KNOWLEDGE_DETAIL, id=123)
             '/api/knowledge/123'
@@ -104,7 +104,7 @@ class ApiEndpoints:
 
     def validate_endpoints(self) -> list:
         """驗證所有端點的格式
-        
+
         Returns:
             錯誤列表，如果沒有錯誤則返回空列表
         """
@@ -130,16 +130,16 @@ API_ENDPOINTS = ApiEndpoints()
 _validation_errors = API_ENDPOINTS.validate_endpoints()
 if _validation_errors:
     import warnings
-    warnings.warn(f"API端點配置錯誤: {_validation_errors}")
+    warnings.warn(f"API端點配置錯誤: {_validation_errors}", stacklevel=2)
 
 
 # 便捷函數
 def get_endpoint(name: str) -> Optional[str]:
     """根據名稱獲取端點路徑
-    
+
     Args:
         name: 端點名稱（大寫形式）
-        
+
     Returns:
         端點路徑，如果不存在則返回None
     """
@@ -148,14 +148,14 @@ def get_endpoint(name: str) -> Optional[str]:
 
 def format_endpoint(name: str, **kwargs) -> str:
     """格式化端點URL
-    
+
     Args:
         name: 端點名稱
         **kwargs: URL參數
-        
+
     Returns:
         格式化後的URL
-        
+
     Raises:
         AttributeError: 如果端點不存在
     """

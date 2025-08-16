@@ -9,7 +9,7 @@ from .registry import ServiceRegistry, get_service_registry
 
 __all__ = [
     "AsyncKnowledgeService",
-    "BaseAsyncService", 
+    "BaseAsyncService",
     "ServiceRegistry",
     "get_service_registry",
 ]

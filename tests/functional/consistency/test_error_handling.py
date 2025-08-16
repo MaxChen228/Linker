@@ -13,26 +13,22 @@
 """
 
 import asyncio
-import pytest
-from unittest import mock
+import tempfile
 import threading
 import time
-import tempfile
-import shutil
-from pathlib import Path
+from unittest import mock
 
-from core.knowledge import KnowledgeManager
+import pytest
+
 from core.database.adapter import KnowledgeManagerAdapter
+from core.error_handler import ErrorHandler, create_error_response
 from core.exceptions import (
     DatabaseError,
-    FileIOError,
-    NetworkError,
-    UnifiedError,
     ErrorCategory,
     ErrorSeverity,
 )
-from core.error_handler import ErrorHandler, create_error_response
 from core.fallback_strategies import get_fallback_manager
+from core.knowledge import KnowledgeManager
 
 
 @pytest.fixture
@@ -184,7 +180,7 @@ class TestValidationErrors:
 
         try:
             result = json_manager.add_knowledge_point(invalid_point)
-            assert result == False or result is None
+            assert not result or result is None
 
         except Exception as e:
             # 如果拋出異常，應該是適當的驗證異常
@@ -220,9 +216,9 @@ class TestTimeoutErrors:
         # 測試錯誤處理
         error_response = error_handler.handle_error(timeout_error, "test_operation")
 
-        assert error_response["success"] == False
+        assert not error_response["success"]
         assert error_response["error"]["category"] == ErrorCategory.NETWORK.value
-        assert error_response["fallback_available"] == True
+        assert error_response["fallback_available"]
 
 
 class TestConcurrentAccessErrors:
@@ -236,7 +232,7 @@ class TestConcurrentAccessErrors:
 
         def json_worker():
             try:
-                for i in range(10):
+                for _i in range(10):
                     stats = json_manager.get_statistics()
                     assert isinstance(stats, dict)
                     time.sleep(0.001)
@@ -247,7 +243,7 @@ class TestConcurrentAccessErrors:
             try:
                 # 模擬資料庫模式
                 with mock.patch.object(db_manager, "_legacy_manager", json_manager):
-                    for i in range(10):
+                    for _i in range(10):
                         stats = db_manager.get_statistics()
                         assert isinstance(stats, dict)
                         time.sleep(0.001)
@@ -316,7 +312,7 @@ class TestErrorMessageConsistency:
             (PermissionError("Access denied"), "文件操作失敗，請檢查文件權限"),
         ]
 
-        for original_error, expected_pattern in error_scenarios:
+        for original_error, _expected_pattern in error_scenarios:
             error_response = error_handler.handle_error(original_error, "test_operation")
             user_message = error_response["error"]["user_message"]
 
@@ -417,8 +413,8 @@ class TestErrorStatistics:
 
         # 響應結構應該一致
         assert json_response.keys() == db_response.keys()
-        assert json_response["success"] == False
-        assert db_response["success"] == False
+        assert not json_response["success"]
+        assert not db_response["success"]
 
 
 if __name__ == "__main__":
