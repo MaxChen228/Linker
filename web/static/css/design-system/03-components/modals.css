@@ -34,7 +34,7 @@
 
 /* Overlay Variants */
 .modal-overlay[data-variant="dark"] {
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--shadow-modal);
 }
 
 .modal-overlay[data-variant="light"] {
@@ -471,8 +471,8 @@
 }
 
 .modal-error .modal-header {
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(239, 68, 68, 0.02) 100%);
-  border-bottom-color: rgba(239, 68, 68, 0.1);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--error-overlay-subtle) 100%);
+  border-bottom-color: var(--error-overlay-light);
 }
 
 .modal-error .modal-title {
@@ -489,8 +489,8 @@
 }
 
 .modal-success .modal-header {
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(16, 185, 129, 0.02) 100%);
-  border-bottom-color: rgba(16, 185, 129, 0.1);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--success-overlay-subtle) 100%);
+  border-bottom-color: var(--success-overlay-light);
 }
 
 .modal-success .modal-title {
@@ -507,8 +507,8 @@
 }
 
 .modal-warning .modal-header {
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(245, 158, 11, 0.02) 100%);
-  border-bottom-color: rgba(245, 158, 11, 0.1);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--warning-overlay-subtle) 100%);
+  border-bottom-color: var(--warning-overlay-light);
 }
 
 .modal-warning .modal-title {
@@ -525,8 +525,8 @@
 }
 
 .modal-info .modal-header {
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(59, 130, 246, 0.02) 100%);
-  border-bottom-color: rgba(59, 130, 246, 0.1);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--primary-overlay-subtle) 100%);
+  border-bottom-color: var(--primary-overlay-light);
 }
 
 .modal-info .modal-title {
@@ -575,11 +575,11 @@
 }
 
 .modal-backdrop-dark {
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--shadow-modal);
 }
 
 .modal-backdrop-light {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--overlay-medium);
 }
 
 /* Modal Position Utilities */

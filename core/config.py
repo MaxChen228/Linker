@@ -286,5 +286,5 @@ def get_config_summary() -> dict:
     }
 
 
-# 在模組載入時執行配置檢查，確保及早發現問題
-print_config_status()
+# 配置檢查由 web/main.py 手動執行，避免模塊導入時的環境變量載入順序問題
+# print_config_status()

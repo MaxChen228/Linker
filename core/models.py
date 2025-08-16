@@ -17,6 +17,7 @@ from settings import settings
 @dataclass
 class OriginalError:
     """記錄知識點最初被創建時的原始錯誤資訊。"""
+
     chinese_sentence: str
     user_answer: str
     correct_answer: str
@@ -31,6 +32,7 @@ class OriginalError:
 @dataclass
 class ReviewExample:
     """記錄每一次複習的具體例句和結果。"""
+
     chinese_sentence: str
     user_answer: str
     correct_answer: str
@@ -51,6 +53,7 @@ class KnowledgePoint:
     每個 `KnowledgePoint` 物件代表一個具體的使用者錯誤模式，並包含其所有相關資訊，
     例如錯誤分類、掌握度、複習排程和編輯歷史等。
     """
+
     id: int
     key_point: str  # 錯誤的簡短描述，例如 "單字拼寫錯誤: irrevertable"
     category: ErrorCategory
@@ -120,11 +123,15 @@ class KnowledgePoint:
         """根據練習結果更新掌握度、計數和下次複習時間。"""
         if is_correct:
             self.correct_count += 1
-            increment = settings.learning.MASTERY_INCREMENTS.get(self.category.value, settings.learning.MASTERY_INCREMENTS["other"])
+            increment = settings.learning.MASTERY_INCREMENTS.get(
+                self.category.value, settings.learning.MASTERY_INCREMENTS["other"]
+            )
             self.mastery_level = min(1.0, self.mastery_level + increment)
         else:
             self.mistake_count += 1
-            decrement = settings.learning.MASTERY_DECREMENTS.get(self.category.value, settings.learning.MASTERY_DECREMENTS["other"])
+            decrement = settings.learning.MASTERY_DECREMENTS.get(
+                self.category.value, settings.learning.MASTERY_DECREMENTS["other"]
+            )
             self.mastery_level = max(0.0, self.mastery_level - decrement)
 
         self.last_seen = datetime.now().isoformat()
@@ -140,8 +147,8 @@ class KnowledgePoint:
         Returns:
             一個描述此次變更的歷史記錄項目。
         """
-        before_state = {field: getattr(self, field) for field in updates.keys()}
-        
+        before_state = {field: getattr(self, field) for field in updates}
+
         for key, value in updates.items():
             if hasattr(self, key):
                 if key == "category":
@@ -150,7 +157,7 @@ class KnowledgePoint:
                     setattr(self, key, value)
 
         self.last_modified = datetime.now().isoformat()
-        after_state = {field: getattr(self, field) for field in updates.keys()}
+        after_state = {field: getattr(self, field) for field in updates}
 
         history_entry = {
             "timestamp": self.last_modified,

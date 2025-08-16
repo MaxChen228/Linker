@@ -296,7 +296,7 @@ class CalendarDB:
 
             best_streak = max(current_streak, streak_record["best_streak"])
             await conn.execute(
-                """UPDATE learning_streaks SET current_streak = $1, best_streak = $2, 
+                """UPDATE learning_streaks SET current_streak = $1, best_streak = $2,
                    monthly_active_days = $3, last_study_date = $4, updated_at = CURRENT_TIMESTAMP
                    WHERE user_id = $5""",
                 current_streak,

@@ -279,7 +279,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, var(--alpha-4)) 50%,
     transparent 100%
   );
   animation: var(--animation-shimmer);
@@ -302,7 +302,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, var(--alpha-6)) 50%,
     transparent 100%
   );
   animation: skeletonWave 2s ease-in-out infinite;
@@ -317,7 +317,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, var(--alpha-3)) 50%,
       transparent 100%
     );
   }

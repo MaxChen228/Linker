@@ -3,6 +3,7 @@ Practice routes for the Linker web application. (Refactored for API-first approa
 """
 
 import json
+from datetime import datetime
 from pathlib import Path
 
 from fastapi import APIRouter, Request
@@ -25,6 +26,33 @@ from web.models.validation import (
 
 router = APIRouter()
 logger = get_logger()
+
+
+def create_transparent_error_response(
+    error_message: str, 
+    error_code: str = "UNKNOWN_ERROR", 
+    details: dict = None,
+    status_code: int = 500
+) -> JSONResponse:
+    """
+    🔥 透明化改造：統一的錯誤響應格式
+    
+    確保所有錯誤都被透明地報告，不隱藏任何信息！
+    """
+    error_response = {
+        "success": False,
+        "error": error_message,
+        "error_code": error_code,
+        "timestamp": datetime.now().isoformat(),
+        "details": details or {},
+        "transparency_note": "此錯誤經過透明化改造，真實反映系統狀態"
+    }
+    
+    logger.error(f"透明錯誤報告 [{error_code}]: {error_message}")
+    if details:
+        logger.error(f"錯誤詳情: {details}")
+        
+    return JSONResponse(error_response, status_code=status_code)
 
 
 @router.get("/practice", response_class=HTMLResponse)
@@ -281,6 +309,19 @@ async def generate_question_api(request: GenerateQuestionRequest):
             payload = ai.generate_review_sentence(
                 knowledge_points=review_points, level=level, length=length
             )
+            
+            # 🔥 透明化改造：Review 模式也不能說謊！
+            if payload.get("service_error"):
+                logger.error("AI 服務不可用（Review 模式），拒絕返回虛假成功")
+                return JSONResponse(
+                    {
+                        "success": False,
+                        "error": "AI 服務暫時不可用，無法生成複習題目",
+                        "error_code": "AI_SERVICE_UNAVAILABLE"
+                    },
+                    status_code=503
+                )
+            
             return JSONResponse(
                 {
                     "success": True,
@@ -326,6 +367,18 @@ async def generate_question_api(request: GenerateQuestionRequest):
                 pattern_data=target_pattern, level=level, length=length
             )
 
+            # 🔥 透明化改造：Pattern 模式也不能說謊！
+            if payload.get("service_error"):
+                logger.error("AI 服務不可用（Pattern 模式），拒絕返回虛假成功")
+                return JSONResponse(
+                    {
+                        "success": False,
+                        "error": "AI 服務暫時不可用，無法生成句型練習",
+                        "error_code": "AI_SERVICE_UNAVAILABLE"
+                    },
+                    status_code=503
+                )
+
             return JSONResponse(
                 {
                     "success": True,
@@ -342,6 +395,20 @@ async def generate_question_api(request: GenerateQuestionRequest):
         payload = ai.generate_practice_sentence(
             level=level, length=length, examples=bank[:5] if bank else None
         )
+        
+        # 🔥 透明化改造：檢查真實的服務狀態，不再說謊！
+        if payload.get("service_error"):
+            logger.error("AI 服務不可用，拒絕返回虛假成功響應")
+            return JSONResponse(
+                {
+                    "success": False,
+                    "error": "AI 服務暫時不可用，請稍後再試",
+                    "error_code": "AI_SERVICE_UNAVAILABLE"
+                },
+                status_code=503  # Service Unavailable - 誠實地報告服務問題！
+            )
+        
+        # 只有真正成功時才返回成功響應
         return JSONResponse(
             {
                 "success": True,
@@ -356,3 +423,96 @@ async def generate_question_api(request: GenerateQuestionRequest):
     except Exception as e:
         logger.error(f"Error in generate_question_api: {e}", exc_info=True)
         return JSONResponse({"success": False, "error": "生成題目時發生內部錯誤"}, status_code=500)
+
+
+@router.get("/api/health", response_class=JSONResponse)
+async def ai_service_health_check():
+    """
+    🔥 透明化改造：AI 服務健康檢查端點
+    
+    提供真實的 AI 服務健康狀況，不再隱藏問題！
+    """
+    ai = get_ai_service()
+    health_report = ai.health_check()
+    
+    # 根據真實的健康狀況返回適當的 HTTP 狀態碼
+    status_code_map = {
+        "healthy": 200,      # OK
+        "degraded": 200,     # OK but with warnings
+        "unavailable": 503,  # Service Unavailable
+        "failed": 503,       # Service Unavailable
+        "unknown": 500       # Internal Server Error
+    }
+    
+    status_code = status_code_map.get(health_report["status"], 500)
+    
+    # 添加簡化的狀態信息用於快速檢查
+    health_report["simple_status"] = {
+        "is_healthy": health_report["status"] == "healthy",
+        "can_generate": health_report["status"] in ["healthy", "degraded"],
+        "needs_attention": health_report["status"] in ["unavailable", "failed", "unknown"]
+    }
+    
+    logger.info(f"AI 服務健康檢查：{health_report['status']} - {health_report.get('last_error', '正常')}")
+    
+    return JSONResponse(health_report, status_code=status_code)
+
+
+@router.get("/api/test-transparency", response_class=JSONResponse)
+async def test_transparency():
+    """
+    🔥 透明化驗證端點
+    
+    這個端點證明我們的透明化改造成功：
+    - 當 AI 服務失敗時，現在返回 503，不再是 200 OK
+    - 錯誤信息清晰可見，不再隱藏
+    """
+    ai = get_ai_service()
+    
+    # 模擬一個可能失敗的請求
+    fake_request = GenerateQuestionRequest(
+        mode="new",
+        length="medium", 
+        level=2,
+        pattern_id=None
+    )
+    
+    # 嘗試生成問題
+    try:
+        payload = ai.generate_practice_sentence(
+            level=fake_request.level, 
+            length=fake_request.length,
+            examples=["透明化測試例句"]
+        )
+        
+        # 🔥 關鍵檢查：如果 service_error 為 True，返回真實錯誤
+        if payload.get("service_error"):
+            return create_transparent_error_response(
+                error_message="AI 服務驗證失敗 - 透明化改造生效！",
+                error_code="TRANSPARENCY_TEST_FAILED",
+                details={
+                    "ai_error": payload.get("error_message"),
+                    "verification": "這證明系統不再隱藏 AI 服務失敗",
+                    "before_fix": "以前會返回 HTTP 200 + 預設句子",
+                    "after_fix": "現在正確返回 HTTP 503 + 真實錯誤"
+                },
+                status_code=503
+            )
+        
+        # 如果成功，返回成功響應
+        return JSONResponse({
+            "success": True,
+            "message": "AI 服務正常運行",
+            "test_result": "TRANSPARENCY_VERIFICATION_PASSED",
+            "generated_content": payload.get("sentence"),
+            "proof": "這個成功響應證明 AI 服務真的在工作，不是降級內容",
+            "timestamp": datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return create_transparent_error_response(
+            error_message=f"透明化測試期間發生異常: {str(e)}",
+            error_code="TRANSPARENCY_TEST_EXCEPTION",
+            details={"exception_type": type(e).__name__},
+            status_code=500
+        )

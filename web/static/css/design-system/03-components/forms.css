@@ -125,7 +125,7 @@ input[data-status="error"],
 select[data-status="error"],
 textarea[data-status="error"] {
   border-color: var(--error);
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(239, 68, 68, 0.02) 100%);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--error-overlay-subtle) 100%);
 }
 
 .form-control[data-status="error"]:focus,
@@ -133,8 +133,8 @@ input[data-status="error"]:focus,
 select[data-status="error"]:focus,
 textarea[data-status="error"]:focus {
   box-shadow: 
-    0 0 0 calc(var(--space-1) * 0.75) rgba(239, 68, 68, 0.1),
-    0 var(--border-width-thin) calc(var(--space-1) * 0.5) rgba(0, 0, 0, 0.05);
+    0 0 0 calc(var(--space-1) * 0.75) var(--error-overlay-light),
+    0 var(--border-width-thin) calc(var(--space-1) * 0.5) var(--shadow-subtle);
 }
 
 .form-control[data-status="success"],
@@ -142,7 +142,7 @@ input[data-status="success"],
 select[data-status="success"],
 textarea[data-status="success"] {
   border-color: var(--success);
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(16, 185, 129, 0.02) 100%);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--success-overlay-subtle) 100%);
 }
 
 .form-control[data-status="success"]:focus,
@@ -150,8 +150,8 @@ input[data-status="success"]:focus,
 select[data-status="success"]:focus,
 textarea[data-status="success"]:focus {
   box-shadow: 
-    0 0 0 calc(var(--space-1) * 0.75) rgba(16, 185, 129, 0.1),
-    0 var(--border-width-thin) calc(var(--space-1) * 0.5) rgba(0, 0, 0, 0.05);
+    0 0 0 calc(var(--space-1) * 0.75) var(--success-overlay-light),
+    0 var(--border-width-thin) calc(var(--space-1) * 0.5) var(--shadow-subtle);
 }
 
 .form-control[data-status="warning"],
@@ -159,7 +159,7 @@ input[data-status="warning"],
 select[data-status="warning"],
 textarea[data-status="warning"] {
   border-color: var(--warning);
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(245, 158, 11, 0.02) 100%);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--warning-overlay-subtle) 100%);
 }
 
 /* Form Groups */
@@ -660,33 +660,33 @@ textarea[data-status="warning"] {
 /* Form Validation Utilities */
 .form-valid {
   border-color: var(--success) !important;
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(16, 185, 129, 0.02) 100%) !important;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--success-overlay-subtle) 100%) !important;
 }
 
 .form-invalid {
   border-color: var(--error) !important;
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(239, 68, 68, 0.02) 100%) !important;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--error-overlay-subtle) 100%) !important;
 }
 
 .form-pending {
   border-color: var(--warning) !important;
-  background: linear-gradient(135deg, var(--surface) 0%, rgba(245, 158, 11, 0.02) 100%) !important;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--warning-overlay-subtle) 100%) !important;
 }
 
 /* Form Focus Utilities */
 .form-focus-primary:focus {
   border-color: var(--primary) !important;
-  box-shadow: 0 0 0 calc(var(--space-1) * 0.75) rgba(59, 130, 246, 0.1) !important;
+  box-shadow: 0 0 0 calc(var(--space-1) * 0.75) var(--primary-overlay-light) !important;
 }
 
 .form-focus-success:focus {
   border-color: var(--success) !important;
-  box-shadow: 0 0 0 calc(var(--space-1) * 0.75) rgba(16, 185, 129, 0.1) !important;
+  box-shadow: 0 0 0 calc(var(--space-1) * 0.75) var(--success-overlay-light) !important;
 }
 
 .form-focus-error:focus {
   border-color: var(--error) !important;
-  box-shadow: 0 0 0 calc(var(--space-1) * 0.75) rgba(239, 68, 68, 0.1) !important;
+  box-shadow: 0 0 0 calc(var(--space-1) * 0.75) var(--error-overlay-light) !important;
 }
 
 /* Form Input Prefix/Suffix Utilities */

@@ -80,8 +80,8 @@
 
 .pending-point.confirmed {
   background: linear-gradient(135deg, 
-    rgba(72, 187, 120, 0.05) 0%, 
-    rgba(72, 187, 120, 0.02) 100%);
+    var(--success-overlay-light) 0%, 
+    var(--success-overlay-subtle) 100%);
   border-color: var(--success-400);
   opacity: 0.8;
 }
@@ -1121,8 +1121,8 @@
 
 /* 每日限額顯示器 */
 .daily-limit-indicator {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: var(--border-width-thin) solid #e2e8f0;
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--surface-elevated) 100%);
+  border: var(--border-width-thin) solid var(--border-light);
   border-radius: var(--radius-md);
   padding: var(--space-4);
   margin: var(--space-4) 0;
@@ -1150,7 +1150,7 @@
 .progress-bar {
   flex: 1;
   height: var(--space-2);
-  background: #e2e8f0;
+  background: var(--border-light);
   border-radius: var(--radius-sm);
   margin-left: var(--space-4);
   overflow: hidden;
@@ -1158,19 +1158,19 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, var(--accent-500) 0%, var(--accent-700) 100%);
   border-radius: var(--radius-sm);
   transition: width 0.3s ease;
 }
 
 /* 進度條狀態色彩 */
 .progress-fill[style*="80"]:not([style*="100"]) {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: linear-gradient(135deg, var(--warning-500) 0%, var(--warning-600) 100%);
 }
 
 .progress-fill[style*="90"]:not([style*="100"]),
 .progress-fill[style*="100"] {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, var(--error-500) 0%, var(--error-600) 100%);
 }
 
 .limit-detail {
@@ -1185,15 +1185,15 @@
 .batch-actions.limit-reached {
   text-align: center;
   padding: var(--space-6);
-  background: rgba(254, 240, 138, 0.1);
+  background: var(--warning-overlay-light);
   border-radius: var(--radius-md);
   border: var(--border-width-thin) dashed var(--warning-400);
 }
 
 .btn-limit-reached {
-  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
-  color: #92400e;
-  border: var(--border-width-normal) solid #f59e0b;
+  background: linear-gradient(135deg, var(--warning-100) 0%, var(--warning-200) 100%);
+  color: var(--warning-800);
+  border: var(--border-width-normal) solid var(--warning-500);
   font-weight: 600;
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-md);
@@ -1208,10 +1208,10 @@
 }
 
 .btn-limit-reached:hover {
-  background: linear-gradient(135deg, #fed7aa 0%, #fbbf24 100%);
+  background: linear-gradient(135deg, var(--warning-200) 0%, var(--warning-400) 100%);
   transform: translateY(calc(-1 * var(--border-width-thin)));
   box-shadow: var(--shadow-warning);
-  border-color: #d97706;
+  border-color: var(--warning-600);
 }
 
 .btn-limit-reached:active {
@@ -1285,18 +1285,18 @@
   }
   
   .batch-actions.limit-reached {
-    background: rgba(251, 191, 36, 0.1);
-    border-color: rgba(251, 191, 36, 0.3);
+    background: var(--warning-overlay-light);
+    border-color: var(--warning-600);
   }
   
   .btn-limit-reached {
-    background: linear-gradient(135deg, rgba(254, 243, 199, 0.2) 0%, rgba(253, 215, 170, 0.2) 100%);
-    color: #fbbf24;
-    border-color: rgba(251, 191, 36, 0.5);
+    background: linear-gradient(135deg, var(--warning-overlay-light) 0%, var(--warning-overlay-light) 100%);
+    color: var(--warning-400);
+    border-color: var(--warning-400);
   }
   
   .btn-limit-reached:hover {
-    background: linear-gradient(135deg, rgba(253, 215, 170, 0.3) 0%, rgba(251, 191, 36, 0.3) 100%);
-    border-color: #fbbf24;
+    background: linear-gradient(135deg, var(--warning-overlay-light) 0%, var(--warning-overlay-light) 100%);
+    border-color: var(--warning-400);
   }
 }

@@ -244,19 +244,19 @@
 }
 
 .calendar-day.intensity-light {
-  background: linear-gradient(135deg, var(--surface-base) var(--gradient-start, 0%), rgba(var(--success-rgb), 0.08) var(--gradient-end, 100%));
+  background: linear-gradient(135deg, var(--surface-base) var(--gradient-start, 0%), rgba(var(--success-rgb), var(--alpha-3)) var(--gradient-end, 100%));
   border-color: var(--success-200);
 }
 
 .calendar-day.intensity-medium {
-  background: linear-gradient(135deg, var(--surface-base) var(--gradient-start, 0%), rgba(var(--success-rgb), 0.15) var(--gradient-end, 100%));
+  background: linear-gradient(135deg, var(--surface-base) var(--gradient-start, 0%), rgba(var(--success-rgb), var(--alpha-muted)) var(--gradient-end, 100%));
   border-color: var(--success-300);
 }
 
 .calendar-day.intensity-heavy {
-  background: linear-gradient(135deg, var(--surface-base) var(--gradient-start, 0%), rgba(var(--success-rgb), 0.25) var(--gradient-end, 100%));
+  background: linear-gradient(135deg, var(--surface-base) var(--gradient-start, 0%), rgba(var(--success-rgb), var(--alpha-4)) var(--gradient-end, 100%));
   border-color: var(--success-400);
-  box-shadow: 0 var(--space-1) var(--space-2) rgba(var(--success-rgb), 0.15);
+  box-shadow: 0 var(--space-1) var(--space-2) rgba(var(--success-rgb), var(--alpha-muted));
 }
 
 /* 日期數字 */
@@ -343,15 +343,15 @@
 }
 
 .legend-color.intensity-light {
-  background: rgba(var(--success-rgb), 0.15);
+  background: rgba(var(--success-rgb), var(--alpha-muted));
 }
 
 .legend-color.intensity-medium {
-  background: rgba(var(--success-rgb), 0.3);
+  background: rgba(var(--success-rgb), var(--alpha-focus));
 }
 
 .legend-color.intensity-heavy {
-  background: rgba(var(--success-rgb), 0.5);
+  background: rgba(var(--success-rgb), var(--alpha-6));
 }
 
 .legend-label {
@@ -378,7 +378,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--shadow-heavy);
   backdrop-filter: blur(var(--space-1));
 }
 
@@ -686,22 +686,22 @@
   }
   
   .calendar-day.today {
-    background: linear-gradient(135deg, var(--surface-elevated) 0%, rgba(var(--accent-rgb), 0.1) 100%);
+    background: linear-gradient(135deg, var(--surface-elevated) 0%, rgba(var(--accent-rgb), var(--alpha-3)) 100%);
     border-color: var(--accent-500);
   }
   
   .calendar-day.intensity-light {
-    background: linear-gradient(135deg, var(--surface-base) 0%, rgba(34, 197, 94, 0.1) 100%);
+    background: linear-gradient(135deg, var(--surface-base) 0%, var(--success-overlay-light) 100%);
     border-color: var(--success-800);
   }
   
   .calendar-day.intensity-medium {
-    background: linear-gradient(135deg, var(--surface-base) 0%, rgba(34, 197, 94, 0.2) 100%);
+    background: linear-gradient(135deg, var(--surface-base) 0%, rgba(var(--success-600-rgb), var(--alpha-4)) 100%);
     border-color: var(--success-700);
   }
   
   .calendar-day.intensity-heavy {
-    background: linear-gradient(135deg, var(--surface-base) 0%, rgba(34, 197, 94, 0.3) 100%);
+    background: linear-gradient(135deg, var(--surface-base) 0%, rgba(var(--success-600-rgb), var(--alpha-focus)) 100%);
     border-color: var(--success-600);
   }
   
@@ -710,7 +710,7 @@
   }
   
   .modal-overlay {
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--shadow-modal);
   }
   
   .review-item {
@@ -718,21 +718,21 @@
   }
   
   .review-item.completed {
-    background: rgba(34, 197, 94, 0.1);
+    background: var(--success-overlay-light);
   }
   
   .day-badge.pending {
-    background: rgba(239, 68, 68, 0.15);
+    background: var(--error-muted);
     color: var(--error-400);
   }
   
   .day-badge.completed {
-    background: rgba(34, 197, 94, 0.15);
+    background: rgba(var(--success-600-rgb), var(--alpha-muted));
     color: var(--success-400);
   }
   
   .day-badge.practice {
-    background: rgba(var(--accent-rgb), 0.15);
+    background: rgba(var(--accent-rgb), var(--alpha-muted));
     color: var(--accent-400);
   }
 }

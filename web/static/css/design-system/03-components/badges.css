@@ -38,49 +38,49 @@
 
 /* 主要變體 */
 .badge[data-variant="primary"] {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(var(--accent-400-rgb), var(--alpha-3)) 0%, rgba(var(--accent-400-rgb), var(--alpha-2)) 100%);
   color: var(--accent);
-  border-color: rgba(99, 102, 241, 0.2);
+  border-color: rgba(var(--accent-400-rgb), var(--alpha-4));
 }
 
 .badge[data-variant="primary"]:hover {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(var(--accent-400-rgb), var(--alpha-4));
   transform: translateY(calc(var(--space-1) * -0.25));
 }
 
 /* 成功變體 */
 .badge[data-variant="success"] {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+  background: linear-gradient(135deg, var(--success-overlay-subtle) 0%, rgba(16, 185, 129, var(--alpha-2)) 100%);
   color: var(--success);
-  border-color: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, var(--alpha-4));
 }
 
 /* 警告變體 */
 .badge[data-variant="warning"] {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(245, 158, 11, var(--alpha-3)) 0%, var(--warning-overlay-subtle) 100%);
   color: var(--warning);
-  border-color: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, var(--alpha-4));
 }
 
 /* 錯誤變體 */
 .badge[data-variant="error"] {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(239, 68, 68, var(--alpha-3)) 0%, var(--error-overlay-subtle) 100%);
   color: var(--error);
-  border-color: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, var(--alpha-4));
 }
 
 /* 信息變體 */
 .badge[data-variant="info"] {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, var(--alpha-3)) 0%, rgba(59, 130, 246, var(--alpha-2)) 100%);
   color: var(--info);
-  border-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, var(--alpha-4));
 }
 
 /* 中性變體 */
 .badge[data-variant="neutral"] {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(107, 114, 128, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(107, 114, 128, var(--alpha-3)) 0%, rgba(107, 114, 128, var(--alpha-2)) 100%);
   color: var(--text-muted);
-  border-color: rgba(107, 114, 128, 0.2);
+  border-color: rgba(107, 114, 128, var(--alpha-4));
 }
 
 /* 實心變體 */
@@ -114,54 +114,54 @@
 
 /* 錯誤分類徽章 */
 .badge[data-category="systematic"] {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(239, 68, 68, var(--alpha-muted)) 0%, rgba(239, 68, 68, var(--alpha-3)) 100%);
   color: var(--error);
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, var(--alpha-focus));
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
 
 .badge[data-category="isolated"] {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(245, 158, 11, var(--alpha-muted)) 0%, rgba(245, 158, 11, var(--alpha-3)) 100%);
   color: var(--warning);
-  border-color: rgba(245, 158, 11, 0.3);
+  border-color: rgba(245, 158, 11, var(--alpha-focus));
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
 
 .badge[data-category="enhancement"] {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(16, 185, 129, var(--alpha-muted)) 0%, rgba(16, 185, 129, var(--alpha-3)) 100%);
   color: var(--success);
-  border-color: rgba(16, 185, 129, 0.3);
+  border-color: rgba(16, 185, 129, var(--alpha-focus));
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
 
 .badge[data-category="other"] {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.15) 0%, rgba(107, 114, 128, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(107, 114, 128, var(--alpha-muted)) 0%, rgba(107, 114, 128, var(--alpha-3)) 100%);
   color: var(--text-muted);
-  border-color: rgba(107, 114, 128, 0.3);
+  border-color: rgba(107, 114, 128, var(--alpha-focus));
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
 
 /* 掌握度徽章 */
 .badge[data-mastery="low"] {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, var(--alpha-3));
   color: var(--error);
   border-color: transparent;
   backdrop-filter: blur(var(--space-2-5));
 }
 
 .badge[data-mastery="medium"] {
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(245, 158, 11, var(--alpha-3));
   color: var(--warning);
   border-color: transparent;
   backdrop-filter: blur(var(--space-2-5));
 }
 
 .badge[data-mastery="high"] {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, var(--alpha-3));
   color: var(--success);
   border-color: transparent;
   backdrop-filter: blur(var(--space-2-5));
@@ -241,7 +241,7 @@
   height: 1.125rem; /* 18px */
   padding: 0 var(--space-1);
   margin-left: var(--space-1);
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, var(--alpha-4));
   border-radius: var(--radius-full);
   font-size: 0.625rem;
   font-weight: var(--font-bold);
@@ -342,56 +342,56 @@
   }
   
   .badge[data-variant="primary"] {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0.15) 100%);
-    border-color: rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, rgba(var(--accent-400-rgb), var(--alpha-emphasis)) 0%, rgba(var(--accent-400-rgb), var(--alpha-muted)) 100%);
+    border-color: rgba(var(--accent-400-rgb), var(--alpha-5));
     color: var(--accent-200);
   }
   
   .badge[data-variant="success"] {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%);
-    border-color: rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, rgba(16, 185, 129, var(--alpha-emphasis)) 0%, rgba(16, 185, 129, var(--alpha-muted)) 100%);
+    border-color: rgba(16, 185, 129, var(--alpha-5));
     color: var(--success-emphasis);
   }
   
   .badge[data-variant="warning"] {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.15) 100%);
-    border-color: rgba(245, 158, 11, 0.4);
+    background: linear-gradient(135deg, rgba(245, 158, 11, var(--alpha-emphasis)) 0%, rgba(245, 158, 11, var(--alpha-muted)) 100%);
+    border-color: rgba(245, 158, 11, var(--alpha-5));
     color: var(--warning-emphasis);
   }
   
   .badge[data-variant="error"] {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.15) 100%);
-    border-color: rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, rgba(239, 68, 68, var(--alpha-emphasis)) 0%, rgba(239, 68, 68, var(--alpha-muted)) 100%);
+    border-color: rgba(239, 68, 68, var(--alpha-5));
     color: var(--error-emphasis);
   }
   
   /* Enhanced dark mode for error categories */
   .badge[data-category="systematic"] {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(239, 68, 68, 0.2) 100%);
-    border-color: rgba(239, 68, 68, 0.5);
+    background: linear-gradient(135deg, rgba(239, 68, 68, var(--alpha-focus)) 0%, rgba(239, 68, 68, var(--alpha-4)) 100%);
+    border-color: rgba(239, 68, 68, var(--alpha-6));
     color: var(--error-emphasis);
   }
   
   .badge[data-category="isolated"] {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%);
-    border-color: rgba(245, 158, 11, 0.5);
+    background: linear-gradient(135deg, rgba(245, 158, 11, var(--alpha-focus)) 0%, rgba(245, 158, 11, var(--alpha-4)) 100%);
+    border-color: rgba(245, 158, 11, var(--alpha-6));
     color: var(--warning-emphasis);
   }
   
   .badge[data-category="enhancement"] {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.2) 100%);
-    border-color: rgba(16, 185, 129, 0.5);
+    background: linear-gradient(135deg, rgba(16, 185, 129, var(--alpha-focus)) 0%, rgba(16, 185, 129, var(--alpha-4)) 100%);
+    border-color: rgba(16, 185, 129, var(--alpha-6));
     color: var(--success-emphasis);
   }
   
   .badge[data-category="other"] {
-    background: linear-gradient(135deg, rgba(107, 114, 128, 0.3) 0%, rgba(107, 114, 128, 0.2) 100%);
-    border-color: rgba(107, 114, 128, 0.5);
+    background: linear-gradient(135deg, rgba(107, 114, 128, var(--alpha-focus)) 0%, rgba(107, 114, 128, var(--alpha-4)) 100%);
+    border-color: rgba(107, 114, 128, var(--alpha-6));
     color: var(--text-secondary);
   }
   
   .badge-count {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, var(--alpha-3));
   }
 }
 

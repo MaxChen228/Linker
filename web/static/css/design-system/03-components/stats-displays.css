@@ -293,7 +293,7 @@
   }
   
   .stat-item[data-variant="primary"] {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, var(--surface-dark) 100%);
+    background: linear-gradient(135deg, rgba(99, 102, 241, var(--alpha-3)) 0%, var(--surface-dark) 100%);
   }
   
   .stat-item[data-variant="secondary"] {

@@ -164,12 +164,40 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                     INSERT INTO knowledge_points (key_point, category, subtype, explanation, original_phrase, correction, mastery_level, mistake_count, correct_count, created_at, last_seen, next_review, custom_notes, last_modified)
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id, created_at, last_modified
                 """
-                created_at = datetime.fromisoformat(entity.created_at) if entity.created_at else datetime.now()
-                last_seen = datetime.fromisoformat(entity.last_seen) if entity.last_seen else datetime.now()
-                next_review = datetime.fromisoformat(entity.next_review) if entity.next_review else None
-                last_modified = datetime.fromisoformat(entity.last_modified) if entity.last_modified else created_at
+                created_at = (
+                    datetime.fromisoformat(entity.created_at)
+                    if entity.created_at
+                    else datetime.now()
+                )
+                last_seen = (
+                    datetime.fromisoformat(entity.last_seen) if entity.last_seen else datetime.now()
+                )
+                next_review = (
+                    datetime.fromisoformat(entity.next_review) if entity.next_review else None
+                )
+                last_modified = (
+                    datetime.fromisoformat(entity.last_modified)
+                    if entity.last_modified
+                    else created_at
+                )
 
-                kp_row = await conn.fetchrow(kp_query, entity.key_point, entity.category.value, entity.subtype, entity.explanation, entity.original_phrase, entity.correction, entity.mastery_level, entity.mistake_count, entity.correct_count, created_at, last_seen, next_review, entity.custom_notes, last_modified)
+                kp_row = await conn.fetchrow(
+                    kp_query,
+                    entity.key_point,
+                    entity.category.value,
+                    entity.subtype,
+                    entity.explanation,
+                    entity.original_phrase,
+                    entity.correction,
+                    entity.mastery_level,
+                    entity.mistake_count,
+                    entity.correct_count,
+                    created_at,
+                    last_seen,
+                    next_review,
+                    entity.custom_notes,
+                    last_modified,
+                )
                 entity.id = kp_row["id"]
                 entity.created_at = kp_row["created_at"].isoformat()
                 entity.last_modified = kp_row["last_modified"].isoformat()
@@ -177,20 +205,36 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 if entity.original_error:
                     await conn.execute(
                         "INSERT INTO original_errors (knowledge_point_id, chinese_sentence, user_answer, correct_answer, timestamp) VALUES ($1, $2, $3, $4, $5)",
-                        entity.id, entity.original_error.chinese_sentence, entity.original_error.user_answer, entity.original_error.correct_answer, datetime.fromisoformat(entity.original_error.timestamp)
+                        entity.id,
+                        entity.original_error.chinese_sentence,
+                        entity.original_error.user_answer,
+                        entity.original_error.correct_answer,
+                        datetime.fromisoformat(entity.original_error.timestamp),
                     )
 
                 if entity.review_examples:
                     for example in entity.review_examples:
                         await conn.execute(
                             "INSERT INTO review_examples (knowledge_point_id, chinese_sentence, user_answer, correct_answer, is_correct, timestamp) VALUES ($1, $2, $3, $4, $5, $6)",
-                            entity.id, example.chinese_sentence, example.user_answer, example.correct_answer, example.is_correct, datetime.fromisoformat(example.timestamp)
+                            entity.id,
+                            example.chinese_sentence,
+                            example.user_answer,
+                            example.correct_answer,
+                            example.is_correct,
+                            datetime.fromisoformat(example.timestamp),
                         )
 
                 if entity.tags:
                     for tag_name in entity.tags:
-                        tag_id = await conn.fetchval("INSERT INTO tags (name) VALUES ($1) ON CONFLICT (name) DO UPDATE SET name = $1 RETURNING id", tag_name)
-                        await conn.execute("INSERT INTO knowledge_point_tags (knowledge_point_id, tag_id) VALUES ($1, $2) ON CONFLICT DO NOTHING", entity.id, tag_id)
+                        tag_id = await conn.fetchval(
+                            "INSERT INTO tags (name) VALUES ($1) ON CONFLICT (name) DO UPDATE SET name = $1 RETURNING id",
+                            tag_name,
+                        )
+                        await conn.execute(
+                            "INSERT INTO knowledge_point_tags (knowledge_point_id, tag_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+                            entity.id,
+                            tag_id,
+                        )
 
                 self.logger.info(f"成功創建知識點 {entity.id}: {entity.key_point}")
                 return entity
@@ -216,7 +260,22 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
         """
         async with self.connection() as conn:
             try:
-                last_modified = await conn.fetchval(query, entity.id, entity.key_point, entity.category.value, entity.subtype, entity.explanation, entity.original_phrase, entity.correction, entity.mastery_level, entity.mistake_count, entity.correct_count, datetime.now(), datetime.fromisoformat(entity.next_review) if entity.next_review else None, entity.custom_notes)
+                last_modified = await conn.fetchval(
+                    query,
+                    entity.id,
+                    entity.key_point,
+                    entity.category.value,
+                    entity.subtype,
+                    entity.explanation,
+                    entity.original_phrase,
+                    entity.correction,
+                    entity.mastery_level,
+                    entity.mistake_count,
+                    entity.correct_count,
+                    datetime.now(),
+                    datetime.fromisoformat(entity.next_review) if entity.next_review else None,
+                    entity.custom_notes,
+                )
                 if last_modified:
                     entity.last_modified = last_modified.isoformat()
                     return entity
@@ -300,7 +359,9 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
                 self._handle_database_error(e, f"find_due_for_review({limit})")
                 raise
 
-    async def find_by_category(self, category: str, subtype: Optional[str] = None) -> list[KnowledgePoint]:
+    async def find_by_category(
+        self, category: str, subtype: Optional[str] = None
+    ) -> list[KnowledgePoint]:
         """
         根據類別和子類別查詢知識點。
 
@@ -368,7 +429,15 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
         query = "INSERT INTO review_examples (knowledge_point_id, chinese_sentence, user_answer, correct_answer, is_correct, timestamp) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
         async with self.connection() as conn:
             try:
-                result = await conn.fetchval(query, knowledge_point_id, example.chinese_sentence, example.user_answer, example.correct_answer, example.is_correct, datetime.fromisoformat(example.timestamp))
+                result = await conn.fetchval(
+                    query,
+                    knowledge_point_id,
+                    example.chinese_sentence,
+                    example.user_answer,
+                    example.correct_answer,
+                    example.is_correct,
+                    datetime.fromisoformat(example.timestamp),
+                )
                 return bool(result)
             except Exception as e:
                 self._handle_database_error(e, f"add_review_example({knowledge_point_id})")
@@ -402,7 +471,11 @@ class KnowledgePointRepository(BaseRepository[KnowledgePoint]):
 
                 try:
                     practice_row = await conn.fetchrow(practice_query)
-                    practice_stats = dict(practice_row) if practice_row else {"total_practices": 0, "correct_count": 0}
+                    practice_stats = (
+                        dict(practice_row)
+                        if practice_row
+                        else {"total_practices": 0, "correct_count": 0}
+                    )
                 except asyncpg.UndefinedTableError:
                     self.logger.warning("'review_examples' 表不存在，練習統計將為 0。")
                     practice_stats = {"total_practices": 0, "correct_count": 0}

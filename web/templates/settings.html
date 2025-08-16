@@ -51,7 +51,7 @@
                         id="daily-limit-range" 
                         min="1" 
                         max="50" 
-                        value="{{ daily_limit_config.daily_limit }}"
+                        value="{{ daily_limit_config.daily_knowledge_limit }}"
                         class="limit-range"
                     >
                     <input 
@@ -59,7 +59,7 @@
                         id="daily-limit-number" 
                         min="1" 
                         max="50" 
-                        value="{{ daily_limit_config.daily_limit }}"
+                        value="{{ daily_limit_config.daily_knowledge_limit }}"
                         class="limit-number"
                     >
                     <span class="limit-unit">個/天</span>
@@ -133,8 +133,8 @@
                             <div class="bar enhancement" style="height: {{ (stat.enhancement_count / daily_stats.summary.current_limit * 100)|int }}%"></div>
                         </div>
                         <div class="bar-label">
-                            <div class="bar-date">{{ stat.date[-5:] }}</div>
-                            <div class="bar-count">{{ stat.total_count }}</div>
+                            <div class="bar-date">{{ stat.date.strftime('%m-%d') }}</div>
+                            <div class="bar-count">{{ stat.total_limited_count }}</div>
                         </div>
                     </div>
                     {% endfor %}

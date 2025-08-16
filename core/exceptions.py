@@ -25,6 +25,7 @@ logger = get_module_logger(__name__)
 
 class ErrorSeverity(Enum):
     """定義錯誤的嚴重性級別。"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -34,6 +35,7 @@ class ErrorSeverity(Enum):
 
 class ErrorCategory(Enum):
     """定義錯誤的宏觀分類，用於錯誤路由和處理。"""
+
     SYSTEM = "system"
     DATABASE = "database"
     FILE_IO = "file_io"
@@ -96,109 +98,232 @@ class LinkerError(Exception):
         }
 
     def __str__(self):
-        return f"[{self.error_code}] {self.message}" + (f" - Details: {self.details}" if self.details else "")
+        return f"[{self.error_code}] {self.message}" + (
+            f" - Details: {self.details}" if self.details else ""
+        )
 
 
 # --- 特定領域的異常類別 ---
 
+
 class APIError(LinkerError):
     """表示與外部 API 互動時發生的錯誤。"""
-    def __init__(self, message: str, api_name: str, status_code: Optional[int] = None, response: Optional[Any] = None):
-        super().__init__(message, error_code="API_ERROR", category=ErrorCategory.NETWORK, details={
-            "api_name": api_name, "status_code": status_code, "response": str(response)[:500] if response else None
-        })
+
+    def __init__(
+        self,
+        message: str,
+        api_name: str,
+        status_code: Optional[int] = None,
+        response: Optional[Any] = None,
+    ):
+        super().__init__(
+            message,
+            error_code="API_ERROR",
+            category=ErrorCategory.NETWORK,
+            details={
+                "api_name": api_name,
+                "status_code": status_code,
+                "response": str(response)[:500] if response else None,
+            },
+        )
+
 
 class GeminiAPIError(APIError):
     """表示與 Gemini API 互動時的特定錯誤。"""
+
     def __init__(self, message: str, model: Optional[str] = None, prompt: Optional[str] = None):
         super().__init__(message, api_name="Gemini")
         self.details.update({"model": model, "prompt_preview": prompt[:200] if prompt else None})
 
+
 class DataError(LinkerError):
     """表示資料處理或格式相關的錯誤。"""
-    def __init__(self, message: str, data_type: Optional[str] = None, file_path: Optional[str] = None):
-        super().__init__(message, error_code="DATA_ERROR", category=ErrorCategory.VALIDATION, details={
-            "data_type": data_type, "file_path": file_path
-        })
+
+    def __init__(
+        self, message: str, data_type: Optional[str] = None, file_path: Optional[str] = None
+    ):
+        super().__init__(
+            message,
+            error_code="DATA_ERROR",
+            category=ErrorCategory.VALIDATION,
+            details={"data_type": data_type, "file_path": file_path},
+        )
+
 
 class ValidationError(LinkerError):
     """表示資料驗證失敗的錯誤。"""
+
     def __init__(self, message: str, field: str, value: Any, expected_type: Optional[str] = None):
-        super().__init__(message, error_code="VALIDATION_ERROR", category=ErrorCategory.VALIDATION, details={
-            "field": field, "value": str(value), "expected_type": expected_type
-        })
+        super().__init__(
+            message,
+            error_code="VALIDATION_ERROR",
+            category=ErrorCategory.VALIDATION,
+            details={"field": field, "value": str(value), "expected_type": expected_type},
+        )
+
 
 class ConfigError(LinkerError):
     """表示應用程式配置錯誤。"""
+
     def __init__(self, message: str, config_key: str, config_file: Optional[str] = None):
-        super().__init__(message, error_code="CONFIG_ERROR", category=ErrorCategory.SYSTEM, severity=ErrorSeverity.CRITICAL, details={
-            "config_key": config_key, "config_file": config_file
-        })
+        super().__init__(
+            message,
+            error_code="CONFIG_ERROR",
+            category=ErrorCategory.SYSTEM,
+            severity=ErrorSeverity.CRITICAL,
+            details={"config_key": config_key, "config_file": config_file},
+        )
+
 
 class FileOperationError(LinkerError):
     """表示檔案系統操作（讀、寫、刪除）失敗。"""
-    def __init__(self, message: str, operation: str, file_path: str, original_error: Optional[Exception] = None):
-        super().__init__(message, error_code="FILE_OPERATION_ERROR", category=ErrorCategory.FILE_IO, details={
-            "operation": operation, "file_path": file_path, "original_error": str(original_error)
-        })
+
+    def __init__(
+        self,
+        message: str,
+        operation: str,
+        file_path: str,
+        original_error: Optional[Exception] = None,
+    ):
+        super().__init__(
+            message,
+            error_code="FILE_OPERATION_ERROR",
+            category=ErrorCategory.FILE_IO,
+            details={
+                "operation": operation,
+                "file_path": file_path,
+                "original_error": str(original_error),
+            },
+        )
+
 
 class ParseError(LinkerError):
     """表示解析資料（如 JSON、XML）失敗。"""
-    def __init__(self, message: str, parse_type: str, content: Optional[str] = None, original_error: Optional[Exception] = None):
-        super().__init__(message, error_code="PARSE_ERROR", category=ErrorCategory.VALIDATION, details={
-            "parse_type": parse_type, "content_preview": content[:100] if content else None, "original_error": str(original_error)
-        })
+
+    def __init__(
+        self,
+        message: str,
+        parse_type: str,
+        content: Optional[str] = None,
+        original_error: Optional[Exception] = None,
+    ):
+        super().__init__(
+            message,
+            error_code="PARSE_ERROR",
+            category=ErrorCategory.VALIDATION,
+            details={
+                "parse_type": parse_type,
+                "content_preview": content[:100] if content else None,
+                "original_error": str(original_error),
+            },
+        )
+
 
 class UserInputError(LinkerError):
     """表示使用者輸入無效。"""
-    def __init__(self, message: str, input_type: str, user_input: Any, valid_options: Optional[list] = None):
-        super().__init__(message, error_code="USER_INPUT_ERROR", category=ErrorCategory.BUSINESS, severity=ErrorSeverity.LOW, details={
-            "input_type": input_type, "user_input": str(user_input), "valid_options": valid_options
-        })
+
+    def __init__(
+        self, message: str, input_type: str, user_input: Any, valid_options: Optional[list] = None
+    ):
+        super().__init__(
+            message,
+            error_code="USER_INPUT_ERROR",
+            category=ErrorCategory.BUSINESS,
+            severity=ErrorSeverity.LOW,
+            details={
+                "input_type": input_type,
+                "user_input": str(user_input),
+                "valid_options": valid_options,
+            },
+        )
+
 
 class KnowledgeNotFoundError(LinkerError):
     """表示找不到指定的知識點。"""
+
     def __init__(self, point_id: Any, message: Optional[str] = None):
-        super().__init__(message or f"知識點 ID '{point_id}' 不存在。", error_code="KNOWLEDGE_NOT_FOUND", category=ErrorCategory.BUSINESS, details={"point_id": point_id})
+        super().__init__(
+            message or f"知識點 ID '{point_id}' 不存在。",
+            error_code="KNOWLEDGE_NOT_FOUND",
+            category=ErrorCategory.BUSINESS,
+            details={"point_id": point_id},
+        )
+
 
 # --- 資料庫和遷移相關異常 ---
 
+
 class DatabaseError(LinkerError):
     """表示資料庫操作相關的錯誤。"""
-    def __init__(self, message: str, operation: str, original_error: Optional[Exception] = None, **kwargs):
-        super().__init__(message, error_code="DATABASE_ERROR", category=ErrorCategory.DATABASE, severity=ErrorSeverity.HIGH, details={
-            "operation": operation, "original_error": str(original_error), **kwargs
-        })
+
+    def __init__(
+        self, message: str, operation: str, original_error: Optional[Exception] = None, **kwargs
+    ):
+        super().__init__(
+            message,
+            error_code="DATABASE_ERROR",
+            category=ErrorCategory.DATABASE,
+            severity=ErrorSeverity.HIGH,
+            details={"operation": operation, "original_error": str(original_error), **kwargs},
+        )
+
 
 class MigrationError(LinkerError):
     """表示資料庫遷移失敗。"""
-    def __init__(self, message: str, migration_step: str, original_error: Optional[Exception] = None):
-        super().__init__(message, error_code="MIGRATION_ERROR", category=ErrorCategory.DATABASE, severity=ErrorSeverity.CRITICAL, details={
-            "migration_step": migration_step, "original_error": str(original_error)
-        })
+
+    def __init__(
+        self, message: str, migration_step: str, original_error: Optional[Exception] = None
+    ):
+        super().__init__(
+            message,
+            error_code="MIGRATION_ERROR",
+            category=ErrorCategory.DATABASE,
+            severity=ErrorSeverity.CRITICAL,
+            details={"migration_step": migration_step, "original_error": str(original_error)},
+        )
+
 
 # --- 異步和重試相關異常 ---
 
+
 class AsyncOperationError(LinkerError):
     """表示異步操作失敗。"""
+
     def __init__(self, message: str, operation: str, original_error: Optional[Exception] = None):
-        super().__init__(message, error_code="ASYNC_OPERATION_ERROR", category=ErrorCategory.SYSTEM, details={
-            "operation": operation, "original_error": str(original_error)
-        })
+        super().__init__(
+            message,
+            error_code="ASYNC_OPERATION_ERROR",
+            category=ErrorCategory.SYSTEM,
+            details={"operation": operation, "original_error": str(original_error)},
+        )
+
 
 class RecoverableError(LinkerError):
     """表示一個可重試的、暫時性的錯誤。"""
+
     def __init__(self, message: str, retry_count: int, original_error: Optional[Exception] = None):
-        super().__init__(message, error_code="RECOVERABLE_ERROR", category=ErrorCategory.CONCURRENCY, severity=ErrorSeverity.MEDIUM, details={
-            "retry_count": retry_count, "original_error": str(original_error)
-        })
+        super().__init__(
+            message,
+            error_code="RECOVERABLE_ERROR",
+            category=ErrorCategory.CONCURRENCY,
+            severity=ErrorSeverity.MEDIUM,
+            details={"retry_count": retry_count, "original_error": str(original_error)},
+        )
+
 
 # --- 重試裝飾器 ---
 
-def with_retry(max_retries: int = 3, backoff_delay: float = 1.0, exceptions: tuple = (Exception,), exponential_backoff: bool = True):
+
+def with_retry(
+    max_retries: int = 3,
+    backoff_delay: float = 1.0,
+    exceptions: tuple = (Exception,),
+    exponential_backoff: bool = True,
+):
     """
     一個同步函數的重試裝飾器，支援指數退避。
     """
+
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -207,18 +332,33 @@ def with_retry(max_retries: int = 3, backoff_delay: float = 1.0, exceptions: tup
                     return func(*args, **kwargs)
                 except exceptions as e:
                     if attempt == max_retries:
-                        raise RecoverableError(f"函數 {func.__name__} 在 {max_retries} 次重試後失敗。", retry_count=attempt, original_error=e) from e
-                    delay = backoff_delay * (2 ** attempt if exponential_backoff else 1)
-                    logger.warning(f"函數 {func.__name__} 發生錯誤，將在 {delay:.2f} 秒後重試 (第 {attempt + 1} 次): {e}")
+                        raise RecoverableError(
+                            f"函數 {func.__name__} 在 {max_retries} 次重試後失敗。",
+                            retry_count=attempt,
+                            original_error=e,
+                        ) from e
+                    delay = backoff_delay * (2**attempt if exponential_backoff else 1)
+                    logger.warning(
+                        f"函數 {func.__name__} 發生錯誤，將在 {delay:.2f} 秒後重試 (第 {attempt + 1} 次): {e}"
+                    )
                     time.sleep(delay)
             return None
+
         return wrapper
+
     return decorator
 
-def with_async_retry(max_retries: int = 3, backoff_delay: float = 1.0, exceptions: tuple = (Exception,), exponential_backoff: bool = True):
+
+def with_async_retry(
+    max_retries: int = 3,
+    backoff_delay: float = 1.0,
+    exceptions: tuple = (Exception,),
+    exponential_backoff: bool = True,
+):
     """
     一個異步函數的重試裝飾器，支援指數退避。
     """
+
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
@@ -227,41 +367,80 @@ def with_async_retry(max_retries: int = 3, backoff_delay: float = 1.0, exception
                     return await func(*args, **kwargs)
                 except exceptions as e:
                     if attempt == max_retries:
-                        raise AsyncOperationError(f"異步函數 {func.__name__} 在 {max_retries} 次重試後失敗。", operation=func.__name__, original_error=e) from e
-                    delay = backoff_delay * (2 ** attempt if exponential_backoff else 1)
-                    logger.warning(f"異步函數 {func.__name__} 發生錯誤，將在 {delay:.2f} 秒後重試 (第 {attempt + 1} 次): {e}")
+                        raise AsyncOperationError(
+                            f"異步函數 {func.__name__} 在 {max_retries} 次重試後失敗。",
+                            operation=func.__name__,
+                            original_error=e,
+                        ) from e
+                    delay = backoff_delay * (2**attempt if exponential_backoff else 1)
+                    logger.warning(
+                        f"異步函數 {func.__name__} 發生錯誤，將在 {delay:.2f} 秒後重試 (第 {attempt + 1} 次): {e}"
+                    )
                     await asyncio.sleep(delay)
             return None
+
         return wrapper
+
     return decorator
+
 
 # --- 新一代統一錯誤類別 ---
 
+
 class UnifiedError(LinkerError):
     """新一代的統一錯誤類別，建議所有新的錯誤處理都使用此類別或其子類。"""
+
     pass
+
 
 class SystemError(UnifiedError):
     """表示嚴重的系統級錯誤。"""
+
     def __init__(self, message: str, **kwargs):
-        super().__init__(message, error_code="SYSTEM_ERROR", category=ErrorCategory.SYSTEM, severity=ErrorSeverity.CRITICAL, **kwargs)
+        super().__init__(
+            message,
+            error_code="SYSTEM_ERROR",
+            category=ErrorCategory.SYSTEM,
+            severity=ErrorSeverity.CRITICAL,
+            **kwargs,
+        )
+
 
 class FileIOError(UnifiedError):
     """表示檔案 I/O 錯誤。"""
+
     def __init__(self, message: str, **kwargs):
-        super().__init__(message, error_code="FILE_IO_ERROR", category=ErrorCategory.FILE_IO, **kwargs)
+        super().__init__(
+            message, error_code="FILE_IO_ERROR", category=ErrorCategory.FILE_IO, **kwargs
+        )
+
 
 class NetworkError(UnifiedError):
     """表示網路相關錯誤。"""
+
     def __init__(self, message: str, **kwargs):
-        super().__init__(message, error_code="NETWORK_ERROR", category=ErrorCategory.NETWORK, **kwargs)
+        super().__init__(
+            message, error_code="NETWORK_ERROR", category=ErrorCategory.NETWORK, **kwargs
+        )
+
 
 class BusinessLogicError(UnifiedError):
     """表示違反業務邏輯的錯誤。"""
+
     def __init__(self, message: str, **kwargs):
-        super().__init__(message, error_code="BUSINESS_LOGIC_ERROR", category=ErrorCategory.BUSINESS, severity=ErrorSeverity.LOW, **kwargs)
+        super().__init__(
+            message,
+            error_code="BUSINESS_LOGIC_ERROR",
+            category=ErrorCategory.BUSINESS,
+            severity=ErrorSeverity.LOW,
+            **kwargs,
+        )
+
 
 class ConcurrencyError(UnifiedError):
     """表示並發相關的錯誤，例如資源鎖定失敗。"""
+
     def __init__(self, message: str, **kwargs):
-        super().__init__(message, error_code="CONCURRENCY_ERROR", category=ErrorCategory.CONCURRENCY, **kwargs)
+        super().__init__(
+            message, error_code="CONCURRENCY_ERROR", category=ErrorCategory.CONCURRENCY, **kwargs
+        )

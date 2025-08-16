@@ -11,6 +11,21 @@
 :root {
   /* ===== LAYER 1: 原始調色盤 ===== */
   
+  /* ========== Transparency Alpha Levels ========== */
+  /* 系統化透明度級別 - 用於各種覆蓋、陰影和背景效果 */
+  --alpha-1: 0.02;   /* 極淡 - 微妙的背景覆蓋 */
+  --alpha-2: 0.05;   /* 淡 - 輕微的懸停效果 */
+  --alpha-3: 0.1;    /* 輕 - 標準的背景覆蓋和輕陰影 */
+  --alpha-4: 0.2;    /* 中等 - 明顯的背景效果 */
+  --alpha-5: 0.4;    /* 中強 - 明顯的覆蓋效果 */
+  --alpha-6: 0.5;    /* 強 - 半透明效果 */
+  --alpha-7: 0.75;   /* 很強 - 模態背景覆蓋 */
+  --alpha-8: 0.9;    /* 極強 - 幾乎不透明的覆蓋 */
+  --alpha-focus: 0.3; /* 聚焦 - 聚焦環和狀態指示 */
+  --alpha-muted: 0.15; /* 柔和 - 較明顯的彩色覆蓋 */
+  --alpha-glass-light: 0.7; /* 玻璃輕 - 輕度玻璃態效果 */
+  --alpha-glass-heavy: 0.8; /* 玻璃重 - 重度玻璃態效果 */
+
   /* ========== Grayscale ========== */
   --gray-50: #fafafa;
   --gray-50-rgb: 250, 250, 250;
@@ -79,6 +94,31 @@
   --error-800: #991b1b;
   --error-900: #7f1d1d;
 
+  /* ========== Shadow Color System ========== */
+  /* 系統化陰影顏色 - 基於透明度令牌的黑色陰影系統 */
+  --shadow-subtle: rgba(0, 0, 0, var(--alpha-2));    /* 極淡陰影 - 微妙的元素分離 */
+  --shadow-light: rgba(0, 0, 0, var(--alpha-3));     /* 輕陰影 - 卡片、按鈕等標準陰影 */
+  --shadow-medium: rgba(0, 0, 0, var(--alpha-4));    /* 中等陰影 - 彈出菜單、下拉框 */
+  --shadow-heavy: rgba(0, 0, 0, var(--alpha-6));     /* 重陰影 - 強調元素 */
+  --shadow-modal: rgba(0, 0, 0, var(--alpha-7));     /* 模態陰影 - 模態對話框背景 */
+
+  /* ========== Overlay Background System ========== */
+  /* 系統化覆蓋背景 - 基於透明度令牌的白色覆蓋系統 */
+  --overlay-subtle: rgba(255, 255, 255, var(--alpha-2));   /* 微妙覆蓋 - 懸停狀態 */
+  --overlay-light: rgba(255, 255, 255, var(--alpha-3));    /* 輕覆蓋 - 標準背景覆蓋 */
+  --overlay-medium: rgba(255, 255, 255, var(--alpha-8));   /* 強覆蓋 - 內容容器背景 */
+
+  /* ========== Semantic Color Overlays ========== */
+  /* 語義色彩的透明覆蓋版本 - 用於背景提示和狀態指示 */
+  --success-overlay-subtle: rgba(16, 185, 129, var(--alpha-1));      /* 成功色微妙覆蓋 */
+  --success-overlay-light: rgba(16, 185, 129, var(--alpha-3));       /* 成功色輕覆蓋 */
+  --warning-overlay-subtle: rgba(245, 158, 11, var(--alpha-1));      /* 警告色微妙覆蓋 */
+  --warning-overlay-light: rgba(245, 158, 11, var(--alpha-3));       /* 警告色輕覆蓋 */
+  --error-overlay-subtle: rgba(239, 68, 68, var(--alpha-1));         /* 錯誤色微妙覆蓋 */
+  --error-overlay-light: rgba(239, 68, 68, var(--alpha-3));          /* 錯誤色輕覆蓋 */
+  --primary-overlay-subtle: rgba(79, 70, 229, var(--alpha-1));       /* 主色微妙覆蓋 */
+  --primary-overlay-light: rgba(79, 70, 229, var(--alpha-3));        /* 主色輕覆蓋 */
+
   /* ===== LAYER 2: 語義組合層 ===== */
   
   /* ========== Primary Color System ========== */
@@ -132,8 +172,8 @@
   --surface-subtle: var(--gray-100);
   --surface-muted: var(--gray-200);
   --surface-emphasis: var(--gray-900);
-  --surface-overlay: rgba(255, 255, 255, 0.95);
-  --surface-glass: rgba(255, 255, 255, 0.7);
+  --surface-overlay: var(--overlay-medium);
+  --surface-glass: rgba(255, 255, 255, var(--alpha-glass-light));
   
   /* ========== Text Color System ========== */
   --text-primary: var(--gray-900);
@@ -217,14 +257,14 @@
   --bg-primary: var(--surface-base);
   --bg-secondary: var(--surface-elevated);
   --bg-tertiary: var(--surface-muted);
-  --bg-overlay: rgba(0, 0, 0, 0.4);
+  --bg-overlay: var(--shadow-heavy);
   --bg-accent-subtle: var(--primary-light);
   --bg-gray-subtle: var(--gray-50);
   
   /* ========== Legacy Shadow Colors ========== */
-  --shadow-color: rgba(0, 0, 0, 0.08);
-  --shadow-color-light: rgba(0, 0, 0, 0.04);
-  --shadow-color-dark: rgba(0, 0, 0, 0.12);
+  --shadow-color: var(--shadow-light);
+  --shadow-color-light: var(--shadow-subtle);
+  --shadow-color-dark: var(--shadow-medium);
   
   /* ========== Legacy RGB Values ========== */
   --accent-600-rgb: 79, 70, 229;
@@ -243,45 +283,45 @@
     --primary: var(--accent-600);
     --primary-hover: var(--accent-400);
     --primary-active: var(--accent-300);
-    --primary-light: rgba(99, 102, 241, 0.1);
-    --primary-subtle: rgba(99, 102, 241, 0.05);
-    --primary-muted: rgba(99, 102, 241, 0.15);
+    --primary-light: var(--primary-overlay-light);
+    --primary-subtle: var(--primary-overlay-subtle);
+    --primary-muted: rgba(99, 102, 241, var(--alpha-muted));
     --primary-emphasis: var(--accent-200);
     
     /* ========== Success Color System (Dark) ========== */
     --success: var(--success-600);
     --success-hover: var(--success-400);
     --success-active: var(--success-300);
-    --success-light: rgba(16, 185, 129, 0.1);
-    --success-subtle: rgba(16, 185, 129, 0.05);
-    --success-muted: rgba(16, 185, 129, 0.15);
+    --success-light: var(--success-overlay-light);
+    --success-subtle: var(--success-overlay-subtle);
+    --success-muted: rgba(16, 185, 129, var(--alpha-muted));
     --success-emphasis: var(--success-200);
     
     /* ========== Warning Color System (Dark) ========== */
     --warning: var(--warning-700);
     --warning-hover: var(--warning-400);
     --warning-active: var(--warning-300);
-    --warning-light: rgba(245, 158, 11, 0.1);
-    --warning-subtle: rgba(245, 158, 11, 0.05);
-    --warning-muted: rgba(245, 158, 11, 0.15);
+    --warning-light: var(--warning-overlay-light);
+    --warning-subtle: var(--warning-overlay-subtle);
+    --warning-muted: rgba(245, 158, 11, var(--alpha-muted));
     --warning-emphasis: var(--warning-200);
     
     /* ========== Error Color System (Dark) ========== */
     --error: var(--error-600);
     --error-hover: var(--error-400);
     --error-active: var(--error-300);
-    --error-light: rgba(239, 68, 68, 0.1);
-    --error-subtle: rgba(239, 68, 68, 0.05);
-    --error-muted: rgba(239, 68, 68, 0.15);
+    --error-light: var(--error-overlay-light);
+    --error-subtle: var(--error-overlay-subtle);
+    --error-muted: rgba(239, 68, 68, var(--alpha-muted));
     --error-emphasis: var(--error-200);
     
     /* ========== Info Color System (Dark) ========== */
     --info: var(--accent-400);
     --info-hover: var(--accent-300);
     --info-active: var(--accent-200);
-    --info-light: rgba(129, 140, 248, 0.1);
-    --info-subtle: rgba(129, 140, 248, 0.05);
-    --info-muted: rgba(129, 140, 248, 0.15);
+    --info-light: rgba(129, 140, 248, var(--alpha-3));
+    --info-subtle: rgba(129, 140, 248, var(--alpha-2));
+    --info-muted: rgba(129, 140, 248, var(--alpha-muted));
     --info-emphasis: var(--accent-200);
     
     /* ========== Surface Color System (Dark) ========== */
@@ -290,8 +330,8 @@
     --surface-subtle: #1f1f23;
     --surface-muted: #3f3f46;
     --surface-emphasis: #fafafa;
-    --surface-overlay: rgba(24, 24, 27, 0.9);
-    --surface-glass: rgba(24, 24, 27, 0.8);
+    --surface-overlay: rgba(24, 24, 27, var(--alpha-8));
+    --surface-glass: rgba(24, 24, 27, var(--alpha-glass-heavy));
     
     /* ========== Text Color System (Dark) ========== */
     --text-primary: #fafafa;
@@ -318,31 +358,31 @@
     --border-error: var(--error-600);
     
     /* ========== Interactive State System (Dark) ========== */
-    --hover-bg: rgba(255, 255, 255, 0.05);
-    --hover-bg-subtle: rgba(255, 255, 255, 0.02);
+    --hover-bg: rgba(255, 255, 255, var(--alpha-2));
+    --hover-bg-subtle: rgba(255, 255, 255, var(--alpha-1));
     --hover-border: var(--gray-600);
-    --active-bg: rgba(255, 255, 255, 0.1);
+    --active-bg: rgba(255, 255, 255, var(--alpha-3));
     --active-border: var(--gray-500);
-    --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.3);
-    --focus-ring-error: 0 0 0 3px rgba(239, 68, 68, 0.3);
-    --focus-ring-success: 0 0 0 3px rgba(16, 185, 129, 0.3);
-    --focus-ring-warning: 0 0 0 3px rgba(245, 158, 11, 0.3);
+    --focus-ring: 0 0 0 3px rgba(129, 140, 248, var(--alpha-focus));
+    --focus-ring-error: 0 0 0 3px rgba(239, 68, 68, var(--alpha-focus));
+    --focus-ring-success: 0 0 0 3px rgba(16, 185, 129, var(--alpha-focus));
+    --focus-ring-warning: 0 0 0 3px rgba(245, 158, 11, var(--alpha-focus));
 
     /* ===== LAYER 3: 暗色模式使用場景（向後兼容） ===== */
     
     /* ========== Legacy Colors Updated for Dark Mode ========== */
     --bg-accent-subtle: var(--primary-light);
     --bg-gray-subtle: var(--gray-900);
-    --shadow-color: rgba(0, 0, 0, 0.3);
-    --shadow-color-light: rgba(0, 0, 0, 0.2);
-    --shadow-color-dark: rgba(0, 0, 0, 0.4);
+    --shadow-color: rgba(0, 0, 0, var(--alpha-focus));
+    --shadow-color-light: rgba(0, 0, 0, var(--alpha-4));
+    --shadow-color-dark: rgba(0, 0, 0, var(--alpha-5));
     
     /* Glass morphism border for dark mode */
-    --glass-border-dark: rgba(255, 255, 255, 0.1);
+    --glass-border-dark: rgba(255, 255, 255, var(--alpha-3));
     
     /* Additional dark mode specific variables */
     --surface-dark: #0f0f11;
-    --hover-bg-dark: rgba(0, 0, 0, 0.3);
+    --hover-bg-dark: rgba(0, 0, 0, var(--alpha-focus));
   }
 }
 

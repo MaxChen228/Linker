@@ -119,7 +119,9 @@ class ErrorHandler:
             MemoryError: (ErrorCategory.SYSTEM, "MEMORY_ERROR", ErrorSeverity.CRITICAL),
         }
         error_type = type(error)
-        category, code, severity = error_mappings.get(error_type, (ErrorCategory.UNKNOWN, "UNKNOWN_ERROR", ErrorSeverity.MEDIUM))
+        category, code, severity = error_mappings.get(
+            error_type, (ErrorCategory.UNKNOWN, "UNKNOWN_ERROR", ErrorSeverity.MEDIUM)
+        )
 
         return UnifiedError(
             message=str(error),
@@ -133,9 +135,17 @@ class ErrorHandler:
     def _get_recovery_suggestions(self, category: ErrorCategory) -> list[str]:
         """根據錯誤類別提供通用的恢復建議。"""
         suggestions = {
-            ErrorCategory.DATABASE: ["檢查資料庫服務是否正在運行", "確認資料庫連接配置是否正確", "稍後重試"],
+            ErrorCategory.DATABASE: [
+                "檢查資料庫服務是否正在運行",
+                "確認資料庫連接配置是否正確",
+                "稍後重試",
+            ],
             ErrorCategory.FILE_IO: ["檢查文件路徑和權限", "確認磁碟空間是否充足"],
-            ErrorCategory.NETWORK: ["檢查您的網路連線", "確認遠端服務是否可用", "檢查防火牆或代理設定"],
+            ErrorCategory.NETWORK: [
+                "檢查您的網路連線",
+                "確認遠端服務是否可用",
+                "檢查防火牆或代理設定",
+            ],
             ErrorCategory.VALIDATION: ["檢查輸入的資料格式和內容是否符合要求"],
             ErrorCategory.CONCURRENCY: ["系統忙碌，請稍後重試", "避免同時提交重複的操作"],
         }
@@ -143,9 +153,18 @@ class ErrorHandler:
 
     def _should_fallback(self, error: UnifiedError) -> bool:
         """根據錯誤的類別和嚴重性，判斷是否應觸發降級策略。"""
-        fallback_categories = {ErrorCategory.DATABASE, ErrorCategory.NETWORK, ErrorCategory.CONCURRENCY, ErrorCategory.SYSTEM}
+        fallback_categories = {
+            ErrorCategory.DATABASE,
+            ErrorCategory.NETWORK,
+            ErrorCategory.CONCURRENCY,
+            ErrorCategory.SYSTEM,
+        }
         fallback_severities = {ErrorSeverity.HIGH, ErrorSeverity.MEDIUM}
-        return error.category in fallback_categories and error.severity in fallback_severities and self._fallback_enabled
+        return (
+            error.category in fallback_categories
+            and error.severity in fallback_severities
+            and self._fallback_enabled
+        )
 
     def _log_error(self, error: UnifiedError, operation: str) -> None:
         """根據錯誤的嚴重性，選擇合適的日誌級別來記錄錯誤。"""
@@ -172,7 +191,10 @@ class ErrorHandler:
 
 
 def with_error_handling(
-    operation: str = "", fallback_result: Any = None, mode: str = "auto", enable_fallback: bool = True
+    operation: str = "",
+    fallback_result: Any = None,
+    mode: str = "auto",
+    enable_fallback: bool = True,
 ):
     """
     一個裝飾器，用於將統一的錯誤處理邏輯應用於同步或異步函數。
@@ -183,6 +205,7 @@ def with_error_handling(
         mode: 錯誤處理器的模式，'auto' 會嘗試自動檢測。
         enable_fallback: 是否為此特定操作啟用降級。
     """
+
     def decorator(func: Callable):
         handler = ErrorHandler(mode)
         if not enable_fallback:
@@ -193,7 +216,9 @@ def with_error_handling(
             try:
                 return await func(*args, **kwargs)
             except Exception as e:
-                error_response = handler.handle_error(e, operation or func.__name__, fallback_result)
+                error_response = handler.handle_error(
+                    e, operation or func.__name__, fallback_result
+                )
                 if error_response.get("fallback_used"):
                     return error_response["fallback_result"]
                 error_info = error_response["error"]
@@ -204,7 +229,9 @@ def with_error_handling(
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                error_response = handler.handle_error(e, operation or func.__name__, fallback_result)
+                error_response = handler.handle_error(
+                    e, operation or func.__name__, fallback_result
+                )
                 if error_response.get("fallback_used"):
                     return error_response["fallback_result"]
                 error_info = error_response["error"]
@@ -215,7 +242,9 @@ def with_error_handling(
     return decorator
 
 
-def create_error_response(error: Exception, operation: str = "unknown", mode: str = "unknown") -> dict[str, Any]:
+def create_error_response(
+    error: Exception, operation: str = "unknown", mode: str = "unknown"
+) -> dict[str, Any]:
     """
     一個便捷函數，用於創建標準化的錯誤回應字典。
 
@@ -231,7 +260,9 @@ def create_error_response(error: Exception, operation: str = "unknown", mode: st
     return handler.handle_error(error, operation)
 
 
-def log_error_with_context(error: Exception, context: dict[str, Any], operation: str = "unknown", mode: str = "unknown") -> None:
+def log_error_with_context(
+    error: Exception, context: dict[str, Any], operation: str = "unknown", mode: str = "unknown"
+) -> None:
     """
     記錄帶有額外上下文的錯誤日誌。
 

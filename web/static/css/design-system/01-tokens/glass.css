@@ -3,62 +3,115 @@
    ================================================ */
 
 :root {
+  /* ========== Transparency Token System ========== */
+  /* Base Alpha Values for consistent transparency */
+  --alpha-95: 0.95;
+  --alpha-90: 0.9;
+  --alpha-85: 0.85;
+  --alpha-80: 0.8;
+  --alpha-70: 0.7;
+  --alpha-60: 0.6;
+  --alpha-50: 0.5;
+  --alpha-40: 0.4;
+  --alpha-30: 0.3;
+  --alpha-20: 0.2;
+  --alpha-10: 0.1;
+  --alpha-5: 0.05;
+  --alpha-2: 0.02;
+
+  /* ========== Color + Alpha Combinations ========== */
+  /* White Transparency Scale */
+  --white-95: rgba(255, 255, 255, var(--alpha-95));
+  --white-90: rgba(255, 255, 255, var(--alpha-90));
+  --white-85: rgba(255, 255, 255, var(--alpha-85));
+  --white-80: rgba(255, 255, 255, var(--alpha-80));
+  --white-70: rgba(255, 255, 255, var(--alpha-70));
+  --white-60: rgba(255, 255, 255, var(--alpha-60));
+  --white-50: rgba(255, 255, 255, var(--alpha-50));
+  --white-40: rgba(255, 255, 255, var(--alpha-40));
+  --white-30: rgba(255, 255, 255, var(--alpha-30));
+  --white-20: rgba(255, 255, 255, var(--alpha-20));
+  --white-10: rgba(255, 255, 255, var(--alpha-10));
+  --white-5: rgba(255, 255, 255, var(--alpha-5));
+  --white-2: rgba(255, 255, 255, var(--alpha-2));
+
+  /* Black Transparency Scale */
+  --black-95: rgba(0, 0, 0, var(--alpha-95));
+  --black-90: rgba(0, 0, 0, var(--alpha-90));
+  --black-85: rgba(0, 0, 0, var(--alpha-85));
+  --black-80: rgba(0, 0, 0, var(--alpha-80));
+  --black-70: rgba(0, 0, 0, var(--alpha-70));
+  --black-60: rgba(0, 0, 0, var(--alpha-60));
+  --black-50: rgba(0, 0, 0, var(--alpha-50));
+  --black-40: rgba(0, 0, 0, var(--alpha-40));
+  --black-30: rgba(0, 0, 0, var(--alpha-30));
+  --black-20: rgba(0, 0, 0, var(--alpha-20));
+  --black-10: rgba(0, 0, 0, var(--alpha-10));
+  --black-5: rgba(0, 0, 0, var(--alpha-5));
+  --black-2: rgba(0, 0, 0, var(--alpha-2));
+
+  /* Dark Surface Transparency Scale (24, 24, 27) */
+  --dark-surface-95: rgba(24, 24, 27, var(--alpha-95));
+  --dark-surface-90: rgba(24, 24, 27, var(--alpha-90));
+  --dark-surface-85: rgba(24, 24, 27, var(--alpha-85));
+  --dark-surface-80: rgba(24, 24, 27, var(--alpha-80));
+  --dark-surface-70: rgba(24, 24, 27, var(--alpha-70));
+
+  /* Primary Color Transparency Scale (79, 70, 229) */
+  --primary-20: rgba(79, 70, 229, var(--alpha-20));
+  --primary-10: rgba(79, 70, 229, var(--alpha-10));
+  --primary-5: rgba(79, 70, 229, var(--alpha-5));
+
+  /* Secondary Accent Color Transparency Scale (99, 102, 241) */
+  --accent-secondary-5: rgba(99, 102, 241, var(--alpha-5));
+
   /* ========== Glass Morphism - Performance Optimized ========== */
-  --glass-surface: rgba(255, 255, 255, 0.85); /* Simplified for performance */
-  --glass-surface-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%); /* Use only when needed */
-  --glass-surface-dark: rgba(24, 24, 27, 0.85); /* Simplified for performance */
-  --glass-surface-gradient-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.7) 100%); /* Use only when needed */
-  --glass-blur: blur(8px) saturate(120%); /* Reduced blur for better performance */
-  --glass-blur-sm: blur(4px); /* Light blur for minor elements */
-  --glass-blur-heavy: blur(20px) saturate(180%); /* Heavy blur for critical elements only */
-  --glass-border: rgba(255, 255, 255, 0.3);
-  --glass-border-dark: rgba(255, 255, 255, 0.1);
+  --glass-surface: var(--white-85);
+  --glass-surface-light: var(--white-90);
+  --glass-surface-subtle: var(--white-70);
+  --glass-surface-dark: var(--dark-surface-85);
+  --glass-surface-dark-light: var(--dark-surface-90);
+  --glass-surface-dark-subtle: var(--dark-surface-70);
   
-  /* ========== Opacity Values ========== */
-  --white-80: rgba(255, 255, 255, 0.8);
-  --white-60: rgba(255, 255, 255, 0.6);
-  --white-50: rgba(255, 255, 255, 0.5);
-  --white-40: rgba(255, 255, 255, 0.4);
-  --white-20: rgba(255, 255, 255, 0.2);
-  --white-10: rgba(255, 255, 255, 0.1);
-  --white-5: rgba(255, 255, 255, 0.05);
+  --glass-surface-gradient: linear-gradient(135deg, var(--white-90) 0%, var(--white-70) 100%);
+  --glass-surface-gradient-dark: linear-gradient(135deg, var(--dark-surface-90) 0%, var(--dark-surface-70) 100%);
   
-  --black-80: rgba(0, 0, 0, 0.8);
-  --black-60: rgba(0, 0, 0, 0.6);
-  --black-50: rgba(0, 0, 0, 0.5);
-  --black-40: rgba(0, 0, 0, 0.4);
-  --black-20: rgba(0, 0, 0, 0.2);
-  --black-10: rgba(0, 0, 0, 0.1);
-  --black-5: rgba(0, 0, 0, 0.05);
+  --glass-blur: blur(8px) saturate(120%);
+  --glass-blur-sm: blur(4px);
+  --glass-blur-heavy: blur(20px) saturate(180%);
   
-  /* ========== Hover & Focus States ========== */
-  --hover-bg: rgba(79, 70, 229, 0.05);
-  --hover-bg-dark: rgba(255, 255, 255, 0.05);
-  --focus-ring: 0 0 0 4px rgba(79, 70, 229, 0.1);
-  
+  --glass-border: var(--white-30);
+  --glass-border-dark: var(--white-10);
+
+  /* ========== Interactive States ========== */
+  --hover-bg: var(--primary-5);
+  --hover-bg-subtle: var(--white-2);
+  --hover-bg-dark: var(--white-5);
+  --focus-ring: 0 0 0 4px var(--primary-10);
+
   /* ========== Accent Backgrounds ========== */
-  --bg-accent-subtle: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
-  --bg-accent-hover: rgba(79, 70, 229, 0.2);
-  --border-accent: rgba(79, 70, 229, 0.2);
-  
+  --bg-accent-subtle: linear-gradient(135deg, var(--primary-10) 0%, var(--accent-secondary-5) 100%);
+  --bg-accent-hover: var(--primary-20);
+  --border-accent: var(--primary-20);
+
   /* ========== Gradients ========== */
   --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   --gradient-success: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);
   --gradient-error: linear-gradient(135deg, var(--error) 0%, var(--error-hover) 100%);
   --gradient-warning: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);
-  
+
   /* ========== Input Styles ========== */
-  --input-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
-  --input-bg-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.9) 0%, rgba(24, 24, 27, 0.8) 100%);
-  --input-bg-focus: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
-  --input-bg-focus-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(24, 24, 27, 0.9) 100%);
-  --input-border: rgba(255, 255, 255, 0.3);
-  --input-border-dark: rgba(255, 255, 255, 0.1);
-  
+  --input-bg: linear-gradient(135deg, var(--white-90) 0%, var(--white-80) 100%);
+  --input-bg-dark: linear-gradient(135deg, var(--dark-surface-90) 0%, var(--dark-surface-80) 100%);
+  --input-bg-focus: linear-gradient(135deg, var(--white-95) 0%, var(--white-90) 100%);
+  --input-bg-focus-dark: linear-gradient(135deg, var(--dark-surface-95) 0%, var(--dark-surface-90) 100%);
+  --input-border: var(--white-30);
+  --input-border-dark: var(--white-10);
+
   /* ========== NOTE: Gray Scale removed - use colors.css definitions ========== */
   /* Gray scale is defined in colors.css as the single source of truth */
   /* Do not redefine gray colors here to avoid conflicts */
-  
+
   /* ========== Legacy Compatibility ========== */
   --accent: var(--primary);
   --accent-light: var(--primary-hover);
@@ -71,15 +124,25 @@
 /* ========== Dark Mode Overrides ========== */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Adjust opacity values for dark mode */
-    --hover-bg: rgba(255, 255, 255, 0.02);
-    --hover-bg-dark: rgba(255, 255, 255, 0.05);
-    --focus-ring: 0 0 0 4px rgba(129, 140, 248, 0.2);
+    /* Dark Mode Color Transparency Scale (129, 140, 248) */
+    --primary-dark-30: rgba(129, 140, 248, var(--alpha-30));
+    --primary-dark-20: rgba(129, 140, 248, var(--alpha-20));
+    --primary-dark-10: rgba(129, 140, 248, var(--alpha-10));
+    --primary-dark-5: rgba(129, 140, 248, var(--alpha-5));
+
+    /* Secondary Accent Alternative (165, 180, 252) */
+    --accent-secondary-alt-10: rgba(165, 180, 252, var(--alpha-10));
+    --accent-secondary-alt-5: rgba(165, 180, 252, var(--alpha-5));
+
+    /* Adjust interactive states for dark mode */
+    --hover-bg: var(--white-2);
+    --hover-bg-dark: var(--white-5);
+    --focus-ring: 0 0 0 4px var(--primary-dark-20);
     
-    /* Adjust accent backgrounds */
-    --bg-accent-subtle: linear-gradient(135deg, rgba(129, 140, 248, 0.1) 0%, rgba(165, 180, 252, 0.05) 100%);
-    --bg-accent-hover: rgba(129, 140, 248, 0.2);
-    --border-accent: rgba(129, 140, 248, 0.3);
+    /* Adjust accent backgrounds for dark mode */
+    --bg-accent-subtle: linear-gradient(135deg, var(--primary-dark-10) 0%, var(--accent-secondary-alt-5) 100%);
+    --bg-accent-hover: var(--primary-dark-20);
+    --border-accent: var(--primary-dark-30);
     
     /* NOTE: Gray scale removed for dark mode - use colors.css definitions */
     /* Dark mode gray scale is defined in colors.css */

@@ -106,7 +106,9 @@ class CacheFallback(FallbackStrategy):
 
     def _cleanup_expired_cache(self) -> None:
         """清理所有已過期的快取條目以釋放記憶體。"""
-        expired_keys = [k for k, ts in self._cache_timestamps.items() if datetime.now() - ts > self._default_ttl]
+        expired_keys = [
+            k for k, ts in self._cache_timestamps.items() if datetime.now() - ts > self._default_ttl
+        ]
         for key in expired_keys:
             self._cache.pop(key, None)
             self._cache_timestamps.pop(key, None)
@@ -116,18 +118,31 @@ class CacheFallback(FallbackStrategy):
     def _get_safe_default(self, method_name: str) -> Any:
         """根據方法名稱提供一個安全的預設回傳值。"""
         defaults = {
-            "statistics": {"total_practices": 0, "correct_count": 0, "knowledge_points": 0, "avg_mastery": 0.0, "due_reviews": 0},
+            "statistics": {
+                "total_practices": 0,
+                "correct_count": 0,
+                "knowledge_points": 0,
+                "avg_mastery": 0.0,
+                "due_reviews": 0,
+            },
             "points": [],
             "candidates": [],
             "search": [],
             "get_knowledge_point": None,
-            "add": False, "edit": False, "delete": False, "restore": False,
+            "add": False,
+            "edit": False,
+            "delete": False,
+            "restore": False,
         }
         key = next((k for k in defaults if k in method_name), None)
         if key:
             default_value = defaults[key]
             if isinstance(default_value, dict):
-                return {**default_value, "_fallback_strategy": self.get_strategy_name(), "_cache_miss": True}
+                return {
+                    **default_value,
+                    "_fallback_strategy": self.get_strategy_name(),
+                    "_cache_miss": True,
+                }
             return default_value
         return None
 
@@ -152,7 +167,9 @@ class NetworkRetryFallback(FallbackStrategy):
         """執行網路重試邏輯。"""
         for attempt in range(self.max_retries):
             try:
-                self.logger.info(f"網路操作重試 {attempt + 1}/{self.max_retries}: {original_func.__name__}")
+                self.logger.info(
+                    f"網路操作重試 {attempt + 1}/{self.max_retries}: {original_func.__name__}"
+                )
                 if asyncio.iscoroutinefunction(original_func):
                     # 實際應用中，應由異步錯誤處理器調用異步重試邏輯
                     self.logger.warning("異步重試應在異步上下文中處理。")
@@ -160,7 +177,7 @@ class NetworkRetryFallback(FallbackStrategy):
                 return original_func(*args, **kwargs)
             except Exception as e:
                 if attempt < self.max_retries - 1:
-                    delay = self.retry_delay * (2 ** attempt)
+                    delay = self.retry_delay * (2**attempt)
                     self.logger.warning(f"網路操作失敗，將在 {delay:.2f} 秒後重試: {e}")
                     time.sleep(delay)
                 else:
@@ -169,7 +186,11 @@ class NetworkRetryFallback(FallbackStrategy):
 
     def _get_network_default(self, method_name: str) -> Any:
         """返回一個表示網路錯誤的標準化回應。"""
-        return {"_fallback_strategy": self.get_strategy_name(), "_network_error": True, "message": "網路連線異常，請稍後重試。"}
+        return {
+            "_fallback_strategy": self.get_strategy_name(),
+            "_network_error": True,
+            "message": "網路連線異常，請稍後重試。",
+        }
 
 
 class GracefulDegradationFallback(FallbackStrategy):
@@ -200,8 +221,14 @@ class GracefulDegradationFallback(FallbackStrategy):
     def _get_minimal_statistics(self) -> dict:
         """返回一個最小化的統計數據結構。"""
         return {
-            "total_practices": 0, "correct_count": 0, "knowledge_points": 0, "avg_mastery": 0.0, "due_reviews": 0,
-            "_fallback_strategy": self.get_strategy_name(), "_graceful_degradation": True, "message": "系統功能受限，正在降級模式運行。"
+            "total_practices": 0,
+            "correct_count": 0,
+            "knowledge_points": 0,
+            "avg_mastery": 0.0,
+            "due_reviews": 0,
+            "_fallback_strategy": self.get_strategy_name(),
+            "_graceful_degradation": True,
+            "message": "系統功能受限，正在降級模式運行。",
         }
 
 
@@ -216,7 +243,12 @@ class FallbackManager:
         self._fallback_stats = {"total_fallbacks": 0, "strategy_usage": {}, "success_rate": {}}
 
     def execute_fallback(
-        self, error_category: ErrorCategory, severity: ErrorSeverity, original_func: Callable, *args, **kwargs
+        self,
+        error_category: ErrorCategory,
+        severity: ErrorSeverity,
+        original_func: Callable,
+        *args,
+        **kwargs,
     ) -> Optional[Any]:
         """根據錯誤類型，依序嘗試執行合適的降級策略。"""
         self._fallback_stats["total_fallbacks"] += 1
@@ -226,7 +258,9 @@ class FallbackManager:
                 try:
                     result = strategy.execute(original_func, *args, **kwargs)
                     self._update_strategy_stats(strategy_name, success=True)
-                    self.logger.info(f"降級策略 '{strategy_name}' 成功執行 for {original_func.__name__}")
+                    self.logger.info(
+                        f"降級策略 '{strategy_name}' 成功執行 for {original_func.__name__}"
+                    )
                     return result
                 except Exception as e:
                     self._update_strategy_stats(strategy_name, success=False)
@@ -249,7 +283,7 @@ class FallbackManager:
     def get_fallback_statistics(self) -> dict:
         """獲取降級操作的詳細統計數據。"""
         stats = self._fallback_stats.copy()
-        for name, data in stats["success_rate"].items():
+        for _name, data in stats["success_rate"].items():
             data["rate"] = (data["success"] / data["total"] * 100) if data["total"] > 0 else 0
         return stats
 
@@ -273,6 +307,7 @@ class FallbackManager:
 
 # 提供一個全域的降級管理器實例
 fallback_manager = FallbackManager()
+
 
 def get_fallback_manager() -> FallbackManager:
     """獲取全域的降級管理器實例。"""

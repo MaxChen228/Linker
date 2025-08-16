@@ -331,12 +331,11 @@ class CacheSyncManager:
             json_stats = self.json_cache.get("statistics_sync")
             db_stats = self.db_cache.get("statistics_sync")
 
-            if json_stats and db_stats:
-                if not self._are_stats_consistent(json_stats, db_stats):
-                    self.json_cache.invalidate(CacheCategories.STATISTICS)
-                    self.db_cache.invalidate(CacheCategories.STATISTICS)
-                    logger.warning("偵測到統計快取不一致，已清除。")
-                    return False
+            if json_stats and db_stats and not self._are_stats_consistent(json_stats, db_stats):
+                self.json_cache.invalidate(CacheCategories.STATISTICS)
+                self.db_cache.invalidate(CacheCategories.STATISTICS)
+                logger.warning("偵測到統計快取不一致，已清除。")
+                return False
             return True
 
         except Exception as e:

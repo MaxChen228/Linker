@@ -52,7 +52,9 @@ class KnowledgeManager:
             self.logger.info("資料庫知識管理器初始化完成。")
         except Exception as e:
             self.logger.error(f"資料庫初始化失敗: {e}")
-            raise DatabaseError("知識管理器資料庫初始化失敗", operation="initialize", details={"error": str(e)}) from e
+            raise DatabaseError(
+                "知識管理器資料庫初始化失敗", operation="initialize", details={"error": str(e)}
+            ) from e
 
     async def _ensure_repository(self) -> KnowledgePointRepository:
         """確保 `KnowledgePointRepository` 已被初始化。如果未初始化，則建立它。"""
@@ -220,6 +222,7 @@ class KnowledgeManager:
     async def _compute_statistics(self) -> dict[str, Any]:
         """內部方法，從資料庫計算統計資料。"""
         from core.statistics_utils import UnifiedStatistics
+
         repo = await self._ensure_repository()
         knowledge_points = await repo.find_all(is_deleted=False)
         # TODO: 未來應從資料庫獲取獨立的練習記錄
@@ -247,7 +250,13 @@ class KnowledgeManager:
     def _get_safe_default_for_operation(self, operation: str) -> Any:
         """在操作失敗時，提供一個安全的預設回傳值。"""
         defaults = {
-            "get_statistics": {"total_practices": 0, "correct_count": 0, "knowledge_points": 0, "avg_mastery": 0.0, "due_reviews": 0},
+            "get_statistics": {
+                "total_practices": 0,
+                "correct_count": 0,
+                "knowledge_points": 0,
+                "avg_mastery": 0.0,
+                "due_reviews": 0,
+            },
             "get_knowledge_points": [],
             "get_all_knowledge_points": [],
             "get_review_candidates": [],

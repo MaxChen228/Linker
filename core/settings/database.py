@@ -421,6 +421,6 @@ def check_database_configuration():
         logger.error(f"數據庫配置檢查失敗: {e}")
 
 
-# 模組載入時自動檢查配置（僅在非測試環境）
-if not os.environ.get("SKIP_DB_CONFIG_CHECK"):
-    check_database_configuration()
+# 配置檢查由應用手動執行，避免模塊導入時的問題
+# if not os.environ.get("SKIP_DB_CONFIG_CHECK"):
+#     check_database_configuration()

@@ -9,7 +9,7 @@
 - **分級例句庫 (Example Sentence Bank)**：從 `core/assets.py` 載入。
 
 設計模式：
-- **倉儲模式 (Repository Pattern)**：使用 `GrammarRepository` 和 `ExampleRepository` 
+- **倉儲模式 (Repository Pattern)**：使用 `GrammarRepository` 和 `ExampleRepository`
   來封裝不同資源的載入邏輯，使得資源的來源和格式對上層透明。
 - **門面模式 (Facade Pattern)**：`KnowledgeAssets` 類別作為一個統一的門面，
   為應用程式的其他部分提供簡單、一致的資源查詢介面。
@@ -30,6 +30,7 @@ ASSETS_DIR = PROJECT_ROOT / "assets"
 @dataclass
 class GrammarPattern:
     """定義文法句型的標準資料結構。"""
+
     id: str | None
     category: str | None
     pattern: str
@@ -81,6 +82,7 @@ class ExampleRepository:
         """
         try:
             from core.assets import EXAMPLE_SENTENCE_BANK
+
             return EXAMPLE_SENTENCE_BANK if isinstance(EXAMPLE_SENTENCE_BANK, dict) else {}
         except ImportError as e:
             print(f"Error importing example bank: {e}")

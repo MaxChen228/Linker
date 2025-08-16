@@ -620,7 +620,8 @@ async def get_daily_limit_config():
     knowledge = await get_know_service()
     try:
         config = await knowledge.get_daily_limit_config()
-        return JSONResponse(config)
+        # 讓 FastAPI 自動處理序列化，而不是手動使用 JSONResponse
+        return config
     except Exception as e:
         logger.error(f"獲取每日限額配置失敗: {e}")
         raise HTTPException(status_code=500, detail="獲取配置失敗") from e

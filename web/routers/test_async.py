@@ -6,10 +6,11 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
+from core.services.know_service import KnowService
+
 # TASK-34: 引入統一API端點管理系統，消除硬編碼
 from web.config.api_endpoints import API_ENDPOINTS
 from web.dependencies import get_know_service, get_logger
-from core.services.know_service import KnowService
 
 router = APIRouter(prefix="/api/test", tags=["test"])
 logger = get_logger()

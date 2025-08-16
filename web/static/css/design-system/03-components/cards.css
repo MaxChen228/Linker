@@ -40,10 +40,10 @@
 
 /* Glass Morphism 卡片 */
 .card[data-glass="true"] {
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--surface-overlay);
   backdrop-filter: blur(var(--space-3));
   -webkit-backdrop-filter: blur(var(--space-3));
-  border: var(--border-width-thin) solid rgba(255, 255, 255, 0.3);
+  border: var(--border-width-thin) solid rgba(255, 255, 255, var(--alpha-focus));
 }
 
 /* 帶裝飾線卡片 */
@@ -70,7 +70,7 @@
 /* 問題卡片 */
 .card[data-type="question"] {
   background: var(--surface-elevated);
-  border: var(--border-width-thin) solid rgba(0, 0, 0, 0.06);
+  border: var(--border-width-thin) solid var(--shadow-subtle);
   box-shadow: var(--shadow-sm);
 }
 
@@ -103,7 +103,7 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  border: var(--border-width-thin) solid rgba(0, 0, 0, 0.06);
+  border: var(--border-width-thin) solid var(--shadow-subtle);
   padding: 0; /* 群組卡片特殊處理 */
 }
 
@@ -117,18 +117,18 @@
 /* ============================================ */
 
 .card[data-mastery="low"] {
-  border-color: rgba(239, 68, 68, 0.2);
-  background: linear-gradient(to bottom, rgba(254, 242, 242, 0.5), white);
+  border-color: rgba(239, 68, 68, var(--alpha-4));
+  background: linear-gradient(to bottom, rgba(var(--error-50-rgb), var(--alpha-6)), white);
 }
 
 .card[data-mastery="medium"] {
-  border-color: rgba(245, 158, 11, 0.2);
-  background: linear-gradient(to bottom, rgba(255, 251, 235, 0.5), white);
+  border-color: rgba(245, 158, 11, var(--alpha-4));
+  background: linear-gradient(to bottom, rgba(255, 251, 235, var(--alpha-6)), white);
 }
 
 .card[data-mastery="high"] {
-  border-color: rgba(16, 185, 129, 0.2);
-  background: linear-gradient(to bottom, rgba(236, 253, 245, 0.5), white);
+  border-color: rgba(16, 185, 129, var(--alpha-4));
+  background: linear-gradient(to bottom, rgba(var(--success-50-rgb), var(--alpha-6)), white);
 }
 
 /* ============================================ */
@@ -280,17 +280,17 @@
   justify-content: space-between;
   padding: var(--space-5) var(--space-6);
   cursor: pointer;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
+  background: linear-gradient(135deg, rgba(99, 102, 241, var(--alpha-1)) 0%, transparent 100%);
   position: relative;
   transition: background 0.2s ease;
 }
 
 .group-header:hover {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(139, 92, 246, 0.03) 100%);
+  background: linear-gradient(135deg, rgba(99, 102, 241, var(--alpha-2-5)) 0%, rgba(139, 92, 246, var(--alpha-1)) 100%);
 }
 
 .group-content {
-  background: rgba(249, 250, 251, 0.5);
+  background: rgba(var(--gray-50-rgb), var(--alpha-6));
   border-top: var(--border-width-thin) solid var(--border);
   padding: 0;
   display: none;
@@ -395,13 +395,13 @@
   }
   
   .card[data-glass="true"] {
-    background: rgba(24, 24, 27, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface-overlay);
+    border: 1px solid rgba(255, 255, 255, var(--alpha-3));
   }
   
   .card[data-type="question"] {
     background: var(--surface-dark);
-    border-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, var(--alpha-2-5));
   }
   
   .card[data-type="group"] {
@@ -409,14 +409,14 @@
   }
   
   .card[data-mastery="low"] {
-    background: linear-gradient(to bottom, rgba(239, 68, 68, 0.05), var(--surface-dark));
+    background: linear-gradient(to bottom, var(--error-overlay-subtle), var(--surface-dark));
   }
   
   .card[data-mastery="medium"] {
-    background: linear-gradient(to bottom, rgba(245, 158, 11, 0.05), var(--surface-dark));
+    background: linear-gradient(to bottom, var(--warning-overlay-subtle), var(--surface-dark));
   }
   
   .card[data-mastery="high"] {
-    background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), var(--surface-dark));
+    background: linear-gradient(to bottom, var(--success-overlay-subtle), var(--surface-dark));
   }
 }

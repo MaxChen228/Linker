@@ -62,8 +62,8 @@ def get_module_logger(module_name: str) -> Logger:
     """
     # 簡化模組名稱，例如將 `linker_cli.core.database` 簡化為 `core.database`
     if module_name.startswith("linker_cli."):
-        module_name = module_name[len("linker_cli."):]
-    
+        module_name = module_name[len("linker_cli.") :]
+
     if module_name == "__main__":
         module_name = "main"
 
@@ -85,6 +85,7 @@ def set_log_level(level: str) -> bool:
         如果設定成功，返回 True，否則返回 False。
     """
     import logging
+
     level_upper = level.upper()
     if level_upper in LOG_LEVELS:
         logging.getLogger().setLevel(LOG_LEVELS[level_upper])

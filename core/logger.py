@@ -1,73 +1,4 @@
 """
-日誌系統模組
-提供統一的日誌記錄和管理功能
-"""
-
-import json
-import logging
-import logging.handlers
-import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Optional
-
-
-class ColoredFormatter(logging.Formatter):
-    """彩色日誌格式化器（用於終端輸出）"""
-
-    # ANSI顏色碼
-    COLORS = {
-        "DEBUG": "\033[36m",  # 青色
-        "INFO": "\033[32m",  # 綠色
-        "WARNING": "\033[33m",  # 黃色
-        "ERROR": "\033[31m",  # 紅色
-        "CRITICAL": "\033[35m",  # 紫色
-    }
-    RESET = "\033[0m"
-
-    def format(self, record):
-        # 添加顏色
-        if record.levelname in self.COLORS:
-            record.levelname = f"{self.COLORS[record.levelname]}{record.levelname}{self.RESET}"
-        return super().format(record)
-
-
-class JsonFormatter(logging.Formatter):
-    """JSON格式化器（用於文件輸出）"""
-
-    SENSITIVE_KEYS = {"authorization", "api_key", "password", "token"}
-
-    def _mask_value(self, key: str, value: str) -> str:
-        if key.lower() in self.SENSITIVE_KEYS:
-            return "***"
-        # 基礎遮罩：像 API key 這類長字串
-        if isinstance(value, str) and len(value) > 32:
-            return value[:6] + "***" + value[-4:]
-        return value
-
-    def _sanitize(self, data):
-        if isinstance(data, dict):
-            return {
-                k: self._sanitize(self._mask_value(k, v) if isinstance(v, str) else v)
-                for k, v in data.items()
-            }
-        if isinstance(data, list):
-            return [self._sanitize(v) for v in data]
-        return data
-
-    def format(self, record):
-        log_obj = {
-            "timestamp": datetime.fromtimestamp(record.created).isoformat(),
-            "level": record.levelname,
-            "logger": record.name,
-            "message": record.getMessage(),
-            "module": record.module,
-            "function": record.funcName,
-            "line": record.lineno,
-        }
-
-        # 添加異常信息
-        """
 日誌系統核心模組
 
 提供一個功能豐富且可配置的日誌系統，支援多種輸出格式和處理方式。
@@ -83,18 +14,25 @@ class JsonFormatter(logging.Formatter):
 - **便捷的記錄方法**：提供 `log_exception`, `log_api_call` 等高階方法，簡化特定場景的日誌記錄。
 """
 
+import json
 import logging
 import logging.handlers
+import os
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Optional
 
 
 class ColoredFormatter(logging.Formatter):
     """為終端輸出提供帶有 ANSI 顏色的日誌格式化器。"""
+
     COLORS = {
-        "DEBUG": "\033[36m",    # 青色
-        "INFO": "\033[32m",     # 綠色
+        "DEBUG": "\033[36m",  # 青色
+        "INFO": "\033[32m",  # 綠色
         "WARNING": "\033[33m",  # 黃色
-        "ERROR": "\033[31m",    # 紅色
-        "CRITICAL": "\033[35m", # 紫色
+        "ERROR": "\033[31m",  # 紅色
+        "CRITICAL": "\033[35m",  # 紫色
     }
     RESET = "\033[0m"
 
@@ -110,6 +48,7 @@ class JsonFormatter(logging.Formatter):
     將日誌記錄轉換為 JSON 格式，適用於結構化日誌系統（如 ELK, Splunk）。
     同時包含敏感資訊過濾功能。
     """
+
     SENSITIVE_KEYS = {"authorization", "api_key", "password", "token"}
 
     def _mask_value(self, key: str, value: Any) -> Any:
@@ -143,134 +82,6 @@ class JsonFormatter(logging.Formatter):
         if hasattr(record, "extra_data"):
             log_obj["extra"] = self._sanitize(record.extra_data)
         return json.dumps(log_obj, ensure_ascii=False)
-
-
-class Logger:
-    """統一的日誌管理器類別。"""
-    _instances = {}
-
-    def __init__(self, name: str, log_dir: str, log_level: str, console_output: bool, file_output: bool, json_format: bool):
-        self.name = name
-        self.logger = logging.getLogger(name)
-        self.logger.setLevel(log_level.upper())
-        self.logger.handlers.clear()  # 防止重複添加 handler
-
-        if console_output:
-            self._setup_console_handler(log_level)
-        if file_output:
-            self._setup_file_handler(log_dir, log_level, json_format)
-
-    def _setup_console_handler(self, log_level: str):
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(log_level.upper())
-        formatter = ColoredFormatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S")
-        console_handler.setFormatter(formatter)
-        self.logger.addHandler(console_handler)
-
-    def _setup_file_handler(self, log_dir: str, log_level: str, json_format: bool):
-        log_path = Path(log_dir)
-        log_path.mkdir(exist_ok=True)
-        log_file = log_path / f"{self.name}.log"
-
-        if os.getenv("LOG_ROTATE_DAILY", "false").lower() == "true":
-            file_handler = logging.handlers.TimedRotatingFileHandler(log_file, when="midnight", backupCount=7, encoding="utf-8")
-        else:
-            file_handler = logging.handlers.RotatingFileHandler(log_file, maxBytes=10*1024*1024, backupCount=5, encoding="utf-8")
-        
-        file_handler.setLevel(log_level.upper())
-        formatter = JsonFormatter() if json_format else logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s")
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    @classmethod
-    def get_logger(cls, name: str, **kwargs) -> "Logger":
-        """獲取或創建一個 logger 實例（單例模式）。"""
-        if name not in cls._instances:
-            cls._instances[name] = cls(name, **kwargs)
-        return cls._instances[name]
-
-    def _log(self, level: int, message: str, **kwargs):
-        """內部日誌記錄方法，處理額外資料。"""
-        self.logger.log(level, message, extra={"extra_data": kwargs} if kwargs else None)
-
-    def debug(self, message: str, **kwargs): self._log(logging.DEBUG, message, **kwargs)
-    def info(self, message: str, **kwargs): self._log(logging.INFO, message, **kwargs)
-    def warning(self, message: str, **kwargs): self._log(logging.WARNING, message, **kwargs)
-    def error(self, message: str, exc_info=False, **kwargs): self.logger.error(message, exc_info=exc_info, extra={"extra_data": kwargs} if kwargs else None)
-    def critical(self, message: str, exc_info=True, **kwargs): self.logger.critical(message, exc_info=exc_info, extra={"extra_data": kwargs} if kwargs else None)
-
-    def log_exception(self, exception: Exception, context: Optional[dict] = None):
-        """以結構化格式記錄一個異常的詳細資訊。"""
-        error_data = {"exception_type": type(exception).__name__, "exception_message": str(exception), "context": context or {}}
-        if hasattr(exception, "to_dict") and callable(exception.to_dict):
-            error_data.update(exception.to_dict())
-        self.error(f"發生異常: {type(exception).__name__}", exc_info=True, **error_data)
-
-    def log_api_call(self, api_name: str, method: str, params: dict, response: Optional[dict] = None, error: Optional[Exception] = None, duration: Optional[float] = None):
-        """記錄一次 API 調用的詳細資訊。"""
-        log_data = {"api_name": api_name, "method": method, "params": params, "duration_ms": duration * 1000 if duration else None}
-        if error:
-            log_data["error"] = str(error)
-            self.error(f"API 調用失敗: {api_name}.{method}", **log_data)
-        else:
-            log_data["response_preview"] = str(response)[:200] if response else None
-            self.info(f"API 調用成功: {api_name}.{method}", **log_data)
-
-    def log_user_action(self, action: str, user_input: Optional[str] = None, result: Optional[str] = None):
-        """記錄一次使用者操作。"""
-        self.info(f"使用者操作: {action}", action=action, user_input=user_input, result=result)
-
-    def log_performance(self, operation: str, duration: float, details: Optional[dict] = None):
-        """記錄一個操作的性能數據。"""
-        log_data = {"operation": operation, "duration_ms": duration * 1000, **(details or {})}
-        if duration > 1.0:
-            self.warning(f"慢操作警告: {operation} 耗時 {duration:.2f} 秒", **log_data)
-        else:
-            self.debug(f"性能日誌: {operation} 耗時 {duration:.3f} 秒", **log_data)
-
-
-def get_logger(name: str = "linker") -> Logger:
-    """
-    獲取 logger 的便捷工廠函數。
-    從環境變數讀取配置並返回一個 `Logger` 實例。
-    """
-    return Logger.get_logger(
-        name=name,
-        log_dir=os.getenv("LOG_DIR", "logs"),
-        log_level=os.getenv("LOG_LEVEL", "INFO"),
-        console_output=os.getenv("LOG_TO_CONSOLE", "true").lower() == "true",
-        file_output=os.getenv("LOG_TO_FILE", "true").lower() == "true",
-        json_format=(os.getenv("LOG_FORMAT", "text").lower() == "json"),
-    )
-
-
-def log_function_call(logger: Optional[Logger] = None):
-    """
-    一個裝飾器，用於自動記錄函數的調用、返回和異常。
-    """
-    import functools
-    import time
-
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            log = logger or get_logger(func.__module__)
-            start_time = time.time()
-            try:
-                log.debug(f"調用函數: {func.__name__}", args=str(args)[:100], kwargs=str(kwargs)[:100])
-                result = func(*args, **kwargs)
-                duration = time.time() - start_time
-                log.debug(f"函數 {func.__name__} 返回", duration=f"{duration:.4f}s")
-                return result
-            except Exception as e:
-                duration = time.time() - start_time
-                log.log_exception(e, context={"function": func.__name__, "duration": f"{duration:.4f}s"})
-                raise
-        return wrapper
-    return decorator
-
-
-__all__ = ["Logger", "get_logger", "log_function_call", "ColoredFormatter", "JsonFormatter"]
 
 
 class Logger:
@@ -329,8 +140,6 @@ class Logger:
 
     def _setup_file_handler(self, json_format: bool = False):
         """設置文件處理器"""
-        import os
-
         # 創建日誌目錄
         self.log_dir.mkdir(exist_ok=True)
 
@@ -352,6 +161,7 @@ class Logger:
             file_handler = logging.handlers.RotatingFileHandler(
                 log_file, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8"
             )
+
         file_handler.setLevel(self.log_level)
 
         # 選擇格式化器
@@ -504,7 +314,6 @@ class Logger:
             self.debug(f"操作完成: {operation} 耗時 {duration:.3f}秒", **log_data)
 
 
-# 創建默認日誌器
 def get_logger(name: str = "linker") -> Logger:
     """
     獲取日誌器的便捷函數
@@ -516,8 +325,6 @@ def get_logger(name: str = "linker") -> Logger:
         Logger實例
     """
     # 從環境變量讀取配置
-    import os
-
     log_level = os.getenv("LOG_LEVEL", "INFO")
     log_dir = os.getenv("LOG_DIR", "logs")
     log_to_console = os.getenv("LOG_TO_CONSOLE", "true").lower() == "true"
@@ -534,7 +341,6 @@ def get_logger(name: str = "linker") -> Logger:
     )
 
 
-# 日誌裝飾器
 def log_function_call(logger: Optional[Logger] = None):
     """
     函數調用日誌裝飾器

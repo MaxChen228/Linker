@@ -190,20 +190,20 @@
 }
 
 .mastery-badge[data-level="low"] {
-  background: linear-gradient(to bottom, rgba(254, 242, 242, 0.5), white);
-  border-color: rgba(239, 68, 68, 0.2);
+  background: linear-gradient(to bottom, rgba(var(--error-50-rgb), var(--alpha-6)), white);
+  border-color: rgba(239, 68, 68, var(--alpha-4));
   color: var(--error-700);
 }
 
 .mastery-badge[data-level="medium"] {
-  background: linear-gradient(to bottom, rgba(255, 251, 235, 0.5), white);
-  border-color: rgba(245, 158, 11, 0.2);
+  background: linear-gradient(to bottom, rgba(255, 251, 235, var(--alpha-6)), white);
+  border-color: rgba(245, 158, 11, var(--alpha-4));
   color: var(--warning-700);
 }
 
 .mastery-badge[data-level="high"] {
-  background: linear-gradient(to bottom, rgba(236, 253, 245, 0.5), white);
-  border-color: rgba(16, 185, 129, 0.2);
+  background: linear-gradient(to bottom, rgba(var(--success-50-rgb), var(--alpha-6)), white);
+  border-color: rgba(16, 185, 129, var(--alpha-4));
   color: var(--success-700);
 }
 
@@ -295,49 +295,49 @@
   }
   
   .difficulty-badge[data-level="basic"] {
-    background: rgba(16, 185, 129, 0.1);
+    background: var(--success-overlay-light);
     color: var(--success-400);
     border-color: var(--success-800);
   }
   
   .difficulty-badge[data-level="intermediate"] {
-    background: rgba(245, 158, 11, 0.1);
+    background: var(--warning-overlay-light);
     color: var(--warning-400);
     border-color: var(--warning-800);
   }
   
   .difficulty-badge[data-level="advanced"] {
-    background: rgba(239, 68, 68, 0.1);
+    background: var(--error-overlay-light);
     color: var(--error-400);
     border-color: var(--error-800);
   }
   
   .category-badge[data-category="systematic"] {
-    background: rgba(239, 68, 68, 0.1);
+    background: var(--error-overlay-light);
     color: var(--error-400);
     border-color: var(--error-800);
   }
   
   .category-badge[data-category="isolated"] {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(99, 102, 241, var(--alpha-3));
     color: var(--accent-400);
     border-color: var(--accent-800);
   }
   
   .mastery-badge[data-level="low"] {
-    background: linear-gradient(to bottom, rgba(239, 68, 68, 0.05), var(--surface-dark));
+    background: linear-gradient(to bottom, var(--error-overlay-subtle), var(--surface-dark));
     border-color: var(--error-800);
     color: var(--error-400);
   }
   
   .mastery-badge[data-level="medium"] {
-    background: linear-gradient(to bottom, rgba(245, 158, 11, 0.05), var(--surface-dark));
+    background: linear-gradient(to bottom, var(--warning-overlay-subtle), var(--surface-dark));
     border-color: var(--warning-800);
     color: var(--warning-400);
   }
   
   .mastery-badge[data-level="high"] {
-    background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), var(--surface-dark));
+    background: linear-gradient(to bottom, var(--success-overlay-subtle), var(--surface-dark));
     border-color: var(--success-800);
     color: var(--success-400);
   }

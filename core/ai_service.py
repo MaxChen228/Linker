@@ -88,7 +88,7 @@ class AIService:
             raise
 
     def _call_model(
-        self, model, system_prompt: str, user_prompt: str, use_cache: bool = True
+        self, model, system_prompt: str, user_prompt: str, use_cache: bool = True, timeout: int = 30
     ) -> dict[str, Any]:
         """
         內部方法，用於調用指定的 Gemini 模型。
@@ -98,6 +98,7 @@ class AIService:
             system_prompt: 系統提示詞。
             user_prompt: 使用者提示詞。
             use_cache: 是否使用快取（目前已禁用）。
+            timeout: API 調用超時時間（秒），預設 30 秒。
 
         Returns:
             一個包含模型回應的字典。
@@ -105,6 +106,9 @@ class AIService:
         start_time = time.time()
 
         try:
+            import google.generativeai as genai
+            from google.api_core import retry
+            
             full_prompt = f"{system_prompt}\n\n{user_prompt}"
             model_config = {
                 "model_name": getattr(model, "model_name", str(model)),
@@ -113,7 +117,19 @@ class AIService:
                 "top_k": getattr(model.generation_config, "top_k", None),
             }
 
-            response = model.generate_content(full_prompt)
+            # 🔧 修復：添加超時和重試機制
+            request_options = genai.types.RequestOptions(
+                timeout=timeout,  # 設置超時時間
+                retry=retry.Retry(
+                    initial=1.0,        # 初始重試延遲 1 秒
+                    maximum=3.0,        # 最大重試延遲 3 秒  
+                    multiplier=1.5,     # 重試延遲倍增係數
+                    deadline=timeout,   # 總體超時時間
+                    predicate=retry.if_transient_error  # 只重試暫時性錯誤
+                )
+            )
+
+            response = model.generate_content(full_prompt, request_options=request_options)
             duration_ms = int((time.time() - start_time) * 1000)
             result = self._parse_response(response.text)
 
@@ -212,6 +228,86 @@ class AIService:
             "error_analysis": [],
             "service_error": True,  # 新增標記，方便後端識別服務錯誤
         }
+
+    def health_check(self) -> dict[str, Any]:
+        """
+        🔥 透明化改造：AI 服務健康檢查
+        
+        真實檢測 AI 服務的可用性，不說謊！
+        
+        Returns:
+            包含服務健康狀況的詳細報告
+        """
+        health_status = {
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "service_name": "AI Service (Gemini)",
+            "status": "unknown",
+            "details": {},
+            "last_error": None,
+            "recommendations": []
+        }
+        
+        try:
+            # 檢查模型是否已初始化
+            if not self.generate_model:
+                health_status.update({
+                    "status": "unavailable",
+                    "details": {"reason": "generate_model_not_initialized"},
+                    "last_error": "Gemini API 未正確初始化",
+                    "recommendations": ["檢查 GEMINI_API_KEY 環境變數", "重啟服務"]
+                })
+                return health_status
+            
+            # 進行實際的 API 測試調用
+            test_prompt = "簡單測試：回答 'OK'"
+            start_time = time.time()
+            
+            # 🔧 修復：健康檢查使用較短的超時時間
+            import google.generativeai as genai
+            from google.api_core import retry
+            
+            request_options = genai.types.RequestOptions(
+                timeout=10,  # 健康檢查只給 10 秒超時
+                retry=retry.Retry(
+                    initial=0.5,
+                    maximum=2.0,
+                    multiplier=1.5,
+                    deadline=10,
+                    predicate=retry.if_transient_error
+                )
+            )
+            
+            response = self.generate_model.generate_content(test_prompt, request_options=request_options)
+            duration_ms = int((time.time() - start_time) * 1000)
+            
+            if response and response.text:
+                health_status.update({
+                    "status": "healthy",
+                    "details": {
+                        "response_time_ms": duration_ms,
+                        "model_accessible": True,
+                        "api_responsive": True,
+                        "test_response_length": len(response.text)
+                    },
+                    "recommendations": ["服務運行正常"] if duration_ms < 5000 else ["響應時間較慢，建議檢查網路連接"]
+                })
+            else:
+                health_status.update({
+                    "status": "degraded",
+                    "details": {"reason": "empty_response"},
+                    "last_error": "API 回應為空",
+                    "recommendations": ["檢查 API 配額", "檢查網路連接"]
+                })
+                
+        except Exception as e:
+            health_status.update({
+                "status": "failed",
+                "details": {"reason": "api_call_failed", "error_type": type(e).__name__},
+                "last_error": str(e),
+                "recommendations": ["檢查 API Key 是否有效", "檢查網路連接", "檢查 API 配額"]
+            })
+            
+        return health_status
 
     async def generate_async(
         self,
@@ -317,7 +413,7 @@ class AIService:
         if not self.grade_model:
             return self._get_fallback_response()
 
-        result = self._call_model(self.grade_model, system_prompt, user_prompt)
+        result = self._call_model(self.grade_model, system_prompt, user_prompt, timeout=20)
 
         # 確保返回的結果是字典
         if not isinstance(result, dict):
@@ -389,20 +485,31 @@ class AIService:
             result = {}
         else:
             result = self._call_model(
-                self.generate_model, system_prompt, user_prompt, use_cache=False
+                self.generate_model, system_prompt, user_prompt, use_cache=False, timeout=25
             )
 
         if not isinstance(result, dict):
             result = {}
 
-        import random as _r
+        # 🔥 透明化改造：不再隱藏服務錯誤！
+        if result.get("service_error"):
+            # AI 服務失敗，直接返回錯誤狀態，不要欺騙上層！
+            return {
+                "service_error": True,
+                "error_message": "AI 服務不可用",
+                "sentence": None,
+                "hint": None,
+            }
 
+        # 只有真正成功時才返回內容
+        import random as _r
         fallback_sentence = _r.choice(examples) if examples else "今天天氣很好。"
         return {
             "sentence": result.get("sentence", fallback_sentence),
             "hint": result.get("hint", "注意時態和主詞"),
             "difficulty_level": result.get("difficulty_level", level),
             "grammar_points": result.get("grammar_points", []),
+            "service_error": False,  # 明確標記這是成功狀態
         }
 
     def generate_review_sentence(
@@ -475,7 +582,20 @@ class AIService:
                 "difficulty_level": level,
             }
 
-        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
+        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False, timeout=30)
+        
+        # 🔥 透明化改造：Review 模式的 AI 服務層也要檢查錯誤！
+        if result.get("service_error"):
+            return {
+                "service_error": True,
+                "error_message": "AI 服務不可用",
+                "sentence": None,
+                "hint": None,
+                "target_point_ids": [],
+                "target_points": [],
+                "target_points_description": "",
+            }
+        
         if not isinstance(result, dict):
             result = {}
 
@@ -497,6 +617,7 @@ class AIService:
             "target_points_description": result.get("target_points_description", ""),
             "difficulty_level": result.get("difficulty_level", level),
             "is_review": True,
+            "service_error": False,  # 明確標記成功狀態
         }
 
     def generate_tagged_sentence(
@@ -587,7 +708,7 @@ class AIService:
                 "difficulty_level": level,
             }
 
-        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
+        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False, timeout=35)
         if not isinstance(result, dict):
             result = {}
 
@@ -686,7 +807,7 @@ class AIService:
         if not self.grade_model:
             return {"patterns": [], "suggestions": []}
 
-        result = self._call_model(self.grade_model, system_prompt, user_prompt)
+        result = self._call_model(self.grade_model, system_prompt, user_prompt, timeout=25)
         if not isinstance(result, dict):
             return {"patterns": [], "suggestions": []}
         return result
@@ -759,7 +880,18 @@ class AIService:
                 "expected_structure": "",
             }
 
-        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False)
+        result = self._call_model(self.generate_model, system_prompt, user_prompt, use_cache=False, timeout=30)
+        
+        # 🔥 透明化改造：Pattern 模式也要檢查服務錯誤！
+        if result.get("service_error"):
+            return {
+                "service_error": True,
+                "error_message": "AI 服務不可用",
+                "sentence": None,
+                "hint": None,
+                "expected_structure": None,
+            }
+        
         if not isinstance(result, dict):
             result = {"sentence": "今天天氣很好。", "hint": f"注意使用 {pattern_name} 句型"}
 
@@ -767,4 +899,5 @@ class AIService:
             "sentence": result.get("sentence", "今天天氣很好。"),
             "hint": result.get("hint", f"注意使用 {pattern_name} 句型"),
             "expected_structure": result.get("expected_structure", formula),
+            "service_error": False,  # 明確標記成功狀態
         }
